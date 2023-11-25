@@ -30,8 +30,6 @@ void VampiricTouch::Apply() {
 		target.lock()->GetHealth().UpdateActual(-value, target.lock().get());
 		target.lock()->AddEffectId(_ID);
 		_instigator->GetHealth().UpdateActual(value, _instigator);
-
-		int x = 10;
 	}
 }
 
