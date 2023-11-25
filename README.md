@@ -1,3 +1,3 @@
-Turn-based RPG C++ console app.
+Turn-based grid RPG console app in C++.
 
 Can be built as is.
