@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{949dd423-4fb9-4808-a317-26d9857b18c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spells">
+      <UniqueIdentifier>{8c2d2aff-befb-4a0f-95e2-2f0f8c54ad28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MapGenerator">
+      <UniqueIdentifier>{8b158161-833f-49ac-8f64-7928f6bd9efc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Effects">
+      <UniqueIdentifier>{1b646af8-c757-4fd2-844b-4c3db000db32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Combat">
+      <UniqueIdentifier>{467c3702-7463-4f59-8517-d4535f4b4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Display">
+      <UniqueIdentifier>{33c54fa8-26fc-44f8-93a6-e974da95450b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Characters\Character.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Spells\CSpellData.cpp">
+      <Filter>Source Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="Characters\PlayerCharacter.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Characters\EnemyCharacter.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Spells\Spell.cpp">
+      <Filter>Source Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="MapGenerator\MapGenerator.cpp">
+      <Filter>Source Files\MapGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayStatics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Spells\SpellManager.cpp">
+      <Filter>Source Files\Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="Characters\CharacterData.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects\Effect.cpp">
+      <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Combat\CombatManager.cpp">
+      <Filter>Source Files\Combat</Filter>
+    </ClCompile>
+    <ClCompile Include="Display\ConsoleMenu.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="Resistances.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects\PassiveEffect.cpp">
+      <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects\ActiveEffect.cpp">
+      <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Characters\Character.h">
+      <Filter>Source Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Characters\EnemyCharacter.h">
+      <Filter>Source Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Characters\PlayerCharacter.h">
+      <Filter>Source Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="RPGTypes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Spells\CSpellData.h">
+      <Filter>Source Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="Spells\Spell.h">
+      <Filter>Source Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="MapGenerator\MapGenerator.h">
+      <Filter>Source Files\MapGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayStatics.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Spells\SpellManager.h">
+      <Filter>Source Files\Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects\Effect.h">
+      <Filter>Source Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Combat\CombatManager.h">
+      <Filter>Source Files\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\ConsoleMenu.h">
+      <Filter>Source Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="Resistances.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects\EffectStructs.h">
+      <Filter>Source Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects\PassiveEffect.h">
+      <Filter>Source Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects\ActiveEffect.h">
+      <Filter>Source Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Characters\CharacterData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
