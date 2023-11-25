@@ -28,6 +28,7 @@ class Character;
 
 #undef _stat
 #undef max
+#undef PURE
 
 #define START_X 8
 #define START_Y 8
@@ -167,7 +168,7 @@ enum class EDamageType {
 	NECROTIC,
 	PHYSICAL,
 	HEALING,
-	PUREE,
+	PURE,
 };
 
 enum class EResistanceType {
@@ -294,7 +295,7 @@ enum class EEffectValueAction {
 enum class EEffectDamageType {
 	BURNING,
 	PHYSICAL,
-	PUREE,
+	PURE,
 };
 
 enum class EEffectType {
@@ -306,6 +307,30 @@ enum EStructFlags {
 	EFFECT_MULTI_TARGET = 1,
 	EFFECT_STAT = 2,
 	EFFECT_RES = 4
+};
+
+enum EItemSlot {
+	HEAD,
+	NECK,
+	CHEST,
+	HANDS,
+	BELT,
+	LEGS,
+	FEET,
+	FINGER1,
+	FINGER2,
+	WEAPON_MAIN,
+	WEAPON_OFF,
+	RELIC
+};
+
+enum EItemRarity {
+	COMMON,
+	RARE,
+	EPIC,
+	LEGENDARY,
+	GODLIKE,
+	UNIQUE
 };
 
 struct grid_node {
