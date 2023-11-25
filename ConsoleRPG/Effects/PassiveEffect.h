@@ -20,9 +20,9 @@ public:
 public:
 
 	Character* _instigator;
-	vector<Character*> _team1;
-	vector<Character*> _team2;
-	vector<Character*> _targets;
+	vector<weak_ptr<Character>> _team1;
+	vector<weak_ptr<Character>> _team2;
+	vector<weak_ptr<Character>> _targets;
 
 protected:
 	const EEffectEvent _on_event;

@@ -285,7 +285,7 @@ void CombatManager::ApplyEffectsOnEvent(EEffectEvent on_event) {
 	}
 }
 
-void CombatManager::ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets) {
+void CombatManager::ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
 	for (const auto& passive : instigator->GetPassives()) {
 		if (passive->GetOnEvent() == on_event) {
 			passive->_instigator = instigator;
@@ -389,11 +389,11 @@ void CombatManager::OnCycleEnd() {
 
 
 // public
-void CombatManager::OnCastBegin(Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets) {
+void CombatManager::OnCastBegin(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
 	ApplyPassiveEffects(EEffectEvent::ON_CAST_BEGIN, instigator, team1, team2, targets);
 }
 
-void CombatManager::OnCastEnd(Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets) {
+void CombatManager::OnCastEnd(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
 	ApplyPassiveEffects(EEffectEvent::ON_CAST_END, instigator, team1, team2, targets);
 }
 ///////

@@ -66,8 +66,8 @@ public:
 	void ResetCombatVariables();
 
 
-	void OnCastBegin(Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets);
-	void OnCastEnd(Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets);
+	void OnCastBegin(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
+	void OnCastEnd(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
 
 private:
 
@@ -95,7 +95,7 @@ private:
 
 	void ApplyEffectsOnEvent(EEffectEvent on_event);
 
-	void ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets);
+	void ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
 
 	//=====  EVENTS ===== //
 	///////////////////////

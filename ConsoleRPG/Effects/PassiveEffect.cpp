@@ -26,10 +26,10 @@ shared_ptr<PassiveEffect> PassiveEffect::CreatePassive(EEffectID id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void VampiricTouch::Apply() {
 	for (auto& target : _targets) {
-		float value = _value * target->GetHealth().GetMax();
-		target->GetHealth().UpdateActual(-value, target);
-		target->AddEffectId(_ID);
-		_instigator->GetHealth().UpdateActual(value, target);
+		float value = _value * target.lock()->GetHealth().GetMax();
+		target.lock()->GetHealth().UpdateActual(-value, target.lock().get());
+		target.lock()->AddEffectId(_ID);
+		_instigator->GetHealth().UpdateActual(value, _instigator);
 	}
 }
 
