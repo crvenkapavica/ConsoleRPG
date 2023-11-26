@@ -309,7 +309,7 @@ enum EStructFlags {
 	EFFECT_RES = 4
 };
 
-enum EItemSlot {
+enum class EItemSlot {
 	HEAD,
 	NECK,
 	CHEST,
@@ -324,7 +324,7 @@ enum EItemSlot {
 	RELIC
 };
 
-enum EItemRarity {
+enum class EItemRarity {
 	COMMON,
 	RARE,
 	EPIC,

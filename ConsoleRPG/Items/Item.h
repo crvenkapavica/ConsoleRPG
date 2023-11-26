@@ -12,7 +12,7 @@ public:
 	inline const std::unique_ptr<PassiveEffect> GetPassiveEffect() const { return _passive_effect; }
 
 protected:
-
+	
 
 	int			_item_level;
 
