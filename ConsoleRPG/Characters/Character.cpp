@@ -112,6 +112,7 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 			}
 		}
 	}
+
 	/*
 	int idx = 0;
 	for (auto& _attribute : _stat_per_attribute) {

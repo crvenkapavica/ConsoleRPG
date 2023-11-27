@@ -44,6 +44,9 @@ class Character;
 #define NUM_PLYR_CLASSES 1
 #define NUM_ENEMY_CLASSES 1
 
+#define ITEM_TYPES 6
+#define ITEM_RARITIES 6
+
 #define ANSI_COLOR_RESET		"\x1b[0m"
 #define ANSI_COLOR_BOLD			"\033[1m"
 #define ANSI_COLOR_UNDERLINE	"\033[4m"
@@ -310,18 +313,37 @@ enum EStructFlags {
 };
 
 enum class EItemSlot {
-	HEAD,
-	NECK,
+	NONE = -1,
+	HEAD = 0,
 	CHEST,
 	HANDS,
 	BELT,
 	LEGS,
 	FEET,
+	NECK = 10,
 	FINGER1,
 	FINGER2,
-	WEAPON_MAIN,
+	WEAPON_MAIN = 20,
 	WEAPON_OFF,
-	RELIC
+	RELIC = 30
+};
+
+enum class EWeaponType {
+	NONE = -1,
+	STAFF = 0,
+	BOW,
+	FIRST_2H = BOW,
+	AXE_2H,
+	MACE_2H,
+	SWORD_2H,
+	LAST_2H = SWORD_2H,
+	AXE_1H,
+	FIRST_1H = AXE_1H,
+	MACE_1H,
+	SWORD_1H,
+	DAGGER,
+	SHIELD,
+	LAST_1H = SHIELD
 };
 
 enum class EItemRarity {
@@ -331,6 +353,15 @@ enum class EItemRarity {
 	LEGENDARY,
 	GODLIKE,
 	UNIQUE
+};
+
+enum class EItemType {
+	CONSUMABLE = 2,
+	SCROLL = 6,
+	ARMOR = 15,
+	JEWLERY = 22,
+	WEAPON = 28,
+	RELIC = 45
 };
 
 struct grid_node {

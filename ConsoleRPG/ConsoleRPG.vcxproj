@@ -138,6 +138,7 @@
     <ClCompile Include="Effects\Effect.cpp" />
     <ClCompile Include="Characters\EnemyCharacter.cpp" />
     <ClCompile Include="GameplayStatics.cpp" />
+    <ClCompile Include="Inventory\Item.cpp" />
     <ClCompile Include="MapGenerator\MapGenerator.cpp" />
     <ClCompile Include="Effects\PassiveEffect.cpp" />
     <ClCompile Include="Characters\PlayerCharacter.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Effects\EffectStructs.h" />
     <ClInclude Include="Characters\EnemyCharacter.h" />
     <ClInclude Include="GameplayStatics.h" />
+    <ClInclude Include="Inventory\Item.h" />
     <ClInclude Include="MapGenerator\MapGenerator.h" />
     <ClInclude Include="Effects\PassiveEffect.h" />
     <ClInclude Include="Characters\PlayerCharacter.h" />

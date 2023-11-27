@@ -81,6 +81,9 @@
     <ClCompile Include="Effects\ActiveEffect.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="Inventory\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Characters\Character.h">
@@ -132,6 +135,9 @@
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Characters\CharacterData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory\Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
