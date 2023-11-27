@@ -1,7 +1,6 @@
 #include "Item.h"
 #include "../Effects/ActiveEffect.h"
 #include "../Effects/PassiveEffect.h"
-#include "../Characters/PlayerCharacter.h"
 
 std::vector<pair<EItemType, double>> DropTable_ItemType{
 	{EItemType::RELIC, 0.02},
@@ -21,8 +20,8 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 	{EItemRarity::COMMON, 1}
 };
 
-Item::Item(ItemInfo& item_info)
-	: _item_info(item_info)
+Item::Item(ItemInfo item_info)
+	: _item_info(move(item_info))
 {}
 
 std::vector<std::shared_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
@@ -40,7 +39,7 @@ std::vector<std::shared_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player
 			int rnd = std::rand() % 1000;
 			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel() / 2;
 			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
-				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
+				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind().GetActual(), DropTable_ItemType[i].first));
 				type_limit[i].first++;
 				power_lvl -= weight;
 				continue;
@@ -57,12 +56,12 @@ std::vector<std::shared_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player
 
 std::shared_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType item_type) {
 
-	int n_affixes;
-	EItemRarity item_rarity;
+	int n_affixes = 0;
+	EItemRarity item_rarity = EItemRarity::COMMON;
 
 	int rnd = std::rand() % 100000;
 	for (int i = 0; i < ITEM_RARITIES; i++) {
-		int chance = DropTable_ItemRarity[i].second + DropTable_ItemRarity[i].second * mf_bonus * 100000;
+		int chance = static_cast<int>(DropTable_ItemRarity[i].second + DropTable_ItemRarity[i].second * mf_bonus * 100000);
 		if (rnd <= chance) {
 			item_rarity = DropTable_ItemRarity[i].first;
 			n_affixes = ITEM_RARITIES - 1 - i;
@@ -70,40 +69,43 @@ std::shared_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 		}
 	}
 
-	int b_Ilvl = player_lvl * 8 + 10;
-	b_Ilvl += n_affixes * 0.05;
-	int min_Ilvl = b_Ilvl - b_Ilvl * 0.15;
-	int max_Ilvl = b_Ilvl + b_Ilvl * 0.15;
+	int b_Ilvl = player_lvl * 8;
+	b_Ilvl += static_cast<int>(n_affixes * 0.10);
+	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
+	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
+	int item_lvl = std::rand() % (max_Ilvl - min_Ilvl) + min_Ilvl;
 
-	ItemInfo item_info = GenerateItemInfo(item_type, item_rarity)
+	ItemInfo item_info = GenerateItemInfo(item_lvl, item_type, item_rarity);
 
-	return make_shared<Item>(item_info);
+	return make_shared<Item>(move(item_info));
 }
 
-Item::ItemInfo Item::GenerateItemInfo(EItemType item_type, EItemRarity item_rarity) {
+Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {
 	ItemInfo item_info;
-	item_info._item_name = "PLACEHOLDER ITEM NAME"; // TODO IMPLEMENT
+	item_info._lvl = item_lvl;
+	item_info._name = "PLACEHOLDER ITEM NAME"; // TODO IMPLEMENT
 	item_info._item_rarity = item_rarity;
 	item_info._weapon_type = EWeaponType::NONE;
 
+	int rnd;
 	switch (item_type) {
 	case EItemType::CONSUMABLE:
 	case EItemType::SCROLL:
 		item_info._item_slot = EItemSlot::NONE;
 		break;
 	case EItemType::ARMOR:
-		int rnd = std::rand() % 6;
+		rnd = std::rand() % 6;
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		break;
 	case EItemType::JEWLERY:
-		int rnd = std::rand() % 3 + 10;
+		rnd = std::rand() % 3 + 10;
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		break;
 	case EItemType::WEAPON:
-		int rnd = std::rand() % 2 + 20;
+		rnd = std::rand() % 2 + 20;
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		if (item_info._item_slot == EItemSlot::WEAPON_MAIN) 
-			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H;
+			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H);
 		else 
 			rnd = std::rand() % static_cast<int>(EWeaponType::LAST_2H);
 		item_info._weapon_type = static_cast<EWeaponType>(rnd);
@@ -112,5 +114,69 @@ Item::ItemInfo Item::GenerateItemInfo(EItemType item_type, EItemRarity item_rari
 		item_info._item_slot = EItemSlot::RELIC;
 		break;
 	default:
+		break;
+	}
+
+	CalcItemDamage(item_lvl, item_info._weapon_type, item_info._dmg_min, item_info._dmg_max);
+	CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
+
+	return item_info;
+}
+
+void Item::CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg) {
+
+	switch (weapon_type) {
+	case EWeaponType::AXE_1H:
+	case EWeaponType::MACE_1H:
+	case EWeaponType::SWORD_1H:
+		min_dmg = static_cast<int>(item_lvl * 3 - 5); // instead of 5 add a percentage of base min_dmg
+		max_dmg = static_cast<int>(item_lvl * 3 + 5); // instead of 5 add a percentage of base max_dmg
+		return;
+	case EWeaponType::DAGGER:
+		min_dmg = static_cast<int>(item_lvl * 2 - 3); // add percentage
+		max_dmg = static_cast<int>(item_lvl * 2 - 3); // add percentage
+		return;
+	case EWeaponType::AXE_2H:
+	case EWeaponType::MACE_2H:
+	case EWeaponType::SWORD_2H:
+		min_dmg = static_cast<int>(item_lvl * 5.5 - 10); //add percentage
+		max_dmg = static_cast<int>(item_lvl * 5.5 + 10); // add percentage
+		return;
+	case EWeaponType::BOW:
+		min_dmg = static_cast<int>(item_lvl * 4.2 - 6); //add percentage
+		max_dmg = static_cast<int>(item_lvl * 4.2 + 6); //add percentage
+		return;
+	case EWeaponType::STAFF:
+		min_dmg = static_cast<int>(item_lvl * 5 - 3); // add percentage
+		max_dmg = static_cast<int>(item_lvl * 5 + 3); // add percentage
+		return;
+	default:
+		return;
 	}
 }
+
+void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
+
+	switch (item_slot) {
+	case EItemSlot::HEAD:
+		armor = static_cast<int>(item_lvl * 0.3 + 50);
+		return;
+	case EItemSlot::CHEST:
+		armor = static_cast<int>(item_lvl * 0.4 + 75);
+		return;
+	case EItemSlot::HANDS:
+		armor = static_cast<int>(item_lvl * 0.2 + 18);
+		return;
+	case EItemSlot::BELT:
+		armor = static_cast<int>(item_lvl * 0.15 + 8);
+		return;
+	case EItemSlot::LEGS:
+		armor = static_cast<int>(item_lvl * 0.3 * 35);
+		return;
+	case EItemSlot::FEET:
+		armor = static_cast<int>(item_lvl * 0.2 + 12);
+		return;
+	default:
+		return;
+	}
+} 
