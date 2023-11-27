@@ -30,6 +30,8 @@ public:
 
 protected:
 
+
+
 	Stat _magic_find;
 	Stat _light_radius;
 

@@ -24,8 +24,8 @@ Item::Item(ItemInfo item_info)
 	: _item_info(move(item_info))
 {}
 
-std::vector<std::shared_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
-	std::vector<shared_ptr<Item>> loot;
+std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
+	std::vector<unique_ptr<Item>> loot;
 	std::vector<pair<int, int>> type_limit = {
 		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
 	};
@@ -54,7 +54,7 @@ std::vector<std::shared_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player
 	return loot;
 }
 
-std::shared_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType item_type) {
+std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType item_type) {
 
 	int n_affixes = 0;
 	EItemRarity item_rarity = EItemRarity::COMMON;
@@ -77,7 +77,7 @@ std::shared_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 
 	ItemInfo item_info = GenerateItemInfo(item_lvl, item_type, item_rarity);
 
-	return make_shared<Item>(move(item_info));
+	return make_unique<Item>(move(item_info));
 }
 
 Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {

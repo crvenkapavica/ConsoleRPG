@@ -10,6 +10,7 @@
 #include "Resistances.h"
 #include "Effects/EffectStructs.h"
 #include "Effects/ActiveEffect.h"
+#include "Inventory/Item.h"
 
 weak_ptr<PlayerCharacter> GameplayStatics::_player;
 vector<PlayerCharacter*> GameplayStatics::_player_characters;
@@ -122,12 +123,22 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 		DestroyDeadCharacters();
 		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return wptr.expired(); })))
 			_combat_manager->GetTurnCharacter().lock()->TakeTurn();
+			//_combat_manager->BeginTurn(_combat_manager->GetTurnCharacter().lock().get());
 	}
 
 	_combat_manager->ResetCombatVariables();
 	ResetCombatVariables();
 
 	system("cls");
+
+	std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 50);
+
+	for (auto& item : items) {
+		cout << GetEnumString(item->_item_info._item_slot) << "\t" << GetEnumString(item->_item_info._item_rarity) << "\t" << GetEnumString(item->_item_info._item_type) << "\t" << GetEnumString(item->_item_info._weapon_type) << "\n";
+		cout << "Dmg min: " << item->_item_info._dmg_min << "\tDmg max: " << item->_item_info._dmg_max << "\tArmor: " << item->_item_info._armor << "\tIlvl: " << item->_item_info._lvl << "\n\n";
+	}
+
+	int x; cin >> x;
 }
 
 void GameplayStatics::ExitCombatMode() {
@@ -713,5 +724,104 @@ std::string GameplayStatics::GetEnumString(ECharacterClass _enum) {
 			return "DEFAULT";
 			break;
 		}
+	}
+}
+
+std::string GameplayStatics::GetEnumString(EItemSlot _enum) {
+	switch (_enum) {
+	case EItemSlot::NONE:
+		return "None";
+	case EItemSlot::HEAD:
+		return "Head";
+	case EItemSlot::CHEST:
+		return "Chest";
+	case EItemSlot::HANDS:
+		return "Hands";
+	case EItemSlot::BELT:
+		return "Belt";
+	case EItemSlot::LEGS:
+		return "Legs";
+	case EItemSlot::FEET:
+		return "Feet";
+	case EItemSlot::NECK:
+		return "Neck";
+	case EItemSlot::FINGER1:
+	case EItemSlot::FINGER2:
+		return "Finger";
+	case EItemSlot::WEAPON_MAIN:
+		return "Weapon Main";
+	case EItemSlot::WEAPON_OFF:
+		return "Weapon Off";
+	case EItemSlot::RELIC:
+		return "Relic";
+	default:
+		return "";
+	}
+}
+
+std::string GameplayStatics::GetEnumString(EWeaponType _enum) {
+	switch (_enum) {
+	case EWeaponType::NONE:
+		return "None";
+	case EWeaponType::STAFF:
+		return "Staff";
+	case EWeaponType::BOW:
+		return "Bow";
+	case EWeaponType::AXE_2H:
+		return "2H Axe";
+	case EWeaponType::MACE_2H:
+		return "2H Mace";
+	case EWeaponType::SWORD_2H:
+		return "2H Sword";
+	case EWeaponType::AXE_1H:
+		return "1H Axe";
+	case EWeaponType::MACE_1H:
+		return "1H Maxe";
+	case EWeaponType::SWORD_1H:
+		return "1H Sword";
+	case EWeaponType::DAGGER:
+		return "Dagger";
+	case EWeaponType::SHIELD:
+		return "Shield";
+	default:
+		return "";
+	}
+}
+
+std::string GameplayStatics::GetEnumString(EItemRarity _enum) {
+	switch (_enum) {
+	case EItemRarity::COMMON:
+		return "Common";
+	case EItemRarity::RARE:
+		return "Rare";
+	case EItemRarity::EPIC:
+		return "Epic";
+	case EItemRarity::LEGENDARY:
+		return "Legendary";
+	case EItemRarity::GODLIKE:
+		return "GODLIKE";
+	case EItemRarity::UNIQUE:
+		return "UNIQUE";
+	default:
+		return "";
+	}
+}
+
+std::string GameplayStatics::GetEnumString(EItemType _enum) {
+	switch (_enum) {
+	case EItemType::CONSUMABLE:
+		return "Consumable";
+	case EItemType::SCROLL:
+		return "Scroll";
+	case EItemType::ARMOR:
+		return "Armor";
+	case EItemType::JEWLERY:
+		return "Jewlery";
+	case EItemType::WEAPON:
+		return "Weapon";
+	case EItemType::RELIC:
+		return "Relic";
+	default:
+		return "";
 	}
 }

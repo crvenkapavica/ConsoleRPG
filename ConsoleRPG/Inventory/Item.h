@@ -20,14 +20,14 @@ public:
 		EItemType		_item_type;
 		EWeaponType		_weapon_type;
 
-		std::unique_ptr<ActiveEffect> _active_effect;
-		std::unique_ptr<PassiveEffect> _passive_effect;
+		//std::unique_ptr<ActiveEffect> _active_effect;
+		//std::unique_ptr<PassiveEffect> _passive_effect;
 	};
 
 	Item(ItemInfo item_info);
 
-	static std::vector<std::shared_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
-	static std::shared_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
+	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
+	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
 
 
 public:

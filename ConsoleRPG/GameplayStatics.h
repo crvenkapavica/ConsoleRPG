@@ -114,6 +114,10 @@ public:
 	static std::string GetEnumString(EDamageType _enum);
 	static std::string GetTypeString(int _enum);
 	static std::string GetEnumString(ECharacterClass _enum);
+	static std::string GetEnumString(EItemSlot _enum);
+	static std::string GetEnumString(EWeaponType _enum);
+	static std::string GetEnumString(EItemRarity _enum);
+	static std::string GetEnumString(EItemType _enum);
 
 private:
 	GameplayStatics() = delete;
