@@ -37,12 +37,12 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> 
 			if (i == ITEM_TYPES) return loot;
 
 			int rnd = std::rand() % 1000;
-			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel() / 2;
-			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
+			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
+			if (power_lvl - weight >= 0 && type_limit[i].first != type_limit[i].second && rnd <= DropTable_ItemType[i].second * 1000) {
 				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind().GetActual(), DropTable_ItemType[i].first));
 				type_limit[i].first++;
 				power_lvl -= weight;
-				continue;
+				break;
 			}
 			else if (power_lvl - weight < 0) {
 				return loot;
@@ -84,6 +84,7 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	ItemInfo item_info;
 	item_info._lvl = item_lvl;
 	item_info._name = "PLACEHOLDER ITEM NAME"; // TODO IMPLEMENT
+	item_info._item_type = item_type;
 	item_info._item_rarity = item_rarity;
 	item_info._weapon_type = EWeaponType::NONE;
 
@@ -104,10 +105,10 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	case EItemType::WEAPON:
 		rnd = std::rand() % 2 + 20;
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
-		if (item_info._item_slot == EItemSlot::WEAPON_MAIN) 
-			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H);
+		if (item_info._item_slot == EItemSlot::WEAPON_MAIN)
+			rnd = std::rand() % static_cast<int>(EWeaponType::LAST);
 		else 
-			rnd = std::rand() % static_cast<int>(EWeaponType::LAST_2H);
+			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H);
 		item_info._weapon_type = static_cast<EWeaponType>(rnd);
 		break;
 	case EItemType::RELIC:
@@ -129,26 +130,26 @@ void Item::CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dm
 	case EWeaponType::AXE_1H:
 	case EWeaponType::MACE_1H:
 	case EWeaponType::SWORD_1H:
-		min_dmg = static_cast<int>(item_lvl * 3 - 5); // instead of 5 add a percentage of base min_dmg
-		max_dmg = static_cast<int>(item_lvl * 3 + 5); // instead of 5 add a percentage of base max_dmg
+		min_dmg = static_cast<int>(item_lvl * 1.5 - 0.15 * item_lvl); 
+		max_dmg = static_cast<int>(item_lvl * 1.5 + 0.15 * item_lvl); 
 		return;
 	case EWeaponType::DAGGER:
-		min_dmg = static_cast<int>(item_lvl * 2 - 3); // add percentage
-		max_dmg = static_cast<int>(item_lvl * 2 - 3); // add percentage
+		min_dmg = static_cast<int>(item_lvl * 1.2 - 0.12 * item_lvl); 
+		max_dmg = static_cast<int>(item_lvl * 1.2 + 0.12 * item_lvl); 
 		return;
 	case EWeaponType::AXE_2H:
 	case EWeaponType::MACE_2H:
 	case EWeaponType::SWORD_2H:
-		min_dmg = static_cast<int>(item_lvl * 5.5 - 10); //add percentage
-		max_dmg = static_cast<int>(item_lvl * 5.5 + 10); // add percentage
+		min_dmg = static_cast<int>(item_lvl * 2.8 - 0.28 * item_lvl); 
+		max_dmg = static_cast<int>(item_lvl * 2.8 + 0.28 * item_lvl); 
 		return;
 	case EWeaponType::BOW:
-		min_dmg = static_cast<int>(item_lvl * 4.2 - 6); //add percentage
-		max_dmg = static_cast<int>(item_lvl * 4.2 + 6); //add percentage
+		min_dmg = static_cast<int>(item_lvl * 2.2 - 0.22 * item_lvl); 
+		max_dmg = static_cast<int>(item_lvl * 2.2 + 0.22 * item_lvl); 
 		return;
 	case EWeaponType::STAFF:
-		min_dmg = static_cast<int>(item_lvl * 5 - 3); // add percentage
-		max_dmg = static_cast<int>(item_lvl * 5 + 3); // add percentage
+		min_dmg = static_cast<int>(item_lvl * 2.5 - 0.25 * item_lvl); 
+		max_dmg = static_cast<int>(item_lvl * 2.5 + 0.25 * item_lvl); 
 		return;
 	default:
 		return;

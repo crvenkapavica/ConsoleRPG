@@ -27,7 +27,9 @@ void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vec
 
 	OnCombatBegin();
 	OnCycleBegin();
+}
 
+void CombatManager::StartCombat() {
 	BeginTurn(_turn_table[0].lock().get());
 }
 
@@ -40,7 +42,6 @@ void CombatManager::AddCombatEffect(unique_ptr<CombatEffect> combat_effect) {
 void CombatManager::BeginTurn(Character* character) {
 	character->SetIsOnTurn(true);
 	OnTurnBegin();
-	//character->TakeTurn(); // za ve comment kad je v GS while loopu take turn, videti posle
 }
 
 void CombatManager::EndTurn(Character* character) {

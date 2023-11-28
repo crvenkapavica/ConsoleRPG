@@ -38,6 +38,8 @@ public:
 
 	void SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vector<weak_ptr<EnemyCharacter>> characters_2);
 
+	void StartCombat();
+
 	void AddCombatEffect(unique_ptr<CombatEffect> combat_effect);
 
 	void BeginTurn(Character* character);

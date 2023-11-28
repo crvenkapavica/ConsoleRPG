@@ -29,7 +29,6 @@ public:
 	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
 	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
 
-
 public:
 
 	ItemInfo _item_info;

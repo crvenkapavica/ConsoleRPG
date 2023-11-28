@@ -14,8 +14,8 @@ CharacterData::CharacterData(ECharacterClass character_class)
 CharacterData::PlayerStats CharacterData::InitPlayerCharacterStats(ECharacterClass player_class) {
 	vector<PlayerStats> player_character_stats{
 //		               class			   health  essence    stamina      armor        AS      dmg_melee    dmg_rng    crit_chnc    crit_dmg   s_crit_chnc  s_crit_dmg   magic_f  radius
-		{ ECharacterClass::BARBARIAN,		227.f,	100.f,		40.f,		2.2f,		4.2f,		4.2f,		1.f,		0.08f,		225.f,		0.035f,		140.f,		3.f,	4.f },
-		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.4f,		4.2f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f,		3.f,	4.f }
+		{ ECharacterClass::BARBARIAN,		227.f,	100.f,		40.f,		2.2f,		4.2f,		4.2f,		1.f,		0.08f,		225.f,		0.035f,		140.f,		0.1f,	4.f },
+		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.4f,		4.2f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f,		0.1f,	4.f }
 	};
 
 	for (const auto& stats : player_character_stats)

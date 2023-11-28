@@ -330,9 +330,9 @@ enum class EItemSlot {
 
 enum class EWeaponType {
 	NONE = -1,
-	STAFF = 0,
-	BOW,
+	BOW = 0,
 	FIRST_2H = BOW,
+	STAFF,		
 	AXE_2H,
 	MACE_2H,
 	SWORD_2H,
@@ -343,7 +343,8 @@ enum class EWeaponType {
 	SWORD_1H,
 	DAGGER,
 	SHIELD,
-	LAST_1H = SHIELD
+	LAST_1H = SHIELD,
+	LAST = SHIELD
 };
 
 enum class EItemRarity {

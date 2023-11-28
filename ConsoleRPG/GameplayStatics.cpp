@@ -118,12 +118,13 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 		_enemy_characters.push_back(enemy.lock().get());
 
 	_combat_manager->SetTurns(_players, _enemies);
+
+	//_combat_manager->StartCombat();
 	
 	while (_player.lock()->IsInCombat()) {
 		DestroyDeadCharacters();
 		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return wptr.expired(); })))
 			_combat_manager->GetTurnCharacter().lock()->TakeTurn();
-			//_combat_manager->BeginTurn(_combat_manager->GetTurnCharacter().lock().get());
 	}
 
 	_combat_manager->ResetCombatVariables();
@@ -131,14 +132,12 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 
 	system("cls");
 
-	std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 50);
-
-	for (auto& item : items) {
-		cout << GetEnumString(item->_item_info._item_slot) << "\t" << GetEnumString(item->_item_info._item_rarity) << "\t" << GetEnumString(item->_item_info._item_type) << "\t" << GetEnumString(item->_item_info._weapon_type) << "\n";
-		cout << "Dmg min: " << item->_item_info._dmg_min << "\tDmg max: " << item->_item_info._dmg_max << "\tArmor: " << item->_item_info._armor << "\tIlvl: " << item->_item_info._lvl << "\n\n";
-	}
-
-	int x; cin >> x;
+	//std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 195);
+	//for (auto& item : items) {
+	//	cout << GetEnumString(item->_item_info._item_slot) << "\t" << GetEnumString(item->_item_info._item_rarity) << "\t" << GetEnumString(item->_item_info._item_type) << "\t" << GetEnumString(item->_item_info._weapon_type) << "\n";
+	//	cout << "Dmg min: " << item->_item_info._dmg_min << "\tDmg max: " << item->_item_info._dmg_max << "\tArmor: " << item->_item_info._armor << "\tIlvl: " << item->_item_info._lvl << "\n\n";
+	//}
+	//int x; cin >> x;
 }
 
 void GameplayStatics::ExitCombatMode() {
