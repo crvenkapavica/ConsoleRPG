@@ -29,8 +29,16 @@ void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vec
 	OnCycleBegin();
 }
 
-void CombatManager::StartCombat() {
+void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
+
 	BeginTurn(_turn_table[0].lock().get());
+
+	while (player.lock()->IsInCombat()) {
+		DestroyDeadCharacters();
+		if (!(all_of(_enemy_characters.begin(), _enemy_characters.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return wptr.expired(); })))
+			GetTurnCharacter().lock()->TakeTurn();
+	}
+	ResetCombatVariables();
 }
 
 void CombatManager::AddCombatEffect(unique_ptr<CombatEffect> combat_effect) {
@@ -94,18 +102,6 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_CURSOR_UP(1) << ANSI_COLOR_BROWN_LIGHT << ANSI_CURSOR_RIGHT(85) << "^" << endl;
 	cout << ANSI_COLOR_BROWN_LIGHT << ANSI_CURSOR_RIGHT(85) << "^" << endl;
 	cout << ANSI_COLOR_RESET;
-}
-
-int CombatManager::GetDeadIdx() {
-
-	for (int i = 0; i < _enemy_characters.size(); i++)
-		if (!_enemy_characters[i].expired() && !_enemy_characters[i].lock()->IsAlive()) {
-			if (_enemy_characters[i].lock() == GetTurnCharacter().lock())
-				bDeadOnTurn = true;
-			return i;
-		}
-
-	return -1;
 }
 
 void CombatManager::ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveEffect> effect, float& total, bool isOnApply) {
@@ -296,6 +292,24 @@ void CombatManager::ApplyPassiveEffects(EEffectEvent on_event, Character* instig
 			passive->Apply();
 		}
 	}
+}
+
+void CombatManager::DestroyDeadCharacters() {
+	int idx = GetDeadIdx();
+	if (idx != -1) GameplayStatics::KillEnemy(idx);
+	RemoveDeadCharacters();
+}
+
+int CombatManager::GetDeadIdx() {
+
+	for (int i = 0; i < _enemy_characters.size(); i++)
+		if (!_enemy_characters[i].expired() && !_enemy_characters[i].lock()->IsAlive()) {
+			if (_enemy_characters[i].lock() == GetTurnCharacter().lock())
+				bDeadOnTurn = true;
+			return i;
+		}
+
+	return -1;
 }
 
 void CombatManager::RemoveDeadCharacters() {

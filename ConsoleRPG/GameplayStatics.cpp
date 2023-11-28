@@ -118,20 +118,22 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 		_enemy_characters.push_back(enemy.lock().get());
 
 	_combat_manager->SetTurns(_players, _enemies);
+	_combat_manager->StartCombat(_player);
 
-	//_combat_manager->StartCombat();
-	
-	while (_player.lock()->IsInCombat()) {
-		DestroyDeadCharacters();
-		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return wptr.expired(); })))
-			_combat_manager->GetTurnCharacter().lock()->TakeTurn();
-	}
-
-	_combat_manager->ResetCombatVariables();
 	ResetCombatVariables();
-
 	system("cls");
 
+	//Give / Handle Combat(player) Experience
+	//GenerateLoot
+	//Add loot to inventory
+	//DIsplay message how much xp has been gained and which items received
+	//Offer an option to inspect and equip/uneqip items
+	//Continue to map
+
+
+			// OPTIONALLY
+				// -> try to move Map Loop from MapGenerator to GameplayStatics, if that makes sense.
+	
 	//std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 195);
 	//for (auto& item : items) {
 	//	cout << GetEnumString(item->_item_info._item_slot) << "\t" << GetEnumString(item->_item_info._item_rarity) << "\t" << GetEnumString(item->_item_info._item_type) << "\t" << GetEnumString(item->_item_info._weapon_type) << "\n";
@@ -142,7 +144,6 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 
 void GameplayStatics::ExitCombatMode() {
 	_player.lock()->SetIsInCombat(false);
-	//_combat_manager->GetTurnCharacter().lock()->EndTurn();
 }
 
 void GameplayStatics::ResetCombatVariables() {
@@ -328,14 +329,6 @@ void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpe
 		effect_idx = DisplaySelectedSpellsEffects(spell_idx, length, spells);
 	} while (_menu->GetBack());
 
-	//spell_input++;
-	//for (auto& spell : _combat_manager->GetTurnCharacter()->GetSpells()) {
-	//	if (--spell_input) continue;
-	//	spell_id = spell.second->GetID();
-	//	spell_type = spell.second->GetEffects()[spell_input]->GetSpellType();
-	//	break;
-	//}
-
 	_menu->ANSI_CURSOR_DOWN_N(max(static_cast<int>(spells.size()), 4));
 	_menu->Clear(max(static_cast<int>(spells.size()), 4));
 }
@@ -362,14 +355,13 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, i
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
 	}
 
-	// This is current workaround for not throwing when wrong team alias is the input
-	// Has to be fixed when we have better targeting system
-	// In essence, this is not working as intended, just prevents throwing
-	/////////////////////////////////////////////////////////////////////////////
-	//if (p_idx.empty()) p_idx = e_idx;
-	//if (e_idx.empty()) e_idx = p_idx;
-	/////////////////////////////////////////////////////////////////////////////
-
+	 /*This is current workaround for not throwing when wrong team alias is the input
+	 Has to be fixed when we have better targeting system
+	 In essence, this is not working as intended, just prevents throwing*/
+	///////////////////////////////////////////////////////////////////////////
+	if (p_idx.empty()) p_idx = e_idx;
+	if (e_idx.empty()) e_idx = p_idx;
+	///////////////////////////////////////////////////////////////////////////
 
 	_spell_manager->CastSpell(spell_idx, _combat_manager->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx, effect_idx);
 }
@@ -492,20 +484,10 @@ void GameplayStatics::ExtractLinesFromStringtream(OUT vector<string>& lines, con
 }
 
 vector<weak_ptr<PlayerCharacter>> GameplayStatics::GetPlayerCharacters() {
-	//vector<PlayerCharacter*> v;
-	//for (auto& player : _player_characters)
-	//	if (player->IsAlive())
-	//		v.push_back(player);
-	//return v;
 	return _players;
 }
 
 vector<weak_ptr<EnemyCharacter>> GameplayStatics::GetEnemyCharacters() {
-	//vector<EnemyCharacter*> v;
-	//for (auto& enemy : _enemy_characters)
-	//	if (enemy->IsAlive())
-	//		v.push_back(enemy);
-	//return v;
 	return _enemies;
 }
 
@@ -549,13 +531,6 @@ void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Charact
 string GameplayStatics::GetAliasColor(char alias) {
 	if (UPPER(alias) >= 'A' && UPPER(alias) <= 'Z') return COLOR_ENEMY;
 	else return COLOR_PLAYER;
-}
-
-void GameplayStatics::DestroyDeadCharacters() {
-	int idx = _combat_manager->GetDeadIdx();
-	if (idx != -1) _map_generator->KillEnemy(idx);
-
-	_combat_manager->RemoveDeadCharacters();
 }
 
 void GameplayStatics::KillEnemy(int idx) {

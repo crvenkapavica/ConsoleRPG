@@ -38,7 +38,7 @@ public:
 
 	void SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vector<weak_ptr<EnemyCharacter>> characters_2);
 
-	void StartCombat();
+	void StartCombat(weak_ptr<PlayerCharacter> player);
 
 	void AddCombatEffect(unique_ptr<CombatEffect> combat_effect);
 
@@ -55,11 +55,9 @@ public:
 	// Gets the alias of the character currently on turn
 	inline char GetTurnAlias() { return _turn_table[_turn_index].lock()->GetAlias(); }
 
+	void DestroyDeadCharacters();
 
-	// ve sam za test
-	//-------------------
 	int GetDeadIdx();
-	//-------------------
 
 	void RemoveDeadCharacters();
 

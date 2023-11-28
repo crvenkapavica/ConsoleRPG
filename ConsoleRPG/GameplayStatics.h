@@ -73,8 +73,6 @@ public:
 
 	static string GetAliasColor(char alias);
 
-	static void DestroyDeadCharacters();
-
 	static void KillEnemy(int idx);
 
 	static stringstream& GetCombatLogStream() { return _combat_log; }
