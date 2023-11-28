@@ -38,15 +38,14 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> 
 
 			int rnd = std::rand() % 1000;
 			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
-			if (power_lvl - weight >= 0 && type_limit[i].first != type_limit[i].second && rnd <= DropTable_ItemType[i].second * 1000) {
+			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
 				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind().GetActual(), DropTable_ItemType[i].first));
 				type_limit[i].first++;
 				power_lvl -= weight;
 				break;
 			}
-			else if (power_lvl - weight < 0) {
-				return loot;
-			}
+			else if (power_lvl - weight < 0) return loot;
+
 			// no loot was rolled
 			if (i == ITEM_TYPES - 1) return loot;
 		}
