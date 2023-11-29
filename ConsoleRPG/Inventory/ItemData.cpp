@@ -17,12 +17,12 @@ ItemDatabase::ItemDataConstructor::ItemDataConstructor() {
 	_item_data.push_back({ EItemID::LeatherHood,	"Leather Hood",				EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	36,		78,		0,		0,		95,		0.f,	0,		false });
 	_item_data.push_back({ EItemID::RusticHelm,		"Rustic Helm",				EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	79,		153,	0,		0,		240,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::IronCasque,		"Iron Casque",				EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	154,	241,	0,		0,		460,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::HardColf,		"Hardened Colf",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	242,	389,	0,		0,		690,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::GoldDiadem,		"Golden Diadem",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	399,	445,	0,		0,		980,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::WarCasque,		"Warlord's Casque",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	446,	581,	0,		0,		1120,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::PhoCrown,		"Phoenix Crown",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	582,	696,	0,		0,		1430,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::CelDiadem,		"Celestial Diadem",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	697,	855,	0,		0,		1905,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::CrownCosmos,	"Crown of the Cosmos",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	856,	969,	0,		0,		2680,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::HardColf,		"Hardened Colf",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	242,	349,	0,		0,		690,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::GoldDiadem,		"Golden Diadem",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	350,	475,	0,		0,		1080,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::WarCasque,		"Warlord's Casque",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	476,	581,	0,		0,		1510,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::PhoCrown,		"Phoenix Crown",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	582,	696,	0,		0,		2280,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::CelDiadem,		"Celestial Diadem",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	697,	837,	0,		0,		3350,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::CrownCosmos,	"Crown of the Cosmos",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	838,	969,	0,		0,		4625,	0.f,	0,		false });
 	//weapons
 
 };
