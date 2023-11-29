@@ -324,18 +324,61 @@ enum class EItemID {
 	Scroll,
 
 	//armor
+	//head
 	ClothCap,
 	LeatherHood,
 	RusticHelm,
 	IronCasque,
 	HardColf,
-
 	GoldDiadem,
 	WarCasque,
 	PhoCrown,
 	CelDiadem,
 	CrownCosmos,
-
+	//Chest
+	ClothTunic,
+	PadVest,
+	StudLeather,
+	HardCuirass,
+	ScaleMail,
+	KnightPlate,
+	DraghideArm,
+	PhoMail,
+	CelAegis,
+	ArmAncient,
+	//Hands
+	ClothWraps,
+	StudGauntlets,
+	IronBracers,
+	ChainGloves,
+	SilvGauntlets,
+	KnightVambrace,
+	TitanGrasp,
+	PhoTalons,
+	CelHandwraps,
+	InfHandGrds,
+	//Belt
+	WovenSash,
+	LeatherBelt,
+	IronBuckBelt,
+	ReinfGirdle,
+	ChainLBelt,
+	PlatedWaist,
+	DragBelt,
+	PhoWaistwrap,
+	AncGirdle,
+	InfWaistguard,
+	//Legs
+	ThistTrous,
+	IronGreaves,
+	RunicTrBoots,
+	MoonLegg,
+	PhantStriders,
+	TempWalkers,
+	TitanMarch,
+	AbStrBoots,
+	PyrWarKilt,
+	CosmosGreaves
 
 	//jewl
 
