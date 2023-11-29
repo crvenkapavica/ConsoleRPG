@@ -94,39 +94,42 @@ void SendAltEnter() {
 //    cout << "----------------" << endl;  // To separate the outputs
 //}
 
+
+#include "Inventory/ItemData.h"
 int main() {
 
-    //Sleep(100);
-    //SendAltEnter();
 
-    vector<shared_ptr<PlayerCharacter>> player_characters;
+ //   //Sleep(100);
+ //   //SendAltEnter();
 
-    CharacterData barbarian_data(ECharacterClass::BARBARIAN);
-    auto player_main = make_shared<PlayerCharacter>(barbarian_data.GetPlayerData(), barbarian_data.GetPlayerAttributeData());
+ //   vector<shared_ptr<PlayerCharacter>> player_characters;
 
-    CharacterData warlock_data(ECharacterClass::WARLOCK);
-    auto player_warlock = make_shared<PlayerCharacter>(warlock_data.GetPlayerData(), warlock_data.GetPlayerAttributeData());
-    player_warlock->SetAlias('1');
+ //   CharacterData barbarian_data(ECharacterClass::BARBARIAN);
+ //   auto player_main = make_shared<PlayerCharacter>(barbarian_data.GetPlayerData(), barbarian_data.GetPlayerAttributeData());
 
-    player_characters = { player_main, player_warlock };
+ //   CharacterData warlock_data(ECharacterClass::WARLOCK);
+ //   auto player_warlock = make_shared<PlayerCharacter>(warlock_data.GetPlayerData(), warlock_data.GetPlayerAttributeData());
+ //   player_warlock->SetAlias('1');
 
-    SpellManager& spell_manager = SpellManager::GetInstance();
+ //   player_characters = { player_main, player_warlock };
 
-	spell_manager.CreateSpell(player_main.get(), ESpellID::FIREBALL, 0);
-	spell_manager.CreateSpell(player_main.get(), ESpellID::STONESKIN, 0);
-    spell_manager.CreateSpell(player_main.get(), ESpellID::ARCANE_INFUSION, 0);
-    spell_manager.CreateSpell(player_main.get(), ESpellID::BLOOD_RAIN, 0);
-    spell_manager.CreateSpell(player_main.get(), ESpellID::VISCOUS_ACID, 0);
-    spell_manager.CreateSpell(player_warlock.get(), ESpellID::STONESKIN, 0);
+ //   SpellManager& spell_manager = SpellManager::GetInstance();
 
-    //pasive
-    //spell_manager.CreatePassive(player_main.get(), EEffectID::VAMPIRIC_TOUCH);
+	//spell_manager.CreateSpell(player_main.get(), ESpellID::FIREBALL, 0);
+	//spell_manager.CreateSpell(player_main.get(), ESpellID::STONESKIN, 0);
+ //   spell_manager.CreateSpell(player_main.get(), ESpellID::ARCANE_INFUSION, 0);
+ //   spell_manager.CreateSpell(player_main.get(), ESpellID::BLOOD_RAIN, 0);
+ //   spell_manager.CreateSpell(player_main.get(), ESpellID::VISCOUS_ACID, 0);
+ //   spell_manager.CreateSpell(player_warlock.get(), ESpellID::STONESKIN, 0);
 
-    CombatManager& combat_manager = CombatManager::GetInstance();
-	ConsoleMenu menu;
-	MapGenerator map_generator;
+ //   //pasive
+ //   spell_manager.CreatePassive(player_main.get(), EEffectID::VAMPIRIC_TOUCH);
 
-	GameplayStatics::Initialize(player_characters, &spell_manager, &combat_manager, &map_generator, &menu);
+ //   CombatManager& combat_manager = CombatManager::GetInstance();
+	//ConsoleMenu menu;
+	//MapGenerator map_generator;
+
+	//GameplayStatics::Initialize(player_characters, &spell_manager, &combat_manager, &map_generator, &menu);
 }
 
 

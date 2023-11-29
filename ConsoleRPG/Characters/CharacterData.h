@@ -9,8 +9,6 @@ class CharacterData {
 
 public:
 
-	CharacterData(ECharacterClass character_class);
-
 	struct PlayerStats {
 
 		ECharacterClass	_class;
@@ -74,6 +72,8 @@ public:
 		Skill		_acrobatics; // odnosi se na preskakanje neksih prepreki na mapi i generalni movement (efekt skoci prek kamena, vise se kreci)
 		Skill		_pathfinding; // utjece na to dal mores mapu videti (pamti de je kaj na mapi i pamti mapu, morres videti mapu zbog toga skilla)
 	};
+
+	CharacterData(ECharacterClass character_class);
 
 protected:
 

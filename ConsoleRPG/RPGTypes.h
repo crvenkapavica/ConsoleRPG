@@ -312,6 +312,39 @@ enum EStructFlags {
 	EFFECT_RES = 4
 };
 
+enum class EItemID {
+	//consumables
+	HPotion,
+	EPotion,
+	FortElixir,
+	StrElixir,
+	AgiElixir,
+
+	//scrolls
+	Scroll,
+
+	//armor
+	ClothCap,
+	LeatherHood,
+	RusticHelm,
+	IronCasque,
+	HardColf,
+
+	GoldDiadem,
+	WarCasque,
+	PhoCrown,
+	CelDiadem,
+	CrownCosmos,
+
+
+	//jewl
+
+
+	//weapon
+
+	//relic
+};
+
 enum class EItemSlot {
 	NONE = -1,
 	HEAD = 0,

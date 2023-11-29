@@ -46,6 +46,12 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 // rarity = n_affixes
 // string base_name, ilvl-drop-range (int, int), item_ID
 
+
+//ITEMS
+//mace = min_max dmg skoro isti
+//sword = min_max dmg veliki range
+//axe = min_max dmg mali range
+
 Item::Item(ItemInfo item_info)
 	: _item_info(move(item_info))
 {}
@@ -92,7 +98,8 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 			n_affixes = ITEM_RARITIES - 1 - i;
 			break;
 		}
-	}
+	}473 - 647
+	 337 - 463
 
 	int b_Ilvl = player_lvl * 8;
 	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
@@ -108,7 +115,10 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {
 	ItemInfo item_info;
 	item_info._lvl = item_lvl;
+
 	item_info._name = "PLACEHOLDER ITEM NAME"; // TODO IMPLEMENT
+	if (item_rarity == EItemRarity::UNIQUE) item_info._name = "UNIQUE";
+
 	item_info._item_type = item_type;
 	item_info._item_rarity = item_rarity;
 	item_info._weapon_type = EWeaponType::NONE;

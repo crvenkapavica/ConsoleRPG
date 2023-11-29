@@ -4,6 +4,7 @@
 
 class ActiveEffect;
 class PassiveEffect;
+struct ItemData;
 
 class Item {
 public:
@@ -33,6 +34,7 @@ public:
 
 public:
 
+	//ItemData _item_data;
 	ItemInfo _item_info;
 
 private:

@@ -30,11 +30,12 @@ protected:
 
 private:
 	static struct PassiveMapConstructor {
-		PassiveMapConstructor() {
-			_passive_map[EEffectID::VAMPIRIC_TOUCH] = make_pair(EEffectEvent::ON_CAST_END, EEffectType::PASSIVE);
-		}
+		PassiveMapConstructor();
 	} _passive_map_constructor;
 };
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class VampiricTouch : public PassiveEffect {
 public:

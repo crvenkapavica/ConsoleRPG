@@ -2,6 +2,10 @@
 #include "../GameplayStatics.h"
 
 unordered_map<EEffectID, pair<EEffectEvent, EEffectType>> PassiveEffect::_passive_map;
+
+PassiveEffect::PassiveMapConstructor::PassiveMapConstructor() {
+	_passive_map[EEffectID::VAMPIRIC_TOUCH] = make_pair(EEffectEvent::ON_CAST_END, EEffectType::PASSIVE);
+};
 PassiveEffect::PassiveMapConstructor PassiveEffect::_passive_map_constructor;
 
 PassiveEffect::PassiveEffect(EEffectID id, EEffectEvent on_event, EEffectType effect_type)

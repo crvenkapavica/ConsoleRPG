@@ -58,9 +58,9 @@ void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_p
 		team2.push_back(e);
 	}
 
-	//CombatManager& cm = CombatManager::GetInstance();
+	CombatManager& cm = CombatManager::GetInstance();
 	vector<weak_ptr<Character>> targets = { team2[e_idx[0]] }; // promeniti u weak_ptr ili mozda shared (ali weak)
-	//cm.OnCastBegin(instigator, team1, team2, targets);
+	cm.OnCastBegin(instigator, team1, team2, targets);
 
 	if (bEnemy) instigator->GetSpells()[spell_idx]->InvokeEffect(instigator, team2, team1, p_idx, e_idx, effect_idx);
 	else instigator->GetSpells()[spell_idx]->InvokeEffect(instigator, team1, team2, p_idx, e_idx, effect_idx);
@@ -68,7 +68,7 @@ void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_p
 	for (int i = 0; i < e_idx.size() - 1; i++)
 		targets.push_back(team2[e_idx[i + 1]]);
 
-	//cm.OnCastEnd(instigator, team1, team2, targets);
+	cm.OnCastEnd(instigator, team1, team2, targets);
 }
 
 
