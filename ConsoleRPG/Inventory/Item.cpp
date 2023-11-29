@@ -20,6 +20,32 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 	{EItemRarity::COMMON, 1}
 };
 
+//Consumable
+//Health potion
+//essence potion
+//elixir of fortitude (armor)
+//elixir of strength
+//elixir of dexterity
+//rune of fire magic (increase fire magic) out of combat
+//rune of ...all types of magic out of combat
+//rune of wizardy (increase all types of magic power) out of combat
+//stone of sharpening (increase wpn dmg) ooc
+//stone of precission (increase ranged critical chance) ooc
+	// -> nema unique
+//string name, double drop_chance, item_ID
+
+
+//scroll
+// scroll of [ACTIVE_EFFECT] ( spell_level = player-lvl + rarity )
+	// -> nema unique
+//string name, double drop_chance(koji ovisi o spell_rarity), item_ID
+
+//ARMOR
+// name = sufix + base + prefix
+// base = item_lvl_range
+// rarity = n_affixes
+// string base_name, ilvl-drop-range (int, int), item_ID
+
 Item::Item(ItemInfo item_info)
 	: _item_info(move(item_info))
 {}
@@ -69,7 +95,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 	}
 
 	int b_Ilvl = player_lvl * 8;
-	b_Ilvl += static_cast<int>(n_affixes * 0.10);
+	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
 	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
 	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
 	int item_lvl = std::rand() % (max_Ilvl - min_Ilvl) + min_Ilvl;
@@ -90,12 +116,16 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	int rnd;
 	switch (item_type) {
 	case EItemType::CONSUMABLE:
+		GenerateRndConsumable(item_rarity);
+		item_info._item_slot = EItemSlot::NONE;
+		break;
 	case EItemType::SCROLL:
 		item_info._item_slot = EItemSlot::NONE;
 		break;
 	case EItemType::ARMOR:
 		rnd = std::rand() % 6;
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
+		CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
 		break;
 	case EItemType::JEWLERY:
 		rnd = std::rand() % 3 + 10;
@@ -109,6 +139,7 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 		else 
 			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H);
 		item_info._weapon_type = static_cast<EWeaponType>(rnd);
+		CalcItemDamage(item_lvl, item_info._weapon_type, item_info._dmg_min, item_info._dmg_max);
 		break;
 	case EItemType::RELIC:
 		item_info._item_slot = EItemSlot::RELIC;
@@ -116,9 +147,6 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	default:
 		break;
 	}
-
-	CalcItemDamage(item_lvl, item_info._weapon_type, item_info._dmg_min, item_info._dmg_max);
-	CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
 
 	return item_info;
 }
@@ -180,3 +208,7 @@ void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
 		return;
 	}
 } 
+
+void Item::GenerateRndConsumable(EItemRarity item_rarity) {
+
+}

@@ -13,6 +13,8 @@ public:
 		int				_dmg_max = 0;
 		int				_armor = 0;
 
+		bool			_bOutOfCombat = false;
+
 		std::string		_name;
 
 		EItemSlot		_item_slot;
@@ -38,4 +40,5 @@ private:
 	static ItemInfo GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity);
 	static void CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg);
 	static void CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor);
+	static void GenerateRndConsumable(EItemRarity item_rarity);
 };
