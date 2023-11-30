@@ -150,7 +150,7 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	case EItemType::WEAPON:
 		rnd = std::rand() % 2 + 20;
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
-		if (item_info._item_slot == EItemSlot::WEAPON_MAIN)
+		if (item_info._item_slot == EItemSlot::WPN_MAIN)
 			rnd = std::rand() % static_cast<int>(EWeaponType::LAST);
 		else 
 			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H);

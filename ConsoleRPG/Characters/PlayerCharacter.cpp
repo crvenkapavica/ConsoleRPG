@@ -1,5 +1,6 @@
 #include "PlayerCharacter.h"
 #include "../GameplayStatics.h"
+#include "../Inventory/Item.h"
 
 PlayerCharacter::PlayerCharacter(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes)
 	: Character(data, attributes)

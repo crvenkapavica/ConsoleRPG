@@ -46,6 +46,8 @@ class Character;
 
 #define ITEM_TYPES 6
 #define ITEM_RARITIES 6
+#define ITEM_SLOTS 12
+#define INV_SLOTS 30
 
 #define ANSI_COLOR_RESET		"\x1b[0m"
 #define ANSI_COLOR_BOLD			"\033[1m"
@@ -426,7 +428,10 @@ enum class EItemSlot {
 	FINGER2,
 	WPN_MAIN = 20,
 	WPN_OFF,
-	RELIC = 30
+	RELIC = 30,
+
+	WPN_BOTH,
+	FINGER
 };
 
 enum class EWeaponType {

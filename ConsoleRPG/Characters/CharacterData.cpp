@@ -45,6 +45,9 @@ CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECh
 //	 	    class		               str     agi     int     con     vit    craft   percep   acrob
 		{ECharacterClass::BARBARIAN,	3,		2,		1,		2,		6,		4,		2,		1},
 		{ECharacterClass::WARLOCK,		1,		1,		4,		8,		3,		2,		5,		1}
+
+		// dodati kolko gainas life i essence po levelu (mozda i jos nekaj -> neovisno o atributima)
+		// odvojiti skills od attributes
 	};
 	
 	for (const auto& attributes : player_attribute_data)

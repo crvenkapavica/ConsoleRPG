@@ -722,10 +722,12 @@ std::string GameplayStatics::GetEnumString(EItemSlot _enum) {
 	case EItemSlot::FINGER1:
 	case EItemSlot::FINGER2:
 		return "Finger";
-	case EItemSlot::WEAPON_MAIN:
-		return "Weapon Main";
-	case EItemSlot::WEAPON_OFF:
-		return "Weapon Off";
+	case EItemSlot::WPN_MAIN:
+		return "Two-hand";
+	case EItemSlot::WPN_OFF:
+		return "Off-hand";
+	case EItemSlot::WPN_BOTH:
+		return "One-Hand";
 	case EItemSlot::RELIC:
 		return "Relic";
 	default:

@@ -1,6 +1,9 @@
 #pragma once
 
+#include "../RPGTypes.h"
 #include "Character.h"
+
+class Item;
 
 class PlayerCharacter : public Character {
 
@@ -28,9 +31,12 @@ public:
 
 	virtual void TakeTurn() override;
 
+	std::vector<Item*> _item_slots = std::vector<Item*>(ITEM_SLOTS, nullptr);
+	std::vector<Item*> _inventory = std::vector<Item*>(INV_SLOTS, nullptr);
+	std::vector<Item*> _cons_slots;
+	std::vector<Spell*> _spell_slots;
+
 protected:
-
-
 
 	Stat _magic_find;
 	Stat _light_radius;
