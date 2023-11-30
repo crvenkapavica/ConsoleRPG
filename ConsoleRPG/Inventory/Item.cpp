@@ -46,6 +46,12 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 // rarity = n_affixes
 // string base_name, ilvl-drop-range (int, int), item_ID
 
+/////////////////ARMOR SPECIAL EFFECTS////////////////////////////
+//Legs = magic_damage
+//Hands = slots for spells
+//Belt = slots for consumables
+//Feet = magic_resistance
+
 
 //ITEMS
 //mace = min_max dmg skoro isti

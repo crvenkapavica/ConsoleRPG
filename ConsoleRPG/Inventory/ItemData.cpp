@@ -12,8 +12,7 @@ ItemDatabase::ItemDataConstructor::ItemDataConstructor() {
 	_item_data.push_back({ EItemID::AgiElixir,		"Elixir of Agility",		EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		EEffectID::NONE,	0,		0,		0,		0,		0,		5.f,	200,	false });
 	//scrolls
 	_item_data.push_back({ EItemID::Scroll,			"Scroll",					EItemType::SCROLL,		EWeaponType::NONE,		EItemSlot::NONE,		EEffectID::NONE,	0,		0,		0,		0,		0,		0.f,	1000,	false });
-	//armor
-	//Head
+	//armor Head
 	_item_data.push_back({ EItemID::ClothCap,		"Cloth Cap",				EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	3,		35,		0,		0,		40,		0.f,	0,		false });
 	_item_data.push_back({ EItemID::LeatherHood,	"Leather Hood",				EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	36,		78,		0,		0,		95,		0.f,	0,		false });
 	_item_data.push_back({ EItemID::RusticHelm,		"Rustic Helm",				EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::HEAD,		EEffectID::NONE,	79,		153,	0,		0,		240,	0.f,	0,		false });
@@ -60,18 +59,33 @@ ItemDatabase::ItemDataConstructor::ItemDataConstructor() {
 	//Legs
 	_item_data.push_back({ EItemID::ThistTrous,		"Thistleweave Trousers",	EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	3,		35,		0,		0,		15,		0.f,	0,		false });
 	_item_data.push_back({ EItemID::IronGreaves,	"Ironscale Greaves",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	36,		78,		0,		0,		35,		0.f,	0,		false });
-	_item_data.push_back({ EItemID::RunicTrBoots,	"Runic Trail-Boots",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	79,		153,	0,		0,		90,		0.f,	0,		false });
+	_item_data.push_back({ EItemID::RunicTrTr,		"Runic Trail-Trousers",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	79,		153,	0,		0,		90,		0.f,	0,		false });
 	_item_data.push_back({ EItemID::MoonLegg,		"Moonbark Legguards",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	154,	241,	0,		0,		172,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::PhantStriders,	"Phantom Striders",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	242,	349,	0,		0,		258,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::TempWalkers,	"Tempest-Walkers",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	350,	475,	0,		0,		405,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::TitanMarch,		"Titan's Marchers",			EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	476,	581,	0,		0,		566,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::AbStrBoots,		"Abyssal Stride Boots",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	582,	696,	0,		0,		855,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::AbStrGrvs,		"Abyssal Stride Greaves",	EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	582,	696,	0,		0,		855,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::PyrWarKilt,		"Pyreborn War-Kilt",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	697,	837,	0,		0,		1256,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::CosmosGreaves,	"Cosmosforged Greaves",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::LEGS,		EEffectID::NONE,	838,	969,	0,		0,		1734,	0.f,	0,		false });
 	//Feet
-
-
+	_item_data.push_back({ EItemID::TrailBBoots,	"Trailblazer Boots",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	3,		35,		0,		0,		10,		0.f,	0,		false });
+	_item_data.push_back({ EItemID::CobStompers,	"Cobblestone Stompers",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	36,		78,		0,		0,		23,		0.f,	0,		false });
+	_item_data.push_back({ EItemID::SerpSlip,		"Serpentcoil Slippers",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	79,		153,	0,		0,		60,		0.f,	0,		false });
+	_item_data.push_back({ EItemID::EmberGreaves,	"Emberstep Greaves",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	154,	241,	0,		0,		115,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::WhispBoots,		"Whisperwind Boots",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	242,	349,	0,		0,		172,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::NightFoot,		"Nightstalker Footgear",	EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	350,	475,	0,		0,		270,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::TitanTrek,		"Titan's Trekboots",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	476,	581,	0,		0,		377,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::FlameWalk,		"Flameborn Walkers",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	582,	696,	0,		0,		570,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::CelFoot,		"Celestial Footfalls",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	697,	837,	0,		0,		837,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::StarFoot,		"Starshard Footwear",		EItemType::ARMOR,		EWeaponType::NONE,		EItemSlot::FEET,		EEffectID::NONE,	838,	969,	0,		0,		1156,	0.f,	0,		false });
+	//jewlery
+	
 	//weapons
+
+
+
+
+	//relic
 
 };
 ItemDatabase::ItemDataConstructor ItemDatabase::_item_data_constructor;

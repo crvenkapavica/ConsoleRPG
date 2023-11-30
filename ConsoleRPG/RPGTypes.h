@@ -371,14 +371,26 @@ enum class EItemID {
 	//Legs
 	ThistTrous,
 	IronGreaves,
-	RunicTrBoots,
+	RunicTrTr,
 	MoonLegg,
 	PhantStriders,
 	TempWalkers,
 	TitanMarch,
-	AbStrBoots,
+	AbStrGrvs,
 	PyrWarKilt,
-	CosmosGreaves
+	CosmosGreaves,
+	//Feet
+	TrailBBoots,
+	CobStompers,
+	SerpSlip,
+	EmberGreaves,
+	WhispBoots,
+	NightFoot,
+	TitanTrek,
+	FlameWalk,
+	CelFoot,
+	StarFoot
+
 
 	//jewl
 
