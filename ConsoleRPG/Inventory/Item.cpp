@@ -47,8 +47,8 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 // string base_name, ilvl-drop-range (int, int), item_ID
 
 /////////////////ARMOR SPECIAL EFFECTS////////////////////////////
-//Legs = magic_damage
 //Hands = slots for spells
+//Legs = magic_damage
 //Belt = slots for consumables
 //Feet = magic_resistance
 
@@ -104,8 +104,8 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 			n_affixes = ITEM_RARITIES - 1 - i;
 			break;
 		}
-	}473 - 647
-	 337 - 463
+	}
+
 
 	int b_Ilvl = player_lvl * 8;
 	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
