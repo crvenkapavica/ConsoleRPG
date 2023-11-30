@@ -389,13 +389,26 @@ enum class EItemID {
 	TitanTrek,
 	FlameWalk,
 	CelFoot,
-	StarFoot
-
+	StarFoot,
 
 	//jewl
 
-
 	//weapon
+	//bows
+	ShortBow,
+	LongBow,
+	RecBow,
+	CompBow,
+	RangBow,
+	ElvenLBow,
+	DragBow,
+	PhoBow,
+	InfFurBow,
+	SoulBow,
+
+
+
+
 
 	//relic
 };
@@ -411,8 +424,8 @@ enum class EItemSlot {
 	NECK = 10,
 	FINGER1,
 	FINGER2,
-	WEAPON_MAIN = 20,
-	WEAPON_OFF,
+	WPN_MAIN = 20,
+	WPN_OFF,
 	RELIC = 30
 };
 
