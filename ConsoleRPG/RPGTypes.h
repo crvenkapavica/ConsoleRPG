@@ -407,8 +407,29 @@ enum class EItemID {
 	PhoBow,
 	InfFurBow,
 	SoulBow,
-
-
+	//staff
+	WoodStf,
+	AppStf,
+	SageStick,
+	SorcCane,
+	SunStf,
+	GlacRod,
+	EarthStf,
+	CelScep,
+	EclStf,
+	VoidStf,
+	//AXE 2H
+	TimbAxe,
+	IronSplt,
+	BerHatch,
+	StReav,
+	RavCleav,
+	WarChop,
+	NightEx,
+	InfEdge,
+	SoulHarv,
+	AbDestr,
+	//Mace 2h
 
 
 

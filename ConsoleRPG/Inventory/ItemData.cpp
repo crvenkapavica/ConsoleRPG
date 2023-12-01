@@ -81,16 +81,41 @@ ItemDatabase::ItemDataConstructor::ItemDataConstructor() {
 	//jewlery
 	
 	//weapons Bow
-	_item_data.push_back({ EItemID::ShortBow,		"Short Bow",				EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		3,		35,		0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::LongBow,		"Long Bow",					EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		36,		78,		0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::RecBow,			"Recurve Bow",				EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		79,		153,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::CompBow,		"Composite Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		154,	241,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::RangBow,		"Ranger's Bow",				EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		242,	349,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::ElvenLBow,		"Elven Long Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		350,	475,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::DragBow,		"Dragonwing Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		476,	581,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::PhoBow,			"Phoenix Fire Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		582,	696,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::InfFurBow,		"Inferno Fury Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		697,	837,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
-	_item_data.push_back({ EItemID::SoulBow,		"Soulreaper Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		838,	969,	0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::ShortBow,		"Short Bow",				EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		3,		35,		10,		20,		0,		0.f,	0,		0.f,	0,		0.f,	0.03f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::LongBow,		"Long Bow",					EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		36,		78,		26,		42,		0,		0.f,	0,		0.f,	0,		0.f,	0.07f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::RecBow,			"Recurve Bow",				EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		79,		153,	51,		65,		0,		0.f,	0,		0.f,	0,		0.f,	0.12f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::CompBow,		"Composite Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		154,	241,	78,		102,	0,		0.f,	0,		0.f,	0,		0.f,	0.18f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::RangBow,		"Ranger's Bow",				EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		242,	349,	123,	156,	0,		0.f,	0,		0.f,	0,		0.f,	0.24f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::ElvenLBow,		"Elven Long Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		350,	475,	182,	246,	0,		0.f,	0,		0.f,	0,		0.f,	0.35f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::DragBow,		"Dragonwing Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		476,	581,	315,	390,	0,		0.f,	0,		0.f,	0,		0.f,	0.48f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::PhoBow,			"Phoenix Fire Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		582,	696,	470,	595,	0,		0.f,	0,		0.f,	0,		0.f,	0.63f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::InfFurBow,		"Inferno Fury Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		697,	837,	735,	890,	0,		0.f,	0,		0.f,	0,		0.f,	0.79f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SoulBow,		"Soulreaper Bow",			EItemType::WEAPON,		EWeaponType::BOW,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		838,	969,	1100,	1405,	0,		0.f,	0,		0.f,	0,		0.f,	0.95f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	//Staff
+	_item_data.push_back({ EItemID::WoodStf,		"Wooden Staff",				EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		3,		35,		6,		12,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.7f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::AppStf,			"Apprentice's Staff",		EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		36,		78,		18,		27,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.15f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SageStick,		"Sage's Walking Stick",		EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		79,		153,	35,		47,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.27f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SorcCane,		"Sorcerer's Cane",			EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		154,	241,	46,		61,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.45f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SunStf,			"Sunwood Staff",			EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		242,	349,	73,		93,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.60f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::GlacRod,		"Glacial Rod",				EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		350,	475,	109,	147,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.82f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::EarthStf,		"Earthshaker Staff",		EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		476,	581,	189,	234,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.05f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::CelScep,		"Celestial Scepter",		EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		582,	696,	282,	357,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.43f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::EclStf,			"Eclipse Staff",			EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		697,	837,	441,	534,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.01f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::VoidStf,		"Voidwalker's Staff",		EItemType::WEAPON,		EWeaponType::STAFF,		EItemSlot::WPN_MAIN,	EEffectID::NONE,		838,	969,	660,	843,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.69f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	//Axe 2H
+	_item_data.push_back({ EItemID::TimbAxe,		"Timber Axe",				EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		3,		35,		16,		18,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::IronSplt,		"Iron Splitter",			EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		36,		78,		35,		37,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::BerHatch,		"Berserker Hatchet",		EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		79,		153,	55,		58,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::StReav,			"Steel Reaver",				EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		154,	241,	87,		91,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::RavCleav,		"Ravager's Cleaver",		EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		242,	349,	131,	140,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::WarChop,		"Warlord's Chopper",		EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		350,	475,	207,	221,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::NightEx,		"Nightfall Executioner",	EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		476,	581,	333,	351,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::InfEdge,		"Inferno Edge",				EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		582,	696,	495,	535,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::AbDestr,		"Abyssal Destroyer",		EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		697,	837,	775,	801,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SoulHarv,		"Soul Harvester",			EItemType::WEAPON,		EWeaponType::AXE_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		838,	969,	1184,	1264,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	//Mace 2H
+
+	//Sword 2H
 
 
 

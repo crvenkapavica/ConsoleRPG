@@ -46,6 +46,10 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 // rarity = n_affixes
 // string base_name, ilvl-drop-range (int, int), item_ID
 
+// Armor_Base = Chest_Armor / 8
+// Weapon_Base = Bow_Damage 10-20 % above 2H
+// 1H DMG = 0.34 x 2H DMG
+
 /////////////////ARMOR SPECIAL EFFECTS////////////////////////////
 // 
 // // Head - ability level +
