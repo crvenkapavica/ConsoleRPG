@@ -16,7 +16,6 @@ public:
 		float _essence;
 		float _stamina;
 		float _armor;
-		float _attack_speed;
 		float _damage_melee;
 		float _damage_ranged;
 		float _crit_chance;
@@ -34,7 +33,6 @@ public:
 		float _essence;
 		float _stamina;
 		float _armor;
-		float _attack_speed;
 		float _damage_melee;
 		float _damage_ranged;
 		float _crit_chance;

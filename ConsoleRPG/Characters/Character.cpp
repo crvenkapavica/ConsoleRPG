@@ -11,7 +11,6 @@ Character::Character(const CharacterData::PlayerStats& data)
 	_essence = data._essence;
 	_stamina = data._stamina;
 	_armor = data._armor;
-	_attack_speed = data._attack_speed;
 	_damage_melee = data._damage_melee;
 	_damage_ranged = data._damage_ranged;
 	_crit_chance = data._crit_chance;
@@ -25,7 +24,6 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_essence = data._essence;
 	_stamina = data._stamina;
 	_armor = data._armor;
-	_attack_speed = data._attack_speed;
 	_damage_melee = data._damage_melee;
 	_damage_ranged = data._damage_ranged;
 	_crit_chance = data._crit_chance;
@@ -44,7 +42,6 @@ Character::Character(const CharacterData::PlayerStats& data, const CharacterData
 	_essence = data._essence;
 	_stamina = data._stamina;
 	_armor = data._armor;
-	_attack_speed = data._attack_speed;
 	_damage_melee = data._damage_melee;
 	_damage_ranged = data._damage_ranged;
 	_crit_chance = data._crit_chance;
@@ -59,7 +56,6 @@ Character::Character(const Character& other)
 	, _essence(other._essence)
 	, _stamina(other._stamina)
 	, _armor(other._armor)
-	, _attack_speed(other._attack_speed)
 	, _damage_melee(other._damage_melee)
 	, _damage_ranged(other._damage_ranged)
 	, _crit_chance(other._crit_chance)

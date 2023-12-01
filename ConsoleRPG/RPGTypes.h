@@ -436,19 +436,19 @@ enum class EItemSlot {
 
 enum class EWeaponType {
 	NONE = -1,
-	BOW = 0,
+	BOW = 0,		// % extra random magic damage  f
 	FIRST_2H = BOW,
-	STAFF,		
-	AXE_2H,
-	MACE_2H,
-	SWORD_2H,
+	STAFF,			// spell_crit damage %   f
+	AXE_2H,			// armor penetration amount  f
+	MACE_2H,		// crit damage   f
+	SWORD_2H,		// double_strike chance  f
 	LAST_2H = SWORD_2H,
-	AXE_1H,
+	AXE_1H,			// armor penetration amount  f
 	FIRST_1H = AXE_1H,
-	MACE_1H,
-	SWORD_1H,
-	DAGGER,
-	SHIELD,
+	MACE_1H,		// crit chance  f
+	SWORD_1H,		// double_strike chance  f
+	DAGGER,			// bleed chance (a bleed damage je isti?)  f
+	SHIELD,			// % amount to blcok  f
 	LAST_1H = SHIELD,
 	LAST = SHIELD
 };

@@ -138,7 +138,6 @@
     <ClCompile Include="Effects\Effect.cpp" />
     <ClCompile Include="Characters\EnemyCharacter.cpp" />
     <ClCompile Include="GameplayStatics.cpp" />
-    <ClCompile Include="Inventory\Inventory.cpp" />
     <ClCompile Include="Inventory\Item.cpp" />
     <ClCompile Include="Inventory\ItemData.cpp" />
     <ClCompile Include="MapGenerator\MapGenerator.cpp" />
@@ -160,7 +159,6 @@
     <ClInclude Include="Effects\EffectStructs.h" />
     <ClInclude Include="Characters\EnemyCharacter.h" />
     <ClInclude Include="GameplayStatics.h" />
-    <ClInclude Include="Inventory\Inventory.h" />
     <ClInclude Include="Inventory\Item.h" />
     <ClInclude Include="Inventory\ItemData.h" />
     <ClInclude Include="MapGenerator\MapGenerator.h" />
