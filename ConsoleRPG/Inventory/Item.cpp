@@ -1,7 +1,9 @@
 #include "Item.h"
+#include "../GameplayStatics.h"
 #include "../Effects/ActiveEffect.h"
 #include "../Effects/PassiveEffect.h"
 #include "../Inventory/ItemData.h"
+#include "../Characters/Character.h"
 
 std::vector<pair<EItemType, double>> DropTable_ItemType{
 	{EItemType::RELIC, 0.02},
@@ -9,7 +11,8 @@ std::vector<pair<EItemType, double>> DropTable_ItemType{
 	{EItemType::JEWLERY, 0.7},
 	{EItemType::ARMOR, 0.15},
 	{EItemType::SCROLL, 0.28},
-	{EItemType::CONSUMABLE, 0.35}
+	//{EItemType::CONSUMABLE, 0.35}
+	{EItemType::CONSUMABLE, 1}
 };
 
 std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
@@ -87,9 +90,11 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> 
 
 	while (power_lvl > 0) {
 		for (int i = 0; i < ITEM_TYPES; i++) {
-			while (type_limit[i].first == type_limit[i].second) ++i;
-			// we should adjust the formulas so that this actually never happens
-			if (i == ITEM_TYPES) return loot;
+			while (type_limit[i].first == type_limit[i].second) {
+				++i;
+				// we should adjust the formulas so that this actually never happens
+				if (i == ITEM_TYPES) return loot;
+			}
 
 			int rnd = std::rand() % 1000;
 			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
@@ -138,22 +143,23 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {
 	ItemInfo item_info;
 	item_info._lvl = item_lvl;
-
-	item_info._name = "PLACEHOLDER ITEM NAME"; // TODO IMPLEMENT
-	if (item_rarity == EItemRarity::UNIQUE) item_info._name = "UNIQUE";
-
-	item_info._item_type = item_type;
+	item_info._n_affixes = ITEM_RARITIES - 1 - static_cast<int>(item_rarity);
 	item_info._item_rarity = item_rarity;
+	item_info._item_type = item_type;
 	item_info._weapon_type = EWeaponType::NONE;
+
+	if (item_rarity == EItemRarity::UNIQUE) item_info._name = "UNIQUE";
 
 	int rnd;
 	switch (item_type) {
 	case EItemType::CONSUMABLE:
-		GenerateRndConsumable(item_rarity);
+		GenerateRndConsumable(item_info, item_rarity);
 		item_info._item_slot = EItemSlot::NONE;
+		item_info._bUsable = true;
 		break;
 	case EItemType::SCROLL:
 		item_info._item_slot = EItemSlot::NONE;
+		item_info._bUsable = true;
 		break;
 	case EItemType::ARMOR:
 		rnd = std::rand() % 6;
@@ -242,6 +248,30 @@ void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
 	}
 } 
 
-void Item::GenerateRndConsumable(EItemRarity item_rarity) {
-	
+void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
+	int rnd = rand() % 1000;
+	for (const auto& item : ItemDB::_data) {
+		if (item._item_type == EItemType::CONSUMABLE && item._drop_chnc <= rnd) {
+			item_info._name = item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ";
+			item_info._name += item._name;
+			item_info._ID = item._ID;
+			item_info._amount = item._value * item_info._n_affixes;
+		}
+	}
+}
+
+
+
+
+
+
+void Item::Use(Character* instigator) {
+	switch (_item_info._item_type) {
+	case EItemType::CONSUMABLE:
+		switch (_item_info._ID) {
+		case EItemID::HPotion:
+			instigator->GetHealth().UpdateActual(_item_info._amount);
+		}
+		break;
+	}
 }

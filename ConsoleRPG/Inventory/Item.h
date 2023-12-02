@@ -4,18 +4,23 @@
 
 class ActiveEffect;
 class PassiveEffect;
+class Character;
 
 class Item {
 public:
 	struct ItemInfo {
+		EItemID			_ID;
 		int				_lvl = 0;
 		int				_dmg_min = 0;
 		int				_dmg_max = 0;
 		int				_armor = 0;
+		int				_amount;
 
+		int				_n_affixes;
 		float			_modifier;
 
 		bool			_bOutOfCombat = false;
+		bool			_bUsable = false;
 
 		std::string		_name;
 
@@ -33,6 +38,7 @@ public:
 	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
 	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
 
+	void Use(Character* instigator);
 public:
 
 	ItemInfo _item_info;
@@ -42,5 +48,5 @@ private:
 	static ItemInfo GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity);
 	static void CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg);
 	static void CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor);
-	static void GenerateRndConsumable(EItemRarity item_rarity);
+	static void GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity);
 };

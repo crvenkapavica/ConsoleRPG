@@ -35,6 +35,7 @@ struct ItemData {
 
 	int				_drop_chnc;
 	bool			_bNoCombat;
+	bool			_bUsable;
 };
 
 class ItemDB {

@@ -136,6 +136,7 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 	
 	//std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 195);
 	//for (auto& item : items) {
+	//	cout << item->_item_info._name << "\n";
 	//	cout << GetEnumString(item->_item_info._item_slot) << "\t" << GetEnumString(item->_item_info._item_rarity) << "\t" << GetEnumString(item->_item_info._item_type) << "\t" << GetEnumString(item->_item_info._weapon_type) << "\n";
 	//	cout << "Dmg min: " << item->_item_info._dmg_min << "\tDmg max: " << item->_item_info._dmg_max << "\tArmor: " << item->_item_info._armor << "\tIlvl: " << item->_item_info._lvl << "\n\n";
 	//}
