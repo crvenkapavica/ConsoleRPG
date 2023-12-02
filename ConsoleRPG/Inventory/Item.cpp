@@ -68,6 +68,12 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
 //sword = min_max dmg veliki range
 //axe = min_max dmg mali range
 
+//--> dodati offhand za castere
+
+
+//EFFECTS
+// critical damage or spell damage ignores armor / resistance ?? affix or fact?
+
 Item::Item(ItemInfo item_info)
 	: _item_info(move(item_info))
 {}

@@ -324,7 +324,6 @@ enum class EItemID {
 
 	//scrolls
 	Scroll,
-
 	//armor
 	//head
 	ClothCap,
@@ -392,8 +391,10 @@ enum class EItemID {
 	FlameWalk,
 	CelFoot,
 	StarFoot,
-
 	//jewl
+	//ring
+	
+	//neck
 
 	//weapon
 	//bows
@@ -418,7 +419,7 @@ enum class EItemID {
 	CelScep,
 	EclStf,
 	VoidStf,
-	//AXE 2H
+	//Axe 2H
 	TimbAxe,
 	IronSplt,
 	BerHatch,
@@ -427,9 +428,32 @@ enum class EItemID {
 	WarChop,
 	NightEx,
 	InfEdge,
-	SoulHarv,
 	AbDestr,
+	SoulHarv,
 	//Mace 2h
+	WoodClub,
+	IronMaul,
+	StoneSled,
+	SpikBlud,
+	BoneMace,
+	SkyHammer,
+	TideBreak,
+	SoulMaul,
+	PhantFlail,
+	DeathDcree,
+	//Sword 2h
+	GraveBld,
+	IronReq,
+	GhoulSlyr,
+	SoulClay,
+	PlagZwei,
+	SpecEdge,
+	EbonReap,
+	DreadDecap,
+	EclDeathBld,
+	ShadMonGuil,
+
+
 
 
 
