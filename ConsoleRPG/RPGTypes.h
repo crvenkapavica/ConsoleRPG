@@ -493,7 +493,8 @@ enum class EWeaponType {
 	MACE_1H,		// crit chance  f
 	SWORD_1H,		// double_strike chance  f
 	DAGGER,			// bleed chance (a bleed damage je isti?)  f
-	SHIELD,			// % amount to blcok  f
+	ORB,			// spell_crit_chance %
+	SHIELD,			// % amount to block  f
 	LAST_1H = SHIELD,
 	LAST = SHIELD
 };
