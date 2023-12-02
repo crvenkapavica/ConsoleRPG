@@ -486,9 +486,16 @@ enum class EItemID {
 	ShadBlade,
 	PhantRap,
 	//Dagger
-
-
-
+	RogShiv,
+	IronStil,
+	HuntKnife,
+	ThiefBlad,
+	SerpFang,
+	AssNeedle,
+	VipersKiss,
+	WindShank,
+	ShadPierc,
+	EthRipp
 	//Orb
 
 
