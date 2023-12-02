@@ -15,13 +15,13 @@ struct ItemData {
 	int				_max_dmg;
 	int				_armor;
 	float			_value;
-	
+
 	//armor
 	int				_spell_slots;	//Hands = slots for spells
 	float			_mag_dmg; 		//Legs = magic_damage
 	int				_cons_slots; 	//Belt = slots for consumables
 	float			_mag_res;		//Feet = magic_resistance
-	
+
 	//weapon
 	float			_extra_dmg;		// Bow extra random magic damage
 	float			_spell_c_dmg;	// Staff spell_crit_dmg bonus
@@ -37,11 +37,13 @@ struct ItemData {
 	bool			_bNoCombat;
 };
 
-class ItemDatabase {
+class ItemDB {
 public:
+	static std::vector<ItemData> _data;
 
-	ItemDatabase() {}
-	static std::vector<ItemData> _item_data;
+private:
+	ItemDB() {}
+
 	static struct ItemDataConstructor {
 		ItemDataConstructor();
 	} _item_data_constructor;

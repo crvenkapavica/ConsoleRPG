@@ -1,6 +1,7 @@
 #include "Item.h"
 #include "../Effects/ActiveEffect.h"
 #include "../Effects/PassiveEffect.h"
+#include "../Inventory/ItemData.h"
 
 std::vector<pair<EItemType, double>> DropTable_ItemType{
 	{EItemType::RELIC, 0.02},
@@ -242,5 +243,5 @@ void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
 } 
 
 void Item::GenerateRndConsumable(EItemRarity item_rarity) {
-
+	
 }

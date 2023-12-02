@@ -495,11 +495,18 @@ enum class EItemID {
 	VipersKiss,
 	WindShank,
 	ShadPierc,
-	EthRipp
+	EthRipp,
 	//Orb
-
-
-
+	NovSph,
+	MystMarb,
+	DruidStone,
+	AethOrb,
+	WizEye,
+	DivGlobe,
+	NethStone,
+	PhoTear,
+	RealShard,
+	CosSphere,
 	//Shield
 
 

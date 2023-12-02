@@ -4,7 +4,6 @@
 
 class ActiveEffect;
 class PassiveEffect;
-struct ItemData;
 
 class Item {
 public:
@@ -13,6 +12,8 @@ public:
 		int				_dmg_min = 0;
 		int				_dmg_max = 0;
 		int				_armor = 0;
+
+		float			_modifier;
 
 		bool			_bOutOfCombat = false;
 
@@ -34,7 +35,6 @@ public:
 
 public:
 
-	//ItemData _item_data;
 	ItemInfo _item_info;
 
 private:
