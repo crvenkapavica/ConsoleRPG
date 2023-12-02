@@ -3,7 +3,7 @@
 std::vector<ItemData> ItemDatabase::_item_data;
 
 ItemDatabase::ItemDataConstructor::ItemDataConstructor() {
-	//																																					  						  <lvl    >lvl    <dmg    >dmg     arm      value  s_slt   m_dmg  c_slt    m_res   ex_dmg  scdmg   armpen  cdmg     2x%    crit%    bld%	sc%    block   %chnc   non_combat                                                        
+	//																																					  						  <lvl    >lvl    <dmg    >dmg     arm      value  s_slt   m_dmg  c_slt    m_res   ex_dmg  scdmg   armpen  cdmg     2x%    crit%    bld%   sres<%  block   %chnc   non_combat                                                        
 	//consumables
 	_item_data.push_back({ EItemID::HPotion,		"Health potion",				EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		EEffectID::NONE,		0,		0,		0,		0,		0,		0.25f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	200,	false });
 	_item_data.push_back({ EItemID::EPotion,		"Essence potion",				EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		EEffectID::NONE,		0,		0,		0,		0,		0,		0.15f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	200,	false });
@@ -135,7 +135,36 @@ ItemDatabase::ItemDataConstructor::ItemDataConstructor() {
 	_item_data.push_back({ EItemID::DreadDecap,		"Dreadlord's Decapitator",		EItemType::WEAPON,		EWeaponType::SWORD_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		582,	696,	377,	663,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.f,	2.f,	0.57f,	0.f,	0.f,	0.f,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::EclDeathBld,	"Eclipse Deathblade",			EItemType::WEAPON,		EWeaponType::SWORD_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		697,	837,	581,	1003,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.f,	2.f,	0.68f,	0.f,	0.f,	0.f,	0.f,	0,		false });
 	_item_data.push_back({ EItemID::ShadMonGuil,	"Shadow Monarch's Guillotine",	EItemType::WEAPON,		EWeaponType::SWORD_2H,	EItemSlot::WPN_MAIN,	EEffectID::NONE,		838,	969,	860,	1592,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.f,	4.f,	0.80f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	//Axe 1H
+	_item_data.push_back({ EItemID::HatchAxe,		"Hatchling's Axe",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		3,		35,		5,		6,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.04f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::TimbCut,		"Timber Cutter",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		36,		78,		11,		12,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.09f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::IronTom,		"Iron Tomahawk",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		79,		153,	18,		19,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.14f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::BronzeHat,		"Bronze Hatchet",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		154,	241,	30,		31,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.23f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::MercAxe,		"Mercenary's Axe",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		242,	349,	44,		45,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.34f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SteelChop,		"Steel Chopper",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		350,	475,	70,		71,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.45f,	1.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SilvHat,		"Silver Hatcher",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		476,	581,	113,	119,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.57f,	1.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::BloodAxe,		"Bloodmoon Axe",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		582,	696,	168,	181,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.69f,	2.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::RavenAxe,		"Ravenwing Axe",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		697,	837,	263,	272,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.81f,	2.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::PhantBane,		"Phantom's Bane",				EItemType::WEAPON,		EWeaponType::AXE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		838,	969,	402,	429,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.93f,	4.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0,		false });
+	//Mace 1H
+	_item_data.push_back({ EItemID::NovMac,			"Novice Mace",					EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		3,		35,		6,		6,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.01f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::IronClub,		"Iron Club",					EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		36,		78,		12,		12,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.02f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::StoneMallet,	"Stone Mallet",					EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		79,		153,	19,		19,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.03f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::BrassKnob,		"Brass Knobkierie",				EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		154,	241,	30,		30,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.05f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::ThornMace,		"Thorn Mace",					EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		242,	349,	46,		46,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.08f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::SilverSc,		"Silver Scepter",				EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		350,	475,	72,		72,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	1.f,	0.f,	0.10f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::CrystSc,		"Crystalline Scepter",			EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		476,	581,	117,	117,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.f,	1.f,	0.f,	0.12f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::NightMaul,		"Nightshade Maul",				EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		582,	696,	176,	176,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	1.f,	0.f,	2.f,	0.f,	0.14f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::VoidCudg,		"Voidheart Cudgel",				EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		697,	837,	269,	269,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.f,	2.f,	0.f,	0.16f,	0.f,	0.f,	0.f,	0,		false });
+	_item_data.push_back({ EItemID::EthCrush,		"Ethereal Crusher",				EItemType::WEAPON,		EWeaponType::MACE_1H,	EItemSlot::WPN_BOTH,	EEffectID::NONE,		838,	969,	416,	416,	0,		0.f,	0,		0.f,	0,		0.f,	0.f,	2.f,	0.f,	4.f,	0.f,	0.18f,	0.f,	0.f,	0.f,	0,		false });
 
+	//Sword 1H
+
+	//Dagger
+
+	//Orb
+
+	//Shield
 
 	//relic
 

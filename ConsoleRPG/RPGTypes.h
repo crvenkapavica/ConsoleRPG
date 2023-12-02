@@ -452,7 +452,41 @@ enum class EItemID {
 	DreadDecap,
 	EclDeathBld,
 	ShadMonGuil,
+	//Axe 1H
+	HatchAxe,
+	TimbCut,
+	IronTom,
+	BronzeHat,
+	MercAxe,
+	SteelChop,
+	SilvHat,
+	BloodAxe,
+	RavenAxe,
+	PhantBane,
+	//Mace 1H
+	NovMac,
+	IronClub,
+	StoneMallet,
+	BrassKnob,
+	ThornMace,
+	SilverSc,
+	CryScept,
+	NightMaul,
+	VoidCudg,
+	EthCrush,
+	//Sword 1H
 
+
+
+	//Dagger
+
+
+
+	//Orb
+
+
+
+	//Shield
 
 
 
