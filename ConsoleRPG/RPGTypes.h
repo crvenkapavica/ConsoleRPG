@@ -470,14 +470,21 @@ enum class EItemID {
 	BrassKnob,
 	ThornMace,
 	SilverSc,
-	CryScept,
+	CrystSc,
 	NightMaul,
 	VoidCudg,
 	EthCrush,
 	//Sword 1H
-
-
-
+	TrainBlade,
+	IronShortS,
+	MercSabre,
+	BronzeCut,
+	TGuardRap,
+	BersScim,
+	DragSabre,
+	SunShort,
+	ShadBlade,
+	PhantRap,
 	//Dagger
 
 
