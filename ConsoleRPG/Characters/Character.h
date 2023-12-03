@@ -89,7 +89,6 @@ protected:
 	Stat _stamina;
 
 	Stat _armor;
-	Stat _attack_speed;
 	Stat _damage_melee;
 	Stat _damage_ranged;
 	Stat _crit_chance;
@@ -122,7 +121,6 @@ public:
 	inline Stat& GetEssence() { return _essence; }
 	inline Stat& GetStamina() { return _stamina; }
 	inline Stat& GetArmor() { return _armor; }
-	inline Stat& GetAS() { return _attack_speed; }
 	inline Stat& GetDmgMelee() { return _damage_melee; }
 	inline Stat& GetDmgRanged() { return _damage_ranged; }
 	inline Stat& GetCritChance() { return _crit_chance; }
