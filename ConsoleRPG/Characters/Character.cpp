@@ -150,7 +150,6 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_armor, 0.3f));
-	stat_vector.push_back(make_pair(&_attack_speed, 0.15f));
 	stat_vector.push_back(make_pair(&_damage_ranged, 0.3f));
 	stat_vector.push_back(make_pair(&_crit_chance, 0.3f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
@@ -163,7 +162,6 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_health, 0.5f));
 	stat_vector.push_back(make_pair(&_stamina, 0.7f));
-	stat_vector.push_back(make_pair(&_attack_speed, 0.08f));
 	//stat_vector.push_back(make_pair(&_light_radius, 0.25f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
 

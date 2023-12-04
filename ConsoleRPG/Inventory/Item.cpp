@@ -265,12 +265,12 @@ void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
 
 
 
-void Item::Use(Character* instigator) {
+void Item::Use(Character* character) {
 	switch (_item_info._item_type) {
 	case EItemType::CONSUMABLE:
 		switch (_item_info._ID) {
 		case EItemID::HPotion:
-			instigator->GetHealth().UpdateActual(_item_info._amount);
+			character->GetHealth().UpdateActual(_item_info._amount, character);
 		}
 		break;
 	}

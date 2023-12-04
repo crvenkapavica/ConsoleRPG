@@ -26,7 +26,6 @@ public:
 		_essence = other._essence;
 		_stamina = other._stamina;
 		_armor = other._armor;
-		_attack_speed = other._attack_speed;
 		_damage_melee = other._damage_melee;
 		_damage_ranged = other._damage_ranged;
 		_crit_chance = other._crit_chance;
