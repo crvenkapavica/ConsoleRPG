@@ -296,13 +296,13 @@ void MapGenerator::InitPlayer(vector<PlayerCharacter*> player_characters) {
 	_player_characters = move(player_characters);
 	GetPlayerStartPosition(_player_x, _player_y);
 	
-	_border_x = _player_x - static_cast<int>(_player_characters[0]->GetLighRadius().GetActual()) + 1;
+	_border_x = _player_x - static_cast<int>(_player_characters[0]->GetLighRadius()) + 1;
 	if (_border_x < 2) _border_x = 2;
-	_border_x_end = _player_x + static_cast<int>(_player_characters[0]->GetLighRadius().GetActual());
+	_border_x_end = _player_x + static_cast<int>(_player_characters[0]->GetLighRadius());
 	if (_border_x_end > MAX_X - 2) _border_x_end = MAX_X - 2;
-	_border_y = _player_y - static_cast<int>(_player_characters[0]->GetLighRadius().GetActual()) + 1;
+	_border_y = _player_y - static_cast<int>(_player_characters[0]->GetLighRadius()) + 1;
 	if (_border_y < 2) _border_y = 2;
-	_border_y_end = _player_y + static_cast<int>(_player_characters[0]->GetLighRadius().GetActual());
+	_border_y_end = _player_y + static_cast<int>(_player_characters[0]->GetLighRadius());
 	if (_border_y_end > MAX_Y - 2) _border_y_end = MAX_Y - 2;
 	
 	_map[_player_x][_player_y] = PLAYER;
@@ -411,7 +411,7 @@ void MapGenerator::HandleMovement() {
 
 void MapGenerator::Move(int dir) {
 
-	int radius = static_cast<int>(_player_characters[0]->GetLighRadius().GetActual());
+	int radius = static_cast<int>(_player_characters[0]->GetLighRadius());
 
 	_map[_player_x][_player_y] = PATH;
 

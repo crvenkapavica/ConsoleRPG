@@ -126,10 +126,6 @@ void CombatManager::ApplyStat(EEffectValueAction value_action, CharacterStat& ch
 			character_stat._stat->UpdateActual(value, character_stat._character);
 			break;
 		}
-		case EEffectValueAction::UPDATE_BONUS: {
-			character_stat._stat->UpdateBonus(value);
-			break;
-		}
 		default:
 			break;
 	}

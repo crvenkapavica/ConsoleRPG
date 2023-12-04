@@ -4,19 +4,6 @@
 #include "../GameplayStatics.h"
 #include "../Effects/PassiveEffect.h"
 
-Character::Character(const CharacterData::PlayerStats& data)
-{
-	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_damage_melee = data._damage_melee;
-	_damage_ranged = data._damage_ranged;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-}
-
 Character::Character(const CharacterData::EnemyStats& data)
 {
 	_class = data._class;
@@ -34,24 +21,12 @@ Character::Character(const CharacterData::EnemyStats& data)
 	sm.CreateSpell(this, data._spell1.first, data._spell1.second);
 }
 
-Character::Character(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes)
+Character::Character(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes)
 	: _player_attributes(attributes)
 {
-	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_damage_melee = data._damage_melee;
-	_damage_ranged = data._damage_ranged;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-
+	_class = player_class;
 	InitStatsPerAttribute();
 	InitStats();
-	UpdateAttribute(_player_attributes._strength, 10);
-	UpdateAttribute(_player_attributes._vitality, 100);
-	UpdateAttribute(_player_attributes._intelligence, 30);
 }
 
 Character::Character(const Character& other)
@@ -79,7 +54,6 @@ Character::~Character()
 
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;
-	_max = _base + _bonus;
 	//OnStatChanged();
 }
 
@@ -92,14 +66,6 @@ void Character::Stat::UpdateActual(const float value, Character* character) {
 	_actual += value;
 	if (character->GetHealth().GetActual() <= 0)
 		character->Die();
-}
-
-void Character::Stat::UpdateBonus(const float value) {
-	_bonus += value;
-	if (_bonus < 0)
-		_bonus = 0.f;
-	_max = _base + _bonus;
-	//OnStatChanged();
 }
 
 void Character::InitStats() {
@@ -127,7 +93,6 @@ void Character::InitStats() {
 
 void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 
-	// have to TEST
 	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx) {
 		if (_stat_per_attribute[idx].first == &attribute) {
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++) {
@@ -136,17 +101,6 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 		}
 	}
 	attribute += amount;
-
-	/*
-	int idx = 0;
-	for (auto& _attribute : _stat_per_attribute) {
-		if (_attribute.first == &attribute) {
-			for (int i = 0; i < _attribute.second.size(); i++) {
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * amount);
-			}
-			++idx;
-		}
-	}*/
 }
 
 void Character::AddSpell(shared_ptr<Spell> spell) {

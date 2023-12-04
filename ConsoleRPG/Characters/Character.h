@@ -13,11 +13,9 @@ class Character {
 
 public:
 
-	Character(const CharacterData::PlayerStats& data);
-
 	Character(const CharacterData::EnemyStats& data);
 
-	Character(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes);
+	Character(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes);
 
 	Character(const Character& other);
 
@@ -44,34 +42,29 @@ public:
 
 		float _base;
 		float _actual;
-		float _bonus;
 		float _max;
 
 	public:
 		Stat()
 			: _base(0.f)
 			, _actual(0.f)
-			, _bonus(0.f)
 			, _max(0.f)
 		{}
 
 		const float& operator=(const float& value) {
 			_base = value;
 			_actual = value;
-			_bonus = 0;
-			_max = _base + _bonus;
+			_max = value;
 
 			return _base;
 		}
 
 		inline const float& GetBase() const { return _base; }
 		inline const float& GetActual() const { return _actual; }
-		inline const float& GetBonus() const { return _bonus; }
 		inline const float& GetMax() const { return _max; }
 
 		void UpdateBase(const float value);
 		void UpdateActual(const float value, Character* character);
-		void UpdateBonus(const float value);
 
 		void SetActual(const float value);
 

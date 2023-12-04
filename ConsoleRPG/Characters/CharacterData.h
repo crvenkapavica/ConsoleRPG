@@ -9,21 +9,6 @@ class CharacterData {
 
 public:
 
-	struct PlayerStats {
-
-		ECharacterClass	_class;
-		float _health;
-		float _essence;
-		float _stamina;
-		float _armor;
-		float _damage_melee;
-		float _damage_ranged;
-		float _crit_chance;
-		float _crit_damage;
-		float _spell_crit_chance;
-		float _spell_crit_damage;
-	};
-
 	struct EnemyStats {
 
 		ECharacterClass	_class;
@@ -63,21 +48,16 @@ public:
 
 protected:
 
-	PlayerStats			_player_data;
 	EnemyStats			_enemy_data;
 	PlayerAttributes	_player_attribute_data;
 
 private:
 
 	PlayerAttributes InitPlayerCharacterAttributes(ECharacterClass player_class);
-
-	PlayerStats InitPlayerCharacterStats(ECharacterClass player_class);
-
 	EnemyStats InitEnemyCharacterStats(ECharacterClass enemy_class);
 
 public:
 
-	inline const PlayerStats& GetPlayerData() const { return _player_data; }
 	inline const EnemyStats& GetEnemyData() const { return _enemy_data; }
 	
 	PlayerAttributes& GetPlayerAttributeData() { return _player_attribute_data; }

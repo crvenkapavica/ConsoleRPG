@@ -2,13 +2,9 @@
 #include "../GameplayStatics.h"
 #include "../Inventory/Item.h"
 
-PlayerCharacter::PlayerCharacter(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes)
-	: Character(data, attributes)
-	, _unspent_attributes(0)
-	, _experience(0)
+PlayerCharacter::PlayerCharacter(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes)
+	: Character(player_class, attributes)
 {
-	//_magic_find = data._magic_find;
-	//_light_radius = data._light_radius;
 	InitExperienceForLevel();
 }
 

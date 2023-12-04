@@ -9,7 +9,7 @@ class PlayerCharacter : public Character {
 
 public:
 
-	PlayerCharacter(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes);
+	PlayerCharacter(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes);
 
 	PlayerCharacter(const PlayerCharacter& other) : Character(other) {}
 
@@ -26,8 +26,8 @@ public:
 
 	int GetLevel() const { return _level; }
 
-	inline Stat GetMagicFind() const { return _magic_find; }
-	inline Stat GetLighRadius() const { return _light_radius; }
+	inline float GetMagicFind() const { return _magic_find; }
+	inline int GetLighRadius() const { return _light_radius; }
 
 	virtual void TakeTurn() override;
 
@@ -38,11 +38,10 @@ public:
 
 protected:
 
-	Stat _magic_find;
-	Stat _light_radius;
-
-	int _unspent_attributes;
-	int _experience;
+	float _magic_find;
+	int _light_radius;
+	int _unspent_attributes = 0;
+	int _experience = 0;
 
 	int _experience_next_level[MAX_LVL] = { 0 };
 

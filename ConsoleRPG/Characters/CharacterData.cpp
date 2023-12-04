@@ -6,22 +6,6 @@ CharacterData::CharacterData(ECharacterClass character_class)
 	if (static_cast<int>(character_class) >= 50) {
 		_enemy_data = InitEnemyCharacterStats(character_class);
 	}
-	else {
-		_player_data = InitPlayerCharacterStats(character_class);
-	}
-}
-
-CharacterData::PlayerStats CharacterData::InitPlayerCharacterStats(ECharacterClass player_class) {
-	vector<PlayerStats> player_character_stats{
-//		               class			   health  essence    stamina      armor       dmg_melee    dmg_rng    crit_chnc    crit_dmg   s_crit_chnc  s_crit_dmg 
-		{ ECharacterClass::BARBARIAN,		0.f,	0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f },
-		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f }
-	};
-
-	for (const auto& stats : player_character_stats)
-		if (stats._class == player_class) return stats;
-
-	return PlayerStats();
 }
 
 CharacterData::EnemyStats CharacterData::InitEnemyCharacterStats(ECharacterClass enemy_class) {
