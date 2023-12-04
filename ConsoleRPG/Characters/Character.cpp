@@ -4,6 +4,19 @@
 #include "../GameplayStatics.h"
 #include "../Effects/PassiveEffect.h"
 
+Character::Character(const CharacterData::PlayerStats& data)
+{
+	_class = data._class;
+	_health = data._health;
+	_essence = data._essence;
+	_stamina = data._stamina;
+	_armor = data._armor;
+	_damage_melee = data._damage_melee;
+	_damage_ranged = data._damage_ranged;
+	_crit_chance = data._crit_chance;
+	_crit_damage = data._crit_damage;
+}
+
 Character::Character(const CharacterData::EnemyStats& data)
 {
 	_class = data._class;
@@ -21,11 +34,24 @@ Character::Character(const CharacterData::EnemyStats& data)
 	sm.CreateSpell(this, data._spell1.first, data._spell1.second);
 }
 
-Character::Character(const CharacterData::PlayerAttributes& attributes)
+Character::Character(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes)
 	: _player_attributes(attributes)
 {
-	_stat_per_attribute = CharacterData::GetStatPerAttribute();
+	_class = data._class;
+	_health = data._health;
+	_essence = data._essence;
+	_stamina = data._stamina;
+	_armor = data._armor;
+	_damage_melee = data._damage_melee;
+	_damage_ranged = data._damage_ranged;
+	_crit_chance = data._crit_chance;
+	_crit_damage = data._crit_damage;
+
+	InitStatsPerAttribute();
 	InitStats();
+	UpdateAttribute(_player_attributes._strength, 10);
+	UpdateAttribute(_player_attributes._vitality, 100);
+	UpdateAttribute(_player_attributes._intelligence, 30);
 }
 
 Character::Character(const Character& other)
@@ -101,6 +127,7 @@ void Character::InitStats() {
 
 void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 
+	// have to TEST
 	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx) {
 		if (_stat_per_attribute[idx].first == &attribute) {
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++) {
@@ -109,6 +136,17 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 		}
 	}
 	attribute += amount;
+
+	/*
+	int idx = 0;
+	for (auto& _attribute : _stat_per_attribute) {
+		if (_attribute.first == &attribute) {
+			for (int i = 0; i < _attribute.second.size(); i++) {
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * amount);
+			}
+			++idx;
+		}
+	}*/
 }
 
 void Character::AddSpell(shared_ptr<Spell> spell) {
@@ -117,6 +155,45 @@ void Character::AddSpell(shared_ptr<Spell> spell) {
 
 void Character::AddPassive(shared_ptr<PassiveEffect> passive) {
 	_passives.push_back(passive);
+}
+
+void Character::InitStatsPerAttribute() {
+
+	switch (_class) {
+		case ECharacterClass::BARBARIAN: {
+			InitStatsPerAttirbute_Barbarian();
+		}
+	}
+}
+
+void Character::InitStatsPerAttirbute_Barbarian() {
+
+	stat_pair stat_vector;
+
+	stat_vector.push_back(make_pair(&_crit_damage, 2.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_armor, 20.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 15.f));
+	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.5f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 10.f));
+	stat_vector.push_back(make_pair(&_stamina, 1.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 2.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_stamina, 10.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
 }
 
 void Character::EndTurn() {
