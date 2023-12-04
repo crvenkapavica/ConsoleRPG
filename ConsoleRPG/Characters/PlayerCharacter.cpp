@@ -2,8 +2,8 @@
 #include "../GameplayStatics.h"
 #include "../Inventory/Item.h"
 
-PlayerCharacter::PlayerCharacter(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes)
-	: Character(player_class, attributes)
+PlayerCharacter::PlayerCharacter(const CharacterData::PlayerAttributes& attributes)
+	: Character(attributes)
 {
 	InitExperienceForLevel();
 }

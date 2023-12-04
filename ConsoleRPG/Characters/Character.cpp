@@ -21,10 +21,10 @@ Character::Character(const CharacterData::EnemyStats& data)
 	sm.CreateSpell(this, data._spell1.first, data._spell1.second);
 }
 
-Character::Character(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes)
+Character::Character(const CharacterData::PlayerAttributes& attributes)
 	: _player_attributes(attributes)
 {
-	_class = player_class;
+	_class = attributes._class;
 	InitStatsPerAttribute();
 	InitStats();
 }

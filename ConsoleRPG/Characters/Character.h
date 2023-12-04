@@ -15,7 +15,7 @@ public:
 
 	Character(const CharacterData::EnemyStats& data);
 
-	Character(ECharacterClass player_class, const CharacterData::PlayerAttributes& attributes);
+	Character(const CharacterData::PlayerAttributes& attributes);
 
 	Character(const Character& other);
 
