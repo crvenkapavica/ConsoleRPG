@@ -13,10 +13,12 @@ CharacterData::CharacterData(ECharacterClass character_class)
 
 CharacterData::PlayerStats CharacterData::InitPlayerCharacterStats(ECharacterClass player_class) {
 	vector<PlayerStats> player_character_stats{
-//		               class			   health  essence    stamina      armor       dmg_melee    dmg_rng    crit_chnc    crit_dmg   s_crit_chnc  s_crit_dmg   magic_f  radius
-		{ ECharacterClass::BARBARIAN,		227.f,	100.f,		40.f,		0.f,		4.2f,		1.f,		0.08f,		225.f,		0.035f,		140.f,		0.1f,	4.f },
-		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f,		0.1f,	4.f }
+
 	};
+
+	switch (player_class) {
+
+	}
 
 	for (const auto& stats : player_character_stats)
 		if (stats._class == player_class) return stats;
@@ -42,9 +44,9 @@ CharacterData::EnemyStats CharacterData::InitEnemyCharacterStats(ECharacterClass
 CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECharacterClass player_class) {
 
 	vector<PlayerAttributes> player_attribute_data {
-//	 	    class		               str     agi     int     con     vit    craft   percep   acrob
-		{ECharacterClass::BARBARIAN,	3,		2,		1,		2,		6,		4,		2,		1},
-		{ECharacterClass::WARLOCK,		1,		1,		4,		8,		3,		2,		5,		1}
+//	 	    class		               str     agi     int     vit     con     end
+		{ECharacterClass::BARBARIAN,	3,		1,		1,		6,		1,		3 },
+		{ECharacterClass::WARLOCK,		1,		1,		4,		3,		4,		1 }
 
 		// dodati kolko gainas life i essence po levelu (mozda i jos nekaj -> neovisno o atributima)
 		// odvojiti skills od attributes
@@ -54,4 +56,50 @@ CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECh
 		if (attributes._class == player_class) return attributes;
 
 	return PlayerAttributes();
+}
+
+void CharacterData::InitStatsPerAttribute(ECharacterClass character_class) {
+
+	switch (character_class) {
+	case ECharacterClass::BARBARIAN:
+		InitStatsPerAttirbute_Barbarian();
+		break;
+	default:
+		break;
+	}
+}
+
+void CharacterData::InitStatsPerAttirbute_Barbarian() {
+
+	stat_pair stat_vector;
+
+	stat_vector.push_back(make_pair(&_health, 1.f));
+	stat_vector.push_back(make_pair(&_stamina, 2.f));
+	stat_vector.push_back(make_pair(&_damage_melee, 2.6f));
+	stat_vector.push_back(make_pair(&_crit_damage, 8.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_armor, 0.3f));
+	stat_vector.push_back(make_pair(&_attack_speed, 0.15f));
+	stat_vector.push_back(make_pair(&_damage_ranged, 0.3f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.3f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 5.f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.5f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 0.5f));
+	stat_vector.push_back(make_pair(&_stamina, 0.7f));
+	stat_vector.push_back(make_pair(&_attack_speed, 0.08f));
+	//stat_vector.push_back(make_pair(&_light_radius, 0.25f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 6.f));
+	stat_vector.push_back(make_pair(&_stamina, 0.8f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
 }
