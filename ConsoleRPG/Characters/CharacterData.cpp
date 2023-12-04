@@ -13,9 +13,9 @@ CharacterData::CharacterData(ECharacterClass character_class)
 
 CharacterData::PlayerStats CharacterData::InitPlayerCharacterStats(ECharacterClass player_class) {
 	vector<PlayerStats> player_character_stats{
-//		               class			   health  essence    stamina      armor       dmg_melee    dmg_rng    crit_chnc    crit_dmg   s_crit_chnc  s_crit_dmg   magic_f  radius
-		{ ECharacterClass::BARBARIAN,		227.f,	100.f,		40.f,		0.f,		4.2f,		1.f,		0.08f,		225.f,		0.035f,		140.f,		0.1f,	4.f },
-		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f,		0.1f,	4.f }
+//		               class			   health  essence    stamina      armor       dmg_melee    dmg_rng    crit_chnc    crit_dmg   s_crit_chnc  s_crit_dmg 
+		{ ECharacterClass::BARBARIAN,		0.f,	0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f },
+		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f }
 	};
 
 	for (const auto& stats : player_character_stats)
@@ -42,9 +42,9 @@ CharacterData::EnemyStats CharacterData::InitEnemyCharacterStats(ECharacterClass
 CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECharacterClass player_class) {
 
 	vector<PlayerAttributes> player_attribute_data {
-//	 	    class		               str     agi     int     con     vit    craft   percep   acrob
-		{ECharacterClass::BARBARIAN,	3,		2,		1,		2,		6,		4,		2,		1},
-		{ECharacterClass::WARLOCK,		1,		1,		4,		8,		3,		2,		5,		1}
+//	 	    class		               str     agi     int     vit     con	   end    
+		{ECharacterClass::BARBARIAN,	3,		2,		4,		6,		1,		4},
+		{ECharacterClass::WARLOCK,		1,		1,		4,		2,		3,		1}
 
 		// dodati kolko gainas life i essence po levelu (mozda i jos nekaj -> neovisno o atributima)
 		// odvojiti skills od attributes

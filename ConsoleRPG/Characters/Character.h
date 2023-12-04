@@ -106,12 +106,14 @@ protected:
 	bool _bIsOnTurn = false;
 
 
-	/// EXPERIMENTAL
-	// Change to target multiple characters
+	// EXTRA STATS
+	/////////////////////////////
 	int _multi_strike = 0;
-	float _burning_damage;
-	float _fire_damage;
-	float _buff_turn_duration;
+	float _fire_damage = 0.f;
+	int _buff_duration = 0;
+	int _debuff_duration = 0;
+	float _magic_find = 0.f;
+	int _light_radius = 0;
 	////////////////////////////////////////////////
 
 public:
@@ -167,10 +169,10 @@ protected:
 	vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
 
 protected:
-	
-
 
 	void Die();
+
+	void InitStats();
 
 	// Set stat gain / loss per attribute for each class
 	void InitStatsPerAttribute();

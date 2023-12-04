@@ -7,8 +7,8 @@ PlayerCharacter::PlayerCharacter(const CharacterData::PlayerStats& data, const C
 	, _unspent_attributes(0)
 	, _experience(0)
 {
-	_magic_find = data._magic_find;
-	_light_radius = data._light_radius;
+	//_magic_find = data._magic_find;
+	//_light_radius = data._light_radius;
 	InitExperienceForLevel();
 }
 

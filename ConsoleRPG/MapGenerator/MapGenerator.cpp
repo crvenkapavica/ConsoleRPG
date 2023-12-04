@@ -356,7 +356,8 @@ void MapGenerator::ShowPosition() {
 
 	system("cls");
 
-	int radius = static_cast<int>(_player_characters[0]->GetLighRadius().GetActual());
+	//int radius = static_cast<int>(_player_characters[0]->GetLighRadius().GetActual());
+	int radius = 3;
 
 	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
 	DrawMap(_player_x - radius + 1, _player_x + radius, _player_y - radius + 1, _player_y + radius);

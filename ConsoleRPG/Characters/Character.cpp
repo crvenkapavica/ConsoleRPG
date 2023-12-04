@@ -48,6 +48,10 @@ Character::Character(const CharacterData::PlayerStats& data, const CharacterData
 	_crit_damage = data._crit_damage;
 
 	InitStatsPerAttribute();
+	InitStats();
+	UpdateAttribute(_player_attributes._strength, 10);
+	UpdateAttribute(_player_attributes._vitality, 100);
+	UpdateAttribute(_player_attributes._intelligence, 30);
 }
 
 Character::Character(const Character& other)
@@ -98,6 +102,29 @@ void Character::Stat::UpdateBonus(const float value) {
 	//OnStatChanged();
 }
 
+void Character::InitStats() {
+	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx) {
+		if (_stat_per_attribute[idx].first == &_player_attributes._strength)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._strength);
+		else if (_stat_per_attribute[idx].first == &_player_attributes._agility)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._agility);
+		else if (_stat_per_attribute[idx].first == &_player_attributes._intelligence)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._intelligence);
+		else if (_stat_per_attribute[idx].first == &_player_attributes._vitality)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._vitality);
+		else if (_stat_per_attribute[idx].first == &_player_attributes._consciousness)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._consciousness);
+		else if (_stat_per_attribute[idx].first == &_player_attributes._endurance)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._endurance);
+	}
+}
+
 void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 
 	// have to TEST
@@ -108,6 +135,7 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 			}
 		}
 	}
+	attribute += amount;
 
 	/*
 	int idx = 0;
@@ -142,33 +170,30 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_pair stat_vector;
 
-	stat_vector.push_back(make_pair(&_health, 1.f));
-	stat_vector.push_back(make_pair(&_stamina, 2.f));
-	stat_vector.push_back(make_pair(&_damage_melee, 2.6f));
-	stat_vector.push_back(make_pair(&_crit_damage, 8.f));
+	stat_vector.push_back(make_pair(&_crit_damage, 2.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_armor, 0.3f));
-	stat_vector.push_back(make_pair(&_damage_ranged, 0.3f));
-	stat_vector.push_back(make_pair(&_crit_chance, 0.3f));
+	stat_vector.push_back(make_pair(&_armor, 20.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_essence, 5.f));
-	stat_vector.push_back(make_pair(&_crit_chance, 0.5f));
+	stat_vector.push_back(make_pair(&_essence, 15.f));
+	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.5f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_health, 0.5f));
-	stat_vector.push_back(make_pair(&_stamina, 0.7f));
-	//stat_vector.push_back(make_pair(&_light_radius, 0.25f));
+	stat_vector.push_back(make_pair(&_health, 10.f));
+	stat_vector.push_back(make_pair(&_stamina, 1.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 2.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_health, 6.f));
-	stat_vector.push_back(make_pair(&_stamina, 0.8f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+	stat_vector.push_back(make_pair(&_stamina, 10.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
 }
 
 void Character::EndTurn() {
