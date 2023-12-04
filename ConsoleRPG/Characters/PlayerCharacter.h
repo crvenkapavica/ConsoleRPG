@@ -26,6 +26,9 @@ public:
 
 	int GetLevel() const { return _level; }
 
+	inline Stat GetMagicFind() const { return _magic_find; }
+	inline Stat GetLighRadius() const { return _light_radius; }
+
 	virtual void TakeTurn() override;
 
 	std::vector<Item*> _item_slots = std::vector<Item*>(ITEM_SLOTS, nullptr);
@@ -35,18 +38,8 @@ public:
 
 protected:
 
-	// Player additional stats
-	int _multi_strike = 0;
-
-	float _fire_damage = 0.f;
-
-
-	int _buff_duration = 0;
-	int _debuff_dureation = 0;
-
-	float _magic_find = 0.f;
-	int _light_radius = 0;
-	//////////////////////////////////////////////////////////
+	Stat _magic_find;
+	Stat _light_radius;
 
 	int _unspent_attributes;
 	int _experience;

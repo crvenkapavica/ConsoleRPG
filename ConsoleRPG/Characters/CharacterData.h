@@ -16,14 +16,14 @@ public:
 		float _essence;
 		float _stamina;
 		float _armor;
-
-		int   _attack_power;
+		float _damage_melee;
+		float _damage_ranged;
 		float _crit_chance;
 		float _crit_damage;
-
-		int   _spell_power;
 		float _spell_crit_chance;
 		float _spell_crit_damage;
+		float _magic_find;
+		float _light_radius;
 	};
 
 	struct EnemyStats {
@@ -33,12 +33,10 @@ public:
 		float _essence;
 		float _stamina;
 		float _armor;
-		
-		int	  _attack_power;
+		float _damage_melee;
+		float _damage_ranged;
 		float _crit_chance;
 		float _crit_damage;
-
-		int	  _spell_power;
 		float _spell_crit_chance;
 		float _spell_crit_damage;
 
@@ -54,13 +52,23 @@ public:
 
 		ECharacterClass	_class;
 
-		Attribute		_strength;		// increase AP
-		Attribute		_agility;		// increase AP
-		Attribute		_intelligence;  // increase SP
-
-		Attribute		_vitality;		// increase health
-		Attribute		_consciousness;	// increase essence
-		Attribute		_endurance;		// inrease stamina
+		Attribute		_strength;
+		Attribute		_agility;
+		Attribute		_intelligence;
+		Attribute		_consciousness;
+		Attribute		_vitality;
+		
+		//Attribute		_endurance // ili nest slicno, mogel bi biti attribut kolko mores koristiti "powera" po turnu. 
+								  // power je attack, spell, items usage, sve koristi nekse resursa 
+								//(mozda istoga ko i spell kak magija mozda budu svi skupa kao neksi power i mores tolko potrositi na turnu pa treba planirati)
+								
+		// SKillovi dajeju efekte pasivne ili aktivne
+		// moreju imati recimo 3 levela
+		// jako su jako i tesko ih je zleveleati
+		Skill		_craftmanship; // kraftanje i repejranje itemi - efekt repair itema - efekt craftaj bez towna (recimo)
+		Skill		_perception; // odnosi se na uocavanje detalja, mores videti enemy power level sa vecom preciznoscu (efekt INSPECT)
+		Skill		_acrobatics; // odnosi se na preskakanje neksih prepreki na mapi i generalni movement (efekt skoci prek kamena, vise se kreci)
+		Skill		_pathfinding; // utjece na to dal mores mapu videti (pamti de je kaj na mapi i pamti mapu, morres videti mapu zbog toga skilla)
 	};
 
 	CharacterData(ECharacterClass character_class);
@@ -71,10 +79,6 @@ protected:
 	EnemyStats			_enemy_data;
 	PlayerAttributes	_player_attribute_data;
 
-	using stat_pair = vector<pair<Stat*, float>>;
-	// Stat change per attribute
-	vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
-
 private:
 
 	PlayerAttributes InitPlayerCharacterAttributes(ECharacterClass player_class);
@@ -83,11 +87,6 @@ private:
 
 	EnemyStats InitEnemyCharacterStats(ECharacterClass enemy_class);
 
-	// Set stat gain / loss per attribute for each class
-	void InitStatsPerAttribute(ECharacterClass character_class);
-
-	void InitStatsPerAttirbute_Barbarian();
-
 public:
 
 	inline const PlayerStats& GetPlayerData() const { return _player_data; }
@@ -95,9 +94,3 @@ public:
 	
 	PlayerAttributes& GetPlayerAttributeData() { return _player_attribute_data; }
 };
-
-
-//Skill		_craftmanship; // kraftanje i repejranje itemi - efekt repair itema - efekt craftaj bez towna (recimo)
-//Skill		_perception; // odnosi se na uocavanje detalja, mores videti enemy power level sa vecom preciznoscu (efekt INSPECT)
-//Skill		_acrobatics; // odnosi se na preskakanje neksih prepreki na mapi i generalni movement (efekt skoci prek kamena, vise se kreci)
-//Skill		_pathfinding; // utjece na to dal mores mapu videti (pamti de je kaj na mapi i pamti mapu, morres videti mapu zbog toga skilla)

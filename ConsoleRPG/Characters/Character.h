@@ -89,12 +89,10 @@ protected:
 	Stat _stamina;
 
 	Stat _armor;
-
-	Stat _attack_power;
+	Stat _damage_melee;
+	Stat _damage_ranged;
 	Stat _crit_chance;
 	Stat _crit_damage; 
-
-	Stat _spell_power;
 	Stat _spell_crit_chance;
 	Stat _spell_crit_damage;
 
@@ -108,21 +106,33 @@ protected:
 	bool _bIsAlive = true;
 	bool _bIsOnTurn = false;
 
+
+	/// EXPERIMENTAL
+	// Change to target multiple characters
+	int _multi_strike = 0;
+	float _burning_damage;
+	float _fire_damage;
+	float _buff_turn_duration;
+	////////////////////////////////////////////////
+
 public:
 	
 	inline Stat& GetHealth() { return _health; }
 	inline Stat& GetEssence() { return _essence; }
 	inline Stat& GetStamina() { return _stamina; }
 	inline Stat& GetArmor() { return _armor; }
-	inline Stat& GetAttackPower() { return _attack_power; }
+	inline Stat& GetDmgMelee() { return _damage_melee; }
+	inline Stat& GetDmgRanged() { return _damage_ranged; }
 	inline Stat& GetCritChance() { return _crit_chance; }
 	inline Stat& GetCritDmg() { return _crit_damage; }
-	inline Stat& GetSpellPower() { return _spell_power; }
 	inline Stat& GetSpellCritChance() { return _spell_crit_chance; }
 	inline Stat& GetSpellCrtDmg() { return _spell_crit_damage; }
 	inline ECharacterClass GetCharacterClass() { return _class; }
 
 public:
+	
+	// Get StatPerAttribute vector for updating stats after attribute change
+	const auto GetStatPerAttribute() const { return _stat_per_attribute; }
 
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
@@ -133,7 +143,7 @@ public:
 	inline vector<shared_ptr<Spell>>& GetSpells() { return _spells; }
 	inline vector<shared_ptr<PassiveEffect>>& GetPassives() { return _passives; }
 	inline const vector<EEffectID>& GetEffectIds() { return _effect_ids; }
-	inline void RemoveEffectById(EEffectID effect_id) {
+	inline void RemoveEffectById(const EEffectID effect_id) {
 		for (auto it = _effect_ids.begin(); it != _effect_ids.end();)
 			if (*it == effect_id)
 				it = _effect_ids.erase(it);
@@ -153,9 +163,20 @@ protected:
 	// ID's of spell effects
 	vector<EEffectID> _effect_ids;
 
+	using stat_pair = vector<pair<Stat*, float>>;
+	// Stat change per attribute
+	vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
+
 protected:
 	
+
+
 	void Die();
+
+	// Set stat gain / loss per attribute for each class
+	void InitStatsPerAttribute();
+
+	void InitStatsPerAttirbute_Barbarian();
 
 public:
 

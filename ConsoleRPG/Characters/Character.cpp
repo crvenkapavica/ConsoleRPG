@@ -98,14 +98,6 @@ void Character::Stat::UpdateBonus(const float value) {
 	//OnStatChanged();
 }
 
-void Character::AddSpell(shared_ptr<Spell> spell) {
-	_spells.push_back(spell);
-}
-
-void Character::AddPassive(shared_ptr<PassiveEffect> passive) {
-	_passives.push_back(passive);
-}
-
 void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 
 	// have to TEST
@@ -127,6 +119,58 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 			++idx;
 		}
 	}*/
+}
+
+void Character::AddSpell(shared_ptr<Spell> spell) {
+	_spells.push_back(spell);
+}
+
+void Character::AddPassive(shared_ptr<PassiveEffect> passive) {
+	_passives.push_back(passive);
+}
+
+void Character::InitStatsPerAttribute() {
+
+	switch (_class) {
+		case ECharacterClass::BARBARIAN: {
+			InitStatsPerAttirbute_Barbarian();
+		}
+	}
+}
+
+void Character::InitStatsPerAttirbute_Barbarian() {
+
+	stat_pair stat_vector;
+
+	stat_vector.push_back(make_pair(&_health, 1.f));
+	stat_vector.push_back(make_pair(&_stamina, 2.f));
+	stat_vector.push_back(make_pair(&_damage_melee, 2.6f));
+	stat_vector.push_back(make_pair(&_crit_damage, 8.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_armor, 0.3f));
+	stat_vector.push_back(make_pair(&_attack_speed, 0.15f));
+	stat_vector.push_back(make_pair(&_damage_ranged, 0.3f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.3f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 5.f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.5f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 0.5f));
+	stat_vector.push_back(make_pair(&_stamina, 0.7f));
+	stat_vector.push_back(make_pair(&_attack_speed, 0.08f));
+	//stat_vector.push_back(make_pair(&_light_radius, 0.25f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 6.f));
+	stat_vector.push_back(make_pair(&_stamina, 0.8f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
 }
 
 void Character::EndTurn() {
