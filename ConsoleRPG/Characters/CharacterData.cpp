@@ -1,4 +1,6 @@
+#include "../Characters/Character.h"
 #include "CharacterData.h"
+
 
 CharacterData::CharacterData(ECharacterClass character_class)
 	: _player_attribute_data(InitPlayerCharacterAttributes(character_class))
@@ -6,22 +8,11 @@ CharacterData::CharacterData(ECharacterClass character_class)
 	if (static_cast<int>(character_class) >= 50) {
 		_enemy_data = InitEnemyCharacterStats(character_class);
 	}
-	else {
-		_player_data = InitPlayerCharacterStats(character_class);
-	}
 }
 
-CharacterData::PlayerStats CharacterData::InitPlayerCharacterStats(ECharacterClass player_class) {
-	vector<PlayerStats> player_character_stats{
-//		               class			   health  essence    stamina      armor       dmg_melee    dmg_rng    crit_chnc    crit_dmg   s_crit_chnc  s_crit_dmg 
-		{ ECharacterClass::BARBARIAN,		0.f,	0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f,		0.f },
-		{ ECharacterClass::WARLOCK,			237.f,	60.f,		10.f,		0.f,		1.6f,		1.7f,		0.03f,		160.f,		0.085f,		210.f }
-	};
+void CharacterData::InitPlayerCharacterStats(ECharacterClass player_class) {
 
-	for (const auto& stats : player_character_stats)
-		if (stats._class == player_class) return stats;
-
-	return PlayerStats();
+	InitStatsPerAttribute(player_class);
 }
 
 CharacterData::EnemyStats CharacterData::InitEnemyCharacterStats(ECharacterClass enemy_class) {
@@ -54,4 +45,45 @@ CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECh
 		if (attributes._class == player_class) return attributes;
 
 	return PlayerAttributes();
+}
+
+void CharacterData::InitStatsPerAttribute(ECharacterClass player_class) {
+
+	switch (player_class) {
+	case ECharacterClass::BARBARIAN:
+		InitStatsPerAttirbute_Barbarian();
+		break;
+	default:
+		break;
+	}
+}
+
+void CharacterData::InitStatsPerAttirbute_Barbarian() {
+
+	stat_pair stat_vector;
+
+	stat_vector.push_back(make_pair(&_crit_damage, 2.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_armor, 20.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 15.f));
+	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.5f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 10.f));
+	stat_vector.push_back(make_pair(&_stamina, 1.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 2.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_stamina, 10.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
 }

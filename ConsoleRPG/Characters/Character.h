@@ -13,11 +13,9 @@ class Character {
 
 public:
 
-	Character(const CharacterData::PlayerStats& data);
-
 	Character(const CharacterData::EnemyStats& data);
 
-	Character(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes);
+	Character(const CharacterData::PlayerAttributes& attributes);
 
 	Character(const Character& other);
 
@@ -132,9 +130,6 @@ public:
 
 public:
 	
-	// Get StatPerAttribute vector for updating stats after attribute change
-	const auto GetStatPerAttribute() const { return _stat_per_attribute; }
-
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
 	void AddSpell(shared_ptr<Spell> spell);
@@ -173,11 +168,6 @@ protected:
 	void Die();
 
 	void InitStats();
-
-	// Set stat gain / loss per attribute for each class
-	void InitStatsPerAttribute();
-
-	void InitStatsPerAttirbute_Barbarian();
 
 public:
 

@@ -3,26 +3,28 @@
 #include "../RPGTypes.h"
 #include "../Resistances.h"
 
+class Character;
+
 using namespace std;
 
 class CharacterData {
 
 public:
 
-	struct PlayerStats {
+	//struct PlayerStats {
 
-		ECharacterClass	_class;
-		float _health;
-		float _essence;
-		float _stamina;
-		float _armor;
-		float _damage_melee;
-		float _damage_ranged;
-		float _crit_chance;
-		float _crit_damage;
-		float _spell_crit_chance;
-		float _spell_crit_damage;
-	};
+	//	ECharacterClass	_class;
+	//	float _health;
+	//	float _essence;
+	//	float _stamina;
+	//	float _armor;
+	//	float _damage_melee;
+	//	float _damage_ranged;
+	//	float _crit_chance;
+	//	float _crit_damage;
+	//	float _spell_crit_chance;
+	//	float _spell_crit_damage;
+	//};
 
 	struct EnemyStats {
 
@@ -63,21 +65,30 @@ public:
 
 protected:
 
-	PlayerStats			_player_data;
+	using stat_pair = vector<pair<Character::Stat*, float>>;
+	// Stat change per attribute
+	vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
 	EnemyStats			_enemy_data;
-	PlayerAttributes	_player_attribute_data;
+	PlayerAttributes	_player_attributes;
 
 private:
 
 	PlayerAttributes InitPlayerCharacterAttributes(ECharacterClass player_class);
 
-	PlayerStats InitPlayerCharacterStats(ECharacterClass player_class);
+	void InitPlayerCharacterStats(ECharacterClass player_class);
 
 	EnemyStats InitEnemyCharacterStats(ECharacterClass enemy_class);
 
+	// Get StatPerAttribute vector for updating stats after attribute change
+	const auto GetStatPerAttribute() const { return _stat_per_attribute; }
+
+	// Set stat gain / loss per attribute for each class
+	void InitStatsPerAttribute();
+
+	void InitStatsPerAttirbute_Barbarian();
+
 public:
 
-	inline const PlayerStats& GetPlayerData() const { return _player_data; }
 	inline const EnemyStats& GetEnemyData() const { return _enemy_data; }
 	
 	PlayerAttributes& GetPlayerAttributeData() { return _player_attribute_data; }
