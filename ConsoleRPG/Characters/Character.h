@@ -24,10 +24,10 @@ public:
 		_essence = other._essence;
 		_stamina = other._stamina;
 		_armor = other._armor;
-		_damage_melee = other._damage_melee;
-		_damage_ranged = other._damage_ranged;
+		_attack_power = other._attack_power;
 		_crit_chance = other._crit_chance;
 		_crit_damage = other._crit_damage;
+		_spell_power = other._spell_power;
 		_spell_crit_chance = other._spell_crit_chance;
 		_spell_crit_damage = other._spell_crit_damage;
 		_resistances = other._resistances;
@@ -81,10 +81,10 @@ protected:
 	Stat _stamina;
 
 	Stat _armor;
-	Stat _damage_melee;
-	Stat _damage_ranged;
+	Stat _attack_power;
 	Stat _crit_chance;
 	Stat _crit_damage; 
+	Stat _spell_power;
 	Stat _spell_crit_chance;
 	Stat _spell_crit_damage;
 
@@ -115,10 +115,10 @@ public:
 	inline Stat& GetEssence() { return _essence; }
 	inline Stat& GetStamina() { return _stamina; }
 	inline Stat& GetArmor() { return _armor; }
-	inline Stat& GetDmgMelee() { return _damage_melee; }
-	inline Stat& GetDmgRanged() { return _damage_ranged; }
+	inline Stat& GetAP() { return _attack_power; }
 	inline Stat& GetCritChance() { return _crit_chance; }
 	inline Stat& GetCritDmg() { return _crit_damage; }
+	inline Stat& GetSP() { return _spell_power; }
 	inline Stat& GetSpellCritChance() { return _spell_crit_chance; }
 	inline Stat& GetSpellCrtDmg() { return _spell_crit_damage; }
 	inline ECharacterClass GetCharacterClass() { return _class; }

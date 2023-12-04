@@ -11,10 +11,12 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_essence = data._essence;
 	_stamina = data._stamina;
 	_armor = data._armor;
-	_damage_melee = data._damage_melee;
-	_damage_ranged = data._damage_ranged;
+	_attack_power = data._attack_power;
 	_crit_chance = data._crit_chance;
 	_crit_damage = data._crit_damage;
+	_spell_power = data._spell_power;
+	_spell_crit_chance = data._spell_crit_chance;
+	_spell_crit_damage = data._spell_crit_damage;
 	_resistances = data._resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
@@ -35,10 +37,10 @@ Character::Character(const Character& other)
 	, _essence(other._essence)
 	, _stamina(other._stamina)
 	, _armor(other._armor)
-	, _damage_melee(other._damage_melee)
-	, _damage_ranged(other._damage_ranged)
+	, _attack_power(other._attack_power)
 	, _crit_chance(other._crit_chance)
 	, _crit_damage(other._crit_damage)
+	, _spell_power(other._spell_power)
 	, _spell_crit_chance(other._spell_crit_chance)
 	, _spell_crit_damage(other._spell_crit_damage)
 	, _player_attributes(other._player_attributes)

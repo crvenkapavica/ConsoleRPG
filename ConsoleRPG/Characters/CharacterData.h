@@ -16,10 +16,12 @@ public:
 		float _essence;
 		float _stamina;
 		float _armor;
-		float _damage_melee;
-		float _damage_ranged;
+
+		float _attack_power;
 		float _crit_chance;
 		float _crit_damage;
+
+		float _spell_power;
 		float _spell_crit_chance;
 		float _spell_crit_damage;
 
@@ -49,12 +51,14 @@ public:
 protected:
 
 	EnemyStats			_enemy_data;
+
 	PlayerAttributes	_player_attribute_data;
 
 private:
 
-	PlayerAttributes InitPlayerCharacterAttributes(ECharacterClass player_class);
 	EnemyStats InitEnemyCharacterStats(ECharacterClass enemy_class);
+
+	PlayerAttributes InitPlayerCharacterAttributes(ECharacterClass player_class);
 
 public:
 
