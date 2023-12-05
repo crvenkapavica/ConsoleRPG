@@ -91,23 +91,12 @@ protected:
 	CharacterData::PlayerAttributes	_player_attributes;
 	Resistances	_resistances;
 
-	char _alias = 'X';
+	char _alias = 'X'; // could be made as a static counter, and then convert the counter to char in constructor and assign to _alias
 
 	int	 _level = 1;
 	bool _bIsInCombat = false;
 	bool _bIsAlive = true;
 	bool _bIsOnTurn = false;
-
-
-	// EXTRA STATS
-	/////////////////////////////
-	int _multi_strike = 0;
-	float _fire_damage = 0.f;
-	int _buff_duration = 0;
-	int _debuff_duration = 0;
-	float _magic_find = 0.f;
-	int _light_radius = 0;
-	////////////////////////////////////////////////
 
 public:
 	
@@ -125,9 +114,6 @@ public:
 
 public:
 	
-	// Get StatPerAttribute vector for updating stats after attribute change
-	const auto GetStatPerAttribute() const { return _stat_per_attribute; }
-
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
 	void AddSpell(shared_ptr<Spell> spell);
@@ -136,14 +122,10 @@ public:
 
 	inline vector<shared_ptr<Spell>>& GetSpells() { return _spells; }
 	inline vector<shared_ptr<PassiveEffect>>& GetPassives() { return _passives; }
+
+	inline void AddEffectId(EEffectID effect_id) { _effect_ids.push_back(effect_id); }
+	void RemoveEffectById(EEffectID effect_id);
 	inline const vector<EEffectID>& GetEffectIds() { return _effect_ids; }
-	inline void RemoveEffectById(const EEffectID effect_id) {
-		for (auto it = _effect_ids.begin(); it != _effect_ids.end();)
-			if (*it == effect_id)
-				it = _effect_ids.erase(it);
-			else ++it;
-	}
-	inline void AddEffectId(const EEffectID effect_id) { _effect_ids.push_back(effect_id); }
 
 	virtual void TakeTurn() = 0;
 

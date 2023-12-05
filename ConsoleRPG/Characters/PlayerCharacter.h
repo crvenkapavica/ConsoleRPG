@@ -22,12 +22,13 @@ public:
 
 public:
 
-	void ReceiveExperience(const int experience);
-
-	int GetLevel() const { return _level; }
-
+	/// remove
 	inline float GetMagicFind() const { return _magic_find; }
 	inline int GetLighRadius() const { return _light_radius; }
+	////
+
+
+	void ReceiveExperience(const int experience);
 
 	virtual void TakeTurn() override;
 
@@ -36,10 +37,25 @@ public:
 	std::vector<Item*> _cons_slots;
 	std::vector<Spell*> _spell_slots;
 
+	// EXTRA STATS
+	///////////////////////////////////////////
+	// combat
+	int _multi_strike = 0;
+	float _fire_damage = 0.f;
+	int _buff_duration = 0;
+	int _debuff_duration = 0;
+
+	float critical_damage = 0.f;
+
+	// out of combat
+	float _magic_find = 0.f;
+	int _light_radius = 0;
+	int _num_cons_slots = 0;
+	int _num_spell_slots = 0;
+	///////////////////////////////////////////
+
 protected:
 
-	float _magic_find;
-	int _light_radius;
 	int _unspent_attributes = 0;
 	int _experience = 0;
 

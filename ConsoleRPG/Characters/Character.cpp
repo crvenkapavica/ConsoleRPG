@@ -29,6 +29,7 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 	_class = attributes._class;
 	InitStatsPerAttribute();
 	InitStats();
+	UpdateAttribute(_player_attributes._vitality, -2);
 }
 
 Character::Character(const Character& other)
@@ -56,16 +57,18 @@ Character::~Character()
 
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;
-	//OnStatChanged();
+	_actual += value;
 }
 
 void Character::Stat::SetActual(const float value) {
 	_actual = value;
-	//OnStatChanged();
 }
 
 void Character::Stat::UpdateActual(const float value, Character* character) {
 	_actual += value;
+	if (_actual > _max)
+		_max = _actual;
+
 	if (character->GetHealth().GetActual() <= 0)
 		character->Die();
 }
@@ -111,6 +114,13 @@ void Character::AddSpell(shared_ptr<Spell> spell) {
 
 void Character::AddPassive(shared_ptr<PassiveEffect> passive) {
 	_passives.push_back(passive);
+}
+
+void Character::RemoveEffectById(EEffectID effect_id) {
+	for (auto it = _effect_ids.begin(); it != _effect_ids.end();)
+		if (*it == effect_id)
+			it = _effect_ids.erase(it);
+		else ++it;
 }
 
 void Character::InitStatsPerAttribute() {
