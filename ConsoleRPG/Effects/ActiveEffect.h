@@ -35,9 +35,11 @@ protected:
     float GetRandFloat(float a, float b);
 
     // Get random damage between spell min and max value at current level
-    float GetRandEffectMinMax();
+    float GetRandEffectMinMax(Character* character);
     // Get random damage between spell min and max value for on aplly effect at current level
-    float GetRandOnApplyMinMax();
+    float GetRandOnApplyMinMax(Character* character);
+
+    float AdjustDamage(float damage, Character* character);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
     int AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name);

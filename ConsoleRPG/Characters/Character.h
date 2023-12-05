@@ -21,7 +21,7 @@ public:
 
 	Character& operator=(const Character& other) {
 		// "reset" all stats that effects might modify
-		_health.SetMax = other._health.GetMax(); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
+		_health.SetMax(other._health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
 		_essence = other._essence;
 		_stamina = other._stamina;
 		_armor = other._armor;
@@ -130,6 +130,37 @@ public:
 	inline const vector<EEffectID>& GetEffectIds() { return _effect_ids; }
 
 	virtual void TakeTurn() = 0;
+
+public:
+
+	// EXTRA STATS COMBAT
+	//////////////////////////////////////////
+	int _multi_strike = 0;
+	// damage
+	float _arcane_damage = 0.f;
+	float _fire_damage = 1.f;
+	float _lightning_damage = 0.f;
+	float _cold_damage = 0.f;
+	float _poison_damage = 0.f;
+	float _necrotic_damage = 0.f;
+	float _physical_damage = 0.f;
+
+	// healing
+	float _healing;
+
+	// duration
+	int _buff_duration = 0;
+	int _debuff_duration = 0;
+	/////////////////////////////////////////
+
+
+	// EXTRA STATS OUT OF COMBAT
+	/////////////////////////////////////////
+	float _magic_find = 0.f;
+	int _light_radius = 0;
+	int _n_cons_slots = 0;
+	int _n_spell_slots = 0;
+	///////////////////////////////////////////
 
 protected:
 

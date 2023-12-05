@@ -20,12 +20,64 @@ float ActiveEffect::GetRandFloat(float a, float b) {
 	return GameplayStatics::float2(distribution(generator));
 }
 
-float ActiveEffect::GetRandEffectMinMax() {
-	return GameplayStatics::float2(GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel())));
+float ActiveEffect::GetRandEffectMinMax(Character* character) {
+	return AdjustDamage(GameplayStatics::float2(GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel()))), character);
 }
 
-float ActiveEffect::GetRandOnApplyMinMax() {
-	return GameplayStatics::float2(GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel())));
+float ActiveEffect::GetRandOnApplyMinMax(Character* character) {
+	return AdjustDamage(GameplayStatics::float2(GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel()))), character);
+}
+
+float ActiveEffect::AdjustDamage(float damage, Character* character) {
+	auto damage_type = _spell->GetEffects()[_idx]->GetDamageType();
+	auto spell_type = _spell->GetEffects()[_idx]->GetSpellType();
+	
+	switch (damage_type) {
+	case EDamageType::ARCANE:
+		damage += damage * character->_arcane_damage;
+		break;
+	case EDamageType::FIRE:
+		damage += damage * character->_fire_damage;
+		break;
+	case EDamageType::LIGHTNING:
+		damage += damage * character->_lightning_damage;
+		break;
+	case EDamageType::COLD:
+		damage += damage * character->_cold_damage;
+		break;
+	case EDamageType::POISON:
+		damage += damage * character->_poison_damage;
+		break;
+	case EDamageType::NECROTIC:
+		damage += damage * character->_necrotic_damage;
+		break;
+	case EDamageType::PHYSICAL:
+		damage += damage * character->_necrotic_damage;
+		damage += character->GetAP().GetActual();
+	case EDamageType::HEALING:
+		damage += damage * character->_healing;
+		break;
+	default:
+		break;
+	}
+
+	if (damage_type != EDamageType::PHYSICAL)
+		damage += character->GetSP().GetActual();
+
+	srand(time(0));
+	int rnd = rand() % 100000;
+	if (spell_type == ESpellType::PROJECTILE) {
+		float chance = character->GetSpellCritChance().GetActual() * 100000;
+		if (rnd <= chance)
+			damage *= character->GetSpellCritDmg().GetActual();
+	}
+	else if (spell_type == ESpellType::MELEE || spell_type == ESpellType::RANGED) {
+		float chance = character->GetCritChance().GetActual() * 100000;
+		if (rnd <= chance)
+			damage *= character->GetCritDmg().GetActual();
+	}
+
+	return damage;
 }
 
 int ActiveEffect::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name) {
@@ -58,7 +110,8 @@ int ActiveEffect::AddRandomTargets(int r, const vector<weak_ptr<Character>>& ene
 void FireballEffect::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), -GetRandOnApplyMinMax()});
+	float damage = -GetRandOnApplyMinMax(instigator);
+	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
 	OnApplyParams apply_params;
 	apply_params._on_event = EEffectEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -81,24 +134,24 @@ stringstream& FireballEffect::GetTooltip() {
 
 void BurningEffect::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
-	OnApplyParams apply_params;
+	//OnApplyParams apply_params;
 
-	int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
-	vector<CharacterStat> enemy_effect_stats;
-	for (int i = 0; i <= rand_targets; i++)
-		enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), -GetRandEffectMinMax()});
+	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
+	//vector<CharacterStat> enemy_effect_stats;
+	//for (int i = 0; i <= rand_targets; i++)
+	//	enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), -GetRandEffectMinMax()});
 
-	EffectParams effect_params;
-	effect_params._on_event = EEffectEvent::ON_TURN_BEGIN;
-	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EEffectValueAction::UPDATE_ACTUAL);
+	//EffectParams effect_params;
+	//effect_params._on_event = EEffectEvent::ON_TURN_BEGIN;
+	//effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	//effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EEffectValueAction::UPDATE_ACTUAL);
 
-	vector<weak_ptr<Character>> targets;
-	for (int i = 0; i <= rand_targets; i++)
-		targets.push_back(team2[t2_idx[i]]);
+	//vector<weak_ptr<Character>> targets;
+	//for (int i = 0; i <= rand_targets; i++)
+	//	targets.push_back(team2[t2_idx[i]]);
 
-	shared_ptr<BurningEffect> effect = make_shared<BurningEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
-	GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
+	//shared_ptr<BurningEffect> effect = make_shared<BurningEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
+	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
 stringstream& BurningEffect::GetTooltip() {

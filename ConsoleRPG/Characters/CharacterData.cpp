@@ -27,7 +27,7 @@ CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECh
 
 	vector<PlayerAttributes> player_attribute_data {
 //	 	    class		               str     agi     int     vit     con	   end    
-		{ECharacterClass::BARBARIAN,	3,		2,		4,		6,		1,		4},
+		{ECharacterClass::BARBARIAN,	3,		2,		1,		6,		1,		4},
 		{ECharacterClass::WARLOCK,		1,		1,		4,		2,		3,		1}
 
 		// dodati kolko gainas life i essence po levelu (mozda i jos nekaj -> neovisno o atributima)

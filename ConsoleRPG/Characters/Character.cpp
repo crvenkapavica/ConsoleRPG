@@ -27,6 +27,10 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 	: _player_attributes(attributes)
 {
 	_class = attributes._class;
+	_crit_damage = 2.f;
+	_crit_chance = 0.5f;
+	_spell_crit_damage = 2.f;
+	_spell_crit_chance = 0.5f;
 	InitStatsPerAttribute();
 	InitStats();
 	UpdateAttribute(_player_attributes._vitality, -2);
@@ -46,9 +50,6 @@ Character::Character(const Character& other)
 	, _spell_crit_damage(other._spell_crit_damage)
 	, _player_attributes(other._player_attributes)
 	, _resistances(other._resistances)
-	//, _alias(other._alias)
-	//, _level(other._level)
-	//, _multi_strike(other._multi_strike)
 {}
 
 Character::~Character() 
@@ -146,11 +147,11 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_armor, 20.f));
-	stat_vector.push_back(make_pair(&_crit_chance, 0.20f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.002f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.125f));
+	//stat_vector.push_back(make_pair(&_spell_crit_chance, 0.00125f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
 
 	stat_vector.clear();

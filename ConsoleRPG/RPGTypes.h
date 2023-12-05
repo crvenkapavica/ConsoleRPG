@@ -154,7 +154,9 @@ enum class ESpellType {
 	BUFF,
 	DEBUFF,
 	AURA,
-	PROJECTILE
+	PROJECTILE, //rename to v nekaj kaj nije sinonim ranged abilitiju
+	MELEE,
+	RANGED
 };
 
 enum class ESpellActivity {
@@ -295,12 +297,6 @@ enum class EEffectValueAction {
 	UPDATE_BASE,
 	UPDATE_ACTUAL,
 	UPDATE_BONUS
-};
-
-enum class EEffectDamageType {
-	BURNING,
-	PHYSICAL,
-	PURE,
 };
 
 enum class EEffectType {
