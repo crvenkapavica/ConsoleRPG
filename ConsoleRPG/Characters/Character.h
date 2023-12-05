@@ -21,6 +21,7 @@ public:
 
 	Character& operator=(const Character& other) {
 		// "reset" all stats that effects might modify
+		_health.SetMax = other._health.GetMax(); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
 		_essence = other._essence;
 		_stamina = other._stamina;
 		_armor = other._armor;
@@ -56,7 +57,7 @@ public:
 			_actual = value;
 			_max = value;
 
-			return _base;
+			return _base;	// zakaj base ? prouciti
 		}
 
 		inline const float& GetBase() const { return _base; }
@@ -67,6 +68,7 @@ public:
 		void UpdateActual(const float value, Character* character);
 
 		void SetActual(const float value);
+		void SetMax(const float value);
 
 	private:
 		//void OnStatChanged();
@@ -106,10 +108,10 @@ public:
 	inline Stat& GetArmor() { return _armor; }
 	inline Stat& GetAP() { return _attack_power; }
 	inline Stat& GetCritChance() { return _crit_chance; }
-	inline Stat& GetCritDmg() { return _crit_damage; }
+	inline Stat& GetCritDmg() { return _crit_damage; } 
 	inline Stat& GetSP() { return _spell_power; }
 	inline Stat& GetSpellCritChance() { return _spell_crit_chance; }
-	inline Stat& GetSpellCrtDmg() { return _spell_crit_damage; }
+	inline Stat& GetSpellCritDmg() { return _spell_crit_damage; }
 	inline ECharacterClass GetCharacterClass() { return _class; }
 
 public:
@@ -168,6 +170,4 @@ public:
 	inline void SetIsInCombat(bool in_combat) { _bIsInCombat = in_combat; }
 	inline const CharacterData::PlayerAttributes& GetPlayerAttributes() { return _player_attributes; }
 	inline Resistances& GetResistances() { return _resistances; }
-
-	inline const int GetMultiStrike() const { return _multi_strike; }
 };

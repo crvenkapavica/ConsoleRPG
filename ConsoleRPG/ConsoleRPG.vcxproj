@@ -140,7 +140,6 @@
     <ClCompile Include="GameplayStatics.cpp" />
     <ClCompile Include="Inventory\Item.cpp" />
     <ClCompile Include="Inventory\ItemData.cpp" />
-    <ClCompile Include="Inventory\test.cpp" />
     <ClCompile Include="MapGenerator\MapGenerator.cpp" />
     <ClCompile Include="Effects\PassiveEffect.cpp" />
     <ClCompile Include="Characters\PlayerCharacter.cpp" />

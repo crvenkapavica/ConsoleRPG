@@ -46,9 +46,9 @@ Character::Character(const Character& other)
 	, _spell_crit_damage(other._spell_crit_damage)
 	, _player_attributes(other._player_attributes)
 	, _resistances(other._resistances)
-	, _alias(other._alias)
-	, _level(other._level)
-	, _multi_strike(other._multi_strike)
+	//, _alias(other._alias)
+	//, _level(other._level)
+	//, _multi_strike(other._multi_strike)
 {}
 
 Character::~Character() 
@@ -62,6 +62,10 @@ void Character::Stat::UpdateBase(const float value) {
 
 void Character::Stat::SetActual(const float value) {
 	_actual = value;
+}
+
+void Character::Stat::SetMax(const float value) {
+	_max = value;
 }
 
 void Character::Stat::UpdateActual(const float value, Character* character) {
@@ -136,29 +140,30 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_pair stat_vector;
 
-	stat_vector.push_back(make_pair(&_crit_damage, 2.f));
+	stat_vector.push_back(make_pair(&_crit_damage, 5.f));
+	stat_vector.push_back(make_pair(&_attack_power, 12.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_armor, 20.f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.20f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_essence, 15.f));
-	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.5f));
+	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.125f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_health, 10.f));
-	stat_vector.push_back(make_pair(&_stamina, 1.f));
+	stat_vector.push_back(make_pair(&_stamina, 2.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_essence, 2.f));
+	stat_vector.push_back(make_pair(&_essence, 5.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_stamina, 10.f));
+	stat_vector.push_back(make_pair(&_stamina, 15.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
 }
 

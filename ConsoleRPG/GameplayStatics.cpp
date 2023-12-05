@@ -71,7 +71,7 @@ void GameplayStatics::DisplayAllies() {
 			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << character->GetCritDmg().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << character->GetSP().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCrtDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCritDmg().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetArcaneRes();
 			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetFireRes();
 			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetLightningRes();
@@ -96,7 +96,7 @@ void GameplayStatics::DisplayEnemies() {
 			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetCritDmg().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSP().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSpellCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSpellCrtDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSpellCritDmg().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetArcaneRes();
 			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetFireRes();
 			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetLightningRes();
@@ -351,8 +351,9 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, i
 	//several other types might be self-cast only thus not needing a target
 
 	string s_input = "";
-	int target_num = 1 + _combat_manager->GetTurnCharacter().lock()->GetMultiStrike();
-	for (int i = 0; i < target_num; i++) {
+	//int target_num = 1 + _combat_manager->GetTurnCharacter().lock()->GetMultiStrike();
+	int n_targets = 1;
+	for (int i = 0; i < n_targets; i++) {
 		cout << "Input target alias:" << endl;
 		cout << "-> ";
 		cin >> s_input;
@@ -360,7 +361,7 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, i
 
 	vector<int> p_idx;
 	vector<int> e_idx;
-	for (int i = 0; i < target_num; i++) {
+	for (int i = 0; i < n_targets; i++) {
 		char c = s_input[i];
 		if (c >= '0' && c <= '9') p_idx.push_back(GetPlayerIdx(c));
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
