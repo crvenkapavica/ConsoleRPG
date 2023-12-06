@@ -2,12 +2,12 @@
 #include "../RPGTypes.h"
 #include "../GameplayStatics.h"
 #include "../Spells/CSpellData.h"
-#include "../Spells/Spell.h"
+#include "../Spells/SpellBook.h"
 
 class Character;
 class PlayerCharacter;
 class EnemyCharacter;
-class PassiveEffect;
+class PassiveSpell;
 struct EffectParams;
 
 class SpellManager {
@@ -16,15 +16,15 @@ class SpellManager {
 	SpellManager(const SpellManager&) = delete;
 	SpellManager& operator=(const SpellManager&) = delete;
 
-	unordered_map<ESpellID, Spell*> _instanced_spells;
+	unordered_map<ESpellID, SpellBook*> _instanced_spells;
 
 public:
 
 	static SpellManager& GetInstance();
 
-	shared_ptr<Spell> CreateSpell(Character* spell_onwer, ESpellID spell_id, int level);
+	shared_ptr<SpellBook> CreateSpell(Character* spell_onwer, ESpellID spell_id, int level);
 
-	shared_ptr<PassiveEffect> CreatePassive(Character* spell_owner, EEffectID id);
+	shared_ptr<PassiveSpell> CreatePassive(Character* spell_owner, EEffectID id);
 
 	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<PlayerCharacter>> players, vector<weak_ptr<EnemyCharacter>> enemies, vector<int> p_idx, vector<int> e_idx, int effect_idx);
 
@@ -34,7 +34,7 @@ public:
 
 private:
 
-	void AddSpellToCharacter(Character* spell_owner, shared_ptr<Spell> spell);
+	void AddSpellToCharacter(Character* spell_owner, shared_ptr<SpellBook> spell);
 
-	void AddPassiveToCharacter(Character* spell_owner, shared_ptr<PassiveEffect> passive);
+	void AddPassiveToCharacter(Character* spell_owner, shared_ptr<PassiveSpell> passive);
 };

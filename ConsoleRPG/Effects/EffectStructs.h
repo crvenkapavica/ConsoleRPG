@@ -1,7 +1,7 @@
 #pragma once
 #include "../RPGTypes.h"
 #include "../Characters/Character.h"
-#include "../Effects/ActiveEffect.h"
+#include "../Effects/ActiveSpell.h"
 
 struct Effect_MultiTarget {
 	int min;
@@ -77,12 +77,12 @@ struct CombatEffect {
 	std::vector<weak_ptr<Character>> _targets;
 	EffectParams _effect_params;
 	OnApplyParams _apply_params;
-	std::shared_ptr<ActiveEffect> _effect;
+	std::shared_ptr<ActiveSpell> _effect;
 	int i = 0;
 	int _duration;
 	int _turn_applied = -1;
 
-	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, EffectParams effect_params, OnApplyParams apply_params, shared_ptr<ActiveEffect> effect, int duration)
+	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, EffectParams effect_params, OnApplyParams apply_params, shared_ptr<ActiveSpell> effect, int duration)
 		: _instigator(instigator)
 		, _targets(targets)
 		, _effect_params(effect_params)

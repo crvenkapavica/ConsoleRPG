@@ -2,8 +2,8 @@
 #include "../RPGTypes.h"
 #include "../Characters/PlayerCharacter.h"
 
-class ActiveEffect;
-class PassiveEffect;
+class ActiveSpell;
+class PassiveSpell;
 class Character;
 
 class Item {
@@ -30,8 +30,8 @@ public:
 		EItemType		_item_type;
 		EWeaponType		_weapon_type;
 
-		//std::unique_ptr<ActiveEffect> _active_effect;
-		//std::unique_ptr<PassiveEffect> _passive_effect;
+		//std::unique_ptr<ActiveSpell> _active_effect;
+		//std::unique_ptr<PassiveSpell> _passive_effect;
 	};
 
 	Item(ItemInfo item_info);

@@ -1,14 +1,14 @@
 #pragma once
 #include "../RPGTypes.h"
-#include "../Effects/Effect.h"
+#include "../Effects/Spell.h"
 #include "../Characters/Character.h"
 
-class PassiveEffect : public Effect {
+class PassiveSpell : public Spell {
 
 public:
-	PassiveEffect(EEffectID id, EEffectEvent on_event, EEffectType effect_type);
+	PassiveSpell(EEffectID id, EEffectEvent on_event, EEffectType effect_type);
 
-	static shared_ptr<PassiveEffect> CreatePassive(EEffectID id);
+	static shared_ptr<PassiveSpell> CreatePassive(EEffectID id);
 
 	virtual void Apply() = 0;
 
@@ -37,9 +37,9 @@ private:
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class VampiricTouch : public PassiveEffect {
+class VampiricTouch : public PassiveSpell {
 public:
-	VampiricTouch(EEffectID id, EEffectEvent on_event, EEffectType effect_type) : PassiveEffect(id, on_event, effect_type) {}
+	VampiricTouch(EEffectID id, EEffectEvent on_event, EEffectType effect_type) : PassiveSpell(id, on_event, effect_type) {}
 	
 	virtual void Apply() override;
 

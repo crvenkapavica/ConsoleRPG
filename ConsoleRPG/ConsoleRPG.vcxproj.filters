@@ -48,7 +48,7 @@
     <ClCompile Include="Characters\EnemyCharacter.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="Spells\Spell.cpp">
+    <ClCompile Include="Spells\SpellBook.cpp">
       <Filter>Source Files\Spells</Filter>
     </ClCompile>
     <ClCompile Include="MapGenerator\MapGenerator.cpp">
@@ -63,7 +63,7 @@
     <ClCompile Include="Characters\CharacterData.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="Effects\Effect.cpp">
+    <ClCompile Include="Effects\Spell.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
     <ClCompile Include="Combat\CombatManager.cpp">
@@ -75,10 +75,10 @@
     <ClCompile Include="Resistances.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Effects\PassiveEffect.cpp">
+    <ClCompile Include="Effects\PassiveSpell.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="Effects\ActiveEffect.cpp">
+    <ClCompile Include="Effects\ActiveSpell.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
     <ClCompile Include="Inventory\Item.cpp">
@@ -104,7 +104,7 @@
     <ClInclude Include="Spells\CSpellData.h">
       <Filter>Source Files\Spells</Filter>
     </ClInclude>
-    <ClInclude Include="Spells\Spell.h">
+    <ClInclude Include="Spells\SpellBook.h">
       <Filter>Source Files\Spells</Filter>
     </ClInclude>
     <ClInclude Include="MapGenerator\MapGenerator.h">
@@ -116,7 +116,7 @@
     <ClInclude Include="Spells\SpellManager.h">
       <Filter>Source Files\Spells</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\Effect.h">
+    <ClInclude Include="Effects\Spell.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Combat\CombatManager.h">
@@ -131,10 +131,10 @@
     <ClInclude Include="Effects\EffectStructs.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\PassiveEffect.h">
+    <ClInclude Include="Effects\PassiveSpell.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\ActiveEffect.h">
+    <ClInclude Include="Effects\ActiveSpell.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Characters\CharacterData.h">

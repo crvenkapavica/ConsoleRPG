@@ -6,11 +6,11 @@
 class Character;
 class PlayerCharacter;
 class EnemyCharacter;
-class Spell;
+class SpellBook;
 class SpellManager;
 class CombatManager;
 class MapGenerator;
-class ActiveEffect;
+class ActiveSpell;
 struct EffectParams;
 struct OnApplyParams;
 
@@ -46,8 +46,8 @@ public:
 	static void DisplaySpellMenu();
 	static void HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type, OUT int& effect_idx);
 	static void HandleSpellTargets(int spell_idx, ESpellType spell_type, int effect_idx);
-	static int DisplayEquipedSpells(int& length, vector<Spell*>& spells);
-	static int DisplaySelectedSpellsEffects(int input, int length, vector<Spell*> spells);
+	static int DisplayEquipedSpells(int& length, vector<SpellBook*>& spells);
+	static int DisplaySelectedSpellsEffects(int input, int length, vector<SpellBook*> spells);
 
 	static void DisplayInfoMenu();
 	static void HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx);
@@ -67,9 +67,9 @@ public:
 	static void DisplayAllies();
 	static void DisplayEnemies();
 
-	static float ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveEffect> effect, bool isOnApply);
+	static float ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> effect, bool isOnApply);
 
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveEffect> effect, int effect_idx);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> effect, int effect_idx);
 
 	static string GetAliasColor(char alias);
 

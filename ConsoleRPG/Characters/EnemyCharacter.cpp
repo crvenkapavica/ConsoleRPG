@@ -1,7 +1,7 @@
 #include "EnemyCharacter.h"
 #include "CharacterData.h"
 #include "../GameplayStatics.h"
-#include "../Spells/Spell.h"
+#include "../Spells/SpellBook.h"
 #include "../Spells/SpellManager.h"
 
 EnemyCharacter::EnemyCharacter(const CharacterData::EnemyStats& data) 

@@ -3,7 +3,7 @@
 #include "../Effects/EffectStructs.h"
 #include "../Characters/Character.h"
 #include "../Characters/EnemyCharacter.h"
-#include "../Effects/PassiveEffect.h"
+#include "../Effects/PassiveSpell.h"
 
 CombatManager& CombatManager::GetInstance() {
 	static CombatManager _instance;
@@ -104,7 +104,7 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_RESET;
 }
 
-void CombatManager::ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveEffect> effect, float& total, bool isOnApply) {
+void CombatManager::ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply) {
 
 	float value;
 

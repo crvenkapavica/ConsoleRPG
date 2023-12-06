@@ -73,7 +73,7 @@ private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveEffect> effect, float& total, bool isOnApply);
+	void ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply);
 
 	void ApplyRes(CharacterRes& character_res, float& total);
 

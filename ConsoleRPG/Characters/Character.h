@@ -6,8 +6,8 @@
 
 using namespace std;
 
-class Spell;
-class PassiveEffect;
+class SpellBook;
+class PassiveSpell;
 
 class Character {
 
@@ -118,12 +118,12 @@ public:
 	
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
-	void AddSpell(shared_ptr<Spell> spell);
+	void AddSpell(shared_ptr<SpellBook> spell);
 
-	void AddPassive(shared_ptr<PassiveEffect> spell);
+	void AddPassive(shared_ptr<PassiveSpell> spell);
 
-	inline vector<shared_ptr<Spell>>& GetSpells() { return _spells; }
-	inline vector<shared_ptr<PassiveEffect>>& GetPassives() { return _passives; }
+	inline vector<shared_ptr<SpellBook>>& GetSpells() { return _spells; }
+	inline vector<shared_ptr<PassiveSpell>>& GetPassives() { return _passives; }
 
 	inline void AddEffectId(EEffectID effect_id) { _effect_ids.push_back(effect_id); }
 	void RemoveEffectById(EEffectID effect_id);
@@ -165,9 +165,9 @@ public:
 protected:
 
 	// Active spells
-	vector<shared_ptr<Spell>> _spells;
+	vector<shared_ptr<SpellBook>> _spells;
 	// Passive effects
-	vector<shared_ptr<PassiveEffect>> _passives;
+	vector<shared_ptr<PassiveSpell>> _passives;
 
 	// ID's of spell effects
 	vector<EEffectID> _effect_ids;

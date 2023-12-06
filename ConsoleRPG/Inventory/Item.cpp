@@ -1,7 +1,7 @@
 #include "Item.h"
 #include "../GameplayStatics.h"
-#include "../Effects/ActiveEffect.h"
-#include "../Effects/PassiveEffect.h"
+#include "../Effects/ActiveSpell.h"
+#include "../Effects/PassiveSpell.h"
 #include "../Inventory/ItemData.h"
 #include "../Characters/Character.h"
 

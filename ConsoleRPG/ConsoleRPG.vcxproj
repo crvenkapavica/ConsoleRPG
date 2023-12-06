@@ -130,43 +130,43 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Effects\ActiveEffect.cpp" />
+    <ClCompile Include="Effects\ActiveSpell.cpp" />
     <ClCompile Include="Characters\Character.cpp" />
     <ClCompile Include="Characters\CharacterData.cpp" />
     <ClCompile Include="Combat\CombatManager.cpp" />
     <ClCompile Include="Display\ConsoleMenu.cpp" />
-    <ClCompile Include="Effects\Effect.cpp" />
+    <ClCompile Include="Effects\Spell.cpp" />
     <ClCompile Include="Characters\EnemyCharacter.cpp" />
     <ClCompile Include="GameplayStatics.cpp" />
     <ClCompile Include="Inventory\Item.cpp" />
     <ClCompile Include="Inventory\ItemData.cpp" />
     <ClCompile Include="MapGenerator\MapGenerator.cpp" />
-    <ClCompile Include="Effects\PassiveEffect.cpp" />
+    <ClCompile Include="Effects\PassiveSpell.cpp" />
     <ClCompile Include="Characters\PlayerCharacter.cpp" />
     <ClCompile Include="Resistances.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Spells\Spell.cpp" />
+    <ClCompile Include="Spells\SpellBook.cpp" />
     <ClCompile Include="Spells\CSpellData.cpp" />
     <ClCompile Include="Spells\SpellManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Effects\ActiveEffect.h" />
+    <ClInclude Include="Effects\ActiveSpell.h" />
     <ClInclude Include="Characters\Character.h" />
     <ClInclude Include="Characters\CharacterData.h" />
     <ClInclude Include="Combat\CombatManager.h" />
     <ClInclude Include="Display\ConsoleMenu.h" />
-    <ClInclude Include="Effects\Effect.h" />
+    <ClInclude Include="Effects\Spell.h" />
     <ClInclude Include="Effects\EffectStructs.h" />
     <ClInclude Include="Characters\EnemyCharacter.h" />
     <ClInclude Include="GameplayStatics.h" />
     <ClInclude Include="Inventory\Item.h" />
     <ClInclude Include="Inventory\ItemData.h" />
     <ClInclude Include="MapGenerator\MapGenerator.h" />
-    <ClInclude Include="Effects\PassiveEffect.h" />
+    <ClInclude Include="Effects\PassiveSpell.h" />
     <ClInclude Include="Characters\PlayerCharacter.h" />
     <ClInclude Include="Resistances.h" />
     <ClInclude Include="RPGTypes.h" />
-    <ClInclude Include="Spells\Spell.h" />
+    <ClInclude Include="Spells\SpellBook.h" />
     <ClInclude Include="Spells\CSpellData.h" />
     <ClInclude Include="Spells\SpellManager.h" />
   </ItemGroup>

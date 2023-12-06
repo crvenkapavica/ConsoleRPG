@@ -1,10 +1,10 @@
 #pragma once
 #include "../RPGTypes.h"
 
-class Effect {
+class Spell {
 public:
 
-    Effect(EEffectID id);
+    Spell(EEffectID id);
 
     inline const EEffectID GetID() const { return _ID; }
 

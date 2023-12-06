@@ -1,8 +1,8 @@
 #include "Character.h"
-#include "../Spells/Spell.h"
+#include "../Spells/SpellBook.h"
 #include "../Spells/SpellManager.h"
 #include "../GameplayStatics.h"
-#include "../Effects/PassiveEffect.h"
+#include "../Effects/PassiveSpell.h"
 
 Character::Character(const CharacterData::EnemyStats& data)
 {
@@ -112,11 +112,11 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 	attribute += amount;
 }
 
-void Character::AddSpell(shared_ptr<Spell> spell) {
+void Character::AddSpell(shared_ptr<SpellBook> spell) {
 	_spells.push_back(spell);
 }
 
-void Character::AddPassive(shared_ptr<PassiveEffect> passive) {
+void Character::AddPassive(shared_ptr<PassiveSpell> passive) {
 	_passives.push_back(passive);
 }
 

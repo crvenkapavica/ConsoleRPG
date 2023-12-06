@@ -1,28 +1,30 @@
-#include "../Effects/ActiveEffect.h"
+#include "../Effects/ActiveSpell.h"
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/EnemyCharacter.h"
-#include "../Spells/Spell.h"
+#include "../Spells/SpellBook.h"
 #include "../GameplayStatics.h"
 #include "../Effects/EffectStructs.h"
 
 
-ActiveEffect::ActiveEffect(EEffectID id, const Spell* spell, EDamageType damage_type, ESpellType spell_type, int idx)
-	: Effect(id)
+ActiveSpell::ActiveSpell(EEffectID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx)
+	: Spell(id)
 	, _spell(spell)
 	, _damage_type(damage_type)
 	, _spell_type(spell_type)
 	, _idx(idx)
 {}
 
-float ActiveEffect::GetRandEffectMinMax(Character* character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel())), character);
+float ActiveSpell::GetRandEffectMinMax(Character* character) {
+	//return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel())), character);
+	return 0.f;
 }
 
-float ActiveEffect::GetRandOnApplyMinMax(Character* character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel())), character);
+float ActiveSpell::GetRandOnApplyMinMax(Character* character) {
+	//return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel())), character);
+	return 0.f;
 }
 
-float ActiveEffect::AdjustDamage(float damage, Character* character) {
+float ActiveSpell::AdjustDamage(float damage, Character* character) {
 	auto damage_type = _spell->GetEffects()[_idx]->GetDamageType();
 	auto spell_type = _spell->GetEffects()[_idx]->GetSpellType();
 	
@@ -73,49 +75,50 @@ float ActiveEffect::AdjustDamage(float damage, Character* character) {
 	return damage;
 }
 
-int ActiveEffect::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name) {
+int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name) {
 
-	int expired = count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); });
-	int size = static_cast<int>(enemies.size()) - expired;
-	if (size == 1) return 0;
-	r = size == r ? r - 1 : r;
-	
-	for (int i = 0; i < r; i++) {
-		int rnd;
-		do {
-			rnd = rand() % enemies.size();
-		} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
-		index.push_back(GameplayStatics::GetEnemyIdx2(enemies[rnd].lock()->GetAlias())); // promeniti bez 2
-	}
-	sort(index.begin(), index.end());
+	//int expired = count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); });
+	//int size = static_cast<int>(enemies.size()) - expired;
+	//if (size == 1) return 0;
+	//r = size == r ? r - 1 : r;
+	//
+	//for (int i = 0; i < r; i++) {
+	//	int rnd;
+	//	do {
+	//		rnd = rand() % enemies.size();
+	//	} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
+	//	index.push_back(GameplayStatics::GetEnemyIdx2(enemies[rnd].lock()->GetAlias())); // promeniti bez 2
+	//}
+	//sort(index.begin(), index.end());
 
-	auto& s = GameplayStatics::GetCombatLogStream();
-	static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
-	s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
-	for (int i = 0; i < r; i++) {
-		s << enemies[index[i + 1]].lock()->GetAlias();
-		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
-	}
-	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
-	return r;
+	//auto& s = GameplayStatics::GetCombatLogStream();
+	//static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
+	//s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
+	//for (int i = 0; i < r; i++) {
+	//	s << enemies[index[i + 1]].lock()->GetAlias();
+	//	if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
+	//}
+	//s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
+	//return r;
+	return 0;
 }
 
 void FireballEffect::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
-	vector<CharacterStat> enemy_apply_stats;
-	float damage = -GetRandOnApplyMinMax(instigator);
-	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
-	OnApplyParams apply_params;
-	apply_params._on_event = EEffectEvent::ON_TURN_BEGIN;
-	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EEffectValueAction::UPDATE_ACTUAL);
+	//vector<CharacterStat> enemy_apply_stats;
+	//float damage = -GetRandOnApplyMinMax(instigator);
+	//enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
+	//OnApplyParams apply_params;
+	//apply_params._on_event = EEffectEvent::ON_TURN_BEGIN;
+	//apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	//apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EEffectValueAction::UPDATE_ACTUAL);
 
-	EffectParams effect_params;
+	//EffectParams effect_params;
 
-	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
+	//vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	shared_ptr<FireballEffect> effect = make_shared<FireballEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
-	GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
+	//shared_ptr<FireballEffect> effect = make_shared<FireballEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
+	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
 stringstream& FireballEffect::GetTooltip() {

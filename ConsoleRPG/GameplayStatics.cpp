@@ -2,14 +2,14 @@
 #include "Characters/Character.h"
 #include "Characters/PlayerCharacter.h"
 #include "Characters/EnemyCharacter.h"
-#include "Spells/Spell.h"
+#include "Spells/SpellBook.h"
 #include "Spells/CSpellData.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
 #include "MapGenerator/MapGenerator.h"
 #include "Resistances.h"
 #include "Effects/EffectStructs.h"
-#include "Effects/ActiveEffect.h"
+#include "Effects/ActiveSpell.h"
 #include "Inventory/Item.h"
 
 weak_ptr<PlayerCharacter> GameplayStatics::_player;
@@ -123,7 +123,7 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 
 	//cout << "STR: " << _player.lock()->GetPlayerAttributes()._strength << "  BASE CRIT DMG: " << _player.lock()->GetCritDmg().GetBase() << "  ACTUAL CRIT DMG: " << _player.lock()->GetCritDmg().GetActual() << endl;
 	//cout << "AGI: " << _player.lock()->GetPlayerAttributes()._agility << "  BASE ARMOR: " << _player.lock()->GetArmor().GetBase() << "  ACTUAL ARMOR: " << _player.lock()->GetArmor().GetActual() << endl;
-	//cout << "INT: " << _player.lock()->GetPlayerAttributes()._intelligence << "  BASE ESSENCE: " << _player.lock()->GetEssence().GetBase() << "  ACTUAL ESSENCE: " << _player.lock()->GetEssence().GetActual() << "Spell Crit %: " << _player.lock()->GetSpellCritChance().GetBase() << endl;
+	//cout << "INT: " << _player.lock()->GetPlayerAttributes()._intelligence << "  BASE ESSENCE: " << _player.lock()->GetEssence().GetBase() << "  ACTUAL ESSENCE: " << _player.lock()->GetEssence().GetActual() << "SpellBook Crit %: " << _player.lock()->GetSpellCritChance().GetBase() << endl;
 	//cout << "VIT: " << _player.lock()->GetPlayerAttributes()._vitality << "  BASE HP: " << _player.lock()->GetHealth().GetBase() << "  ACTUAL HP: " << _player.lock()->GetHealth().GetActual() << endl;
 
 	//int x; cin >> x;
@@ -333,7 +333,7 @@ void GameplayStatics::DisplaySpellMenu() {
 void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type, OUT int& effect_idx) {
 
 	int length = 0;
-	vector<Spell*> spells;
+	vector<SpellBook*> spells;
 	do {
 		if (!spells.empty()) _menu->Clear(4); // Hardcoded for now, TODO change
 		spell_idx = DisplayEquipedSpells(length, spells);
@@ -378,7 +378,7 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, i
 	_spell_manager->CastSpell(spell_idx, _combat_manager->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx, effect_idx);
 }
 
-int GameplayStatics::DisplayEquipedSpells(int& length, vector<Spell*>& spells) {
+int GameplayStatics::DisplayEquipedSpells(int& length, vector<SpellBook*>& spells) {
 	vector<string> v;
 	spells.clear();
 	for (auto& spell : _combat_manager->GetTurnCharacter().lock()->GetSpells()) {
@@ -389,7 +389,7 @@ int GameplayStatics::DisplayEquipedSpells(int& length, vector<Spell*>& spells) {
 	return InteractiveDisplay(v, 0, false);
 }
 
-int GameplayStatics::DisplaySelectedSpellsEffects(int input, int length, vector<Spell*> spells) {
+int GameplayStatics::DisplaySelectedSpellsEffects(int input, int length, vector<SpellBook*> spells) {
 	vector<string> v = { "NO EFFECT" };
 	const vector<pair<int, string>> _effect_list = spells[input]->GetEffectLevelNameVector();
 	for (auto& effect : _effect_list)
@@ -420,7 +420,7 @@ void GameplayStatics::DisplayInfoMenu() {
 }
 
 void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
-	vector<shared_ptr<ActiveEffect>> effects;
+	vector<shared_ptr<ActiveSpell>> effects;
 	auto spells = _combat_manager->GetTurnCharacter().lock()->GetSpells();
 	for (int i = 0; i < spells.size(); i++) {
 		if (spell_idx == i) {
@@ -507,7 +507,7 @@ void GameplayStatics::EndTurn(Character* character) {
 	_combat_manager->EndTurn(character);
 }
 
-float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveEffect> effect, bool isOnApply) {
+float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> effect, bool isOnApply) {
 	
 	EEffectID effect_id = effect->GetID();
 	EDamageType damage_type = effect->GetDamageType();
@@ -526,9 +526,9 @@ float GameplayStatics::ApplyDamage(Character* instigator, Character* target, flo
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveEffect> effect, int effect_idx) {
+void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> effect, int effect_idx) {
 	
-	const Spell* spell = effect->GetSpell();
+	const SpellBook* spell = effect->GetSpell();
 	EEffectID effect_id = effect->GetID();
 
 	unique_ptr<CombatEffect> combat_effect = make_unique<CombatEffect>(instigator, targets, effect_params, apply_params, effect, spell->GetDuration(effect_idx, spell->GetLevel()));
@@ -568,7 +568,7 @@ int GameplayStatics::GetRandInt(int a, int b) {
 float GameplayStatics::GetRandFloat(float a, float b) {
 	static std::mt19937 generator(std::random_device{}());
 	std::uniform_real_distribution<float> distribution(a, b);
-	return float2(distribution(generator);
+	return float2(distribution(generator));
 }
 
 

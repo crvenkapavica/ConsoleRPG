@@ -4,34 +4,34 @@
 #include "../Characters/EnemyCharacter.h"
 #include "../Effects/EffectStructs.h"
 #include "../Combat/CombatManager.h"
-#include "../Effects/PassiveEffect.h"
+#include "../Effects/PassiveSpell.h"
 
 SpellManager& SpellManager::GetInstance() {
 	static SpellManager _instance;
 	return _instance;
 }
 
-shared_ptr<Spell> SpellManager::CreateSpell(Character* spell_owner, ESpellID spell_id, int level) {
+shared_ptr<SpellBook> SpellManager::CreateSpell(Character* spell_owner, ESpellID spell_id, int level) {
 
-	shared_ptr<Spell> spell = Spell::CreateSpell(spell_id, level);
+	shared_ptr<SpellBook> spell = SpellBook::CreateSpell(spell_id, level);
 	AddSpellToCharacter(spell_owner, spell);
 
 	return spell;
 }
 
-shared_ptr<PassiveEffect> SpellManager::CreatePassive(Character* spell_owner, EEffectID id) {
+shared_ptr<PassiveSpell> SpellManager::CreatePassive(Character* spell_owner, EEffectID id) {
 
-	shared_ptr<PassiveEffect> passive = PassiveEffect::CreatePassive(id);
+	shared_ptr<PassiveSpell> passive = PassiveSpell::CreatePassive(id);
 	AddPassiveToCharacter(spell_owner, passive);
 
 	return passive;
 }
 
-void SpellManager::AddSpellToCharacter(Character* spell_owner, shared_ptr<Spell> spell) {
+void SpellManager::AddSpellToCharacter(Character* spell_owner, shared_ptr<SpellBook> spell) {
 	spell_owner->AddSpell(spell);
 }
 
-void SpellManager::AddPassiveToCharacter(Character* spell_owner, shared_ptr<PassiveEffect> passive) {
+void SpellManager::AddPassiveToCharacter(Character* spell_owner, shared_ptr<PassiveSpell> passive) {
 	spell_owner->AddPassive(passive);
 }
 
