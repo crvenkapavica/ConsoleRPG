@@ -32,8 +32,6 @@ protected:
     int _idx;
 
 protected:
-    float GetRandFloat(float a, float b);
-
     // Get random damage between spell min and max value at current level
     float GetRandEffectMinMax(Character* character);
     // Get random damage between spell min and max value for on aplly effect at current level

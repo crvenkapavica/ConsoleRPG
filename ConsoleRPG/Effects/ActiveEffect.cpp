@@ -14,18 +14,12 @@ ActiveEffect::ActiveEffect(EEffectID id, const Spell* spell, EDamageType damage_
 	, _idx(idx)
 {}
 
-float ActiveEffect::GetRandFloat(float a, float b) {
-	static std::mt19937 generator(std::random_device{}()); // Mersenne twister engine
-	std::uniform_real_distribution<float> distribution(a, b);
-	return GameplayStatics::float2(distribution(generator));
-}
-
 float ActiveEffect::GetRandEffectMinMax(Character* character) {
-	return AdjustDamage(GameplayStatics::float2(GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel()))), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel())), character);
 }
 
 float ActiveEffect::GetRandOnApplyMinMax(Character* character) {
-	return AdjustDamage(GameplayStatics::float2(GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel()))), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel())), character);
 }
 
 float ActiveEffect::AdjustDamage(float damage, Character* character) {
@@ -64,15 +58,14 @@ float ActiveEffect::AdjustDamage(float damage, Character* character) {
 	if (damage_type != EDamageType::PHYSICAL)
 		damage += character->GetSP().GetActual();
 
-	srand(time(0));
-	int rnd = rand() % 100000;
+	int rnd = GameplayStatics::GetRandInt(0, 100000);
 	if (spell_type == ESpellType::PROJECTILE) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
 		if (rnd <= chance)
 			damage *= character->GetSpellCritDmg().GetActual();
 	}
 	else if (spell_type == ESpellType::MELEE || spell_type == ESpellType::RANGED) {
-		float chance = character->GetCritChance().GetActual() * 100000;
+		float chance = character->GetCritChance().GetActual() * 100000; 
 		if (rnd <= chance)
 			damage *= character->GetCritDmg().GetActual();
 	}

@@ -559,6 +559,18 @@ float GameplayStatics::float2(float f) {
 	return round(f * 100) / 100;
 }
 
+int GameplayStatics::GetRandInt(int a, int b) {
+	static std::mt19937 generator(std::random_device{}());
+	std::uniform_int_distribution<int> distribution(a, b);
+	return distribution(generator);
+}
+
+float GameplayStatics::GetRandFloat(float a, float b) {
+	static std::mt19937 generator(std::random_device{}());
+	std::uniform_real_distribution<float> distribution(a, b);
+	return float2(distribution(generator);
+}
+
 
 
 

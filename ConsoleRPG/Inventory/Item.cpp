@@ -96,7 +96,7 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> 
 				if (i == ITEM_TYPES) return loot;
 			}
 
-			int rnd = std::rand() % 1000;
+			int rnd = GameplayStatics::GetRandInt(1, 1000);
 			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
 			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
 				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
@@ -118,7 +118,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 	int n_affixes = 0;
 	EItemRarity item_rarity = EItemRarity::COMMON;
 
-	int rnd = std::rand() % 100000;
+	int rnd = GameplayStatics::GetRandInt(1, 100000);
 	for (int i = 0; i < ITEM_RARITIES; i++) {
 		int chance = static_cast<int>(DropTable_ItemRarity[i].second + DropTable_ItemRarity[i].second * mf_bonus * 100000);
 		if (rnd <= chance) {
@@ -133,7 +133,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
 	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
 	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
-	int item_lvl = std::rand() % (max_Ilvl - min_Ilvl) + min_Ilvl;
+	int item_lvl = GameplayStatics::GetRandInt(max_Ilvl - min_Ilvl, min_Ilvl);
 
 	ItemInfo item_info = GenerateItemInfo(item_lvl, item_type, item_rarity);
 
@@ -162,21 +162,21 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 		item_info._bUsable = true;
 		break;
 	case EItemType::ARMOR:
-		rnd = std::rand() % 6;
+		rnd = GameplayStatics::GetRandInt(0, 6);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
 		break;
 	case EItemType::JEWLERY:
-		rnd = std::rand() % 3 + 10;
+		rnd = GameplayStatics::GetRandInt(10, 12);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		break;
 	case EItemType::WEAPON:
-		rnd = std::rand() % 2 + 20;
+		rnd = GameplayStatics::GetRandInt(20, 21);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		if (item_info._item_slot == EItemSlot::WPN_MAIN)
-			rnd = std::rand() % static_cast<int>(EWeaponType::LAST);
-		else 
-			rnd = std::rand() % (static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H)) + static_cast<int>(EWeaponType::FIRST_1H);
+			rnd = GameplayStatics::GetRandInt(0, static_cast<int>(EWeaponType::LAST));
+		else
+			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
 		item_info._weapon_type = static_cast<EWeaponType>(rnd);
 		CalcItemDamage(item_lvl, item_info._weapon_type, item_info._dmg_min, item_info._dmg_max);
 		break;
@@ -249,7 +249,7 @@ void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
 } 
 
 void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
-	int rnd = rand() % 1000;
+	int rnd = GameplayStatics::GetRandInt(1, 1000);
 	for (const auto& item : ItemDB::_data) {
 		if (item._item_type == EItemType::CONSUMABLE && item._drop_chnc <= rnd) {
 			item_info._name = item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ";

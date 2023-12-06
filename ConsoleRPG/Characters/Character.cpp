@@ -28,12 +28,11 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 {
 	_class = attributes._class;
 	_crit_damage = 2.f;
-	_crit_chance = 0.5f;
-	_spell_crit_damage = 2.f;
-	_spell_crit_chance = 0.5f;
+	_crit_chance = 0.05f;
+	_spell_crit_damage = 2.5f;
+	_spell_crit_chance = 0.05f;
 	InitStatsPerAttribute();
 	InitStats();
-	UpdateAttribute(_player_attributes._vitality, -2);
 }
 
 Character::Character(const Character& other)

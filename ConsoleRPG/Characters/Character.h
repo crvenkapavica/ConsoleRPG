@@ -146,7 +146,7 @@ public:
 	float _physical_damage = 0.f;
 
 	// healing
-	float _healing;
+	float _healing = 0.f;
 
 	// duration
 	int _buff_duration = 0;

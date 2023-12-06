@@ -91,6 +91,10 @@ public:
 
 	static float float2(float f);
 
+	static int GetRandInt(int a, int b);
+
+	static float GetRandFloat(float a, float b);
+
 private:
 	static weak_ptr<PlayerCharacter>	_player;
 	static vector<PlayerCharacter*>		_player_characters;
