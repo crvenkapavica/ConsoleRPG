@@ -1,28 +1,25 @@
 #include "PassiveSpell.h"
 #include "../GameplayStatics.h"
 
-unordered_map<EEffectID, pair<EEffectEvent, EEffectType>> PassiveSpell::_passive_map;
+unordered_map<ESpellID, pair<ECombatEvent, EEffectType>> PassiveSpell::_spell_map;
 
-PassiveSpell::PassiveMapConstructor::PassiveMapConstructor() {
-	_passive_map[EEffectID::VAMPIRIC_TOUCH] = make_pair(EEffectEvent::ON_CAST_END, EEffectType::PASSIVE);
+PassiveSpell::SpellMapConstructor::SpellMapConstructor() {
+	_spell_map[ESpellID::VAMPIRIC_TOUCH] = make_pair(ECombatEvent::ON_CAST_END, EEffectType::PASSIVE);
 };
-PassiveSpell::PassiveMapConstructor PassiveSpell::_passive_map_constructor;
+PassiveSpell::SpellMapConstructor PassiveSpell::_spell_map_constructor;
 
-PassiveSpell::PassiveSpell(EEffectID id, EEffectEvent on_event, EEffectType effect_type)
+PassiveSpell::PassiveSpell(ESpellID id)
 	: Spell(id)
-	, _on_event(on_event)
-	, _effect_type(effect_type)
+	, _on_event(_spell_map.at(id).first)
+	, _effect_type(_spell_map.at(id).second)
 	, _instigator(nullptr)
 {}
 
-shared_ptr<PassiveSpell> PassiveSpell::CreatePassive(EEffectID id) {
-
-	auto on_event = _passive_map.at(id).first;
-	auto effect_type = _passive_map.at(id).second;
+shared_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 
 	switch (id) {
-	case EEffectID::VAMPIRIC_TOUCH:
-		return make_shared<VampiricTouch>(id, on_event, effect_type);
+	case ESpellID::VAMPIRIC_TOUCH:
+		return make_shared<VampiricTouch>(id);
 	}
 
 	return nullptr;

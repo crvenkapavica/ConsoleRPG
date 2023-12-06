@@ -1,7 +1,7 @@
 #include "CSpellData.h"
 #include "../GameplayStatics.h"
 
-CSpellData::CSpellData(ESpellID spell_id, ESpellActivity spell_activity)
+CSpellData::CSpellData(ESpellBookID spell_id, ESpellActivity spell_activity)
 {
 	if (spell_activity == ESpellActivity::ACTIVE) {
 		CreateSpellMap();
@@ -13,7 +13,7 @@ CSpellData::CSpellData(ESpellID spell_id, ESpellActivity spell_activity)
 	}
 }
 
-void CSpellData::FindAndAssignSpellData(ESpellID spell_id) {
+void CSpellData::FindAndAssignSpellData(ESpellBookID spell_id) {
 
 	const string spell_name = GameplayStatics::GetEnumString(spell_id);
 	auto level_it = _effect_map.find(spell_name);
@@ -24,7 +24,7 @@ void CSpellData::FindAndAssignSpellData(ESpellID spell_id) {
 	}
 }
 
-void CSpellData::FindAndAssignPassiveSpellData(ESpellID spell_id) {
+void CSpellData::FindAndAssignPassiveSpellData(ESpellBookID spell_id) {
 
 }
 
@@ -47,7 +47,7 @@ void CSpellData::AddEffectLevels(const string& spell_name, const vector<pair<int
 
 void CSpellData::CreateSpellMap() {
 	AddSpellConsts("FIREBALL", {
-		ESpellID::FIREBALL, ESpellActivity::ACTIVE, ESpellRarity::BASIC
+		ESpellBookID::FIREBALL, ESpellActivity::ACTIVE, ESpellRarity::BASIC
 	});
 	AddSpellLevels("FIREBALL", {
 		{	// Default
@@ -102,7 +102,7 @@ void CSpellData::CreateSpellMap() {
 	});
 	//=================================================================================================================================
 	AddSpellConsts("STONESKIN", {
-		ESpellID::STONESKIN, ESpellActivity::ACTIVE, ESpellRarity::BASIC
+		ESpellBookID::STONESKIN, ESpellActivity::ACTIVE, ESpellRarity::BASIC
 	});
 	AddSpellLevels("STONESKIN", {
 		{	// Default
@@ -150,7 +150,7 @@ void CSpellData::CreateSpellMap() {
 	});
 	//=================================================================================================================================
 	AddSpellConsts("ARCANE INFUSION", {
-		ESpellID::ARCANE_INFUSION, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
+		ESpellBookID::ARCANE_INFUSION, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
 	});
 	AddSpellLevels("ARCANE INFUSION", {
 		{
@@ -171,7 +171,7 @@ void CSpellData::CreateSpellMap() {
 	});
 	//=================================================================================================================================
 	AddSpellConsts("BLOOD RAIN", {
-		ESpellID::BLOOD_RAIN, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
+		ESpellBookID::BLOOD_RAIN, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
 	});
 	AddSpellLevels("BLOOD RAIN", {
 		{
@@ -192,7 +192,7 @@ void CSpellData::CreateSpellMap() {
 	});
 	//=================================================================================================================================
 	AddSpellConsts("VISCOUS ACID", {
-		ESpellID::VISCOUS_ACID, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
+		ESpellBookID::VISCOUS_ACID, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
 	});
 	AddSpellLevels("VISCOUS ACID", {
 		{

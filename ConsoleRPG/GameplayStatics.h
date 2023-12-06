@@ -67,9 +67,9 @@ public:
 	static void DisplayAllies();
 	static void DisplayEnemies();
 
-	static float ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> effect, bool isOnApply);
+	static float ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> spell, bool isOnApply);
 
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> effect, int effect_idx);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> spell);
 
 	static string GetAliasColor(char alias);
 
@@ -109,8 +109,8 @@ private:
 	static stringstream					_combat_log;
 
 public:
+	static std::string GetEnumString(ESpellBookID _enum);
 	static std::string GetEnumString(ESpellID _enum);
-	static std::string GetEnumString(EEffectID _enum);
 	static std::string GetEnumString(ESpellType _enum);
 	static std::string GetEnumString(ESpellActivity _enum);
 	static std::string GetEnumString(EDamageType _enum);

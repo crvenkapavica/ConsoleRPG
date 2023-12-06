@@ -16,21 +16,23 @@ class SpellManager {
 	SpellManager(const SpellManager&) = delete;
 	SpellManager& operator=(const SpellManager&) = delete;
 
-	unordered_map<ESpellID, SpellBook*> _instanced_spells;
+	unordered_map<ESpellBookID, SpellBook*> _instanced_spells;
 
 public:
 
 	static SpellManager& GetInstance();
 
-	shared_ptr<SpellBook> CreateSpell(Character* spell_onwer, ESpellID spell_id, int level);
+	shared_ptr<SpellBook> CreateSpellBook(Character* spell_onwer, ESpellBookID spell_id, int level);
 
-	shared_ptr<PassiveSpell> CreatePassive(Character* spell_owner, EEffectID id);
+	shared_ptr<PassiveSpell> CreatePassiveSpell(Character* spell_owner, ESpellID id);
+
+
 
 	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<PlayerCharacter>> players, vector<weak_ptr<EnemyCharacter>> enemies, vector<int> p_idx, vector<int> e_idx, int effect_idx);
 
-	void UnequipSpell(ESpellID spell_id);
+	void UnequipSpell(ESpellBookID spell_id);
 
-	void EquipSpell(ESpellID spell_id);
+	void EquipSpell(ESpellBookID spell_id);
 
 private:
 

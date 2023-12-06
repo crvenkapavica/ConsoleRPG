@@ -15,13 +15,13 @@ public:
 	SpellBook(CSpellData&& data, int level);
 
 	// Create spell and assign it to owning character
-	static std::shared_ptr<SpellBook> CreateSpell(ESpellID spell_id, int level);
+	static std::shared_ptr<SpellBook> CreateSpellBook(ESpellBookID spell_id, int level);
 
 	// Invoke the default spell effect + an additional effect (idx) that the spell supports (if chosen)
 	void InvokeEffect(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<int>& t1_idx, vector<int>& t2_idx, int effect_idx);
 
 	// Set effects of each spell (usually a default effect + 3 additional)
-	inline void SetActiveEffects(const vector<shared_ptr<ActiveSpell>> effects) { _active_effects = effects; }
+	inline void SetActiveSpells(const vector<shared_ptr<ActiveSpell>> effects) { _active_effects = effects; }
 
 private:
 
@@ -29,7 +29,7 @@ private:
 	int _experience;
 	
 	// SpellBook name
-	const ESpellID			_ID;
+	const ESpellBookID			_ID;
 
 	// SpellBook activity (active / passive) // TODO [ADD OUT OF COMBAT ACTIVITY]
 	const ESpellActivity	_spell_activity;
@@ -56,7 +56,7 @@ public:
 	inline void SetLevel(int level) { _level = level; }
 	inline const int GetLevel() const { return _level; }
 	inline const int GetExperience() const { return _experience; }
-	inline const ESpellID GetID() const { return _ID; }
+	inline const ESpellBookID GetID() const { return _ID; }
 	inline const ESpellActivity GetActivity() const { return _spell_activity; }
 
 	inline const float GetEffectMax(int idx, int level) const { return _effect_data[idx]->_e[level]._effect_max; }

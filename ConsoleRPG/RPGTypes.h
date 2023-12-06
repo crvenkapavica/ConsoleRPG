@@ -143,6 +143,34 @@ enum class EActionType {
 enum class ESpellID {
 	NONE,
 	FIREBALL,
+	BURNING,
+	MOLTEN_ARMOR,
+	EXPOSURE,
+	STONESKIN,
+	DISARM,
+	THRONS,
+	BLOODBATH,
+	ARCANE_INFUSION,
+	AI_TEMP1,
+	AI_TEMP2,
+	AI_TEMP3,
+	BLOOD_RAIN,
+	BR_TEMP1,
+	BR_TEMP2,
+	BR_TEMP3,
+	VISCOUS_ACID,
+	VA_TEMP1,
+	VA_TEMP2,
+	VA_TEMP3,
+
+
+	// PASSIVES
+	VAMPIRIC_TOUCH
+};
+
+enum class ESpellBookID {
+	NONE,
+	FIREBALL,
 	STONESKIN,
 	ARCANE_INFUSION,
 	BLOOD_RAIN,
@@ -243,35 +271,7 @@ enum class EDirection {
 	NORTHWEST
 };
 
-enum class EEffectID {
-	NONE,
-	FIREBALL,
-	BURNING,
-	MOLTEN_ARMOR,
-	EXPOSURE,
-	STONESKIN,
-	DISARM,
-	THRONS,
-	BLOODBATH,
-	ARCANE_INFUSION,
-	AI_TEMP1,
-	AI_TEMP2,
-	AI_TEMP3,
-	BLOOD_RAIN,
-	BR_TEMP1,
-	BR_TEMP2,
-	BR_TEMP3,
-	VISCOUS_ACID,
-	VA_TEMP1,
-	VA_TEMP2,
-	VA_TEMP3,
-
-
-	// PASSIVES
-	VAMPIRIC_TOUCH
-};
-
-enum class EEffectEvent {
+enum class ECombatEvent {
 	ON_APPLY,
 	ON_SKIP_APPLY,
 	ON_COMBAT_BEGIN,
@@ -292,11 +292,11 @@ enum class EEffectEvent {
 	ON_CAST_END
 };
 
-enum class EEffectValueAction {
+enum class EStatValueAction {
 	DEFAULT,
 	UPDATE_BASE,
 	UPDATE_ACTUAL,
-	UPDATE_BONUS
+	UPDATE_MAX
 };
 
 enum class EEffectType {

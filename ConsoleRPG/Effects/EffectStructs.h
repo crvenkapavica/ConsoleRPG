@@ -30,9 +30,9 @@ struct Effect_Stat {
 	vector<CharacterStat> _ally_stat;
 	vector<CharacterStat> _enemy_stat;
 
-	EEffectValueAction _value_action;
+	EStatValueAction _value_action;
 
-	Effect_Stat(vector<CharacterStat> ally_stat, vector<CharacterStat> enemy_stat, EEffectValueAction value_action)
+	Effect_Stat(vector<CharacterStat> ally_stat, vector<CharacterStat> enemy_stat, EStatValueAction value_action)
 		: _ally_stat(move(ally_stat))
 		, _enemy_stat(move(enemy_stat))
 		, _value_action(value_action)
@@ -51,7 +51,7 @@ struct Effect_Res {
 
 struct EffectParams {
 
-	EEffectEvent _on_event;
+	ECombatEvent _on_event;
 
 	uint8_t	_struct_flags = 0;
 
@@ -62,7 +62,7 @@ struct EffectParams {
 
 struct OnApplyParams {
 
-	EEffectEvent _on_event;
+	ECombatEvent _on_event;
 
 	int	_struct_flags = 0;
 
@@ -77,17 +77,17 @@ struct CombatEffect {
 	std::vector<weak_ptr<Character>> _targets;
 	EffectParams _effect_params;
 	OnApplyParams _apply_params;
-	std::shared_ptr<ActiveSpell> _effect;
+	std::shared_ptr<ActiveSpell> _spell;
 	int i = 0;
 	int _duration;
 	int _turn_applied = -1;
 
-	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, EffectParams effect_params, OnApplyParams apply_params, shared_ptr<ActiveSpell> effect, int duration)
+	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, EffectParams effect_params, OnApplyParams apply_params, shared_ptr<ActiveSpell> spell, int duration)
 		: _instigator(instigator)
 		, _targets(targets)
 		, _effect_params(effect_params)
 		, _apply_params(apply_params)
-		, _effect(effect)
+		, _spell(spell)
 		, _duration(duration)
 	{}
 };

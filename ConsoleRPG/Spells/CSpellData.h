@@ -7,7 +7,7 @@ class CSpellData {
 
 public:
 
-	CSpellData(ESpellID spell_id, ESpellActivity spell_activity);
+	CSpellData(ESpellBookID spell_id, ESpellActivity spell_activity);
 
 	struct EffectLevelData {
 		float   _apply_min;
@@ -24,7 +24,7 @@ public:
 	};
 
 	struct SpellConstData {
-		ESpellID			_ID;
+		ESpellBookID			_ID;
 		ESpellActivity		_spell_activity;
 		ESpellRarity		_spell_rarity;
 	};
@@ -48,11 +48,11 @@ private:
 
 	void CreateSpellMap();
 
-	void FindAndAssignSpellData(ESpellID spell_id);
+	void FindAndAssignSpellData(ESpellBookID spell_id);
 
 	void CreatePassiveSpellMap();
 
-	void FindAndAssignPassiveSpellData(ESpellID spell_id);
+	void FindAndAssignPassiveSpellData(ESpellBookID spell_id);
 
 private:
 

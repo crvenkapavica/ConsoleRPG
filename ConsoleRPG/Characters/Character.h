@@ -125,9 +125,9 @@ public:
 	inline vector<shared_ptr<SpellBook>>& GetSpells() { return _spells; }
 	inline vector<shared_ptr<PassiveSpell>>& GetPassives() { return _passives; }
 
-	inline void AddEffectId(EEffectID effect_id) { _effect_ids.push_back(effect_id); }
-	void RemoveEffectById(EEffectID effect_id);
-	inline const vector<EEffectID>& GetEffectIds() { return _effect_ids; }
+	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
+	void RemoveEffectById(ESpellID effect_id);
+	inline const vector<ESpellID>& GetEffectIds() { return _effect_ids; }
 
 	virtual void TakeTurn() = 0;
 
@@ -170,7 +170,7 @@ protected:
 	vector<shared_ptr<PassiveSpell>> _passives;
 
 	// ID's of spell effects
-	vector<EEffectID> _effect_ids;
+	vector<ESpellID> _effect_ids;
 
 	using stat_pair = vector<pair<Stat*, float>>;
 	// Stat change per attribute

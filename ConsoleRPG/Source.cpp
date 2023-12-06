@@ -115,15 +115,15 @@ int main() {
 
     SpellManager& spell_manager = SpellManager::GetInstance();
 
-	spell_manager.CreateSpell(player_main.get(), ESpellID::FIREBALL, 0);
-	spell_manager.CreateSpell(player_main.get(), ESpellID::STONESKIN, 0);
-    spell_manager.CreateSpell(player_main.get(), ESpellID::ARCANE_INFUSION, 0);
-    spell_manager.CreateSpell(player_main.get(), ESpellID::BLOOD_RAIN, 0);
-    spell_manager.CreateSpell(player_main.get(), ESpellID::VISCOUS_ACID, 0);
-    spell_manager.CreateSpell(player_warlock.get(), ESpellID::STONESKIN, 0);
+	spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
+	spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
+    spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::ARCANE_INFUSION, 0);
+    spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::BLOOD_RAIN, 0);
+    spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::VISCOUS_ACID, 0);
+    spell_manager.CreateSpellBook(player_warlock.get(), ESpellBookID::STONESKIN, 0);
 
     //pasive
-    //spell_manager.CreatePassive(player_main.get(), EEffectID::VAMPIRIC_TOUCH);
+    //spell_manager.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
 
     CombatManager& combat_manager = CombatManager::GetInstance();
 	ConsoleMenu menu;

@@ -11,20 +11,20 @@ SpellManager& SpellManager::GetInstance() {
 	return _instance;
 }
 
-shared_ptr<SpellBook> SpellManager::CreateSpell(Character* spell_owner, ESpellID spell_id, int level) {
+shared_ptr<SpellBook> SpellManager::CreateSpellBook(Character* spell_owner, ESpellBookID spell_id, int level) {
 
-	shared_ptr<SpellBook> spell = SpellBook::CreateSpell(spell_id, level);
+	shared_ptr<SpellBook> spell = SpellBook::CreateSpellBook(spell_id, level);
 	AddSpellToCharacter(spell_owner, spell);
 
 	return spell;
 }
 
-shared_ptr<PassiveSpell> SpellManager::CreatePassive(Character* spell_owner, EEffectID id) {
+shared_ptr<PassiveSpell> SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 
-	shared_ptr<PassiveSpell> passive = PassiveSpell::CreatePassive(id);
-	AddPassiveToCharacter(spell_owner, passive);
+	shared_ptr<PassiveSpell> passive_spell = PassiveSpell::CreatePassiveSpell(id);
+	AddPassiveToCharacter(spell_owner, passive_spell);
 
-	return passive;
+	return passive_spell;
 }
 
 void SpellManager::AddSpellToCharacter(Character* spell_owner, shared_ptr<SpellBook> spell) {
@@ -72,11 +72,11 @@ void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_p
 }
 
 
-void SpellManager::UnequipSpell(ESpellID spell_id) {
+void SpellManager::UnequipSpell(ESpellBookID spell_id) {
 	//dok se unequipa spell
 	// push spella na _instanced_spells
 }
 
-void SpellManager::EquipSpell(ESpellID spell_id) {
+void SpellManager::EquipSpell(ESpellBookID spell_id) {
 
 }

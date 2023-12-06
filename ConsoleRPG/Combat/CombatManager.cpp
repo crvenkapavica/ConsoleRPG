@@ -104,7 +104,7 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_RESET;
 }
 
-void CombatManager::ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply) {
+void CombatManager::ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply) {
 
 	float value;
 
@@ -118,11 +118,11 @@ void CombatManager::ApplyStat(EEffectValueAction value_action, CharacterStat& ch
 		value = GameplayStatics::ApplyDamage(GetTurnCharacter().lock().get(), character_stat._character, character_stat._value, effect, isOnApply);
 
 	switch (value_action) {
-		case EEffectValueAction::UPDATE_BASE: {
+		case EStatValueAction::UPDATE_BASE: {
 			character_stat._stat->UpdateBase(value);
 			break;
 		}
-		case EEffectValueAction::UPDATE_ACTUAL: {
+		case EStatValueAction::UPDATE_ACTUAL: {
 			character_stat._stat->UpdateActual(value, character_stat._character);
 			break;
 		}
@@ -165,7 +165,7 @@ void CombatManager::HandleApplyStat(CombatEffect* combat_effect, Character* targ
 	auto& ally_stats = combat_effect->_apply_params._effect_stat->_ally_stat;
 	auto& enemy_stats = combat_effect->_apply_params._effect_stat->_enemy_stat;
 	auto value_action = combat_effect->_apply_params._effect_stat->_value_action;
-	auto& effect = combat_effect->_effect;
+	auto& effect = combat_effect->_spell;
 
 	for (auto& stat : ally_stats)
 		if ((combat_effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
@@ -180,7 +180,7 @@ void CombatManager::HandleEffectStat(CombatEffect* combat_effect, Character* tar
 	auto& ally_stats = combat_effect->_effect_params._effect_stat->_ally_stat;
 	auto& enemy_stats = combat_effect->_effect_params._effect_stat->_enemy_stat;
 	auto value_action = combat_effect->_effect_params._effect_stat->_value_action;
-	auto& effect = combat_effect->_effect;
+	auto& effect = combat_effect->_spell;
 
 	for (auto& stat : ally_stats)
 		if (stat._character == target || stat._character == combat_effect->_instigator)
@@ -252,7 +252,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 			if (it->second->_instigator->GetAlias() == GetTurnAlias()) {
 				for (auto& t : it->second->_targets) {
 					if (!t.expired())
-						t.lock()->RemoveEffectById(it->second->_effect->GetID());
+						t.lock()->RemoveEffectById(it->second->_spell->GetID());
 				}
 				it = _combat_effects.erase(it);
 			}
@@ -263,7 +263,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 	}
 }
 
-void CombatManager::ApplyEffectsOnEvent(EEffectEvent on_event) {
+void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 
 	for (auto& effect : _combat_effects) {
 		int idx = effect.second->i % static_cast<int>(effect.second->_targets.size());
@@ -278,7 +278,7 @@ void CombatManager::ApplyEffectsOnEvent(EEffectEvent on_event) {
 	}
 }
 
-void CombatManager::ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
+void CombatManager::ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
 	for (const auto& passive : instigator->GetPassives()) {
 		if (passive->GetOnEvent() == on_event) {
 			passive->_instigator = instigator;
@@ -362,7 +362,7 @@ void CombatManager::OnApplyEffect() {
 
 	for (auto& e : effect->_targets) {
 		if (!e.expired())
-			e.lock()->AddEffectId(effect->_effect->GetID());
+			e.lock()->AddEffectId(effect->_spell->GetID());
 	}
 }
 
@@ -378,7 +378,7 @@ void CombatManager::OnTurnBegin() {
 	//s << "BEGIN ===== INDEX: " << _turn_index << " SIZE: " << _turn_table.size() << " ALIAS: " << GetTurnAlias() << "\n";
 
 	RemoveExpiredCombatEffects();
-	ApplyEffectsOnEvent(EEffectEvent::ON_TURN_BEGIN);
+	ApplyEffectsOnEvent(ECombatEvent::ON_TURN_BEGIN);
 }
 
 void CombatManager::OnTurnEnd() {
@@ -386,12 +386,12 @@ void CombatManager::OnTurnEnd() {
 	//auto& s = GameplayStatics::GetCombatLogStream();
 	//s << "END ===== INDEX: " << _turn_index << " SIZE: " << _turn_table.size() << " ALIAS: " << GetTurnAlias() << "\n";
 
-	ApplyEffectsOnEvent(EEffectEvent::ON_TURN_END);
+	ApplyEffectsOnEvent(ECombatEvent::ON_TURN_END);
 }
 
 void CombatManager::OnCycleBegin() {
 
-	ApplyEffectsOnEvent(EEffectEvent::ON_CYCLE_BEGIN);
+	ApplyEffectsOnEvent(ECombatEvent::ON_CYCLE_BEGIN);
 }
 
 void CombatManager::OnCycleEnd() {
@@ -401,10 +401,10 @@ void CombatManager::OnCycleEnd() {
 
 // public
 void CombatManager::OnCastBegin(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
-	ApplyPassiveEffects(EEffectEvent::ON_CAST_BEGIN, instigator, team1, team2, targets);
+	ApplyPassiveEffects(ECombatEvent::ON_CAST_BEGIN, instigator, team1, team2, targets);
 }
 
 void CombatManager::OnCastEnd(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
-	ApplyPassiveEffects(EEffectEvent::ON_CAST_END, instigator, team1, team2, targets);
+	ApplyPassiveEffects(ECombatEvent::ON_CAST_END, instigator, team1, team2, targets);
 }
 ///////

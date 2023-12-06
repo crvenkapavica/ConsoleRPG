@@ -8,7 +8,7 @@ struct ItemData {
 	EItemType		_item_type;
 	EWeaponType		_wpn_type;
 	EItemSlot		_slot;
-	EEffectID		_effect_id;
+	ESpellID		_effect_id;
 	int				_min_lvl;
 	int				_max_lvl;
 	int				_min_dmg;

@@ -20,7 +20,7 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_resistances = data._resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateSpell(this, data._spell1.first, data._spell1.second);
+	sm.CreateSpellBook(this, data._spell1.first, data._spell1.second);
 }
 
 Character::Character(const CharacterData::PlayerAttributes& attributes)
@@ -120,7 +120,7 @@ void Character::AddPassive(shared_ptr<PassiveSpell> passive) {
 	_passives.push_back(passive);
 }
 
-void Character::RemoveEffectById(EEffectID effect_id) {
+void Character::RemoveEffectById(ESpellID effect_id) {
 	for (auto it = _effect_ids.begin(); it != _effect_ids.end();)
 		if (*it == effect_id)
 			it = _effect_ids.erase(it);

@@ -507,36 +507,37 @@ void GameplayStatics::EndTurn(Character* character) {
 	_combat_manager->EndTurn(character);
 }
 
-float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> effect, bool isOnApply) {
+float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> spell, bool isOnApply) {
 	
-	EEffectID effect_id = effect->GetID();
-	EDamageType damage_type = effect->GetDamageType();
-	ESpellID spell_id = effect->GetSpell()->GetID();
+	ESpellID effect_id = spell->GetID();
+	EDamageType damage_type = spell->GetDamageType();
 
 	damage = float2(damage);
 
 	float actual_damage = Resistances::CalculateDamage(damage, damage_type, target);
 	float resisted = float2(damage - actual_damage);
 
+
+	// POGLEDATI ZAKAJ TU IMA IKAKSE VEZE BOOLEAN
+	//==============================================
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
 	const string CT = GetAliasColor(target->GetAlias());
-	if (isOnApply) s << CT << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell_id) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	if (isOnApply) s << CT << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(effect_id) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
 	else s << C << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(effect_id) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	//==============================================
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> effect, int effect_idx) {
+void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> spell) {
 	
-	const SpellBook* spell = effect->GetSpell();
-	EEffectID effect_id = effect->GetID();
+	ESpellID spell_id = spell->GetID();
 
-	unique_ptr<CombatEffect> combat_effect = make_unique<CombatEffect>(instigator, targets, effect_params, apply_params, effect, spell->GetDuration(effect_idx, spell->GetLevel()));
+	unique_ptr<CombatEffect> combat_effect = make_unique<CombatEffect>(instigator, targets, effect_params, apply_params, spell,/* spell->GetDuration(effect_idx, spell->GetLevel()*/ 1);
 
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
-	if (!effect_idx) s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
-	if (effect_idx) s << C << instigator->GetAlias() << CC << " applies " << CEF << GameplayStatics::GetEnumString(effect_id) << CC << ".\n";
+	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
 	_combat_manager->AddCombatEffect(move(combat_effect));
 }
 
@@ -606,37 +607,37 @@ float GameplayStatics::GetRandFloat(float a, float b) {
 
 
 
-std::string GameplayStatics::GetEnumString(ESpellID _enum) {
+std::string GameplayStatics::GetEnumString(ESpellBookID _enum) {
 	switch (_enum) {
-	case ESpellID::NONE:
+	case ESpellBookID::NONE:
 		return "NONE";
-	case ESpellID::FIREBALL:
+	case ESpellBookID::FIREBALL:
 		return "FIREBALL";
-	case ESpellID::STONESKIN:
+	case ESpellBookID::STONESKIN:
 		return "STONESKIN";
-	case ESpellID::ARCANE_INFUSION:
+	case ESpellBookID::ARCANE_INFUSION:
 		return "ARCANE INFUSION";
-	case ESpellID::BLOOD_RAIN:
+	case ESpellBookID::BLOOD_RAIN:
 		return "BLOOD RAIN";
-	case ESpellID::VISCOUS_ACID:
+	case ESpellBookID::VISCOUS_ACID:
 		return "VISCOUS ACID";
 	default:
 		return "error";
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EEffectID _enum) {
+std::string GameplayStatics::GetEnumString(ESpellID _enum) {
 	switch (_enum) {
-	case EEffectID::FIREBALL:
+	case ESpellID::FIREBALL:
 		return "FIREBALL EFFECT";
-	case EEffectID::BURNING:
+	case ESpellID::BURNING:
 		return "BURNING";
-	case EEffectID::MOLTEN_ARMOR:
+	case ESpellID::MOLTEN_ARMOR:
 		return "MOLTEN ARMOR";
-	case EEffectID::EXPOSURE:
+	case ESpellID::EXPOSURE:
 		return "EXPOSURE";
 
-	case EEffectID::VISCOUS_ACID:
+	case ESpellID::VISCOUS_ACID:
 		return "VISCOUS ACID EFFECT";
 	default:
 		return "DEFAULT";

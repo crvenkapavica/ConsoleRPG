@@ -1,5 +1,5 @@
 #include "Spell.h"
 
-Spell::Spell(EEffectID id)
+Spell::Spell(ESpellID id)
 	: _ID(id)
 {}

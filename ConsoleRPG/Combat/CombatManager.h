@@ -73,7 +73,7 @@ private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply);
+	void ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply);
 
 	void ApplyRes(CharacterRes& character_res, float& total);
 
@@ -93,9 +93,9 @@ private:
 
 	void RemoveExpiredCombatEffects();
 
-	void ApplyEffectsOnEvent(EEffectEvent on_event);
+	void ApplyEffectsOnEvent(ECombatEvent on_event);
 
-	void ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
+	void ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
 
 	//=====  EVENTS ===== //
 	///////////////////////

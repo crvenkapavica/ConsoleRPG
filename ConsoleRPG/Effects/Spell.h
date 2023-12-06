@@ -4,15 +4,15 @@
 class Spell {
 public:
 
-    Spell(EEffectID id);
+    Spell(ESpellID id);
 
-    inline const EEffectID GetID() const { return _ID; }
+    inline const ESpellID GetID() const { return _ID; }
 
     virtual std::stringstream& GetTooltip() { return _tooltip; }
 
 protected:
 
-    const EEffectID _ID;
+    const ESpellID _ID;
 
     std::stringstream _tooltip;
 };
