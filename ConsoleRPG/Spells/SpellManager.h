@@ -22,7 +22,7 @@ public:
 
 	static SpellManager& GetInstance();
 
-	shared_ptr<SpellBook> CreateSpellBook(Character* spell_onwer, ESpellBookID spell_id, int level);
+	shared_ptr<SpellBook> CreateSpellBook(Character* spell_onwer, ESpellBookID spellbook_id, int level);
 
 	shared_ptr<PassiveSpell> CreatePassiveSpell(Character* spell_owner, ESpellID id);
 

@@ -336,7 +336,7 @@ void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpe
 	vector<SpellBook*> spells;
 	do {
 		if (!spells.empty()) _menu->Clear(4); // Hardcoded for now, TODO change
-		spell_idx = DisplayEquipedSpells(length, spells);
+		spell_idx = DisplayEquipedSpellBooks(length, spells);
 		effect_idx = DisplaySelectedSpellsEffects(spell_idx, length, spells);
 	} while (_menu->GetBack());
 
@@ -378,12 +378,12 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, i
 	_spell_manager->CastSpell(spell_idx, _combat_manager->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx, effect_idx);
 }
 
-int GameplayStatics::DisplayEquipedSpells(int& length, vector<SpellBook*>& spells) {
+int GameplayStatics::DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells) {
 	vector<string> v;
 	spells.clear();
-	for (auto& spell : _combat_manager->GetTurnCharacter().lock()->GetSpells()) {
-		v.push_back(GetEnumString(spell->GetID()));
-		spells.push_back(spell.get());
+	for (auto& spellbook : _combat_manager->GetTurnCharacter().lock()->GetSpellBooks()) {
+		v.push_back(GetEnumString(spellbook->GetID()));
+		spells.push_back(spellbook.get());
 		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
 	}
 	return InteractiveDisplay(v, 0, false);
@@ -421,10 +421,10 @@ void GameplayStatics::DisplayInfoMenu() {
 
 void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
 	vector<shared_ptr<ActiveSpell>> effects;
-	auto spells = _combat_manager->GetTurnCharacter().lock()->GetSpells();
-	for (int i = 0; i < spells.size(); i++) {
+	auto spellbooks = _combat_manager->GetTurnCharacter().lock()->GetSpellBooks();
+	for (int i = 0; i < spellbooks.size(); i++) {
 		if (spell_idx == i) {
-			effects = spells[spell_idx]->GetEffects();
+			effects = spellbooks[spell_idx]->GetEffects();
 			stringstream& ss = effects[effect_idx]->GetTooltip();
 
 			const int max_lines = 19;

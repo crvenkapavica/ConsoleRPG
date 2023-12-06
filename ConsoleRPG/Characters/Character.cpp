@@ -112,12 +112,12 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 	attribute += amount;
 }
 
-void Character::AddSpell(shared_ptr<SpellBook> spell) {
-	_spells.push_back(spell);
+void Character::AddSpellBook(shared_ptr<SpellBook> spellbook) {
+	_spellbooks.push_back(spellbook);
 }
 
-void Character::AddPassive(shared_ptr<PassiveSpell> passive) {
-	_passives.push_back(passive);
+void Character::AddPassive(shared_ptr<PassiveSpell> spell) {
+	_passive_spells.push_back(spell);
 }
 
 void Character::RemoveEffectById(ESpellID effect_id) {

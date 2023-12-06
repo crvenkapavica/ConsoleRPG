@@ -46,7 +46,7 @@ public:
 	static void DisplaySpellMenu();
 	static void HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type, OUT int& effect_idx);
 	static void HandleSpellTargets(int spell_idx, ESpellType spell_type, int effect_idx);
-	static int DisplayEquipedSpells(int& length, vector<SpellBook*>& spells);
+	static int DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells);
 	static int DisplaySelectedSpellsEffects(int input, int length, vector<SpellBook*> spells);
 
 	static void DisplayInfoMenu();

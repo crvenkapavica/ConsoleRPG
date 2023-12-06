@@ -279,7 +279,7 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 }
 
 void CombatManager::ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
-	for (const auto& passive : instigator->GetPassives()) {
+	for (const auto& passive : instigator->GetPassiveSpells()) {
 		if (passive->GetOnEvent() == on_event) {
 			passive->_instigator = instigator;
 			passive->_targets = targets;

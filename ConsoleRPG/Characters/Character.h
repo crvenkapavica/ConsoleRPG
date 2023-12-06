@@ -118,12 +118,11 @@ public:
 	
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
-	void AddSpell(shared_ptr<SpellBook> spell);
-
+	void AddSpellBook(shared_ptr<SpellBook> spellbook);
 	void AddPassive(shared_ptr<PassiveSpell> spell);
 
-	inline vector<shared_ptr<SpellBook>>& GetSpells() { return _spells; }
-	inline vector<shared_ptr<PassiveSpell>>& GetPassives() { return _passives; }
+	inline vector<shared_ptr<SpellBook>>& GetSpellBooks() { return _spellbooks; }
+	inline vector<shared_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
 
 	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
 	void RemoveEffectById(ESpellID effect_id);
@@ -165,9 +164,9 @@ public:
 protected:
 
 	// Active spells
-	vector<shared_ptr<SpellBook>> _spells;
+	vector<shared_ptr<SpellBook>> _spellbooks;
 	// Passive effects
-	vector<shared_ptr<PassiveSpell>> _passives;
+	vector<shared_ptr<PassiveSpell>> _passive_spells;
 
 	// ID's of spell effects
 	vector<ESpellID> _effect_ids;

@@ -48,125 +48,125 @@ class Fireball : public ActiveSpell {
 public:
     Fireball(ESpellID id) : ActiveSpell(id) {}
     virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-    //virtual stringstream& GetTooltip() override;
+    virtual stringstream& GetTooltip() override;
 };
 
-//class BurningEffect : public ActiveSpell {
-//public:
-//    BurningEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//    virtual stringstream& GetTooltip() override;
-//};
-//
-//class MoltenArmorEffect : public ActiveSpell {
-//public:
-//    MoltenArmorEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//    virtual stringstream& GetTooltip() override;
-//};
-//
-//class ExposureEffect : public ActiveSpell {
-//public:
-//    ExposureEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//    virtual stringstream& GetTooltip() override;
-//};
-////================================================================================================
-////------------------------------------     STONESKIN       ---------------------------------------
-//class StoneskinEffect : public ActiveSpell {
-//public:
-//    StoneskinEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//    virtual stringstream& GetTooltip() override;
-//};
-//class DisarmEffect : public ActiveSpell {
-//public:
-//    DisarmEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class ThornsEffect : public ActiveSpell {
-//public:
-//    ThornsEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//    virtual stringstream& GetTooltip() override;
-//};
-//
-//class BloodbathEffect : public ActiveSpell {
-//public:
-//    BloodbathEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-////================================================================================================
-////--------------------------------     ARCANE INFUSION     ---------------------------------------
-//class ArcaneInfusionEffect : public ActiveSpell {
-//public:
-//    ArcaneInfusionEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//class AI_TEMP1 : public ActiveSpell {
-//public:
-//    AI_TEMP1(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class AI_TEMP2 : public ActiveSpell {
-//public:
-//    AI_TEMP2(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class AI_TEMP3 : public ActiveSpell {
-//public:
-//    AI_TEMP3(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-////================================================================================================
-////------------------------------------     BLOOD RAIN      ---------------------------------------
-//class BloodRainEffect : public ActiveSpell {
-//public:
-//    BloodRainEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//class BR_TEMP1 : public ActiveSpell {
-//public:
-//    BR_TEMP1(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class BR_TEMP2 : public ActiveSpell {
-//public:
-//    BR_TEMP2(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class BR_TEMP3 : public ActiveSpell {
-//public:
-//    BR_TEMP3(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-////================================================================================================
-////------------------------------------     VISCOUS ACID    ---------------------------------------
-//class ViscousAcidEffect : public ActiveSpell {
-//public:
-//    ViscousAcidEffect(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//    virtual stringstream& GetTooltip() override;
-//};
-//class VA_TEMP1 : public ActiveSpell {
-//public:
-//    VA_TEMP1(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class VA_TEMP2 : public ActiveSpell {
-//public:
-//    VA_TEMP2(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
-//
-//class VA_TEMP3 : public ActiveSpell {
-//public:
-//    VA_TEMP3(ESpellID id, const SpellBook* spell, EDamageType damage_type, ESpellType spell_type, int idx) : ActiveSpell(id, spell, damage_type, spell_type, idx) {}
-//    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
-//};
+class Burning : public ActiveSpell {
+public:
+    Burning(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+    virtual stringstream& GetTooltip() override;
+};
+
+class MoltenArmor : public ActiveSpell {
+public:
+    MoltenArmor(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+    virtual stringstream& GetTooltip() override;
+};
+
+class Exposure : public ActiveSpell {
+public:
+    Exposure(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+    virtual stringstream& GetTooltip() override;
+};
+//================================================================================================
+//------------------------------------     STONESKIN       ---------------------------------------
+class Stoneskin : public ActiveSpell {
+public:
+    Stoneskin(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+    virtual stringstream& GetTooltip() override;
+};
+class Disarm : public ActiveSpell {
+public:
+    Disarm(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class Thorns : public ActiveSpell {
+public:
+    Thorns(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+    virtual stringstream& GetTooltip() override;
+};
+
+class Bloodbath : public ActiveSpell {
+public:
+    Bloodbath(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+//================================================================================================
+//--------------------------------     ARCANE INFUSION     ---------------------------------------
+class ArcaneInfusion : public ActiveSpell {
+public:
+    ArcaneInfusion(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+class AI_TEMP1 : public ActiveSpell {
+public:
+    AI_TEMP1(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class AI_TEMP2 : public ActiveSpell {
+public:
+    AI_TEMP2(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class AI_TEMP3 : public ActiveSpell {
+public:
+    AI_TEMP3(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+//================================================================================================
+//------------------------------------     BLOOD RAIN      ---------------------------------------
+class BloodRain : public ActiveSpell {
+public:
+    BloodRain(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+class BR_TEMP1 : public ActiveSpell {
+public:
+    BR_TEMP1(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class BR_TEMP2 : public ActiveSpell {
+public:
+    BR_TEMP2(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class BR_TEMP3 : public ActiveSpell {
+public:
+    BR_TEMP3(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+//================================================================================================
+//------------------------------------     VISCOUS ACID    ---------------------------------------
+class ViscousAcid : public ActiveSpell {
+public:
+    ViscousAcid(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+    virtual stringstream& GetTooltip() override;
+};
+class VA_TEMP1 : public ActiveSpell {
+public:
+    VA_TEMP1(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class VA_TEMP2 : public ActiveSpell {
+public:
+    VA_TEMP2(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};
+
+class VA_TEMP3 : public ActiveSpell {
+public:
+    VA_TEMP3(ESpellID id) :ActiveSpell(id) {}
+    virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) override;
+};

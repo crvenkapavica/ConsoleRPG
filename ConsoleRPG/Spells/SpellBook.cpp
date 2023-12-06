@@ -20,55 +20,55 @@ SpellBook::SpellBook(CSpellData&& data, int level)
 
 shared_ptr<SpellBook> SpellBook::CreateSpellBook(ESpellBookID spellID, int level) {
 
-	//shared_ptr<SpellBook> spell_book;
-	//vector<shared_ptr<ActiveSpell>> spells;
+	shared_ptr<SpellBook> spell_book;
+	vector<shared_ptr<ActiveSpell>> spells;
 
-	//switch (spellID) {
-	//	case ESpellBookID::FIREBALL: {
-	//		spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::FIREBALL, ESpellActivity::ACTIVE), level);
-	//		spells.push_back(make_shared<FireballEffect>(ESpellID::FIREBALL, spell_book.get(), EDamageType::FIRE, ESpellType::PROJECTILE, 0));
-	//		spells.push_back(make_shared<BurningEffect>(ESpellID::BURNING, spell_book.get(), EDamageType::FIRE, ESpellType::DEBUFF, 1));
-	//		spells.push_back(make_shared<MoltenArmorEffect>(ESpellID::MOLTEN_ARMOR, spell_book.get(), EDamageType::FIRE, ESpellType::DEBUFF, 2));
-	//		spells.push_back(make_shared<ExposureEffect>(ESpellID::EXPOSURE, spell_book.get(), EDamageType::FIRE, ESpellType::DEBUFF, 3));
-	//		spell_book->SetActiveSpells(spells);
-	//	} break;
-	//	case ESpellBookID::STONESKIN: {
-	//		spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::STONESKIN, ESpellActivity::ACTIVE), level);
-	//		spells.push_back(make_shared<StoneskinEffect>(ESpellID::STONESKIN, spell_book.get(), EDamageType::FIRE, ESpellType::BUFF, 0));
-	//		spells.push_back(make_shared<DisarmEffect>(ESpellID::DISARM, spell_book.get(), EDamageType::FIRE, ESpellType::DEBUFF, 1));
-	//		spells.push_back(make_shared<ThornsEffect>(ESpellID::THRONS, spell_book.get(), EDamageType::FIRE, ESpellType::AURA, 2));
-	//		spells.push_back(make_shared<BloodbathEffect>(ESpellID::BLOODBATH, spell_book.get(), EDamageType::FIRE, ESpellType::BUFF, 3));
-	//		spell_book->SetActiveSpells(spells);
-	//	} break;
-	//	case ESpellBookID::ARCANE_INFUSION: {
-	//		spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::ARCANE_INFUSION, ESpellActivity::ACTIVE), level);
-	//		spells.push_back(make_shared<ArcaneInfusionEffect>(ESpellID::ARCANE_INFUSION, spell_book.get(), EDamageType::ARCANE, ESpellType::BUFF, 0));
-	//		spells.push_back(make_shared<AI_TEMP1>(ESpellID::AI_TEMP1, spell_book.get(), EDamageType::ARCANE, ESpellType::BUFF, 1));
-	//		spells.push_back(make_shared<AI_TEMP2>(ESpellID::AI_TEMP2, spell_book.get(), EDamageType::ARCANE, ESpellType::BUFF, 2));
-	//		spells.push_back(make_shared<AI_TEMP3>(ESpellID::AI_TEMP3, spell_book.get(), EDamageType::ARCANE, ESpellType::BUFF, 3));
-	//		spell_book->SetActiveSpells(spells);
-	//	} break;
-	//	case ESpellBookID::BLOOD_RAIN: {
-	//		spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::BLOOD_RAIN, ESpellActivity::ACTIVE), level);
-	//		spells.push_back(make_shared<BloodRainEffect>(ESpellID::BLOOD_RAIN, spell_book.get(), EDamageType::NECROTIC, ESpellType::DEBUFF, 0));
-	//		spells.push_back(make_shared<BR_TEMP1>(ESpellID::BR_TEMP1, spell_book.get(), EDamageType::NECROTIC, ESpellType::DEBUFF, 1));
-	//		spells.push_back(make_shared<BR_TEMP2>(ESpellID::BR_TEMP2, spell_book.get(), EDamageType::NECROTIC, ESpellType::DEBUFF, 2));
-	//		spells.push_back(make_shared<BR_TEMP3>(ESpellID::BR_TEMP3, spell_book.get(), EDamageType::NECROTIC, ESpellType::DEBUFF, 3));
-	//		spell_book->SetActiveSpells(spells);
-	//	} break;
-	//	case ESpellBookID::VISCOUS_ACID: {
-	//		spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::VISCOUS_ACID, ESpellActivity::ACTIVE), level);
-	//		spells.push_back(make_shared<ViscousAcidEffect>(ESpellID::VISCOUS_ACID, spell_book.get(), EDamageType::POISON, ESpellType::DEBUFF, 0));
-	//		spells.push_back(make_shared<VA_TEMP1>(ESpellID::VA_TEMP1, spell_book.get(), EDamageType::POISON, ESpellType::DEBUFF, 1));
-	//		spells.push_back(make_shared<VA_TEMP2>(ESpellID::VA_TEMP2, spell_book.get(), EDamageType::POISON, ESpellType::DEBUFF, 2));
-	//		spells.push_back(make_shared<VA_TEMP3>(ESpellID::VA_TEMP3, spell_book.get(), EDamageType::POISON, ESpellType::DEBUFF, 3));
-	//		spell_book->SetActiveSpells(spells);
-	//	} break;
-	//	default:
-	//		throw std::invalid_argument("Invalid spell ID");
-	//}
+	switch (spellID) {
+		case ESpellBookID::FIREBALL: {
+			spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::FIREBALL, ESpellActivity::ACTIVE), level);
+			spells.push_back(make_shared<Fireball>(ESpellID::FIREBALL));
+			spells.push_back(make_shared<Burning>(ESpellID::BURNING));
+			spells.push_back(make_shared<MoltenArmor>(ESpellID::MOLTEN_ARMOR));
+			spells.push_back(make_shared<Exposure>(ESpellID::EXPOSURE));
+			spell_book->SetActiveSpells(spells);
+		} break;
+		case ESpellBookID::STONESKIN: {
+			spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::STONESKIN, ESpellActivity::ACTIVE), level);
+			spells.push_back(make_shared<Stoneskin>(ESpellID::STONESKIN));
+			spells.push_back(make_shared<Disarm>(ESpellID::DISARM));
+			spells.push_back(make_shared<Thorns>(ESpellID::THRONS));
+			spells.push_back(make_shared<Bloodbath>(ESpellID::BLOODBATH));
+			spell_book->SetActiveSpells(spells);
+		} break;
+		case ESpellBookID::ARCANE_INFUSION: {
+			spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::ARCANE_INFUSION, ESpellActivity::ACTIVE), level);
+			spells.push_back(make_shared<ArcaneInfusion>(ESpellID::ARCANE_INFUSION));
+			spells.push_back(make_shared<AI_TEMP1>(ESpellID::AI_TEMP1));
+			spells.push_back(make_shared<AI_TEMP2>(ESpellID::AI_TEMP2));
+			spells.push_back(make_shared<AI_TEMP3>(ESpellID::AI_TEMP3));
+			spell_book->SetActiveSpells(spells);
+		} break;
+		case ESpellBookID::BLOOD_RAIN: {
+			spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::BLOOD_RAIN, ESpellActivity::ACTIVE), level);
+			spells.push_back(make_shared<BloodRain>(ESpellID::BLOOD_RAIN));
+			spells.push_back(make_shared<BR_TEMP1>(ESpellID::BR_TEMP1));
+			spells.push_back(make_shared<BR_TEMP2>(ESpellID::BR_TEMP2));
+			spells.push_back(make_shared<BR_TEMP3>(ESpellID::BR_TEMP3));
+			spell_book->SetActiveSpells(spells);
+		} break;
+		case ESpellBookID::VISCOUS_ACID: {
+			spell_book = make_shared<SpellBook>(CSpellData(ESpellBookID::VISCOUS_ACID, ESpellActivity::ACTIVE), level);
+			spells.push_back(make_shared<ViscousAcid>(ESpellID::VISCOUS_ACID));
+			spells.push_back(make_shared<VA_TEMP1>(ESpellID::VA_TEMP1));
+			spells.push_back(make_shared<VA_TEMP2>(ESpellID::VA_TEMP2));
+			spells.push_back(make_shared<VA_TEMP3>(ESpellID::VA_TEMP3));
+			spell_book->SetActiveSpells(spells);
+		} break;
+		default:
+			throw std::invalid_argument("Invalid spell ID");
+	}
 
-	//return spell_book;
+	return spell_book;
 
 	return nullptr;
 }

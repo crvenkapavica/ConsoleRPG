@@ -11,9 +11,9 @@ SpellManager& SpellManager::GetInstance() {
 	return _instance;
 }
 
-shared_ptr<SpellBook> SpellManager::CreateSpellBook(Character* spell_owner, ESpellBookID spell_id, int level) {
+shared_ptr<SpellBook> SpellManager::CreateSpellBook(Character* spell_owner, ESpellBookID spellbook_id, int level) {
 
-	shared_ptr<SpellBook> spell = SpellBook::CreateSpellBook(spell_id, level);
+	shared_ptr<SpellBook> spell = SpellBook::CreateSpellBook(spellbook_id, level);
 	AddSpellToCharacter(spell_owner, spell);
 
 	return spell;
@@ -28,7 +28,7 @@ shared_ptr<PassiveSpell> SpellManager::CreatePassiveSpell(Character* spell_owner
 }
 
 void SpellManager::AddSpellToCharacter(Character* spell_owner, shared_ptr<SpellBook> spell) {
-	spell_owner->AddSpell(spell);
+	spell_owner->AddSpellBook(spell);
 }
 
 void SpellManager::AddPassiveToCharacter(Character* spell_owner, shared_ptr<PassiveSpell> passive) {
@@ -62,8 +62,8 @@ void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_p
 	vector<weak_ptr<Character>> targets = { team2[e_idx[0]] }; // promeniti u weak_ptr ili mozda shared (ali weak)
 	cm.OnCastBegin(instigator, team1, team2, targets);
 
-	if (bEnemy) instigator->GetSpells()[spell_idx]->InvokeEffect(instigator, team2, team1, p_idx, e_idx, effect_idx);
-	else instigator->GetSpells()[spell_idx]->InvokeEffect(instigator, team1, team2, p_idx, e_idx, effect_idx);
+	if (bEnemy) instigator->GetSpellBooks()[spell_idx]->InvokeEffect(instigator, team2, team1, p_idx, e_idx, effect_idx);
+	else instigator->GetSpellBooks()[spell_idx]->InvokeEffect(instigator, team1, team2, p_idx, e_idx, effect_idx);
 
 	for (int i = 0; i < e_idx.size() - 1; i++)
 		targets.push_back(team2[e_idx[i + 1]]);
