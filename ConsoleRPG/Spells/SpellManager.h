@@ -1,7 +1,7 @@
 #pragma once
 #include "../RPGTypes.h"
 #include "../GameplayStatics.h"
-#include "../Spells/CSpellData.h"
+#include "../Spells/SpellDB.h"
 #include "../Spells/SpellBook.h"
 
 class Character;

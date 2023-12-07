@@ -4,7 +4,7 @@
 unordered_map<ESpellID, pair<ECombatEvent, EEffectType>> PassiveSpell::_spell_map;
 
 PassiveSpell::SpellMapConstructor::SpellMapConstructor() {
-	_spell_map[ESpellID::VAMPIRIC_TOUCH] = make_pair(ECombatEvent::ON_CAST_END, EEffectType::PASSIVE);
+	_spell_map[ESpellID::VAMPIRIC_TOUCH] = make_pair(ECombatEvent::ON_CAST_END, EEffectType::PASSIVE); // dodaj min Ilvl, dodaj ESpellRarity i passaj ESpellActivity = PASSIVE v base classu
 };
 PassiveSpell::SpellMapConstructor PassiveSpell::_spell_map_constructor;
 

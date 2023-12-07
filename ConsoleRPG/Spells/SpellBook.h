@@ -1,6 +1,6 @@
 #pragma once
 #include "../RPGTypes.h"
-#include "CSpellData.h"
+#include "SpellDB.h"
 #include "../Effects/ActiveSpell.h"
 
 class Character;
@@ -12,7 +12,7 @@ class SpellBook {
 
 public:
 
-	SpellBook(CSpellData&& data, int level);
+	SpellBook(SpellDB&& data, int level);
 
 	// Create spell and assign it to owning character
 	static std::shared_ptr<SpellBook> CreateSpellBook(ESpellBookID spell_id, int level);
@@ -46,7 +46,7 @@ private:
 	vector<pair<int, string>> _effect_levels;
 
 	// SpellBook data for each level
-	vector<unique_ptr<CSpellData::EffectData>> _effect_data;
+	vector<unique_ptr<SpellDB::EffectData>> _effect_data;
 
 public:
 
