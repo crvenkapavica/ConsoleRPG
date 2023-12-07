@@ -2,7 +2,6 @@
 #include "../GameplayStatics.h"
 
 std::unordered_map<ESpellID, vector<SpellData>> SpellDB::_spell_level_map;
-std::unordered_map<ESpellID, SpellConstData> SpellDB::_spell_const_map;
 
 SpellDB::SpellLevelMapConstructor::SpellLevelMapConstructor() {
 	_spell_level_map[ESpellID::FIREBALL] = {
@@ -86,143 +85,30 @@ SpellDB::SpellLevelMapConstructor::SpellLevelMapConstructor() {
 }
 SpellDB::SpellLevelMapConstructor SpellDB::_spell_level_map_constructor;
 
-SpellDB::SpellConstMapConstructor::SpellConstMapConstructor() {
-	_spell_const_map[ESpellID::FIREBALL] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::BURNING] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::MOLTEN_ARMOR] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::EXPOSURE] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::STONESKIN] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::DISARM] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::THRONS] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::BLOODBATH] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::ARCANE_INFUSION] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::BLOOD_RAIN] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-	_spell_const_map[ESpellID::VISCOUS_ACID] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-};
-SpellDB::SpellConstMapConstructor SpellDB::_spell_const_map_constructor;
-
-
-
-
-SpellDB::SpellDB(ESpellBookID spell_id, ESpellActivity spell_activity)
+SpellDB::SpellDB(ESpellID spell_id)
 {
-	if (spell_activity == ESpellActivity::ACTIVE) {
-		CreateSpellMap();
-		FindAndAssignSpellData(spell_id);
-	}
-	else {
-		CreatePassiveSpellMap();
-		FindAndAssignPassiveSpellData(spell_id);
-	}
-}
-
-void SpellDB::FindAndAssignSpellData(ESpellBookID spell_id) {
-
-	const string spell_name = GameplayStatics::GetEnumString(spell_id);
-	auto level_it = _effect_map.find(spell_name);
-	if (level_it != _effect_map.end()) {
-		_effect_data = move(level_it->second);
-		_spell_const_data = &_spell_const_map[spell_name];
-		_effect_levels = _effect_level_map[spell_name];
-	}
-}
-
-void SpellDB::FindAndAssignPassiveSpellData(ESpellBookID spell_id) {
-
-}
-
-void SpellDB::AddSpellConsts(const string& spell_name, const SpellConstData& data) {
-	_spell_const_map[spell_name] = data;
-}
-
-void SpellDB::AddSpellLevels(const string& spell_name, const vector<EffectData>& data) {
-
-	vector<unique_ptr<EffectData>> effect_data;
-	for (auto& d : data) {
-		effect_data.push_back(make_unique<EffectData>(d));
-	}
-	_effect_map[spell_name] = move(effect_data);
-}
-
-void SpellDB::AddEffectLevels(const string& spell_name, const vector<pair<int, string>> data) {
-	_effect_level_map[spell_name] = data;
-}
-
-void SpellDB::CreateSpellMap() {
-	AddSpellConsts("FIREBALL", {
-		ESpellBookID::FIREBALL, ESpellActivity::ACTIVE, ESpellRarity::BASIC
-	});
-	AddEffectLevels("FIREBALL", {
-		{3, "BURNING"},
-		{6, "MOLTEN ARMOR"},
-		{11, "EXPOSURE"}
-	});
-	//=================================================================================================================================
-	AddSpellConsts("STONESKIN", {
-		ESpellBookID::STONESKIN, ESpellActivity::ACTIVE, ESpellRarity::BASIC
-	});
-	AddEffectLevels("STONESKIN", {
-		{3, "DISARM"}, // swap places
-		{7, "THORNS"}, //swap places
-		{12, "BLOODBATH"}
-	});
-	//=================================================================================================================================
-	AddSpellConsts("ARCANE INFUSION", {
-		ESpellBookID::ARCANE_INFUSION, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
-	});
-	AddEffectLevels("ARCANE INFUSION", {
-		{5, "AI_TEMP1"},
-		{9,	"AI_TEMP2"},
-		{13, "AI_TEMP3"}
-	});
-	//=================================================================================================================================
-	AddSpellConsts("BLOOD RAIN", {
-		ESpellBookID::BLOOD_RAIN, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
-	});
-	AddEffectLevels("BLOOD RAIN", {
-		{3, "BR_TEMP1"},
-		{7, "BR_TEMP2"},
-		{9, "BR_TEMP3"}
-	});
-	//=================================================================================================================================
-	AddSpellConsts("VISCOUS ACID", {
-		ESpellBookID::VISCOUS_ACID, ESpellActivity::ACTIVE, ESpellRarity::ENHANCED
-	});
-	AddSpellLevels("VISCOUS ACID", {
-		{
-			{
-		//		app_min	   app_max	   eff_min	   eff_max	 duration  cd	   cost		    
-
-			}
-		}
-	});
-	AddEffectLevels("VISCOUS ACID", {
-		{5, "VA_TEMP1"},
-		{8, "VA_TEMP2"},
-		{13, "VA_TEMP3"}
-	});
+	
 }
 
 
 
 
 
-//=====================================================================================================================================================================
-//=====================================================================================================================================================================
-// PASSIVES
-//=====================================================================================================================================================================
-//=====================================================================================================================================================================
 
 
-
-
-
-
-
-
-
-
-
-
+//SpellDB::SpellConstMapConstructor::SpellConstMapConstructor() {
+//	_spell_const_map[ESpellID::FIREBALL] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::BURNING] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::MOLTEN_ARMOR] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::EXPOSURE] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::STONESKIN] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::DISARM] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::THRONS] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::BLOODBATH] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::ARCANE_INFUSION] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::BLOOD_RAIN] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//	_spell_const_map[ESpellID::VISCOUS_ACID] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
+//};
+//SpellDB::SpellConstMapConstructor SpellDB::_spell_const_map_constructor;
 
 

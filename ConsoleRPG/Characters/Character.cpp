@@ -3,6 +3,7 @@
 #include "../Spells/SpellManager.h"
 #include "../GameplayStatics.h"
 #include "../Effects/PassiveSpell.h"
+#include "../Effects/ActiveSpell.h"
 
 Character::Character(const CharacterData::EnemyStats& data)
 {
@@ -20,7 +21,7 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_resistances = data._resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateSpellBook(this, data._spell1.first, data._spell1.second);
+	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
 }
 
 Character::Character(const CharacterData::PlayerAttributes& attributes)
@@ -112,11 +113,11 @@ void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 	attribute += amount;
 }
 
-void Character::AddSpellBook(shared_ptr<SpellBook> spellbook) {
-	_spellbooks.push_back(spellbook);
+void Character::AddActiveSpell(unique_ptr<ActiveSpell>& spell) {
+	_active_spells.push_back(move(spell));
 }
 
-void Character::AddPassive(shared_ptr<PassiveSpell> spell) {
+void Character::AddPassiveSpell(shared_ptr<PassiveSpell> spell) {
 	_passive_spells.push_back(spell);
 }
 

@@ -7,7 +7,7 @@
 #include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
 #include "Spells/SpellBook.h"
-#include "Spells/SpellDB.h"
+#include "Spells/CSpellData.h"
 #include "GameplayStatics.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
@@ -115,12 +115,12 @@ int main() {
 
     SpellManager& spell_manager = SpellManager::GetInstance();
 
-	spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
-	spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
-    spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::ARCANE_INFUSION, 0);
-    spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::BLOOD_RAIN, 0);
-    spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::VISCOUS_ACID, 0);
-    spell_manager.CreateSpellBook(player_warlock.get(), ESpellBookID::STONESKIN, 0);
+	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
+	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
+ //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::ARCANE_INFUSION, 0);
+ //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::BLOOD_RAIN, 0);
+ //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::VISCOUS_ACID, 0);
+ //   spell_manager.CreateSpellBook(player_warlock.get(), ESpellBookID::STONESKIN, 0);
 
     //pasive
     //spell_manager.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);

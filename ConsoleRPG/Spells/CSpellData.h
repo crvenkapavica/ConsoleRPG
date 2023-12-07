@@ -12,35 +12,12 @@ struct SpellData {
 };
 
 class SpellDB {
-
 public:
-
-	SpellDB(ESpellBookID spell_id, ESpellActivity spell_activity);
-
-	//inline vector<unique_ptr<EffectData>>& GetEffectData() { return _effect_data; }
-
-	//inline const SpellConstData* GetSpellConstData() const { return _spell_const_data; }
-
-	//inline const vector<pair<int, string>> GetEffectLevels() const { return _effect_levels; }
+	static std::unordered_map<ESpellID, std::vector<SpellData>> _spell_level_map;
 
 private:
+	SpellDB(ESpellID spell_id);
 
-	void AddSpellConsts(const string& spell_name, const SpellConstData& data);
-
-	void AddSpellLevels(const string& spell_name, const vector<EffectData>& data);
-
-	void AddEffectLevels(const string& spell_name, const vector<pair<int, string>> data);
-
-	void CreateSpellMap();
-
-	void FindAndAssignSpellData(ESpellBookID spell_id);
-
-	void FindAndAssignPassiveSpellData(ESpellBookID spell_id);
-
-private:
-
-	//vector<unique_ptr<EffectLevelData>> _effect_data;
-	static std::unordered_map<ESpellID, vector<SpellData>> _spell_level_map;
 	static struct SpellLevelMapConstructor {
 		SpellLevelMapConstructor();
 	} _spell_level_map_constructor;

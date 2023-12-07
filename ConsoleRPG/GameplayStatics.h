@@ -44,13 +44,14 @@ public:
 	static int GetEnemyIdx2(char c);
 
 	static void DisplaySpellMenu();
-	static void HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type, OUT int& effect_idx);
-	static void HandleSpellTargets(int spell_idx, ESpellType spell_type, int effect_idx);
-	static int DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells);
-	static int DisplaySelectedSpellsEffects(int input, int length, vector<SpellBook*> spells);
+	static void HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type);
+	static void HandleSpellTargets(int spell_idx, ESpellType spell_type);
+	//static int DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells);
+	static int DisplayEquipedSpells(int& length, vector<ActiveSpell*>& spells);
+	//static int DisplaySelectedSpellsEffects(int input, int length, vector<ActiveSpell*> spells);
 
 	static void DisplayInfoMenu();
-	static void HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx);
+	//static void HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx);
 	static void HandleInfoInput(int input);
 
 	static void ShowPosition();

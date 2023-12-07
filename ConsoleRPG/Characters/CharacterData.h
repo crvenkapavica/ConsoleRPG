@@ -27,10 +27,10 @@ public:
 
 		Resistances _resistances;
 
-		pair<ESpellBookID, int> _spell1;
-		pair<ESpellBookID, int> _spell2;
-		pair<ESpellBookID, int> _spell3;
-		pair<ESpellBookID, int> _spell4;
+		pair<ESpellID, int> _spell1;
+		pair<ESpellID, int> _spell2;
+		pair<ESpellID, int> _spell3;
+		pair<ESpellID, int> _spell4;
 	};
 
 	struct PlayerAttributes {	

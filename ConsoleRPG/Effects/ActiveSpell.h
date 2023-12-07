@@ -13,9 +13,12 @@ class ActiveSpell : public Spell {
 public:
     ActiveSpell(ESpellID id, int level = 0);
 
-    static unique_ptr<ActiveSpell> CreateSpellBook(ESpellID id);
+    static unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
 
     virtual void Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) = 0;
+
+    //	// Invoke the default spell effect + an additional effect (idx) that the spell supports (if chosen)
+	void InvokeEffect(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<int>& t1_idx, vector<int>& t2_idx);
 
     inline const EDamageType GetDamageType() const { return _damage_type; }
     inline const ESpellType GetSpellType() const { return _spell_type; }

@@ -3,7 +3,7 @@
 #include "Characters/PlayerCharacter.h"
 #include "Characters/EnemyCharacter.h"
 #include "Spells/SpellBook.h"
-#include "Spells/SpellDB.h"
+#include "Spells/CSpellData.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
 #include "MapGenerator/MapGenerator.h"
@@ -325,26 +325,28 @@ void GameplayStatics::DisplaySpellMenu() {
 	int spell_idx;
 	auto spell_type = ESpellType::NONE;
 	int effect_idx = 0;
-	HandleSpellAndEffectSelection(spell_idx, spell_type, effect_idx);
+	HandleSpellAndEffectSelection(spell_idx, spell_type);
 
-	HandleSpellTargets(spell_idx, spell_type, effect_idx);
+	HandleSpellTargets(spell_idx, spell_type);
 }
 
-void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type, OUT int& effect_idx) {
+void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type) {
 
 	int length = 0;
-	vector<SpellBook*> spells;
-	do {
-		if (!spells.empty()) _menu->Clear(4); // Hardcoded for now, TODO change
-		spell_idx = DisplayEquipedSpellBooks(length, spells);
-		effect_idx = DisplaySelectedSpellsEffects(spell_idx, length, spells);
-	} while (_menu->GetBack());
+	vector<ActiveSpell*> spells;
+	//do {
+	//	if (!spells.empty()) _menu->Clear(4); // Hardcoded for now, TODO change
+	//	spell_idx = DisplayEquipedSpells(length, spells);
+	//	effect_idx = DisplaySelectedSpellsEffects(spell_idx, length, spells);
+	//} while (_menu->GetBack());
+
+	spell_idx = DisplayEquipedSpells(length, spells);
 
 	_menu->ANSI_CURSOR_DOWN_N(max(static_cast<int>(spells.size()), 4));
 	_menu->Clear(max(static_cast<int>(spells.size()), 4));
 }
 
-void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, int effect_idx) {
+void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type) {
 
 	//spell_Type reserved for future
 	//aura might not need a target
@@ -375,28 +377,39 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type, i
 	if (e_idx.empty()) e_idx = p_idx;
 	///////////////////////////////////////////////////////////////////////////
 
-	_spell_manager->CastSpell(spell_idx, _combat_manager->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx, effect_idx);
+	_spell_manager->CastSpell(spell_idx, _combat_manager->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx);
 }
 
-int GameplayStatics::DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells) {
+//int GameplayStatics::DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells) {
+//	vector<string> v;
+//	spells.clear();
+//	for (auto& spellbook : _combat_manager->GetTurnCharacter().lock()->GetActiveSpells()) {
+//		v.push_back(GetEnumString(spellbook->GetID()));
+//		spells.push_back(spellbook.get());
+//		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
+//	}
+//	return InteractiveDisplay(v, 0, false);
+//}
+
+int GameplayStatics::DisplayEquipedSpells(int& length, vector<ActiveSpell*>& spells) {
 	vector<string> v;
 	spells.clear();
-	for (auto& spellbook : _combat_manager->GetTurnCharacter().lock()->GetSpellBooks()) {
-		v.push_back(GetEnumString(spellbook->GetID()));
-		spells.push_back(spellbook.get());
+	for (auto& spell : _combat_manager->GetTurnCharacter().lock()->GetActiveSpells()) {
+		v.push_back(GetEnumString(spell->GetID()));
+		spells.push_back(spell.get());
 		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
 	}
 	return InteractiveDisplay(v, 0, false);
 }
 
-int GameplayStatics::DisplaySelectedSpellsEffects(int input, int length, vector<SpellBook*> spells) {
-	vector<string> v = { "NO EFFECT" };
-	const vector<pair<int, string>> _effect_list = spells[input]->GetEffectLevelNameVector();
-	for (auto& effect : _effect_list)
-		v.push_back(effect.second);
-
-	return InteractiveDisplay(v, length + 2, false);
-}
+//int GameplayStatics::DisplaySelectedSpellsEffects(int input, int length, vector<ActiveSpell*> spells) {
+//	vector<string> v = { "NO EFFECT" };
+//	const vector<pair<int, string>> _effect_list = spells[input]->GetEffectLevelNameVector();
+//	for (auto& effect : _effect_list)
+//		v.push_back(effect.second);
+//
+//	return InteractiveDisplay(v, length + 2, false);
+//}
 
 void GameplayStatics::DisplayInfoMenu() {
 	_menu->Clear(2);
@@ -412,42 +425,41 @@ void GameplayStatics::DisplayInfoMenu() {
 		case 0: {
 			int spell_idx;
 			auto spell_type = ESpellType::NONE;
-			int effect_idx = 0;
-			HandleSpellAndEffectSelection(spell_idx, spell_type, effect_idx);
-			HandleEffectInfo(spell_idx, spell_type, effect_idx);
+			HandleSpellAndEffectSelection(spell_idx, spell_type);
+			//HandleEffectInfo(spell_idx, spell_type);
 		}
 	}
 }
 
-void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
-	vector<shared_ptr<ActiveSpell>> effects;
-	auto spellbooks = _combat_manager->GetTurnCharacter().lock()->GetSpellBooks();
-	for (int i = 0; i < spellbooks.size(); i++) {
-		if (spell_idx == i) {
-			effects = spellbooks[spell_idx]->GetEffects();
-			stringstream& ss = effects[effect_idx]->GetTooltip();
-
-			const int max_lines = 19;
-			vector<string> lines;
-			int start_index;
-			ExtractLinesFromStringtream(lines, max_lines, ss, start_index);
-
-			_menu->ClearRight(23);
-			cout << CURSOR_LOG_LEFT << ANSI_COLOR_ORANGE;
-			cout << CURSOR_LOG_RIGHT << "->  INFO MENU  <-" << endl;
-			cout << CURSOR_LOG_RIGHT << "=================" << endl;
-			for (int i = start_index; i < lines.size(); ++i) {
-				cout << CURSOR_LOG_RIGHT << lines[i];
-			}
-
-			int input;
-			cout << endl << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG << "Press enter to return";
-			do {
-				input = _getch();
-			} while (input != '\r');
-		}
-	}
-}
+//void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
+//	vector<shared_ptr<ActiveSpell>> effects;
+//	auto spellbooks = _combat_manager->GetTurnCharacter().lock()->GetActiveSpells();
+//	for (int i = 0; i < spellbooks.size(); i++) {
+//		if (spell_idx == i) {
+//			effects = spellbooks[spell_idx]->GetEffects();
+//			stringstream& ss = effects[effect_idx]->GetTooltip();
+//
+//			const int max_lines = 19;
+//			vector<string> lines;
+//			int start_index;
+//			ExtractLinesFromStringtream(lines, max_lines, ss, start_index);
+//
+//			_menu->ClearRight(23);
+//			cout << CURSOR_LOG_LEFT << ANSI_COLOR_ORANGE;
+//			cout << CURSOR_LOG_RIGHT << "->  INFO MENU  <-" << endl;
+//			cout << CURSOR_LOG_RIGHT << "=================" << endl;
+//			for (int i = start_index; i < lines.size(); ++i) {
+//				cout << CURSOR_LOG_RIGHT << lines[i];
+//			}
+//
+//			int input;
+//			cout << endl << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG << "Press enter to return";
+//			do {
+//				input = _getch();
+//			} while (input != '\r');
+//		}
+//	}
+//}
 
 void GameplayStatics::HandleInfoInput(int input) {
 

@@ -8,6 +8,7 @@ using namespace std;
 
 class SpellBook;
 class PassiveSpell;
+class ActiveSpell;
 
 class Character {
 
@@ -118,10 +119,10 @@ public:
 	
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
-	void AddSpellBook(shared_ptr<SpellBook> spellbook);
-	void AddPassive(shared_ptr<PassiveSpell> spell);
+	void AddActiveSpell(unique_ptr<ActiveSpell>& spell);
+	void AddPassiveSpell(shared_ptr<PassiveSpell> spell);
 
-	inline vector<shared_ptr<SpellBook>>& GetSpellBooks() { return _spellbooks; }
+	inline vector<unique_ptr<ActiveSpell>>& GetActiveSpells() { return _active_spells; }
 	inline vector<shared_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
 
 	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
@@ -164,16 +165,17 @@ public:
 protected:
 
 	// Active spells
-	vector<shared_ptr<SpellBook>> _spellbooks;
-	// Passive effects
-	vector<shared_ptr<PassiveSpell>> _passive_spells;
+	//vector<shared_ptr<SpellBook>> _spellbooks;
+
+	std::vector<unique_ptr<ActiveSpell>> _active_spells;
+	std::vector<shared_ptr<PassiveSpell>> _passive_spells;
 
 	// ID's of spell effects
-	vector<ESpellID> _effect_ids;
+	std::vector<ESpellID> _effect_ids;
 
-	using stat_pair = vector<pair<Stat*, float>>;
+	using stat_pair = std::vector<pair<Stat*, float>>;
 	// Stat change per attribute
-	vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
+	std::vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
 
 protected:
 

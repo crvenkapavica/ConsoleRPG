@@ -8,7 +8,7 @@
 std::unordered_map<ESpellID, pair <EDamageType, ESpellType>> ActiveSpell::_spell_map;
 
 ActiveSpell::SpellMapConstructor::SpellMapConstructor() {
-	_spell_map[ESpellID::FIREBALL] = make_pair(EDamageType::FIRE, ESpellType::PROJECTILE);
+	_spell_map[ESpellID::FIREBALL] = make_pair(EDamageType::FIRE, ESpellType::PROJECTILE); // dodaj min player level ispel rarity i passay active u Spell base
 	_spell_map[ESpellID::BURNING] = make_pair(EDamageType::FIRE, ESpellType::DEBUFF);
 	_spell_map[ESpellID::MOLTEN_ARMOR] = make_pair(EDamageType::FIRE, ESpellType::DEBUFF);
 	_spell_map[ESpellID::EXPOSURE] = make_pair(EDamageType::FIRE, ESpellType::DEBUFF);
@@ -37,12 +37,18 @@ ActiveSpell::ActiveSpell(ESpellID id, int level)
 	, _spell_type(_spell_map.at(id).second)
 {}
 
-unique_ptr<ActiveSpell> ActiveSpell::CreateSpellBook(ESpellID id) {
+unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	switch (id) {
 	case ESpellID::FIREBALL:
 		return make_unique<Fireball>(id);
 		break;
+	default:
+		break;
 	}
+}
+
+void ActiveSpell::InvokeEffect(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+	Apply(instigator, team1, team2, t1_idx, t2_idx);
 }
 
 float ActiveSpell::GetRandEffectMinMax(Character* character) {
