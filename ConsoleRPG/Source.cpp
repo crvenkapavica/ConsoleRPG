@@ -113,7 +113,9 @@ int main() {
 
     player_characters = { player_main, player_warlock };
 
-    SpellManager& spell_manager = SpellManager::GetInstance();
+    SpellManager& sm = SpellManager::GetInstance();
+
+    sm.CreateActiveSpell(player_main.get(), ESpellID::FIREBALL);
 
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
@@ -125,11 +127,11 @@ int main() {
     //pasive
     //spell_manager.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
 
-    CombatManager& combat_manager = CombatManager::GetInstance();
+    CombatManager& cm = CombatManager::GetInstance();
 	ConsoleMenu menu;
-	MapGenerator map_generator;
+	MapGenerator map_gen;
 
-	GameplayStatics::Initialize(player_characters, &spell_manager, &combat_manager, &map_generator, &menu);
+	GameplayStatics::Initialize(player_characters, &sm, &cm, &map_gen, &menu);
 }
 
 
