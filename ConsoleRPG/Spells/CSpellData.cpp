@@ -2,6 +2,8 @@
 #include "../GameplayStatics.h"
 
 std::unordered_map<ESpellID, vector<SpellData>> SpellDB::_spell_level_map;
+std::unordered_map<ESpellID, ActiveConstData> SpellDB::_active_const_map;
+std::unordered_map<ESpellID, PassiveConstData> SpellDB::_passive_const_map;
 
 SpellDB::SpellLevelMapConstructor::SpellLevelMapConstructor() {
 	_spell_level_map[ESpellID::FIREBALL] = {
@@ -84,6 +86,30 @@ SpellDB::SpellLevelMapConstructor::SpellLevelMapConstructor() {
 	};
 }
 SpellDB::SpellLevelMapConstructor SpellDB::_spell_level_map_constructor;
+
+SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
+	_active_const_map[ESpellID::FIREBALL] = { EDamageType::FIRE, ESpellType::PROJECTILE, ESpellRarity::BASIC, 1 };
+	_active_const_map[ESpellID::BURNING] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, 1 };
+	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, 1 };
+	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, 3 };
+	_active_const_map[ESpellID::STONESKIN] = { EDamageType::NONE, ESpellType::BUFF, ESpellRarity::BASIC, 1 };
+	_active_const_map[ESpellID::DISARM] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::ENHANCED, 7 };
+	_active_const_map[ESpellID::THRONS] = { EDamageType::PHYSICAL, ESpellType::BUFF, ESpellRarity::ENHANCED, 9 };
+	_active_const_map[ESpellID::BLOODBATH] = { EDamageType::PURE, ESpellType::BUFF, ESpellRarity::EPIC, 12 };
+	_active_const_map[ESpellID::ARCANE_INFUSION] = { EDamageType::ARCANE, ESpellType::BUFF, ESpellRarity::ENHANCED, 5 };
+	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, 5 };
+	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, 3 };
+};
+SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
+
+SpellDB::PassiveConstDataConstructor::PassiveConstDataConstructor() {
+
+};
+SpellDB::PassiveConstDataConstructor SpellDB::_passive_const_data_constructor;
+
+
+
+
 
 SpellDB::SpellDB(ESpellID spell_id)
 {

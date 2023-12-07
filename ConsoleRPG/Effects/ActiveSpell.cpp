@@ -5,36 +5,10 @@
 #include "../GameplayStatics.h"
 #include "../Effects/EffectStructs.h"
 
-std::unordered_map<ESpellID, pair <EDamageType, ESpellType>> ActiveSpell::_spell_map;
-
-ActiveSpell::SpellMapConstructor::SpellMapConstructor() {
-	_spell_map[ESpellID::FIREBALL] = make_pair(EDamageType::FIRE, ESpellType::PROJECTILE); // dodaj min player level ispel rarity i passay active u Spell base
-	_spell_map[ESpellID::BURNING] = make_pair(EDamageType::FIRE, ESpellType::DEBUFF);
-	_spell_map[ESpellID::MOLTEN_ARMOR] = make_pair(EDamageType::FIRE, ESpellType::DEBUFF);
-	_spell_map[ESpellID::EXPOSURE] = make_pair(EDamageType::FIRE, ESpellType::DEBUFF);
-	_spell_map[ESpellID::STONESKIN] = make_pair(EDamageType::NONE, ESpellType::BUFF);
-	_spell_map[ESpellID::DISARM] = make_pair(EDamageType::NONE, ESpellType::DEBUFF);
-	_spell_map[ESpellID::THRONS] = make_pair(EDamageType::PHYSICAL, ESpellType::AURA);
-	_spell_map[ESpellID::BLOODBATH] = make_pair(EDamageType::FIRE, ESpellType::PROJECTILE);
-	_spell_map[ESpellID::ARCANE_INFUSION] = make_pair(EDamageType::ARCANE, ESpellType::BUFF);
-	_spell_map[ESpellID::AI_TEMP1] = make_pair(EDamageType::ARCANE, ESpellType::BUFF);
-	_spell_map[ESpellID::AI_TEMP2] = make_pair(EDamageType::ARCANE, ESpellType::BUFF);
-	_spell_map[ESpellID::AI_TEMP3] = make_pair(EDamageType::ARCANE, ESpellType::BUFF);
-	_spell_map[ESpellID::BLOOD_RAIN] = make_pair(EDamageType::NECROTIC, ESpellType::DEBUFF);
-	_spell_map[ESpellID::BR_TEMP1] = make_pair(EDamageType::NECROTIC, ESpellType::DEBUFF);
-	_spell_map[ESpellID::BR_TEMP2] = make_pair(EDamageType::NECROTIC, ESpellType::DEBUFF);
-	_spell_map[ESpellID::BR_TEMP3] = make_pair(EDamageType::NECROTIC, ESpellType::DEBUFF);
-	_spell_map[ESpellID::VISCOUS_ACID] = make_pair(EDamageType::POISON, ESpellType::DEBUFF);
-	_spell_map[ESpellID::VA_TEMP1] = make_pair(EDamageType::POISON, ESpellType::DEBUFF);
-	_spell_map[ESpellID::VA_TEMP2] = make_pair(EDamageType::POISON, ESpellType::DEBUFF);
-	_spell_map[ESpellID::VA_TEMP3] = make_pair(EDamageType::POISON, ESpellType::DEBUFF);
-}
-ActiveSpell::SpellMapConstructor ActiveSpell::_spell_map_constructor;
-
-ActiveSpell::ActiveSpell(ESpellID id, int level)
-	: Spell(id)
-	, _damage_type(_spell_map.at(id).first)
-	, _spell_type(_spell_map.at(id).second)
+ActiveSpell::ActiveSpell(ESpellID id, int lvl)
+	: Spell(id, ESpellActivity::ACTIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
+	, _damage_type(SpellDB::_active_const_map.at(id)._damage_type)
+	, _spell_type(SpellDB::_active_const_map.at(id)._spell_type)
 {}
 
 unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {

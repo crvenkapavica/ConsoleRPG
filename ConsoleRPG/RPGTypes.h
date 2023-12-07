@@ -299,7 +299,7 @@ enum class EStatValueAction {
 	UPDATE_MAX
 };
 
-enum class EEffectType {
+enum class EPassiveType {
 	PASSIVE,
 	ITEM
 };

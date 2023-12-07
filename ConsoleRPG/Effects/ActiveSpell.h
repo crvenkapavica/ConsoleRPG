@@ -11,7 +11,7 @@ struct EffectParams;
 
 class ActiveSpell : public Spell {
 public:
-    ActiveSpell(ESpellID id, int level = 0);
+    ActiveSpell(ESpellID id, int lvl = 0);
 
     static unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
 
@@ -22,6 +22,14 @@ public:
 
     inline const EDamageType GetDamageType() const { return _damage_type; }
     inline const ESpellType GetSpellType() const { return _spell_type; }
+
+    //inline const float GetEffectMax(int idx, int level) const { return _effect_data[idx]->_e[level]._effect_max; }
+	//inline const float GetEffectMin(int idx, int level) const { return _effect_data[idx]->_e[level]._effect_min; }
+	//inline const float GetOnApplyMax(int idx, int level) const { return _effect_data[idx]->_e[level]._apply_max; }
+	//inline const float GetOnApplyMin(int idx, int level) const { return _effect_data[idx]->_e[level]._apply_min; }
+	//inline const int GetDuration(int idx, int level) const { return _effect_data[idx]->_e[level]._duration; }
+	//inline const int GetCooldown(int idx, int level) const { return _effect_data[idx]->_e[level]._cooldown; }
+	//inline const int GetCost(int idx, int level) const { return _effect_data[idx]->_e[level]._cost; }
 
 protected:
 
@@ -38,12 +46,6 @@ protected:
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
     int AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name);
-
-protected:
-    static std::unordered_map<ESpellID, pair<EDamageType, ESpellType>> _spell_map;
-    static struct SpellMapConstructor {
-        SpellMapConstructor();
-    } _spell_map_constructor;
 };
 
 //------------------------------------     FIREBALL      ---------------------------------------

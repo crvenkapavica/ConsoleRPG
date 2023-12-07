@@ -6,14 +6,14 @@
 class PassiveSpell : public Spell {
 
 public:
-	PassiveSpell(ESpellID id);
+	PassiveSpell(ESpellID id, int lvl = 0);
 
 	static shared_ptr<PassiveSpell> CreatePassiveSpell(ESpellID id);
 
 	virtual void Apply() = 0;
 
-	inline const ECombatEvent GetOnEvent() const { return _on_event; }
-	inline const EEffectType GetEffectType() const { return _effect_type; }
+	inline const ECombatEvent GetOnEvent() const { return _combat_event; }
+	inline const EPassiveType GetEffectType() const { return _passive_type; }
 
 public:
 
@@ -23,14 +23,8 @@ public:
 	vector<weak_ptr<Character>> _targets;
 
 protected:
-	const ECombatEvent _on_event;
-	const EEffectType _effect_type;
-
-private:
-	static unordered_map<ESpellID, pair<ECombatEvent, EEffectType>> _spell_map;
-	static struct SpellMapConstructor {
-		SpellMapConstructor();
-	} _spell_map_constructor;
+	const ECombatEvent _combat_event;
+	const EPassiveType _passive_type;
 };
 
 

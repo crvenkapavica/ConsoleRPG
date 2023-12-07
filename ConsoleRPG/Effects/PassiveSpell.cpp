@@ -1,17 +1,11 @@
 #include "PassiveSpell.h"
 #include "../GameplayStatics.h"
+#include "../Spells/CSpellData.h"
 
-unordered_map<ESpellID, pair<ECombatEvent, EEffectType>> PassiveSpell::_spell_map;
-
-PassiveSpell::SpellMapConstructor::SpellMapConstructor() {
-	_spell_map[ESpellID::VAMPIRIC_TOUCH] = make_pair(ECombatEvent::ON_CAST_END, EEffectType::PASSIVE); // dodaj min Ilvl, dodaj ESpellRarity i passaj ESpellActivity = PASSIVE v base classu
-};
-PassiveSpell::SpellMapConstructor PassiveSpell::_spell_map_constructor;
-
-PassiveSpell::PassiveSpell(ESpellID id)
-	: Spell(id)
-	, _on_event(_spell_map.at(id).first)
-	, _effect_type(_spell_map.at(id).second)
+PassiveSpell::PassiveSpell(ESpellID id, int lvl)
+	: Spell(id, ESpellActivity::PASSIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
+	, _combat_event(SpellDB::_passive_const_map.at(id)._combat_event)
+	, _passive_type(SpellDB::_passive_const_map.at(id)._passive_type)
 	, _instigator(nullptr)
 {}
 
