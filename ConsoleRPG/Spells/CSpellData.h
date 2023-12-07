@@ -32,7 +32,7 @@ public:
 	static std::unordered_map<ESpellID, PassiveConstData> _passive_const_map;
 
 private:
-	SpellDB(ESpellID spell_id);
+	SpellDB() = delete;
 
 	static struct SpellLevelMapConstructor {
 		SpellLevelMapConstructor();

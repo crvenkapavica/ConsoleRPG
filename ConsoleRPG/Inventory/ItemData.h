@@ -43,7 +43,7 @@ public:
 	static std::vector<ItemData> _data;
 
 private:
-	ItemDB() {}
+	ItemDB() = delete;
 
 	static struct ItemDataConstructor {
 		ItemDataConstructor();

@@ -106,35 +106,3 @@ SpellDB::PassiveConstDataConstructor::PassiveConstDataConstructor() {
 
 };
 SpellDB::PassiveConstDataConstructor SpellDB::_passive_const_data_constructor;
-
-
-
-
-
-SpellDB::SpellDB(ESpellID spell_id)
-{
-	
-}
-
-
-
-
-
-
-
-//SpellDB::SpellConstMapConstructor::SpellConstMapConstructor() {
-//	_spell_const_map[ESpellID::FIREBALL] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::BURNING] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::MOLTEN_ARMOR] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::EXPOSURE] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::STONESKIN] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::DISARM] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::THRONS] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::BLOODBATH] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::ARCANE_INFUSION] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::BLOOD_RAIN] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//	_spell_const_map[ESpellID::VISCOUS_ACID] = { ESpellActivity::ACTIVE, ESpellRarity::BASIC };
-//};
-//SpellDB::SpellConstMapConstructor SpellDB::_spell_const_map_constructor;
-
-
