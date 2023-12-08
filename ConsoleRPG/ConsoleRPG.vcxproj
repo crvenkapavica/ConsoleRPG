@@ -146,7 +146,7 @@
     <ClCompile Include="Resistances.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Spells\SpellBook.cpp" />
-    <ClCompile Include="Spells\CSpellData.cpp" />
+    <ClCompile Include="Spells\SpellData.cpp" />
     <ClCompile Include="Spells\SpellManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +167,7 @@
     <ClInclude Include="Resistances.h" />
     <ClInclude Include="RPGTypes.h" />
     <ClInclude Include="Spells\SpellBook.h" />
-    <ClInclude Include="Spells\CSpellData.h" />
+    <ClInclude Include="Spells\SpellData.h" />
     <ClInclude Include="Spells\SpellManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -35,7 +35,8 @@ public:
 	std::vector<Item*> _item_slots = std::vector<Item*>(ITEM_SLOTS, nullptr);
 	std::vector<Item*> _inventory = std::vector<Item*>(INV_SLOTS, nullptr);
 	std::vector<Item*> _cons_slots;
-	std::vector<SpellBook*> _spell_slots;
+	std::vector<ActiveSpell*> _active_slots;
+	std::vector<PassiveSpell*> _passive_slots;
 
 protected:
 

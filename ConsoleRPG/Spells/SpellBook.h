@@ -1,6 +1,6 @@
 #pragma once
 #include "../RPGTypes.h"
-#include "CSpellData.h"
+#include "SpellData.h"
 #include "../Effects/ActiveSpell.h"
 
 class Character;

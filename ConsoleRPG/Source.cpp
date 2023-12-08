@@ -7,7 +7,7 @@
 #include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
 #include "Spells/SpellBook.h"
-#include "Spells/CSpellData.h"
+#include "Spells/SpellData.h"
 #include "GameplayStatics.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"

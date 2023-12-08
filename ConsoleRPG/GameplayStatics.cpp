@@ -3,7 +3,7 @@
 #include "Characters/PlayerCharacter.h"
 #include "Characters/EnemyCharacter.h"
 #include "Spells/SpellBook.h"
-#include "Spells/CSpellData.h"
+#include "Spells/SpellData.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
 #include "MapGenerator/MapGenerator.h"

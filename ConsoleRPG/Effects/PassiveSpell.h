@@ -8,7 +8,7 @@ class PassiveSpell : public Spell {
 public:
 	PassiveSpell(ESpellID id, int lvl = 0);
 
-	static shared_ptr<PassiveSpell> CreatePassiveSpell(ESpellID id);
+	static unique_ptr<PassiveSpell> CreatePassiveSpell(ESpellID id);
 
 	virtual void Apply() = 0;
 

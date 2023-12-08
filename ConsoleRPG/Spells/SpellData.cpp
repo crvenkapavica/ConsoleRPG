@@ -1,4 +1,4 @@
-#include "CSpellData.h"
+#include "SpellData.h"
 #include "../GameplayStatics.h"
 
 std::unordered_map<ESpellID, vector<SpellData>> SpellDB::_spell_level_map;
@@ -103,6 +103,6 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
 
 SpellDB::PassiveConstDataConstructor::PassiveConstDataConstructor() {
-	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_TURN_END, EPassiveType::PASSIVE, ESpellRarity::BASIC, 1}
+	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_TURN_END, EPassiveType::PASSIVE, ESpellRarity::BASIC, 1 };
 };
 SpellDB::PassiveConstDataConstructor SpellDB::_passive_const_data_constructor;

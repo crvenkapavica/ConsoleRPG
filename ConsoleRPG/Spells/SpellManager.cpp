@@ -19,27 +19,23 @@ SpellManager& SpellManager::GetInstance() {
 //	return spell;
 //}
 
-unique_ptr<ActiveSpell> SpellManager::CreateActiveSpell(Character* spell_owner, ESpellID id) {
+void SpellManager::CreateActiveSpell(Character* spell_owner, ESpellID id) {
 
 	unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(id);
-	AddSpellToCharacter(spell_owner, move(spell));
-
-	return spell;
+	AddActiveSpellToCharacter(spell_owner, move(spell));
 }
 
-shared_ptr<PassiveSpell> SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
+void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 
-	shared_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(id);
-	AddSpellToCharacter(spell_owner, spell);
-
-	return spell;
+	unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(id);
+	AddPassiveSpellToCharacter(spell_owner, move(spell));
 }
 
-void SpellManager::AddSpellToCharacter(Character* spell_owner, unique_ptr<ActiveSpell> spell) {
+void SpellManager::AddActiveSpellToCharacter(Character* spell_owner, unique_ptr<ActiveSpell> spell) {
 	spell_owner->AddActiveSpell(spell);
 }
 
-void SpellManager::AddSpellToCharacter(Character* spell_owner, shared_ptr<PassiveSpell> spell) {
+void SpellManager::AddPassiveSpellToCharacter(Character* spell_owner, unique_ptr<PassiveSpell> spell) {
 	spell_owner->AddPassiveSpell(spell);
 }
 

@@ -15,9 +15,22 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	switch (id) {
 	case ESpellID::FIREBALL:
 		return make_unique<Fireball>(id);
-		break;
+	case ESpellID::BURNING:
+		return make_unique<Burning>(id);
+	case ESpellID::MOLTEN_ARMOR:
+		return make_unique<MoltenArmor>(id);
+	case ESpellID::EXPOSURE:
+		return make_unique<Exposure>(id);
+	case ESpellID::STONESKIN:
+		return make_unique<Stoneskin>(id);
+	case ESpellID::ARCANE_INFUSION:
+		return make_unique<ArcaneInfusion>(id);
+	case ESpellID::BLOOD_RAIN:
+		return make_unique<BloodRain>(id);
+	case ESpellID::VISCOUS_ACID:
+		return make_unique<ViscousAcid>(id);
 	default:
-		break;
+		return nullptr;
 	}
 }
 

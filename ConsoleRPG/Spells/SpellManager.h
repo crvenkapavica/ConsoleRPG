@@ -1,7 +1,7 @@
 #pragma once
 #include "../RPGTypes.h"
 #include "../GameplayStatics.h"
-#include "../Spells/CSpellData.h"
+#include "../Spells/SpellData.h"
 #include "../Spells/SpellBook.h"
 
 class Character;
@@ -24,9 +24,9 @@ public:
 
 	//shared_ptr<SpellBook> CreateSpellBook(Character* spell_onwer, ESpellBookID spellbook_id, int level);
 
-	unique_ptr<ActiveSpell> CreateActiveSpell(Character* spell_owner, ESpellID id);
+	void CreateActiveSpell(Character* spell_owner, ESpellID id);
 
-	shared_ptr<PassiveSpell> CreatePassiveSpell(Character* spell_owner, ESpellID id);
+	void CreatePassiveSpell(Character* spell_owner, ESpellID id);
 
 
 	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<PlayerCharacter>> players, vector<weak_ptr<EnemyCharacter>> enemies, vector<int> p_idx, vector<int> e_idx);
@@ -37,7 +37,7 @@ public:
 
 private:
 
-	void AddSpellToCharacter(Character* spell_owner, unique_ptr<ActiveSpell> spell);
+	void AddActiveSpellToCharacter(Character* spell_owner, unique_ptr<ActiveSpell> spell);
 
-	void AddSpellToCharacter(Character* spell_owner, shared_ptr<PassiveSpell> spell);
+	void AddPassiveSpellToCharacter(Character* spell_owner, unique_ptr<PassiveSpell> spell);
 };

@@ -1,6 +1,6 @@
 #include "PassiveSpell.h"
 #include "../GameplayStatics.h"
-#include "../Spells/CSpellData.h"
+#include "../Spells/SpellData.h"
 
 PassiveSpell::PassiveSpell(ESpellID id, int lvl)
 	: Spell(id, ESpellActivity::PASSIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
@@ -9,11 +9,11 @@ PassiveSpell::PassiveSpell(ESpellID id, int lvl)
 	, _instigator(nullptr)
 {}
 
-shared_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
+unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 
 	switch (id) {
 	case ESpellID::VAMPIRIC_TOUCH:
-		return make_shared<VampiricTouch>(id);
+		return make_unique<VampiricTouch>(id);
 	}
 
 	return nullptr;

@@ -117,8 +117,8 @@ void Character::AddActiveSpell(unique_ptr<ActiveSpell>& spell) {
 	_active_spells.push_back(move(spell));
 }
 
-void Character::AddPassiveSpell(shared_ptr<PassiveSpell> spell) {
-	_passive_spells.push_back(spell);
+void Character::AddPassiveSpell(unique_ptr<PassiveSpell>& spell) {
+	_passive_spells.push_back(move(spell));
 }
 
 void Character::RemoveEffectById(ESpellID effect_id) {

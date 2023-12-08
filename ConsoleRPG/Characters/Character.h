@@ -120,10 +120,10 @@ public:
 	void UpdateAttribute(Attribute& attribute, const int amount);
 
 	void AddActiveSpell(unique_ptr<ActiveSpell>& spell);
-	void AddPassiveSpell(shared_ptr<PassiveSpell> spell);
+	void AddPassiveSpell(unique_ptr<PassiveSpell>& spell);
 
 	inline vector<unique_ptr<ActiveSpell>>& GetActiveSpells() { return _active_spells; }
-	inline vector<shared_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
+	inline vector<unique_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
 
 	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
 	void RemoveEffectById(ESpellID effect_id);
@@ -168,7 +168,7 @@ protected:
 	//vector<shared_ptr<SpellBook>> _spellbooks;
 
 	std::vector<unique_ptr<ActiveSpell>> _active_spells;
-	std::vector<shared_ptr<PassiveSpell>> _passive_spells;
+	std::vector<unique_ptr<PassiveSpell>> _passive_spells;
 
 	// ID's of spell effects
 	std::vector<ESpellID> _effect_ids;

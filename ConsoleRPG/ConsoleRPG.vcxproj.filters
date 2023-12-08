@@ -39,7 +39,7 @@
     <ClCompile Include="Characters\Character.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="Spells\CSpellData.cpp">
+    <ClCompile Include="Spells\SpellData.cpp">
       <Filter>Source Files\Spells</Filter>
     </ClCompile>
     <ClCompile Include="Characters\PlayerCharacter.cpp">
@@ -101,7 +101,7 @@
     <ClInclude Include="RPGTypes.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Spells\CSpellData.h">
+    <ClInclude Include="Spells\SpellData.h">
       <Filter>Source Files\Spells</Filter>
     </ClInclude>
     <ClInclude Include="Spells\SpellBook.h">
