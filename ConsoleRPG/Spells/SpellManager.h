@@ -34,10 +34,4 @@ public:
 	//void UnequipSpell(ESpellBookID spell_id);
 
 	//void EquipSpell(ESpellBookID spell_id);
-
-private:
-
-	void AddActiveSpellToCharacter(Character* spell_owner, unique_ptr<ActiveSpell> spell);
-
-	void AddPassiveSpellToCharacter(Character* spell_owner, unique_ptr<PassiveSpell> spell);
 };

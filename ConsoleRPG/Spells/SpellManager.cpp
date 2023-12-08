@@ -22,20 +22,12 @@ SpellManager& SpellManager::GetInstance() {
 void SpellManager::CreateActiveSpell(Character* spell_owner, ESpellID id) {
 
 	unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(id);
-	AddActiveSpellToCharacter(spell_owner, move(spell));
+	spell_owner->AddActiveSpell(spell);
 }
 
 void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 
 	unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(id);
-	AddPassiveSpellToCharacter(spell_owner, move(spell));
-}
-
-void SpellManager::AddActiveSpellToCharacter(Character* spell_owner, unique_ptr<ActiveSpell> spell) {
-	spell_owner->AddActiveSpell(spell);
-}
-
-void SpellManager::AddPassiveSpellToCharacter(Character* spell_owner, unique_ptr<PassiveSpell> spell) {
 	spell_owner->AddPassiveSpell(spell);
 }
 
