@@ -641,16 +641,15 @@ std::string GameplayStatics::GetEnumString(ESpellBookID _enum) {
 std::string GameplayStatics::GetEnumString(ESpellID _enum) {
 	switch (_enum) {
 	case ESpellID::FIREBALL:
-		return "FIREBALL EFFECT";
+		return "FIREBALL";
 	case ESpellID::BURNING:
 		return "BURNING";
 	case ESpellID::MOLTEN_ARMOR:
 		return "MOLTEN ARMOR";
 	case ESpellID::EXPOSURE:
 		return "EXPOSURE";
-
 	case ESpellID::VISCOUS_ACID:
-		return "VISCOUS ACID EFFECT";
+		return "VISCOUS ACID";
 	default:
 		return "DEFAULT";
 	}

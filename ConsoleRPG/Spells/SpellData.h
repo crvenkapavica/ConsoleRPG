@@ -27,7 +27,7 @@ struct PassiveConstData {
 
 class SpellDB {
 public:
-	static std::unordered_map<ESpellID, std::vector<SpellData>> _spell_level_map;
+	static std::unordered_map<ESpellID, std::vector<SpellData>> _spell_lvl_map;
 	static std::unordered_map<ESpellID, ActiveConstData> _active_const_map;
 	static std::unordered_map<ESpellID, PassiveConstData> _passive_const_map;
 

@@ -39,20 +39,15 @@ void ActiveSpell::InvokeEffect(Character* instigator, vector<weak_ptr<Character>
 }
 
 float ActiveSpell::GetRandEffectMinMax(Character* character) {
-	//return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetEffectMin(_idx, _spell->GetLevel()), _spell->GetEffectMax(_idx, _spell->GetLevel())), character);
-	return 0.f;
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_spell_lvl_map[_ID][_lvl]._effect_min, SpellDB::_spell_lvl_map[_ID][_lvl]._effect_max), character);
 }
 
 float ActiveSpell::GetRandOnApplyMinMax(Character* character) {
-	//return AdjustDamage(GameplayStatics::GetRandFloat(_spell->GetOnApplyMin(_idx, _spell->GetLevel()), _spell->GetOnApplyMax(_idx, _spell->GetLevel())), character);
-	return 0.f;
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_spell_lvl_map[_ID][_lvl]._apply_min, SpellDB::_spell_lvl_map[_ID][_lvl]._apply_max), character);
 }
 
-float ActiveSpell::AdjustDamage(float damage, Character* character) {
-	auto damage_type = EDamageType::FIRE;
-	auto spell_type = ESpellType::AURA;
-	
-	switch (damage_type) {
+float ActiveSpell::AdjustDamage(float damage, Character* character) {	
+	switch (_damage_type) {
 	case EDamageType::ARCANE:
 		damage += damage * character->_arcane_damage;
 		break;
@@ -81,16 +76,16 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 		break;
 	}
 
-	if (damage_type != EDamageType::PHYSICAL)
+	if (_damage_type != EDamageType::PHYSICAL)
 		damage += character->GetSP().GetActual();
 
 	int rnd = GameplayStatics::GetRandInt(0, 100000);
-	if (spell_type == ESpellType::PROJECTILE) {
+	if (_spell_type == ESpellType::PROJECTILE) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
 		if (rnd <= chance)
 			damage *= character->GetSpellCritDmg().GetActual();
 	}
-	else if (spell_type == ESpellType::MELEE || spell_type == ESpellType::RANGED) {
+	else if (_spell_type == ESpellType::MELEE || _spell_type == ESpellType::RANGED) {
 		float chance = character->GetCritChance().GetActual() * 100000; 
 		if (rnd <= chance)
 			damage *= character->GetCritDmg().GetActual();
@@ -129,20 +124,20 @@ int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enem
 
 void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
-	//vector<CharacterStat> enemy_apply_stats;
-	//float damage = -GetRandOnApplyMinMax(instigator);
-	//enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
-	//OnApplyParams apply_params;
-	//apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	//apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	//apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
+	vector<CharacterStat> enemy_apply_stats;
+	float damage = -GetRandOnApplyMinMax(instigator);
+	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
+	OnApplyParams apply_params;
+	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	//EffectParams effect_params;
+	EffectParams effect_params;
 
-	//vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
+	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	//shared_ptr<FireballEffect> effect = make_shared<FireballEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
-	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
+	shared_ptr<Fireball> effect = make_shared<Fireball>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect);
 }
 
 stringstream& Fireball::GetTooltip() {

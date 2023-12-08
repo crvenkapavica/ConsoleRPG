@@ -20,8 +20,8 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_spell_crit_damage = data._spell_crit_damage;
 	_resistances = data._resistances;
 
-	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
+	//SpellManager& sm = SpellManager::GetInstance();
+	//sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
 }
 
 Character::Character(const CharacterData::PlayerAttributes& attributes)
@@ -29,9 +29,9 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 {
 	_class = attributes._class;
 	_crit_damage = 2.f;
-	_crit_chance = 0.05f;
+	_crit_chance = 0.07f;
 	_spell_crit_damage = 2.5f;
-	_spell_crit_chance = 0.05f;
+	_spell_crit_chance = 0.07f;
 	InitStatsPerAttribute();
 	InitStats();
 }

@@ -138,7 +138,7 @@ public:
 	int _multi_strike = 0;
 	// damage
 	float _arcane_damage = 0.f;
-	float _fire_damage = 1.f;
+	float _fire_damage = 0.f;
 	float _lightning_damage = 0.f;
 	float _cold_damage = 0.f;
 	float _poison_damage = 0.f;

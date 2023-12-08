@@ -25,7 +25,6 @@ public:
 	//shared_ptr<SpellBook> CreateSpellBook(Character* spell_onwer, ESpellBookID spellbook_id, int level);
 
 	void CreateActiveSpell(Character* spell_owner, ESpellID id);
-
 	void CreatePassiveSpell(Character* spell_owner, ESpellID id);
 
 
