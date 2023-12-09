@@ -13,7 +13,7 @@ struct CharacterStat {
 	EStatType _stat_type;
 	EStatMod _stat_mod;
 	Character::Stat* _stat;
-	float _value;
+	std::function<float(Character* character)> _getDmg;
 	float _total = 0;
 };
 

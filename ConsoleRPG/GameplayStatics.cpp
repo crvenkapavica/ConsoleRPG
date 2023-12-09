@@ -516,9 +516,7 @@ float GameplayStatics::ApplyDamage(Character* instigator, Character* target, flo
 
 void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> spell) {
 	
-	ESpellID spell_id = spell->GetID();
-
-	unique_ptr<CombatEffect> combat_effect = make_unique<CombatEffect>(instigator, targets, effect_params, apply_params, spell,/* spell->GetDuration(effect_idx, spell->GetLevel()*/ 1);
+	unique_ptr<CombatEffect> combat_effect = make_unique<CombatEffect>(instigator, targets, effect_params, apply_params, spell, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
 
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());

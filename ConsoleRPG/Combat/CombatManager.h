@@ -73,7 +73,7 @@ private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& _total, bool isOnApply);
+	void ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, /*shared_ptr<ActiveSpell> spell*/CombatEffect* effect, float& _total, bool isOnApply);
 
 	void ApplyRes(CharacterRes& character_res, float& _total);
 

@@ -116,6 +116,7 @@ int main() {
     SpellManager& sm = SpellManager::GetInstance();
 
     sm.CreateActiveSpell(player_main.get(), ESpellID::FIREBALL);
+    sm.CreateActiveSpell(player_main.get(), ESpellID::BURNING);
 
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);

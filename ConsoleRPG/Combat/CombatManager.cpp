@@ -104,18 +104,19 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_RESET;
 }
 
-void CombatManager::ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& _total, bool isOnApply) {
+void CombatManager::ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, /*shared_ptr<ActiveSpell> spell*/CombatEffect* effect, float& _total, bool isOnApply) {
 
 	float value;
+	float damage = character_stat._getDmg(effect->_instigator);
 
 	if (character_stat._stat_mod == EStatMod::ADDITIVE) {
-		_total += character_stat._value;
+		_total += damage;
 		value = _total;
 	}
-	else value = character_stat._value;
+	else value = damage;
 
 	if (character_stat._stat_type == EStatType::HEALTH)
-		value = GameplayStatics::ApplyDamage(GetTurnCharacter().lock().get(), character_stat._character, character_stat._value, effect, isOnApply);
+		value = GameplayStatics::ApplyDamage(GetTurnCharacter().lock().get(), character_stat._character, damage, effect->_spell, isOnApply);
 
 	switch (value_action) {
 		case EStatValueAction::UPDATE_BASE: {
@@ -165,30 +166,28 @@ void CombatManager::HandleApplyStat(CombatEffect* combat_effect, Character* targ
 	auto& ally_stats = combat_effect->_apply_params._effect_stat->_ally_stat;
 	auto& enemy_stats = combat_effect->_apply_params._effect_stat->_enemy_stat;
 	auto value_action = combat_effect->_apply_params._effect_stat->_value_action;
-	auto& effect = combat_effect->_spell;
 
 	for (auto& stat : ally_stats)
 		if ((combat_effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
-			ApplyStat(value_action, stat, effect, stat._total, 1);
+			ApplyStat(value_action, stat, combat_effect, stat._total, 1);
 
 	for (auto& stat : enemy_stats)
 		if ((combat_effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
-			ApplyStat(value_action, stat, effect, stat._total, 1);
+			ApplyStat(value_action, stat, combat_effect, stat._total, 1);
 }
 
 void CombatManager::HandleEffectStat(CombatEffect* combat_effect, Character* target) {
 	auto& ally_stats = combat_effect->_effect_params._effect_stat->_ally_stat;
 	auto& enemy_stats = combat_effect->_effect_params._effect_stat->_enemy_stat;
 	auto value_action = combat_effect->_effect_params._effect_stat->_value_action;
-	auto& effect = combat_effect->_spell;
 
 	for (auto& stat : ally_stats)
 		if (stat._character == target || stat._character == combat_effect->_instigator)
-			ApplyStat(value_action, stat, effect, stat._total, 0);
+			ApplyStat(value_action, stat, combat_effect, stat._total, 0);
 
 	for (auto& stat : enemy_stats)
 		if (stat._character == target || stat._character == combat_effect->_instigator)
-			ApplyStat(value_action, stat, effect, stat._total, 0);
+			ApplyStat(value_action, stat, combat_effect, stat._total, 0);
 }
 
 void CombatManager::HandleApplyRes(CombatEffect* combat_effect, Character* target) {

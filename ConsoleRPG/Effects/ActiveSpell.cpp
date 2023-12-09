@@ -126,7 +126,7 @@ int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enem
 void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	float damage = -GetRandOnApplyMinMax(instigator);
+	auto damage = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
 	OnApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
@@ -150,24 +150,25 @@ stringstream& Fireball::GetTooltip() {
 
 void Burning::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
-	//OnApplyParams apply_params;
+	OnApplyParams apply_params;
 
-	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
-	//vector<CharacterStat> enemy_effect_stats;
-	//for (int i = 0; i <= rand_targets; i++)
-	//	enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), -GetRandEffectMinMax()});
+	int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
+	vector<CharacterStat> enemy_effect_stats;
+	auto damage = [&](Character* character) { return -GetRandEffectMinMax(character); };
+	for (int i = 0; i <= rand_targets; i++)
+		enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), damage });
 
-	//EffectParams effect_params;
-	//effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	//effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	//effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
+	EffectParams effect_params;
+	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	//vector<weak_ptr<Character>> targets;
-	//for (int i = 0; i <= rand_targets; i++)
-	//	targets.push_back(team2[t2_idx[i]]);
+	vector<weak_ptr<Character>> targets;
+	for (int i = 0; i <= rand_targets; i++)
+		targets.push_back(team2[t2_idx[i]]);
 
-	//shared_ptr<BurningEffect> effect = make_shared<BurningEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
-	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
+	shared_ptr<Burning> effect = make_shared<Burning>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect);
 }
 
 stringstream& Burning::GetTooltip() {

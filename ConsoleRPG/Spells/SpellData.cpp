@@ -15,7 +15,7 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 		{ 16.3f,	21.9f,		0.f,		0.f,		2,		1,		65,		0 }
 	};
 	_data[ESpellID::BURNING] = {
-		{ 0.f,		0.f,		13.2f,		14.3f,		3,		2,		10,		0 },
+		{ 0.f,		0.f,		3.2f,		4.3f,		3,		2,		10,		0 },
 		{ 0.f,		0.f,		4.3f,		5.4f,		3,		2,		20,		0 },
 		{ 0.f,		0.f,		5.5f,		7.f,		3,		2,		30,		0 },
 		{ 0.f,		0.f,		7.2f,		9.1f,		4,		1,		45,		0 },
