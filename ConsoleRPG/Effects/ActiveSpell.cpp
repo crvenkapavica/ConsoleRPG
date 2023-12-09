@@ -138,8 +138,8 @@ void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 
 	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	shared_ptr<Fireball> spell = make_shared<Fireball>(_ID);
-	GameplayStatics::ApplyEffect(instigator, targets, spell, apply_params, effect_params);
+	unique_ptr<Fireball> spell = make_unique<Fireball>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
 stringstream& Fireball::GetTooltip() {
@@ -209,8 +209,8 @@ void MoltenArmor::Apply(Character* instigator, const vector<weak_ptr<Character>>
 	for (int i = 0; i <= rand_targets; i++)
 		targets.push_back(team2[t2_idx[i]]);
 
-	shared_ptr<MoltenArmor> spell = make_shared<MoltenArmor>(_ID);
-	GameplayStatics::ApplyEffect(instigator, targets, spell, apply_params, effect_params);
+	unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
 stringstream& MoltenArmor::GetTooltip() {
@@ -239,8 +239,8 @@ void Exposure::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 
 	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	shared_ptr<Exposure> spell = make_shared<Exposure>(_ID);
-	GameplayStatics::ApplyEffect(instigator, targets, spell, apply_params, effect_params);
+	unique_ptr<Exposure> spell = make_unique<Exposure>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
 stringstream& Exposure::GetTooltip() {

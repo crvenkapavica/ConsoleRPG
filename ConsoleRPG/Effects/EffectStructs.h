@@ -66,7 +66,7 @@ struct CombatEffect {
 
 	Character* _instigator;
 	std::vector<weak_ptr<Character>> _targets;
-	std::shared_ptr<ActiveSpell> _spell;
+	std::unique_ptr<ActiveSpell> _spell;
 	OnApplyParams _apply_params;
 	EffectParams _effect_params;
 	int _duration;
@@ -74,10 +74,10 @@ struct CombatEffect {
 	int i = 0;
 	int _turn_applied = -1;
 
-	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, shared_ptr<ActiveSpell> spell, OnApplyParams apply_params, EffectParams effect_params, int duration)
+	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, OnApplyParams apply_params, EffectParams effect_params, int duration)
 		: _instigator(instigator)
 		, _targets(targets)
-		, _spell(spell)
+		, _spell(move(spell))
 		, _apply_params(apply_params)
 		, _effect_params(effect_params)
 		, _duration(duration)

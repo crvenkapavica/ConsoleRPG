@@ -60,9 +60,9 @@ public:
 	static void DisplayAllies();
 	static void DisplayEnemies();
 
-	static float ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> spell, bool isOnApply);
+	static float ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply);
 
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, shared_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params);
 
 	static string GetAliasColor(char alias);
 
