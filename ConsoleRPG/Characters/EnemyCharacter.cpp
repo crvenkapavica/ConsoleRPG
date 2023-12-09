@@ -15,7 +15,7 @@ void EnemyCharacter::TakeTurn() {
 	GameplayStatics::EnemyCombatMove(this, direction_map);
 	if (direction_map.size()) {
 		int rnd = rand() % static_cast<int>(direction_map.size());
-		GameplayStatics::MoveEnemyCharacterOnGrid(this, direction_map[rnd]);
+		GameplayStatics::MoveCharacterOnGrid(this, direction_map[rnd]);
 	}
 
 	//CastSpell();

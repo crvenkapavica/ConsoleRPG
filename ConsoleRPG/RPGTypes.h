@@ -187,8 +187,18 @@ enum class ESpellType {
 	RANGED
 };
 
+enum class ESpellClass {
+	MAGIC,
+	ABILITY,
+	ITEM
+};
+
+enum class EPassiveType {
+	PASSIVE,
+	ITEM
+};
+
 enum class ESpellActivity {
-	NONE,
 	PASSIVE,
 	ACTIVE
 };
@@ -297,11 +307,6 @@ enum class EStatValueAction {
 	UPDATE_BASE,
 	UPDATE_ACTUAL,
 	UPDATE_MAX
-};
-
-enum class EPassiveType {
-	PASSIVE,
-	ITEM
 };
 
 enum EStructFlags {

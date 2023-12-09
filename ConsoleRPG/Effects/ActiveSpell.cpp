@@ -7,7 +7,7 @@
 #include "../Effects/EffectStructs.h"
 
 ActiveSpell::ActiveSpell(ESpellID id, int lvl)
-	: Spell(id, ESpellActivity::ACTIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
+	: Spell(id, ESpellActivity::ACTIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._class, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
 	, _damage_type(SpellDB::_active_const_map.at(id)._damage_type)
 	, _spell_type(SpellDB::_active_const_map.at(id)._spell_type)
 {}

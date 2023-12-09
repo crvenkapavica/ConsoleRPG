@@ -208,13 +208,9 @@ void GameplayStatics::HandleMapInput(int input) {
 void GameplayStatics::RedrawGameScreen() {
 	DisplayAllies();
 	DisplayEnemies();
-	DisplayGrid();
+	_map_gen->DisplayGrid();
 	_cm->DisplayTurnOrder();
 	DisplayCombatLog();
-}
-
-void GameplayStatics::DisplayGrid() {
-	_map_gen->DisplayGrid();
 }
 
 int GameplayStatics::DisplayCombatMenu() {
@@ -252,14 +248,14 @@ void GameplayStatics::CombatMove() {
 	vector<string> v = _map_gen->GetCombatDirections(_cm->GetTurnCharacter().lock().get(), direction_map);
 	int input = InteractiveDisplay(v);
 
-	MoveEnemyCharacterOnGrid(_cm->GetTurnCharacter().lock().get(), direction_map[input]);
+	MoveCharacterOnGrid(_cm->GetTurnCharacter().lock().get(), direction_map[input]);
 }
 
 void GameplayStatics::EnemyCombatMove(Character* character, map<int, EDirection>& direction_map) {
 	vector<string> v = _map_gen->GetCombatDirections(character, direction_map);
 }
 
-void GameplayStatics::MoveEnemyCharacterOnGrid(Character* character, EDirection direction) {
+void GameplayStatics::MoveCharacterOnGrid(Character* character, EDirection direction) {
 	_map_gen->MoveCharacterOnGrid(character, direction);
 }
 
@@ -657,8 +653,6 @@ std::string GameplayStatics::GetEnumString(ESpellType _enum) {
 
 std::string GameplayStatics::GetEnumString(ESpellActivity _enum) {
 	switch (_enum) {
-	case ESpellActivity::NONE:
-		return "NONE";
 	case ESpellActivity::PASSIVE:
 		return "PASIVE";
 	case ESpellActivity::ACTIVE:

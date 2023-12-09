@@ -34,7 +34,7 @@ public:
 	
 	static void CombatMove();
 	static void EnemyCombatMove(Character* character, map<int, EDirection>& direction_map);
-	static void MoveEnemyCharacterOnGrid(Character* character, EDirection direction);
+	static void MoveCharacterOnGrid(Character* character, EDirection direction);
 
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
@@ -50,7 +50,6 @@ public:
 	//static void HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx);
 	static void HandleInfoInput(int input);
 
-	static void DisplayGrid();
 
 	static void RedrawGameScreen();
 

@@ -13,7 +13,6 @@ public:
 	virtual void Apply() = 0;
 
 	inline const ECombatEvent GetOnEvent() const { return _combat_event; }
-	inline const EPassiveType GetEffectType() const { return _passive_type; }
 
 public:
 
@@ -24,7 +23,6 @@ public:
 
 protected:
 	const ECombatEvent _combat_event;
-	const EPassiveType _passive_type;
 };
 
 

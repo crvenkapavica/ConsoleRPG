@@ -16,13 +16,14 @@ struct ActiveConstData {
 	EDamageType _damage_type;
 	ESpellType _spell_type;
 	ESpellRarity _rarity;
+	ESpellClass	_class;
 	int _min_req_lvl;
 };
 
 struct PassiveConstData {
 	ECombatEvent _combat_event;
-	EPassiveType _passive_type;
 	ESpellRarity _rarity;
+	ESpellClass	_class;
 	int _min_req_lvl;
 };
 
