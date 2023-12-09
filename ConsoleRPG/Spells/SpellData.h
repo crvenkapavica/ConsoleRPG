@@ -8,7 +8,8 @@ struct SpellData {
 	float	_effect_max;
 	int		_duration;
 	int		_cooldown;
-	int		_cost; 
+	int		_essence_cost; 
+	int		_stamina_cost;
 };
 
 struct ActiveConstData {
@@ -34,9 +35,9 @@ public:
 private:
 	SpellDB() = delete;
 
-	static struct SpellLevelMapConstructor {
-		SpellLevelMapConstructor();
-	} _spell_level_map_constructor;
+	static struct SpellDataConstructor {
+		SpellDataConstructor();
+	} _spell_data_constructor;
 	static struct ActiveConstDataConstructor {
 		ActiveConstDataConstructor();
 	} _active_const_data_constructor;

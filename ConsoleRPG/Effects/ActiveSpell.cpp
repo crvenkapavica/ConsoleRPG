@@ -2,6 +2,7 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/EnemyCharacter.h"
 #include "../Spells/SpellBook.h"
+#include "../Spells/SpellData.h"
 #include "../GameplayStatics.h"
 #include "../Effects/EffectStructs.h"
 
@@ -79,6 +80,7 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 	if (_damage_type != EDamageType::PHYSICAL)
 		damage += character->GetSP().GetActual();
 
+	// Critical Strike
 	int rnd = GameplayStatics::GetRandInt(0, 100000);
 	if (_spell_type == ESpellType::PROJECTILE) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
