@@ -29,19 +29,15 @@ public:
 	static void DisplayMapMenu();
 	static void HandleMapInput(int input);
 
-	static void HandleMovement();
-
 	static int DisplayCombatMenu();
 	static void HandleCombatInput(PlayerCharacter* character, int input);
-
 	
 	static void CombatMove();
 	static void EnemyCombatMove(Character* character, map<int, EDirection>& direction_map);
 	static void MoveEnemyCharacterOnGrid(Character* character, EDirection direction);
+
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
-
-	static int GetEnemyIdx2(char c);
 
 	static void DisplaySpellMenu();
 	static void HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type);
@@ -53,9 +49,6 @@ public:
 	static void DisplayInfoMenu();
 	//static void HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx);
 	static void HandleInfoInput(int input);
-
-	static void ShowPosition();
-	static void ShowMap();
 
 	static void DisplayGrid();
 
@@ -100,14 +93,14 @@ private:
 	static weak_ptr<PlayerCharacter>	_player;
 	static vector<PlayerCharacter*>		_player_characters;
 	static vector<EnemyCharacter*>		_enemy_characters;
-	static SpellManager*				_spell_manager;
-	static CombatManager*				_combat_manager;
-	static MapGenerator*				_map_generator;
+	static SpellManager*				_sm;
+	static CombatManager*				_cm;
+	static MapGenerator*				_map_gen;
 	static ConsoleMenu*					_menu;
 
 	static vector<weak_ptr<EnemyCharacter>>		_enemies;
 	static vector<weak_ptr<PlayerCharacter>>	_players;
-	static stringstream					_combat_log;
+	static stringstream							_combat_log;
 
 public:
 	static std::string GetEnumString(ESpellBookID _enum);

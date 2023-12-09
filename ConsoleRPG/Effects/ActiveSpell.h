@@ -23,14 +23,6 @@ public:
     inline const EDamageType GetDamageType() const { return _damage_type; }
     inline const ESpellType GetSpellType() const { return _spell_type; }
 
-    //inline const float GetEffectMax(int idx, int level) const { return _effect_data[idx]->_e[level]._effect_max; }
-	//inline const float GetEffectMin(int idx, int level) const { return _effect_data[idx]->_e[level]._effect_min; }
-	//inline const float GetOnApplyMax(int idx, int level) const { return _effect_data[idx]->_e[level]._apply_max; }
-	//inline const float GetOnApplyMin(int idx, int level) const { return _effect_data[idx]->_e[level]._apply_min; }
-	//inline const int GetDuration(int idx, int level) const { return _effect_data[idx]->_e[level]._duration; }
-	//inline const int GetCooldown(int idx, int level) const { return _effect_data[idx]->_e[level]._cooldown; }
-	//inline const int GetCost(int idx, int level) const { return _effect_data[idx]->_e[level]._cost; }
-
 protected:
 
     const EDamageType _damage_type;

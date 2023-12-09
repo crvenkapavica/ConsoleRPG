@@ -39,11 +39,11 @@ void ActiveSpell::InvokeEffect(Character* instigator, vector<weak_ptr<Character>
 }
 
 float ActiveSpell::GetRandEffectMinMax(Character* character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_spell_lvl_map[_ID][_lvl]._effect_min, SpellDB::_spell_lvl_map[_ID][_lvl]._effect_max), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._effect_min, SpellDB::_data[_ID][_lvl]._effect_max), character);
 }
 
 float ActiveSpell::GetRandOnApplyMinMax(Character* character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_spell_lvl_map[_ID][_lvl]._apply_min, SpellDB::_spell_lvl_map[_ID][_lvl]._apply_max), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._apply_min, SpellDB::_data[_ID][_lvl]._apply_max), character);
 }
 
 float ActiveSpell::AdjustDamage(float damage, Character* character) {	
@@ -96,30 +96,29 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 
 int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name) {
 
-	//int expired = count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); });
-	//int size = static_cast<int>(enemies.size()) - expired;
-	//if (size == 1) return 0;
-	//r = size == r ? r - 1 : r;
-	//
-	//for (int i = 0; i < r; i++) {
-	//	int rnd;
-	//	do {
-	//		rnd = rand() % enemies.size();
-	//	} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
-	//	index.push_back(GameplayStatics::GetEnemyIdx2(enemies[rnd].lock()->GetAlias())); // promeniti bez 2
-	//}
-	//sort(index.begin(), index.end());
+	int expired = static_cast<int>(count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
+	int size = static_cast<int>(enemies.size()) - expired;
+	if (size == 1) return 0;
+	r = size == r ? r - 1 : r;
+	
+	for (int i = 0; i < r; i++) {
+		int rnd;
+		do {
+			rnd = rand() % enemies.size();
+		} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
+		index.push_back(GameplayStatics::GetEnemyIdx(enemies[rnd].lock()->GetAlias()));
+	}
+	sort(index.begin(), index.end());
 
-	//auto& s = GameplayStatics::GetCombatLogStream();
-	//static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
-	//s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
-	//for (int i = 0; i < r; i++) {
-	//	s << enemies[index[i + 1]].lock()->GetAlias();
-	//	if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
-	//}
-	//s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
-	//return r;
-	return 0;
+	auto& s = GameplayStatics::GetCombatLogStream();
+	static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
+	s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
+	for (int i = 0; i < r; i++) {
+		s << enemies[index[i + 1]].lock()->GetAlias();
+		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
+	}
+	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
+	return r;
 }
 
 void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
@@ -142,7 +141,7 @@ void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 
 stringstream& Fireball::GetTooltip() {
 	//if (_tooltip.str().empty()) {
-	//	_tooltip << COLOR_INFO << "Hits the target for " << COLOR_VALUE << _spell->GetOnApplyMin(_idx, _spell->GetLevel()) << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
+	//	_tooltip << COLOR_INFO << "Hits the target for " << COLOR_VALUE <<  << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
 	//}
 	return _tooltip;
 }

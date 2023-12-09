@@ -15,9 +15,9 @@
 weak_ptr<PlayerCharacter> GameplayStatics::_player;
 vector<PlayerCharacter*> GameplayStatics::_player_characters;
 vector<EnemyCharacter*> GameplayStatics::_enemy_characters;
-SpellManager* GameplayStatics::_spell_manager = nullptr;
-CombatManager* GameplayStatics::_combat_manager = nullptr;
-MapGenerator* GameplayStatics::_map_generator = nullptr;
+SpellManager* GameplayStatics::_sm = nullptr;
+CombatManager* GameplayStatics::_cm = nullptr;
+MapGenerator* GameplayStatics::_map_gen = nullptr;
 ConsoleMenu* GameplayStatics::_menu = nullptr;
 vector<weak_ptr<EnemyCharacter>> GameplayStatics::_enemies;
 vector<weak_ptr<PlayerCharacter>> GameplayStatics::_players;
@@ -36,13 +36,13 @@ void GameplayStatics::Initialize(vector<shared_ptr<PlayerCharacter>> players, Sp
 	for (auto& p : players)
 		_player_characters.push_back(p.get());
 
-	_spell_manager = spell_manager;
-	_combat_manager = combat_manager;
-	_map_generator = map_generator;
+	_sm = spell_manager;
+	_cm = combat_manager;
+	_map_gen = map_generator;
 	_menu = menu;
 
-	_map_generator->Initialize(_player_characters);
-	//_map_generator->PrintDebugMap();
+	_map_gen->Initialize(_player_characters);
+	//_map_gen->PrintDebugMap();
 
 	DisplayMapMenu();
 }
@@ -117,8 +117,8 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 	for (auto& enemy : _enemies)
 		_enemy_characters.push_back(enemy.lock().get());
 
-	_combat_manager->SetTurns(_players, _enemies);
-	_combat_manager->StartCombat(_player);
+	_cm->SetTurns(_players, _enemies);
+	_cm->StartCombat(_player);
 
 
 	//cout << "STR: " << _player.lock()->GetPlayerAttributes()._strength << "  BASE CRIT DMG: " << _player.lock()->GetCritDmg().GetBase() << "  ACTUAL CRIT DMG: " << _player.lock()->GetCritDmg().GetActual() << endl;
@@ -192,13 +192,13 @@ void GameplayStatics::HandleMapInput(int input) {
 
 	switch (input) {
 	case 0:
-		ShowPosition();
+		_map_gen->ShowPosition();
 		break;
 	case 1:
-		ShowMap();
+		_map_gen->ShowMap();
 		break;
 	case 2:
-		HandleMovement();
+		_map_gen->HandleMovement();
 		break;
 	default:
 		break;
@@ -209,26 +209,13 @@ void GameplayStatics::RedrawGameScreen() {
 	DisplayAllies();
 	DisplayEnemies();
 	DisplayGrid();
-	_combat_manager->DisplayTurnOrder();
+	_cm->DisplayTurnOrder();
 	DisplayCombatLog();
 }
 
 void GameplayStatics::DisplayGrid() {
-	_map_generator->DisplayGrid();
+	_map_gen->DisplayGrid();
 }
-
-// Mozda meknuti te funkcije i zvati ih direktno z switcha??
-//-------------------------------------------------------------
-void GameplayStatics::ShowPosition() {
-	_map_generator->ShowPosition();
-}
-void GameplayStatics::ShowMap() { 
-	_map_generator->ShowMap();
-}
-void GameplayStatics::HandleMovement() {
-	_map_generator->HandleMovement();
-}
-//-------------------------------------------------------------
 
 int GameplayStatics::DisplayCombatMenu() {
 
@@ -262,23 +249,23 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {
 
 void GameplayStatics::CombatMove() {
 	map<int, EDirection> direction_map;
-	vector<string> v = _map_generator->GetCombatDirections(_combat_manager->GetTurnCharacter().lock().get(), direction_map);
+	vector<string> v = _map_gen->GetCombatDirections(_cm->GetTurnCharacter().lock().get(), direction_map);
 	int input = InteractiveDisplay(v);
 
-	MoveEnemyCharacterOnGrid(_combat_manager->GetTurnCharacter().lock().get(), direction_map[input]);
+	MoveEnemyCharacterOnGrid(_cm->GetTurnCharacter().lock().get(), direction_map[input]);
 }
 
 void GameplayStatics::EnemyCombatMove(Character* character, map<int, EDirection>& direction_map) {
-	vector<string> v = _map_generator->GetCombatDirections(character, direction_map);
+	vector<string> v = _map_gen->GetCombatDirections(character, direction_map);
 }
 
 void GameplayStatics::MoveEnemyCharacterOnGrid(Character* character, EDirection direction) {
-	_map_generator->MoveCharacterOnGrid(character, direction);
+	_map_gen->MoveCharacterOnGrid(character, direction);
 }
 
 int GameplayStatics::GetPlayerIdx(char c) {
 	int ret;
-	while ((ret = _map_generator->GetPlayerIdx(c)) == -1) {
+	while ((ret = _map_gen->GetPlayerIdx(c)) == -1) {
 		_menu->Clear(2);
 		cout << ANSI_COLOR_RED << "Wrong alias. Input target alias: " << ANSI_COLOR_RESET << endl;
 		cout << "-> ";
@@ -290,7 +277,7 @@ int GameplayStatics::GetPlayerIdx(char c) {
 
 int GameplayStatics::GetEnemyIdx(char c) {
 	int ret;
-	while ((ret = _map_generator->GetEnemyIdx(c)) == -1) {
+	while ((ret = _map_gen->GetEnemyIdx(c)) == -1) {
 		_menu->Clear(2);
 		cout << ANSI_COLOR_RED << "Wrong alias. Input target alias: " << ANSI_COLOR_RESET << endl;
 		cout << "-> ";
@@ -299,20 +286,6 @@ int GameplayStatics::GetEnemyIdx(char c) {
 	}
 	return ret;
 }
-
-
-int GameplayStatics::GetEnemyIdx2(char c) {
-	int ret;
-	while ((ret = _map_generator->GetEnemyIdx(c)) == -1) {
-		_menu->Clear(2);
-		cout << ANSI_COLOR_RED << "Wrong alias. Input target alias: " << ANSI_COLOR_RESET << endl;
-		cout << "->>>>>>> ";
-		string s; cin >> s;
-		c = s[0];
-	}
-	return ret;
-}
-
 
 void GameplayStatics::DisplaySpellMenu() {
 
@@ -353,7 +326,7 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type) {
 	//several other types might be self-cast only thus not needing a target
 
 	string s_input = "";
-	//int target_num = 1 + _combat_manager->GetTurnCharacter().lock()->GetMultiStrike();
+	//int target_num = 1 + _cm->GetTurnCharacter().lock()->GetMultiStrike();
 	int n_targets = 1;
 	for (int i = 0; i < n_targets; i++) {
 		cout << "Input target alias:" << endl;
@@ -377,13 +350,13 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type) {
 	if (e_idx.empty()) e_idx = p_idx;
 	///////////////////////////////////////////////////////////////////////////
 
-	_spell_manager->CastSpell(spell_idx, _combat_manager->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx);
+	_sm->CastSpell(spell_idx, _cm->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx);
 }
 
 //int GameplayStatics::DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells) {
 //	vector<string> v;
 //	spells.clear();
-//	for (auto& spellbook : _combat_manager->GetTurnCharacter().lock()->GetActiveSpells()) {
+//	for (auto& spellbook : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
 //		v.push_back(GetEnumString(spellbook->GetID()));
 //		spells.push_back(spellbook.get());
 //		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
@@ -394,7 +367,7 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type) {
 int GameplayStatics::DisplayEquipedSpells(int& length, vector<ActiveSpell*>& spells) {
 	vector<string> v;
 	spells.clear();
-	for (auto& spell : _combat_manager->GetTurnCharacter().lock()->GetActiveSpells()) {
+	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
 		v.push_back(GetEnumString(spell->GetID()));
 		spells.push_back(spell.get());
 		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
@@ -433,7 +406,7 @@ void GameplayStatics::DisplayInfoMenu() {
 
 //void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
 //	vector<shared_ptr<ActiveSpell>> effects;
-//	auto spellbooks = _combat_manager->GetTurnCharacter().lock()->GetActiveSpells();
+//	auto spellbooks = _cm->GetTurnCharacter().lock()->GetActiveSpells();
 //	for (int i = 0; i < spellbooks.size(); i++) {
 //		if (spell_idx == i) {
 //			effects = spellbooks[spell_idx]->GetEffects();
@@ -516,7 +489,7 @@ vector<weak_ptr<EnemyCharacter>> GameplayStatics::GetEnemyCharacters() {
 }
 
 void GameplayStatics::EndTurn(Character* character) {
-	_combat_manager->EndTurn(character);
+	_cm->EndTurn(character);
 }
 
 float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> spell, bool isOnApply) {
@@ -550,7 +523,7 @@ void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Charact
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
-	_combat_manager->AddCombatEffect(move(combat_effect));
+	_cm->AddCombatEffect(move(combat_effect));
 }
 
 string GameplayStatics::GetAliasColor(char alias) {
@@ -559,7 +532,7 @@ string GameplayStatics::GetAliasColor(char alias) {
 }
 
 void GameplayStatics::KillEnemy(int idx) {
-	_map_generator->KillEnemy(idx);
+	_map_gen->KillEnemy(idx);
 }
 
 string GameplayStatics::string2(float f) {
