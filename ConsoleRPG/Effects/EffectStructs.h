@@ -14,7 +14,7 @@ struct CharacterStat {
 	EStatMod _stat_mod;
 	Character::Stat* _stat;
 	float _value;
-	float total = 0;
+	float _total = 0;
 };
 
 struct CharacterRes {
@@ -23,7 +23,7 @@ struct CharacterRes {
 	EStatMod _stat_mod;
 	float* _res;
 	float _value;
-	float total = 0;
+	float _total = 0;
 };
 
 struct Effect_Stat {

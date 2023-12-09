@@ -73,9 +73,9 @@ private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply);
+	void ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& _total, bool isOnApply);
 
-	void ApplyRes(CharacterRes& character_res, float& total);
+	void ApplyRes(CharacterRes& character_res, float& _total);
 
 	void HandleCombatEffect(CombatEffect* combat_effect, Character* target = nullptr);
 

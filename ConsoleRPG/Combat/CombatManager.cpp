@@ -76,7 +76,7 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_BROWN_LIGHT << ANSI_CURSOR_RIGHT(85) << "^" << endl;
 	cout << ANSI_COLOR_BROWN_LIGHT << ANSI_CURSOR_RIGHT(85) << "^" << endl;
 
-	int total = 0;
+	int _total = 0;
 	string COLOR;
 	for (int i = _turn_index; i < _turn_table.size(); i++) {
 		char c = _turn_table[i].lock()->GetAlias();
@@ -84,18 +84,18 @@ void CombatManager::DisplayTurnOrder() {
 		//else continue;
 		if (c >= '0' && c <= '9') COLOR = COLOR_PLAYER;
 		else COLOR = COLOR_ENEMY;
-		if (total == 0) cout << COLOR << ANSI_COLOR_BLINK << ANSI_CURSOR_RIGHT(83) << "->" << c << "<-" << ANSI_COLOR_RESET << endl << endl;
+		if (_total == 0) cout << COLOR << ANSI_COLOR_BLINK << ANSI_CURSOR_RIGHT(83) << "->" << c << "<-" << ANSI_COLOR_RESET << endl << endl;
 		else cout << COLOR << ANSI_CURSOR_RIGHT(85) << c << endl << endl;
-		if (++total == 9) break;
+		if (++_total == 9) break;
 	}
 
-	while (total < 9) {
+	while (_total < 9) {
 		for (int i = 0; i < _turn_table.size(); i++) {
 			char c = _turn_table[i].lock()->GetAlias();
 			if (c >= '0' && c <= '9') COLOR = COLOR_PLAYER;
 			else COLOR = COLOR_ENEMY;
 			cout << COLOR << ANSI_CURSOR_RIGHT(85) << c << endl << endl;
-			if (++total == 9) break;
+			if (++_total == 9) break;
 		}
 	}
 
@@ -104,13 +104,13 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_RESET;
 }
 
-void CombatManager::ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& total, bool isOnApply) {
+void CombatManager::ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveSpell> effect, float& _total, bool isOnApply) {
 
 	float value;
 
 	if (character_stat._stat_mod == EStatMod::ADDITIVE) {
-		total += character_stat._value;
-		value = total;
+		_total += character_stat._value;
+		value = _total;
 	}
 	else value = character_stat._value;
 
@@ -131,13 +131,13 @@ void CombatManager::ApplyStat(EStatValueAction value_action, CharacterStat& char
 	}
 }
 
-void CombatManager::ApplyRes(CharacterRes& character_res, float& total) {
+void CombatManager::ApplyRes(CharacterRes& character_res, float& _total) {
 
 	float value;
 
 	if (character_res._stat_mod == EStatMod::ADDITIVE) {
-		total += character_res._value;
-		value = total;
+		_total += character_res._value;
+		value = _total;
 	}
 	else value = character_res._value;
 
@@ -169,11 +169,11 @@ void CombatManager::HandleApplyStat(CombatEffect* combat_effect, Character* targ
 
 	for (auto& stat : ally_stats)
 		if ((combat_effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
-			ApplyStat(value_action, stat, effect, stat.total, 1);
+			ApplyStat(value_action, stat, effect, stat._total, 1);
 
 	for (auto& stat : enemy_stats)
 		if ((combat_effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
-			ApplyStat(value_action, stat, effect, stat.total, 1);
+			ApplyStat(value_action, stat, effect, stat._total, 1);
 }
 
 void CombatManager::HandleEffectStat(CombatEffect* combat_effect, Character* target) {
@@ -184,11 +184,11 @@ void CombatManager::HandleEffectStat(CombatEffect* combat_effect, Character* tar
 
 	for (auto& stat : ally_stats)
 		if (stat._character == target || stat._character == combat_effect->_instigator)
-			ApplyStat(value_action, stat, effect, stat.total, 0);
+			ApplyStat(value_action, stat, effect, stat._total, 0);
 
 	for (auto& stat : enemy_stats)
 		if (stat._character == target || stat._character == combat_effect->_instigator)
-			ApplyStat(value_action, stat, effect, stat.total, 0);
+			ApplyStat(value_action, stat, effect, stat._total, 0);
 }
 
 void CombatManager::HandleApplyRes(CombatEffect* combat_effect, Character* target) {
@@ -197,10 +197,10 @@ void CombatManager::HandleApplyRes(CombatEffect* combat_effect, Character* targe
 
 	for (auto& r : ally_res)
 		if (combat_effect->_turn_applied == -1 || r._character == target)
-			ApplyRes(r, r.total);
+			ApplyRes(r, r._total);
 	for (auto& r : enemy_res)
 		if (combat_effect->_turn_applied == -1 || r._character == target)
-			ApplyRes(r, r.total);
+			ApplyRes(r, r._total);
 }
 
 void CombatManager::HandleEffectRes(CombatEffect* combat_effect, Character* target) {
@@ -209,11 +209,11 @@ void CombatManager::HandleEffectRes(CombatEffect* combat_effect, Character* targ
 
 	for (auto& r : ally_res)
 		if (r._character == target || r._character == combat_effect->_instigator) // treba provjeriti ako ide instigator tu...
-			ApplyRes(r, r.total);
+			ApplyRes(r, r._total);
 
 	for (auto& r : enemy_res)
 		if (r._character == target || r._character == combat_effect->_instigator)
-			ApplyRes(r, r.total);
+			ApplyRes(r, r._total);
 }
 
 void CombatManager::GetCharactersBase() {
