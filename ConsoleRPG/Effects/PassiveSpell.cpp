@@ -3,7 +3,7 @@
 #include "../Spells/SpellData.h"
 
 PassiveSpell::PassiveSpell(ESpellID id, int lvl)
-	: Spell(id, ESpellActivity::PASSIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
+	: Spell(id, ESpellActivity::PASSIVE, SpellDB::_passive_const_map.at(id)._rarity, SpellDB::_passive_const_map.at(id)._min_req_lvl, lvl)
 	, _combat_event(SpellDB::_passive_const_map.at(id)._combat_event)
 	, _passive_type(SpellDB::_passive_const_map.at(id)._passive_type)
 	, _instigator(nullptr)

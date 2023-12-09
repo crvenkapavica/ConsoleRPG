@@ -118,6 +118,7 @@ int main() {
     sm.CreateActiveSpell(player_main.get(), ESpellID::FIREBALL);
     sm.CreateActiveSpell(player_main.get(), ESpellID::BURNING);
     sm.CreateActiveSpell(player_main.get(), ESpellID::EXPOSURE);
+    sm.CreateActiveSpell(player_main.get(), ESpellID::MOLTEN_ARMOR);
 
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
@@ -127,7 +128,7 @@ int main() {
  //   spell_manager.CreateSpellBook(player_warlock.get(), ESpellBookID::STONESKIN, 0);
 
     //pasive
-    //spell_manager.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
+    sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
 
     CombatManager& cm = CombatManager::GetInstance();
 	ConsoleMenu menu;

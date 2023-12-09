@@ -22,8 +22,8 @@ void EnemyCharacter::TakeTurn() {
 
 	GameplayStatics::RedrawGameScreen();
 	Sleep(300);
-	auto& s = GameplayStatics::GetCombatLogStream();
-	s << "Character (" << COLOR_ENEMY << _alias << COLOR_COMBAT_LOG << ") ends their turn.\n";
+	//auto& s = GameplayStatics::GetCombatLogStream();
+	//s << "Character (" << COLOR_ENEMY << _alias << COLOR_COMBAT_LOG << ") ends their turn.\n";
 	EndTurn();
 }
 

@@ -22,7 +22,7 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 		{ 0.f,		0.f,		9.2f,		11.5f,		4,		1,		60,		0 }
 	};
 	_data[ESpellID::MOLTEN_ARMOR] = {
-		{ 2.5f,		3.8f,		1.4f,		2.6f,		3,		2,		10,		0 },
+		{ 3.f,		3.f,		1.4f,		2.6f,		3,		2,		10,		0 },
 		{ 3.4f,		5.2f,		2.3f,		3.4f,		3,		2,		20,		0 },
 		{ 4.8f,		6.6f,		3.2f,		4.2f,		3,		2,		30,		0 },
 		{ 6.2f,		9.9f,		4.0f,		5.3f,		3,		2,		45,		0 },
@@ -103,6 +103,6 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
 
 SpellDB::PassiveConstDataConstructor::PassiveConstDataConstructor() {
-	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_TURN_END, EPassiveType::PASSIVE, ESpellRarity::BASIC, 1 };
+	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_CAST_END, EPassiveType::PASSIVE, ESpellRarity::EPIC, 1 };
 };
 SpellDB::PassiveConstDataConstructor SpellDB::_passive_const_data_constructor;

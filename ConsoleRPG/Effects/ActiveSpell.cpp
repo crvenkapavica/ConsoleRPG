@@ -181,39 +181,36 @@ stringstream& Burning::GetTooltip() {
 }
 
 void MoltenArmor::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
-
-	// just needs value re-adjusting
-	//----------------------------------------
 	
-	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "MOLTEN ARMOR EFFECT");
+	int rand_targets = AddRandomTargets(2, team2, t2_idx, "MOLTEN ARMOR EFFECT");
+	vector<CharacterStat> enemy_apply_stats;
+	for (int i = 0; i <= rand_targets; i++) {
+		auto stat = static_cast<Character::Stat*>(&team2[t2_idx[i]].lock()->GetArmor());
+		auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+		enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
+	}
+	OnApplyParams apply_params;
+	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	//vector<CharacterStat> enemy_apply_stats;
-	//enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team2[t2_idx[0]]->GetArmor(), -GetRandOnApplyMinMax() });
+	vector<CharacterStat> enemy_effect_stats;
+	for (int i = 0; i <= rand_targets; i++) {
+		auto stat = static_cast<Character::Stat*>(&team2[t2_idx[i]].lock()->GetArmor());
+		auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
+		enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
+	}
+	EffectParams effect_params;
+	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	//for (int i = 1; i <= rand_targets; i++)
-	//	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[i]], EStatType::ANY, EStatMod::CONSTANT, &team2[t2_idx[i]]->GetArmor(), -GetRandOnApplyMinMax() });
+	vector<weak_ptr<Character>> targets;
+	for (int i = 0; i <= rand_targets; i++)
+		targets.push_back(team2[t2_idx[i]]);
 
-	//OnApplyParams apply_params;
-	//apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	//apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	//apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
-
-	//vector<CharacterStat> enemy_effect_stats;
-	//enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[0]], EStatType::ANY, EStatMod::ADDITIVE, &team2[t2_idx[0]]->GetArmor(), -GetRandEffectMinMax() });
-	//for (int i = 1; i <= rand_targets; i++)
-	//	enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]], EStatType::ANY, EStatMod::ADDITIVE, &team2[t2_idx[i]]->GetArmor(), -GetRandEffectMinMax() });
-	//EffectParams effect_params;
-	//effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	//effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	//effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
-
-	//vector<Character*> targets = { team2[t2_idx[0]] };
-
-	//for (int i = 0; i < rand_targets; i++)
-	//	targets.push_back(team2[t2_idx[i + 1]]);
-
-	//shared_ptr<MoltenArmorEffect> effect = make_shared<MoltenArmorEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
-	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
+	shared_ptr<MoltenArmor> spell = make_shared<MoltenArmor>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, spell, apply_params, effect_params);
 }
 
 stringstream& MoltenArmor::GetTooltip() {
