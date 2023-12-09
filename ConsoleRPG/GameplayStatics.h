@@ -63,7 +63,7 @@ public:
 
 	static float ApplyDamage(Character* instigator, Character* target, float damage, shared_ptr<ActiveSpell> spell, bool isOnApply);
 
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> spell);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, shared_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params);
 
 	static string GetAliasColor(char alias);
 

@@ -117,6 +117,7 @@ int main() {
 
     sm.CreateActiveSpell(player_main.get(), ESpellID::FIREBALL);
     sm.CreateActiveSpell(player_main.get(), ESpellID::BURNING);
+    sm.CreateActiveSpell(player_main.get(), ESpellID::EXPOSURE);
 
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);

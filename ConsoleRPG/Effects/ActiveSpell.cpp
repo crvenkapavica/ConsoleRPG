@@ -126,8 +126,9 @@ int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enem
 void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	auto damage = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
-	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[0]].lock().get()->GetHealth(), damage});
+	auto stat = static_cast<Character::Stat*>(&team2[t2_idx[0]].lock().get()->GetHealth());
+	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	OnApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -137,8 +138,8 @@ void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 
 	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	shared_ptr<Fireball> effect = make_shared<Fireball>(_ID);
-	GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect);
+	shared_ptr<Fireball> spell = make_shared<Fireball>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, spell, apply_params, effect_params);
 }
 
 stringstream& Fireball::GetTooltip() {
@@ -150,25 +151,25 @@ stringstream& Fireball::GetTooltip() {
 
 void Burning::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
-	OnApplyParams apply_params;
+	//OnApplyParams apply_params;
 
-	int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
-	vector<CharacterStat> enemy_effect_stats;
-	auto damage = [&](Character* character) { return -GetRandEffectMinMax(character); };
-	for (int i = 0; i <= rand_targets; i++)
-		enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), damage });
+	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
+	//vector<CharacterStat> enemy_effect_stats;
+	//auto damage = [&](Character* character) { return -GetRandEffectMinMax(character); };
+	//for (int i = 0; i <= rand_targets; i++)
+	//	enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), damage });
 
-	EffectParams effect_params;
-	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
+	//EffectParams effect_params;
+	//effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	//effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	//effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	vector<weak_ptr<Character>> targets;
-	for (int i = 0; i <= rand_targets; i++)
-		targets.push_back(team2[t2_idx[i]]);
+	//vector<weak_ptr<Character>> targets;
+	//for (int i = 0; i <= rand_targets; i++)
+	//	targets.push_back(team2[t2_idx[i]]);
 
-	shared_ptr<Burning> effect = make_shared<Burning>(_ID);
-	GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect);
+	//shared_ptr<Burning> effect = make_shared<Burning>(_ID);
+	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect);
 }
 
 stringstream& Burning::GetTooltip() {
@@ -228,19 +229,21 @@ stringstream& MoltenArmor::GetTooltip() {
 
 void Exposure::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
-	//vector<CharacterRes> enemy_apply_res;
-	//enemy_apply_res.push_back(CharacterRes{ team2[t2_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team2[t2_idx[0]]->GetResistances().GetFireRes(), -GetRandOnApplyMinMax() });
-	//OnApplyParams apply_params;
-	//apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	//apply_params._struct_flags |= EStructFlags::EFFECT_RES;
-	//apply_params._effect_res = Effect_Res({}, move(enemy_apply_res));
+	vector<CharacterStat> enemy_apply_res;
+	auto stat = static_cast<float*>(&team2[t2_idx[0]].lock()->GetResistances().GetFireRes());
+	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+	enemy_apply_res.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta });
+	OnApplyParams apply_params;
+	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	apply_params._struct_flags |= EStructFlags::EFFECT_RES;
+	apply_params._effect_res = Effect_Res({}, move(enemy_apply_res));
 
-	//EffectParams effect_params;
+	EffectParams effect_params;
 
-	//vector<Character*> targets = { team2[t2_idx[0]] };
+	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	//shared_ptr<ExposureEffect> effect = make_shared<ExposureEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
-	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
+	shared_ptr<Exposure> spell = make_shared<Exposure>(_ID);
+	GameplayStatics::ApplyEffect(instigator, targets, spell, apply_params, effect_params);
 }
 
 stringstream& Exposure::GetTooltip() {

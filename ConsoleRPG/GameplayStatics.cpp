@@ -514,14 +514,14 @@ float GameplayStatics::ApplyDamage(Character* instigator, Character* target, flo
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, EffectParams& effect_params, OnApplyParams& apply_params, shared_ptr<ActiveSpell> spell) {
+void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>> targets, shared_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params) {
 	
-	unique_ptr<CombatEffect> combat_effect = make_unique<CombatEffect>(instigator, targets, effect_params, apply_params, spell, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
+	unique_ptr<CombatEffect> effect = make_unique<CombatEffect>(instigator, targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
 
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
-	_cm->AddCombatEffect(move(combat_effect));
+	_cm->AddCombatEffect(move(effect));
 }
 
 string GameplayStatics::GetAliasColor(char alias) {

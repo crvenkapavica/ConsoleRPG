@@ -40,7 +40,7 @@ public:
 
 	void StartCombat(weak_ptr<PlayerCharacter> player);
 
-	void AddCombatEffect(unique_ptr<CombatEffect> combat_effect);
+	void AddCombatEffect(unique_ptr<CombatEffect> effect);
 
 	void BeginTurn(Character* character);
 
@@ -73,19 +73,19 @@ private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(EStatValueAction value_action, CharacterStat& character_stat, /*shared_ptr<ActiveSpell> spell*/CombatEffect* effect, float& _total, bool isOnApply);
+	void ApplyStat(CombatEffect* effect, CharacterStat& character_stat, EStatValueAction value_action, float& _total, bool isOnApply);
 
-	void ApplyRes(CharacterRes& character_res, float& _total);
+	void ApplyRes(CombatEffect* effect, CharacterStat& character_res, float& _total);
 
-	void HandleCombatEffect(CombatEffect* combat_effect, Character* target = nullptr);
+	void HandleCombatEffect(CombatEffect* effect, Character* target = nullptr);
 
-	void HandleApplyStat(CombatEffect* combat_effect, Character* target);
+	void HandleApplyStat(CombatEffect* effect, Character* target);
 
-	void HandleEffectStat(CombatEffect* combat_effect, Character* target);
+	void HandleEffectStat(CombatEffect* effect, Character* target);
 
-	void HandleApplyRes(CombatEffect* combat_effect, Character* target);
+	void HandleApplyRes(CombatEffect* effect, Character* target);
 
-	void HandleEffectRes(CombatEffect* combat_effect, Character* target);
+	void HandleEffectRes(CombatEffect* effect, Character* target);
 
 	void GetCharactersBase();
 

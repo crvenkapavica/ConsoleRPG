@@ -91,7 +91,7 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::FIREBALL] = { EDamageType::FIRE, ESpellType::PROJECTILE, ESpellRarity::BASIC, 1 };
 	_active_const_map[ESpellID::BURNING] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, 1 };
 	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, 1 };
-	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, 3 };
+	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, 3 };
 	_active_const_map[ESpellID::STONESKIN] = { EDamageType::NONE, ESpellType::BUFF, ESpellRarity::BASIC, 1 };
 	_active_const_map[ESpellID::DISARM] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::ENHANCED, 7 };
 	_active_const_map[ESpellID::THRONS] = { EDamageType::PHYSICAL, ESpellType::BUFF, ESpellRarity::ENHANCED, 9 };
