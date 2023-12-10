@@ -46,10 +46,6 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	}
 }
 
-void ActiveSpell::InvokeEffect(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<int>& t1_idx, vector<int>& t2_idx) {
-	Apply(instigator, team1, team2, t1_idx, t2_idx);
-}
-
 float ActiveSpell::GetRandEffectMinMax(Character* character) {
 	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._effect_min, SpellDB::_data[_ID][_lvl]._effect_max), character);
 }
@@ -107,47 +103,51 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 	return damage;
 }
 
-int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name) {
+int ActiveSpell::AddRandomTargets(int r, Character* character, vector<weak_ptr<Character>>& targets, const string& name) {
 
-	int expired = static_cast<int>(count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
-	int size = static_cast<int>(enemies.size()) - expired;
-	if (size == 1) return 0;
-	r = size == r ? r - 1 : r;
-	
-	for (int i = 0; i < r; i++) {
-		int rnd;
-		do {
-			rnd = rand() % enemies.size();
-		} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
-		index.push_back(GameplayStatics::GetEnemyIdx(enemies[rnd].lock()->GetAlias()));
-	}
-	sort(index.begin(), index.end());
+	//vector<weak_ptr<Character>> enemies;
+	//if (character->GetTeam() == 1)
+	//	enemies = GameplayStatics::GetEnemyCharacters();
+	//else if (character->GetTeam() == 2)
+	//	enemies = GameplayStatics::GetPlayerCharacters();
 
-	auto& s = GameplayStatics::GetCombatLogStream();
-	static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
-	s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
-	for (int i = 0; i < r; i++) {
-		s << enemies[index[i + 1]].lock()->GetAlias();
-		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
-	}
-	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
+	//int expired = static_cast<int>(count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
+	//int size = static_cast<int>(enemies.size()) - expired;
+	//if (size == 1) return 0;
+	//r = size == r ? r - 1 : r;
+	//
+	//for (int i = 0; i < r; i++) {
+	//	int rnd;
+	//	do {
+	//		rnd = rand() % enemies.size();
+	//	} while (any_of(targets.begin(), targets.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
+	//	targets.push_back(enemies[rnd]);
+	//}
+	//sort(targets.begin(), targets.end());
+
+	//auto& s = GameplayStatics::GetCombatLogStream();
+	//static string C = GameplayStatics::GetAliasColor(character->GetAlias());
+	//s << "Characters: " << C << targets[0].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
+	//for (int i = 0; i < r; i++) {
+	//	s << targets[i].lock()->GetAlias();
+	//	if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
+	//}
+	//s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
 	return r;
 }
 
-void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Fireball::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	auto stat = static_cast<Character::Stat*>(&team2[t2_idx[0]].lock().get()->GetHealth());
+	auto stat = static_cast<Character::Stat*>(&targets[0].lock().get()->GetHealth());
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
-	enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
+	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	OnApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
 	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
 
 	EffectParams effect_params;
-
-	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
 	unique_ptr<Fireball> spell = make_unique<Fireball>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
@@ -160,7 +160,7 @@ stringstream& Fireball::GetTooltip() {
 	return _tooltip;
 }
 
-void Burning::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Burning::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	//OnApplyParams apply_params;
 
@@ -194,37 +194,33 @@ stringstream& Burning::GetTooltip() {
 //============================================================================== MAGIC =============================================================================================
 //==================================================================================================================================================================================
 
-void MoltenArmor::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	
-	int rand_targets = AddRandomTargets(2, team2, t2_idx, "MOLTEN ARMOR EFFECT");
-	vector<CharacterStat> enemy_apply_stats;
-	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = static_cast<Character::Stat*>(&team2[t2_idx[i]].lock()->GetArmor());
-		auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
-		enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
-	}
-	OnApplyParams apply_params;
-	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
+	//int rand_targets = AddRandomTargets(2, targets, instigator, "MOLTEN ARMOR EFFECT");
+	//vector<CharacterStat> enemy_apply_stats;
+	//for (int i = 0; i <= rand_targets; i++) {
+	//	auto stat = static_cast<Character::Stat*>(&targets[i].lock()->GetArmor());
+	//	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+	//	enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
+	//}
+	//OnApplyParams apply_params;
+	//apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	//apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	//apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	vector<CharacterStat> enemy_effect_stats;
-	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = static_cast<Character::Stat*>(&team2[t2_idx[i]].lock()->GetArmor());
-		auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
-		enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
-	}
-	EffectParams effect_params;
-	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
+	//vector<CharacterStat> enemy_effect_stats;
+	//for (int i = 0; i <= rand_targets; i++) {
+	//	auto stat = static_cast<Character::Stat*>(&targets[i].lock()->GetArmor());
+	//	auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
+	//	enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
+	//}
+	//EffectParams effect_params;
+	//effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	//effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	//effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
 
-	vector<weak_ptr<Character>> targets;
-	for (int i = 0; i <= rand_targets; i++)
-		targets.push_back(team2[t2_idx[i]]);
-
-	unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>();
-	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
+	//unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>();
+	//GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
 stringstream& MoltenArmor::GetTooltip() {
@@ -238,20 +234,18 @@ stringstream& MoltenArmor::GetTooltip() {
 	return _tooltip;
 }
 
-void Exposure::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Exposure::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	vector<CharacterStat> enemy_apply_res;
-	auto stat = static_cast<float*>(&team2[t2_idx[0]].lock()->GetResistances().GetFireRes());
+	auto stat = static_cast<float*>(&targets[0].lock()->GetResistances().GetFireRes());
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
-	enemy_apply_res.push_back(CharacterStat{ team2[t2_idx[0]].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta });
+	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	OnApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_RES;
 	apply_params._effect_res = Effect_Res({}, move(enemy_apply_res));
 
 	EffectParams effect_params;
-
-	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
 	unique_ptr<Exposure> spell = make_unique<Exposure>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
@@ -266,7 +260,7 @@ stringstream& Exposure::GetTooltip() {
 	return _tooltip;
 }
 
-void Stoneskin::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Stoneskin::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	//vector<CharacterStat> ally_apply_stats;
 	//ally_apply_stats.push_back(CharacterStat{ team1[t1_idx[0]], EStatType::ANY, EStatMod::ADDITIVE, &team1[t1_idx[0]]->GetArmor(), GetRandOnApplyMinMax() });
@@ -291,11 +285,11 @@ stringstream& Stoneskin::GetTooltip() {
 	return _tooltip;
 }
 
-void Disarm::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Disarm::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "SS_disarm" << endl;
 }
 
-void Thorns::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Thorns::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	// TO BE APPLIED WHEN WE HAVE ON DAMAGE RECEIVED EVENTS AND PHYSICAL ATTACKS
 
@@ -309,11 +303,11 @@ stringstream& Thorns::GetTooltip() {
 	return _tooltip;
 }
 
-void Bloodbath::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Bloodbath::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "SS_bloodath" << endl;
 }
 
-void ArcaneInfusion::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void ArcaneInfusion::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	//vector<CharacterStat> ally_apply_stats;
 	//ally_apply_stats.push_back(CharacterStat{ team1[t1_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team1[t1_idx[0]]->GetDmgMelee(), GetRandOnApplyMinMax() });
@@ -336,19 +330,19 @@ void ArcaneInfusion::Apply(Character* instigator, const vector<weak_ptr<Characte
 	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
-void AI_TEMP1::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void AI_TEMP1::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "AI_TEMP1" << endl;
 }
 
-void AI_TEMP2::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void AI_TEMP2::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "AI_TEMP2" << endl;
 }
 
-void AI_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void AI_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "AI_TEMP3" << endl;
 }
 
-void BloodRain::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void BloodRain::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	//float drain = GetRandEffectMinMax();
 
@@ -369,19 +363,19 @@ void BloodRain::Apply(Character* instigator, const vector<weak_ptr<Character>>& 
 	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
-void BR_TEMP1::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void BR_TEMP1::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "BR_TEMP1 EFFECT" << endl;
 }
 
-void BR_TEMP2::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void BR_TEMP2::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "BR_TEMP2 ARMOR EFFECT" << endl;
 }
 
-void BR_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void BR_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
 
-void ViscousAcid::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void ViscousAcid::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	//vector<CharacterStat> enemy_apply_stats;
 	//enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team2[t2_idx[0]]->GetArmor(), -GetRandOnApplyMinMax() });
@@ -412,15 +406,15 @@ stringstream& ViscousAcid::GetTooltip() {
 	return _tooltip;
 }
 
-void VA_TEMP1::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void VA_TEMP1::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "BR_TEMP1 EFFECT" << endl;
 }
 
-void VA_TEMP2::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void VA_TEMP2::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "BR_TEMP2 ARMOR EFFECT" << endl;
 }
 
-void VA_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
 
@@ -431,7 +425,7 @@ void VA_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 //============================================================================== MELEE =============================================================================================
 //==================================================================================================================================================================================
 
-void Melee::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Melee::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	
 }
 
@@ -442,6 +436,6 @@ void Melee::Apply(Character* instigator, const vector<weak_ptr<Character>>& team
 //============================================================================== RANGED ============================================================================================
 //==================================================================================================================================================================================
 
-void Ranged::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+void Ranged::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 }

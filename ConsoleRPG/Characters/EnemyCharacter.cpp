@@ -28,12 +28,12 @@ void EnemyCharacter::TakeTurn() {
 }
 
 void EnemyCharacter::CastSpell() {
-	_player_characters = GameplayStatics::GetPlayerCharacters();
-	_enemy_characters = GameplayStatics::GetEnemyCharacters();
-	vector<int> p_idx;
-	vector<int> e_idx = { 0 };
-	int effect_index = 0;
+	//_player_characters = GameplayStatics::GetPlayerCharacters();
+	//_enemy_characters = GameplayStatics::GetEnemyCharacters();
+	//vector<int> p_idx;
+	//vector<int> e_idx = { 0 };
+	//int effect_index = 0;
 
-	SpellManager& sm = SpellManager::GetInstance();
-	sm.CastSpell(0, this, _player_characters, _enemy_characters, p_idx, e_idx);
+	//SpellManager& sm = SpellManager::GetInstance();
+	//sm.CastSpell(0, this, _player_characters, _enemy_characters, p_idx, e_idx);
 }

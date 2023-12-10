@@ -66,8 +66,8 @@ public:
 	void ResetCombatVariables();
 
 
-	void OnCastBegin(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
-	void OnCastEnd(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
+	void OnCastBegin(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnCastEnd(Character* instigator, vector<weak_ptr<Character>> targets);
 
 private:
 
