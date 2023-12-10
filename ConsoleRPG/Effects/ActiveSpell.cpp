@@ -16,30 +16,30 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	switch (id) {
 		// MAGIC
 	case ESpellID::FIREBALL:
-		return make_unique<Fireball>(id);
+		return make_unique<Fireball>();
 	case ESpellID::BURNING:
-		return make_unique<Burning>(id);
+		return make_unique<Burning>();
 	case ESpellID::MOLTEN_ARMOR:
-		return make_unique<MoltenArmor>(id);
+		return make_unique<MoltenArmor>();
 	case ESpellID::EXPOSURE:
-		return make_unique<Exposure>(id);
+		return make_unique<Exposure>();
 	case ESpellID::STONESKIN:
-		return make_unique<Stoneskin>(id);
+		return make_unique<Stoneskin>();
 	case ESpellID::ARCANE_INFUSION:
-		return make_unique<ArcaneInfusion>(id);
+		return make_unique<ArcaneInfusion>();
 	case ESpellID::BLOOD_RAIN:
-		return make_unique<BloodRain>(id);
+		return make_unique<BloodRain>();
 	case ESpellID::VISCOUS_ACID:
-		return make_unique<ViscousAcid>(id);
+		return make_unique<ViscousAcid>();
 
 
 		// MELEE
 	case ESpellID::MELEE:
-		return make_unique<Melee>(id);
+		return make_unique<Melee>();
 
 		// RANGED
 	case ESpellID::RANGED:
-		return make_unique<Ranged>(id);
+		return make_unique<Ranged>();
 
 	default:
 		return nullptr;
@@ -149,7 +149,7 @@ void Fireball::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 
 	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	unique_ptr<Fireball> spell = make_unique<Fireball>(_ID);
+	unique_ptr<Fireball> spell = make_unique<Fireball>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
@@ -223,7 +223,7 @@ void MoltenArmor::Apply(Character* instigator, const vector<weak_ptr<Character>>
 	for (int i = 0; i <= rand_targets; i++)
 		targets.push_back(team2[t2_idx[i]]);
 
-	unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>(_ID);
+	unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
@@ -253,7 +253,7 @@ void Exposure::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 
 	vector<weak_ptr<Character>> targets = { team2[t2_idx[0]] };
 
-	unique_ptr<Exposure> spell = make_unique<Exposure>(_ID);
+	unique_ptr<Exposure> spell = make_unique<Exposure>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
 }
 
