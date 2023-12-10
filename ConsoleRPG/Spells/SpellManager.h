@@ -5,6 +5,10 @@
 #include "../Spells/SpellBook.h"
 
 class Character;
+class PlayerCharacter;
+class EnemyCharacter;
+class PassiveSpell;
+struct EffectParams;
 
 class SpellManager {
 
@@ -12,7 +16,7 @@ class SpellManager {
 	SpellManager(const SpellManager&) = delete;
 	SpellManager& operator=(const SpellManager&) = delete;
 
-	//unordered_map<ESpellBookID, SpellBook*> _instanced_spells;
+	unordered_map<ESpellBookID, SpellBook*> _instanced_spells;
 
 public:
 
@@ -24,7 +28,7 @@ public:
 	void CreatePassiveSpell(Character* spell_owner, ESpellID id);
 
 
-	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets);
+	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<PlayerCharacter>> players, vector<weak_ptr<EnemyCharacter>> enemies, vector<int> p_idx, vector<int> e_idx);
 
 	//void UnequipSpell(ESpellBookID spell_id);
 

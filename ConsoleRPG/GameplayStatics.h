@@ -70,8 +70,8 @@ public:
 	static void MoveCursorToCombatLog();
 	static void ExtractLinesFromStringtream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
 
-	static vector<weak_ptr<Character>> GetPlayerCharacters();
-	static vector<weak_ptr<Character>> GetEnemyCharacters();
+	static vector<weak_ptr<PlayerCharacter>> GetPlayerCharacters();
+	static vector<weak_ptr<EnemyCharacter>> GetEnemyCharacters();
 
 	static void EndTurn(Character* character);
 

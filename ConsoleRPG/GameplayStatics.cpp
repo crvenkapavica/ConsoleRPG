@@ -353,13 +353,6 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		if (c >= '0' && c <= '9') p_idx.push_back(GetPlayerIdx(c));
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
 	}
-	vector<weak_ptr<Character>> targets;
-	if (p_idx.size() == 0)
-		for (int i = 0; i < e_idx.size(); i++)
-			targets.push_back(_enemies[i]);
-	else
-		for (int i = 0; i < p_idx.size(); i++)
-			targets.push_back(_players[i]);
 
 	Character* turn_char = _cm->GetTurnCharacter().lock().get();
 	int spell_idx = 0;
@@ -370,7 +363,7 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		}
 	}
 
-	_sm->CastSpell(spell_idx, turn_char, targets);
+	_sm->CastSpell(spell_idx, turn_char, _players, _enemies, p_idx, e_idx);
 }
 
 void GameplayStatics::DisplayInfoMenu() {
@@ -468,18 +461,12 @@ void GameplayStatics::ExtractLinesFromStringtream(OUT vector<string>& lines, con
 	start_index = max(0, static_cast<int>(lines.size()) - max_lines);
 }
 
-vector<weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
-	vector<weak_ptr<Character>> v;
-	for (const auto& player : _players)
-		v.push_back(player);
-	return v;
+vector<weak_ptr<PlayerCharacter>> GameplayStatics::GetPlayerCharacters() {
+	return _players;
 }
 
-vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
-	vector<weak_ptr<Character>> v;
-	for (const auto& enemy : _enemies)
-		v.push_back(enemy);
-	return v;
+vector<weak_ptr<EnemyCharacter>> GameplayStatics::GetEnemyCharacters() {
+	return _enemies;
 }
 
 void GameplayStatics::EndTurn(Character* character) {

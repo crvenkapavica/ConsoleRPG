@@ -31,30 +31,32 @@ void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 	spell_owner->AddPassiveSpell(spell);
 }
 
-void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets) {
+void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<PlayerCharacter>> players, vector<weak_ptr<EnemyCharacter>> enemies, vector<int> p_idx, vector<int> e_idx) {
 
 	bool bEnemy = false;
 	if (instigator->GetAlias() >= 'A' && instigator->GetAlias() <= 'Z')
 		bEnemy = true;
 
 	vector<weak_ptr<Character>> team1;
-	for (auto& p : GameplayStatics::GetPlayerCharacters()) {
+	for (auto& p : players) {
 		team1.push_back(p);
 	}
 	vector<weak_ptr<Character>> team2;
-	for (auto& e : GameplayStatics::GetEnemyCharacters()) {
+	for (auto& e : enemies) {
 		team2.push_back(e);
 	}
 
 	CombatManager& cm = CombatManager::GetInstance();
-	cm.OnCastBegin(instigator, targets);
+	vector<weak_ptr<Character>> targets = { team2[e_idx[0]] };
+	cm.OnCastBegin(instigator, team1, team2, targets);
 
-	if (bEnemy) instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
-	else instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
-	
-	// provjeriti dal se doda v targets i radnom targeti kao BURN
+	if (bEnemy) instigator->GetActiveSpells()[spell_idx]->InvokeEffect(instigator, team2, team1, p_idx, e_idx);
+	else instigator->GetActiveSpells()[spell_idx]->InvokeEffect(instigator, team1, team2, p_idx, e_idx);
 
-	cm.OnCastEnd(instigator, targets);
+	for (int i = 0; i < e_idx.size() - 1; i++)
+		targets.push_back(team2[e_idx[i + 1]]);
+
+	cm.OnCastEnd(instigator, team1, team2, targets);
 }
 
 

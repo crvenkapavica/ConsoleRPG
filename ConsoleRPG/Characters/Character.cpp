@@ -2,8 +2,8 @@
 #include "../Spells/SpellBook.h"
 #include "../Spells/SpellManager.h"
 #include "../GameplayStatics.h"
-//#include "../Effects/PassiveSpell.h"
-//#include "../Effects/ActiveSpell.h"
+#include "../Effects/PassiveSpell.h"
+#include "../Effects/ActiveSpell.h"
 
 Character::Character(const CharacterData::EnemyStats& data)
 {
@@ -19,8 +19,6 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_spell_crit_chance = data._spell_crit_chance;
 	_spell_crit_damage = data._spell_crit_damage;
 	_resistances = data._resistances;
-
-	_team = 2;
 
 	//SpellManager& sm = SpellManager::GetInstance();
 	//sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
@@ -38,8 +36,6 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 	SpellManager& sm = SpellManager::GetInstance();
 	sm.CreateActiveSpell(this, ESpellID::MELEE);
 	sm.CreateActiveSpell(this, ESpellID::RANGED);
-
-	_team = 1;
 
 	InitStatsPerAttribute();
 	InitStats();
@@ -60,6 +56,10 @@ Character::Character(const Character& other)
 	, _player_attributes(other._player_attributes)
 	, _resistances(other._resistances)
 {}
+
+Character::~Character() 
+{
+}
 
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;
