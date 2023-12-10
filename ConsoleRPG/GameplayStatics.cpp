@@ -469,12 +469,18 @@ void GameplayStatics::ExtractLinesFromStringtream(OUT vector<string>& lines, con
 	start_index = max(0, static_cast<int>(lines.size()) - max_lines);
 }
 
-vector<weak_ptr<PlayerCharacter>> GameplayStatics::GetPlayerCharacters() {
-	return _players;
+vector<weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
+	vector<weak_ptr<Character>> v;
+	for (const auto& player : _players)
+		v.push_back(player);
+	return v;
 }
 
-vector<weak_ptr<EnemyCharacter>> GameplayStatics::GetEnemyCharacters() {
-	return _enemies;
+vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
+	vector<weak_ptr<Character>> v;
+	for (const auto& enemy : _enemies)
+		v.push_back(enemy);
+	return v;
 }
 
 void GameplayStatics::EndTurn(Character* character) {

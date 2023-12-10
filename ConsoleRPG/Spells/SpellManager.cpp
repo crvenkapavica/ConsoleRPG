@@ -33,27 +33,12 @@ void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 
 void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets) {
 
-	bool bEnemy = false;
-	if (instigator->GetAlias() >= 'A' && instigator->GetAlias() <= 'Z')
-		bEnemy = true;
-
-	vector<weak_ptr<Character>> team1;
-	for (auto& p : GameplayStatics::GetPlayerCharacters()) {
-		team1.push_back(p);
-	}
-	vector<weak_ptr<Character>> team2;
-	for (auto& e : GameplayStatics::GetEnemyCharacters()) {
-		team2.push_back(e);
-	}
-
 	CombatManager& cm = CombatManager::GetInstance();
 	cm.OnCastBegin(instigator, targets);
 
-	if (bEnemy) instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
-	else instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
+	instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
 	
 	// provjeriti a se targets number menja kod recimo BURN
-
 	cm.OnCastEnd(instigator, targets);
 }
 
