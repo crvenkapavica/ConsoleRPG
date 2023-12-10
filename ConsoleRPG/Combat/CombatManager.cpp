@@ -400,11 +400,11 @@ void CombatManager::OnCycleEnd() {
 
 
 // public
-void CombatManager::OnCastBegin(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
-	ApplyPassiveEffects(ECombatEvent::ON_CAST_BEGIN, instigator, team1, team2, targets);
+void CombatManager::OnCastBegin(Character* instigator, vector<weak_ptr<Character>> targets) {
+	//ApplyPassiveEffects(ECombatEvent::ON_CAST_BEGIN, instigator, team1, team2, targets);
 }
 
-void CombatManager::OnCastEnd(Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
-	ApplyPassiveEffects(ECombatEvent::ON_CAST_END, instigator, team1, team2, targets);
+void CombatManager::OnCastEnd(Character* instigator, vector<weak_ptr<Character>> targets) {
+	//ApplyPassiveEffects(ECombatEvent::ON_CAST_END, instigator, team1, team2, targets);
 }
 ///////

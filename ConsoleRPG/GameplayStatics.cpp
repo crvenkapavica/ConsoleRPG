@@ -353,6 +353,14 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		if (c >= '0' && c <= '9') p_idx.push_back(GetPlayerIdx(c));
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
 	}
+	
+	vector<weak_ptr<Character>> targets;
+	if (e_idx.size() == 0)
+		for (const auto& player : _players)
+			targets.push_back(player);
+	else
+		for (const auto& enemy : _enemies)
+			targets.push_back(enemy);
 
 	Character* turn_char = _cm->GetTurnCharacter().lock().get();
 	int spell_idx = 0;
@@ -363,7 +371,7 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		}
 	}
 
-	_sm->CastSpell(spell_idx, turn_char, _players, _enemies, p_idx, e_idx);
+	_sm->CastSpell(spell_idx, turn_char, targets);
 }
 
 void GameplayStatics::DisplayInfoMenu() {

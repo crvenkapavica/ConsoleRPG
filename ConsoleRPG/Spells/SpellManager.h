@@ -28,7 +28,7 @@ public:
 	void CreatePassiveSpell(Character* spell_owner, ESpellID id);
 
 
-	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<PlayerCharacter>> players, vector<weak_ptr<EnemyCharacter>> enemies, vector<int> p_idx, vector<int> e_idx);
+	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets);
 
 	//void UnequipSpell(ESpellBookID spell_id);
 
