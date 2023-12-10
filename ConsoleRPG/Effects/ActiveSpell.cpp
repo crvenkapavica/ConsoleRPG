@@ -103,30 +103,30 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 	return damage;
 }
 
-int ActiveSpell::AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name) {
+int ActiveSpell::AddRandomTargets(int r, Character* character, vector<weak_ptr<Character>>& targets, const string& name) {
 
-	int expired = static_cast<int>(count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
-	int size = static_cast<int>(enemies.size()) - expired;
-	if (size == 1) return 0;
-	r = size == r ? r - 1 : r;
-	
-	for (int i = 0; i < r; i++) {
-		int rnd;
-		do {
-			rnd = rand() % enemies.size();
-		} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
-		index.push_back(GameplayStatics::GetEnemyIdx(enemies[rnd].lock()->GetAlias()));
-	}
-	sort(index.begin(), index.end());
+	//int expired = static_cast<int>(count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
+	//int size = static_cast<int>(enemies.size()) - expired;
+	//if (size == 1) return 0;
+	//r = size == r ? r - 1 : r;
+	//
+	//for (int i = 0; i < r; i++) {
+	//	int rnd;
+	//	do {
+	//		rnd = rand() % enemies.size();
+	//	} while (any_of(index.begin(), index.end(), [&](const int idx) { return enemies[rnd].expired() || enemies[rnd].lock().get() == enemies[idx].lock().get(); }));
+	//	index.push_back(GameplayStatics::GetEnemyIdx(enemies[rnd].lock()->GetAlias()));
+	//}
+	//sort(index.begin(), index.end());
 
-	auto& s = GameplayStatics::GetCombatLogStream();
-	static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
-	s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
-	for (int i = 0; i < r; i++) {
-		s << enemies[index[i + 1]].lock()->GetAlias();
-		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
-	}
-	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
+	//auto& s = GameplayStatics::GetCombatLogStream();
+	//static string C = GameplayStatics::GetAliasColor(enemies[index[0]].lock()->GetAlias());
+	//s << "Characters: " << C << enemies[index[0]].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
+	//for (int i = 0; i < r; i++) {
+	//	s << enemies[index[i + 1]].lock()->GetAlias();
+	//	if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
+	//}
+	//s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
 	return r;
 }
 
@@ -190,7 +190,7 @@ stringstream& Burning::GetTooltip() {
 
 void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	
-	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "MOLTEN ARMOR EFFECT");
+	//int rand_targets = AddRandomTargets(2, targets, instigator, "MOLTEN ARMOR EFFECT");
 	//vector<CharacterStat> enemy_apply_stats;
 	//for (int i = 0; i <= rand_targets; i++) {
 	//	auto stat = static_cast<Character::Stat*>(&team2[t2_idx[i]].lock()->GetArmor());

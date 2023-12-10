@@ -37,7 +37,7 @@ protected:
     float AdjustDamage(float damage, Character* character);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
-    int AddRandomTargets(int r, const vector<weak_ptr<Character>>& enemies, vector<int>& index, const string& name);
+    int AddRandomTargets(int r, Character* character, vector<weak_ptr<Character>>& targets, const string& name);
 };
 
 //============================================================================== MAGIC =============================================================================================

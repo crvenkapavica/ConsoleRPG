@@ -14,8 +14,12 @@ class Character {
 
 public:
 
+	Character() = delete;
+
+	// Enemy
 	Character(const CharacterData::EnemyStats& data);
 
+	// Player
 	Character(const CharacterData::PlayerAttributes& attributes);
 
 	Character(const Character& other);
@@ -100,6 +104,8 @@ protected:
 	bool _bIsInCombat = false;
 	bool _bIsAlive = true;
 	bool _bIsOnTurn = false;
+
+	int _team = -1;
 
 public:
 	
@@ -198,6 +204,7 @@ public:
 	inline const bool IsInCombat() const { return _bIsInCombat; }
 	inline const bool IsAlive() const { return _bIsAlive; }
 	inline const bool IsOnTurn() const { return _bIsOnTurn; }
+	inline const int GetTeam() const { return _team; }
 	inline void SetIsOnTurn(bool value) { _bIsOnTurn = value; }
 	inline void SetIsInCombat(bool in_combat) { _bIsInCombat = in_combat; }
 	inline const CharacterData::PlayerAttributes& GetPlayerAttributes() { return _player_attributes; }
