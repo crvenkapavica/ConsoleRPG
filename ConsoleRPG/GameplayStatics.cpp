@@ -305,26 +305,13 @@ void GameplayStatics::DisplayMeleeMenu() {
 	int input = InteractiveDisplay(v);
 	if (input == -1) return;
 
-	HandleMeleeInput(input, spells);
-}
-
-void GameplayStatics::HandleMeleeInput(int spell_idx, vector<ActiveSpell*> spells) {
-
-	// Handle Targets
-		// ponuditi sve enemije u melee range-u 
-			// ili napisati no enemies in range i tipku BACK
-		// vjerojatno ne delati novu funkciju za to a ko zna mozda i je
-
-	//_sm->CastSpell(_cm->GetTurnCharacter().lock().get(), ....)
+	HandleTarget(spells[input]);
 }
 
 void GameplayStatics::DisplayRangedMenu() {
 
 }
 
-void GameplayStatics::HandleRangedInput(int spell_idx, vector<ActiveSpell*> spells) {
-
-}
 
 void GameplayStatics::DisplaySpellMenu() {
 
@@ -335,24 +322,22 @@ void GameplayStatics::DisplaySpellMenu() {
 	cout << ANSI_COLOR_RESET;
 
 	vector<string> v;
+	vector<ActiveSpell*> spells;
 	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
-		if (spell->GetClass() == ESpellClass::MAGIC)
+		if (spell->GetClass() == ESpellClass::MAGIC) {
 			v.push_back(GetEnumString(spell->GetID()));
-		//if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
+			spells.push_back(spell.get());
+		}
 	}
 	v.push_back("<--BACK--<");
 
 	int input = InteractiveDisplay(v);
 	if (input == -1) return;
 
-	HandleSpellInput(input);
-
-	/*_menu->ANSI_CURSOR_DOWN_N(max(static_cast<int>(spells.size()), 4));
-	_menu->Clear(max(static_cast<int>(spells.size()), 4));*/
+	HandleTarget(spells[input]);
 }
 
-void GameplayStatics::HandleSpellInput(int spell_idx) {
-
+void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 	string s_input;
 	int n_targets = 1;
 	for (int i = 0; i < n_targets; i++) {
@@ -369,7 +354,16 @@ void GameplayStatics::HandleSpellInput(int spell_idx) {
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
 	}
 
-	_sm->CastSpell(spell_idx, _cm->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx);
+	Character* turn_char = _cm->GetTurnCharacter().lock().get();
+	int spell_idx = 0;
+	for (int i = 0; i < turn_char->GetActiveSpells().size(); i++) {
+		if (spell == turn_char->GetActiveSpells()[i].get()) {
+			spell_idx = i;
+			break;
+		}
+	}
+
+	_sm->CastSpell(spell_idx, turn_char, _players, _enemies, p_idx, e_idx);
 }
 
 void GameplayStatics::DisplayInfoMenu() {

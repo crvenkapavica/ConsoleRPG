@@ -40,13 +40,10 @@ public:
 	static int GetEnemyIdx(char c);
 
 	static void DisplayMeleeMenu();
-	static void HandleMeleeInput(int spell_idx, vector<ActiveSpell*> spells);
-
 	static void DisplayRangedMenu();
-	static void HandleRangedInput(int spell_idx, vector<ActiveSpell*> spells);
-
 	static void DisplaySpellMenu();
-	static void HandleSpellInput(int spell_idx);
+
+	static void HandleTarget(ActiveSpell* spell);
 
 	static void DisplayInfoMenu();
 	static void HandleInfoInput(int input);

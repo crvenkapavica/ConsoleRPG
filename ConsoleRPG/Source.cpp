@@ -128,7 +128,7 @@ int main() {
  //   spell_manager.CreateSpellBook(player_warlock.get(), ESpellBookID::STONESKIN, 0);
 
     //pasive
-    sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
+    //sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
 
     CombatManager& cm = CombatManager::GetInstance();
 	ConsoleMenu menu;
