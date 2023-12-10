@@ -293,6 +293,7 @@ int GameplayStatics::GetEnemyIdx(char c) {
 }
 
 void GameplayStatics::DisplayMeleeMenu() {
+	vector<string> v;
 	vector<ActiveSpell*> spells;
 	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::MELEE) {
@@ -307,7 +308,7 @@ void GameplayStatics::DisplayMeleeMenu() {
 	HandleMeleeInput(input, spells);
 }
 
-void GameplayStatics::HandleMeleeInput(int input, vector<ActiveSpell*> spells) {
+void GameplayStatics::HandleMeleeInput(int spell_idx, vector<ActiveSpell*> spells) {
 
 	// Handle Targets
 		// ponuditi sve enemije u melee range-u 
@@ -321,7 +322,7 @@ void GameplayStatics::DisplayRangedMenu() {
 
 }
 
-void GameplayStatics::HandleRangedInput(int input, vector<ActiveSpell*> spells) {
+void GameplayStatics::HandleRangedInput(int spell_idx, vector<ActiveSpell*> spells) {
 
 }
 
@@ -333,40 +334,26 @@ void GameplayStatics::DisplaySpellMenu() {
 	cout << "======================" << endl;
 	cout << ANSI_COLOR_RESET;
 
-	int spell_idx;
-	auto spell_type = ESpellType::NONE;
-	int effect_idx = 0;
-	HandleSpellAndEffectSelection(spell_idx, spell_type);
-	if (spell_idx == -1) return;
+	vector<string> v;
+	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
+		if (spell->GetClass() == ESpellClass::MAGIC)
+			v.push_back(GetEnumString(spell->GetID()));
+		//if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
+	}
+	v.push_back("<--BACK--<");
 
-	HandleSpellTargets(spell_idx, spell_type);
+	int input = InteractiveDisplay(v);
+	if (input == -1) return;
+
+	HandleSpellInput(input);
+
+	/*_menu->ANSI_CURSOR_DOWN_N(max(static_cast<int>(spells.size()), 4));
+	_menu->Clear(max(static_cast<int>(spells.size()), 4));*/
 }
 
-void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpellType& spell_type) {
+void GameplayStatics::HandleSpellInput(int spell_idx) {
 
-	int length = 0;
-	vector<ActiveSpell*> spells;
-	//do {
-	//	if (!spells.empty()) _menu->Clear(4); // Hardcoded for now, TODO change
-	//	spell_idx = DisplayEquipedSpells(length, spells);
-	//	effect_idx = DisplaySelectedSpellsEffects(spell_idx, length, spells);
-	//} while (_menu->GetBack());
-
-	spell_idx = DisplayEquipedSpells(length, spells);
-	if (spell_idx == -1) return;
-
-	_menu->ANSI_CURSOR_DOWN_N(max(static_cast<int>(spells.size()), 4));
-	_menu->Clear(max(static_cast<int>(spells.size()), 4));
-}
-
-void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type) {
-
-	//spell_Type reserved for future
-	//aura might not need a target
-	//several other types might be self-cast only thus not needing a target
-
-	string s_input = "";
-	//int target_num = 1 + _cm->GetTurnCharacter().lock()->GetMultiStrike();
+	string s_input;
 	int n_targets = 1;
 	for (int i = 0; i < n_targets; i++) {
 		cout << "Input target alias:" << endl;
@@ -382,50 +369,8 @@ void GameplayStatics::HandleSpellTargets(int spell_idx, ESpellType spell_type) {
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
 	}
 
-	 /*This is current workaround for not throwing when wrong team alias is the input
-	 Has to be fixed when we have better targeting system
-	 In essence, this is not working as intended, just prevents throwing*/
-	///////////////////////////////////////////////////////////////////////////
-	if (p_idx.empty()) p_idx = e_idx;
-	if (e_idx.empty()) e_idx = p_idx;
-	///////////////////////////////////////////////////////////////////////////
-
 	_sm->CastSpell(spell_idx, _cm->GetTurnCharacter().lock().get(), _players, _enemies, p_idx, e_idx);
 }
-
-//int GameplayStatics::DisplayEquipedSpellBooks(int& length, vector<SpellBook*>& spells) {
-//	vector<string> v;
-//	spells.clear();
-//	for (auto& spellbook : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
-//		v.push_back(GetEnumString(spellbook->GetID()));
-//		spells.push_back(spellbook.get());
-//		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
-//	}
-//	return InteractiveDisplay(v, 0, false);
-//}
-
-int GameplayStatics::DisplayEquipedSpells(int& length, vector<ActiveSpell*>& spells) {
-	vector<string> v;
-	spells.clear();
-	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
-		if (spell->GetClass() == ESpellClass::MAGIC) {
-			v.push_back(GetEnumString(spell->GetID()));
-			spells.push_back(spell.get());
-		}
-		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
-	}
-	v.push_back("<--BACK--<");
-	return InteractiveDisplay(v, 0, false);
-}
-
-//int GameplayStatics::DisplaySelectedSpellsEffects(int input, int length, vector<ActiveSpell*> spells) {
-//	vector<string> v = { "NO EFFECT" };
-//	const vector<pair<int, string>> _effect_list = spells[input]->GetEffectLevelNameVector();
-//	for (auto& effect : _effect_list)
-//		v.push_back(effect.second);
-//
-//	return InteractiveDisplay(v, length + 2, false);
-//}
 
 void GameplayStatics::DisplayInfoMenu() {
 	_menu->Clear(2);
@@ -439,14 +384,15 @@ void GameplayStatics::DisplayInfoMenu() {
 	
 	switch (input) {
 		case 0: {
-			int spell_idx;
 			auto spell_type = ESpellType::NONE;
-			HandleSpellAndEffectSelection(spell_idx, spell_type);
-			//HandleEffectInfo(spell_idx, spell_type);
 		}
 		case 1:
 			return;
 	}
+}
+
+void GameplayStatics::HandleInfoInput(int input) {
+
 }
 
 //void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
@@ -478,10 +424,6 @@ void GameplayStatics::DisplayInfoMenu() {
 //		}
 //	}
 //}
-
-void GameplayStatics::HandleInfoInput(int input) {
-
-}
 
 void GameplayStatics::DisplayCombatLog() {
 

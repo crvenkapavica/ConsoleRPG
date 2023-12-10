@@ -14,6 +14,7 @@ ActiveSpell::ActiveSpell(ESpellID id, int lvl)
 
 unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	switch (id) {
+		// MAGIC
 	case ESpellID::FIREBALL:
 		return make_unique<Fireball>(id);
 	case ESpellID::BURNING:
@@ -30,6 +31,16 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 		return make_unique<BloodRain>(id);
 	case ESpellID::VISCOUS_ACID:
 		return make_unique<ViscousAcid>(id);
+
+
+		// MELEE
+	case ESpellID::MELEE:
+		return make_unique<Melee>(id);
+
+		// RANGED
+	case ESpellID::RANGED:
+		return make_unique<Ranged>(id);
+
 	default:
 		return nullptr;
 	}
@@ -180,6 +191,9 @@ stringstream& Burning::GetTooltip() {
 	return _tooltip;
 }
 
+//============================================================================== MAGIC =============================================================================================
+//==================================================================================================================================================================================
+
 void MoltenArmor::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 	
 	int rand_targets = AddRandomTargets(2, team2, t2_idx, "MOLTEN ARMOR EFFECT");
@@ -251,9 +265,7 @@ stringstream& Exposure::GetTooltip() {
 	//}
 	return _tooltip;
 }
-//==========================================================================================================================================
-//==========================================================================================================================================
-//==========================================================================================================================================
+
 void Stoneskin::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	//vector<CharacterStat> ally_apply_stats;
@@ -300,9 +312,7 @@ stringstream& Thorns::GetTooltip() {
 void Bloodbath::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 	cout << "SS_bloodath" << endl;
 }
-//==========================================================================================================================================
-//==========================================================================================================================================
-//==========================================================================================================================================
+
 void ArcaneInfusion::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	//vector<CharacterStat> ally_apply_stats;
@@ -337,9 +347,7 @@ void AI_TEMP2::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 void AI_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 	cout << "AI_TEMP3" << endl;
 }
-//==========================================================================================================================================
-//==========================================================================================================================================
-//==========================================================================================================================================
+
 void BloodRain::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	//float drain = GetRandEffectMinMax();
@@ -372,9 +380,7 @@ void BR_TEMP2::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 void BR_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
-//==========================================================================================================================================
-//==========================================================================================================================================
-//==========================================================================================================================================
+
 void ViscousAcid::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 
 	//vector<CharacterStat> enemy_apply_stats;
@@ -417,6 +423,25 @@ void VA_TEMP2::Apply(Character* instigator, const vector<weak_ptr<Character>>& t
 void VA_TEMP3::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
-//==========================================================================================================================================
-//==========================================================================================================================================
-//==========================================================================================================================================
+
+
+
+
+
+//============================================================================== MELEE =============================================================================================
+//==================================================================================================================================================================================
+
+void Melee::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+	
+}
+
+
+
+
+
+//============================================================================== RANGED ============================================================================================
+//==================================================================================================================================================================================
+
+void Ranged::Apply(Character* instigator, const vector<weak_ptr<Character>>& team1, const vector<weak_ptr<Character>>& team2, vector<int>& t1_idx, vector<int>& t2_idx) {
+
+}

@@ -87,10 +87,10 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 	};
 	//==============================================================================
 	// MELEE
-	_data[ESpellID::MELEE] = { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 };
+	_data[ESpellID::MELEE] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 } };
 	//==============================================================================
 	// RANGED
-	_data[ESpellID::RANGED] = { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 10 };
+	_data[ESpellID::RANGED] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 10 } };
 }
 SpellDB::SpellDataConstructor SpellDB::_spell_data_constructor;
 
@@ -111,7 +111,7 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	//MELEE
 	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
 	//RANGED
-	_passive_const_map[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1 };
+	_active_const_map[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1 };
 };
 SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
 
