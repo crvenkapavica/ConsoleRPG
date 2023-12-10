@@ -219,7 +219,7 @@ int GameplayStatics::DisplayCombatMenu() {
 	cout << "=> COMBAT MENU <=" << endl;
 	cout << "=================" << endl;
 	cout << ANSI_COLOR_RESET;
-	vector<string> v = { "CAST SPELL", "MOVE", "END TURN", "INFO"};
+	vector<string> v = { "MELEE ATTACK", "RANGED ATTACK", "CAST SPELL", "MOVE", "INFO", "END TURN" };
 	return InteractiveDisplay(v);
 }
 
@@ -227,16 +227,22 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {
 
 	switch (input) {
 	case 0:
-		DisplaySpellMenu();
+		DisplayMeleeMenu();
 		break;
 	case 1:
-		CombatMove();
+		DisplayRangedMenu();
 		break;
 	case 2:
-		EndTurn(character);
+		DisplaySpellMenu();
 		break;
 	case 3:
+		CombatMove();
+		break;
+	case 4:
 		DisplayInfoMenu();
+		break;
+	case 5:
+		EndTurn(character);
 		break;
 	default:
 		break;
@@ -246,12 +252,15 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {
 void GameplayStatics::CombatMove() {
 	map<int, EDirection> direction_map;
 	vector<string> v = _map_gen->GetCombatDirections(_cm->GetTurnCharacter().lock().get(), direction_map);
-	int input = InteractiveDisplay(v);
+	v.push_back("<--BACK--<");
 
-	MoveCharacterOnGrid(_cm->GetTurnCharacter().lock().get(), direction_map[input]);
+	int input = InteractiveDisplay(v);
+	if (input == -1) return;
+
+	_map_gen->MoveCharacterOnGrid(_cm->GetTurnCharacter().lock().get(), direction_map[input]);
 }
 
-void GameplayStatics::EnemyCombatMove(Character* character, map<int, EDirection>& direction_map) {
+void GameplayStatics::EnemyCombatMove(Character* character, OUT map<int, EDirection>& direction_map) {
 	vector<string> v = _map_gen->GetCombatDirections(character, direction_map);
 }
 
@@ -283,6 +292,39 @@ int GameplayStatics::GetEnemyIdx(char c) {
 	return ret;
 }
 
+void GameplayStatics::DisplayMeleeMenu() {
+	vector<ActiveSpell*> spells;
+	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
+		if (spell->GetClass() == ESpellClass::MELEE) {
+			v.push_back(GetEnumString(spell->GetID()));
+			spells.push_back(spell.get());
+		}
+	v.push_back("<--BACK--<");
+
+	int input = InteractiveDisplay(v);
+	if (input == -1) return;
+
+	HandleMeleeInput(input, spells);
+}
+
+void GameplayStatics::HandleMeleeInput(int input, vector<ActiveSpell*> spells) {
+
+	// Handle Targets
+		// ponuditi sve enemije u melee range-u 
+			// ili napisati no enemies in range i tipku BACK
+		// vjerojatno ne delati novu funkciju za to a ko zna mozda i je
+
+	//_sm->CastSpell(_cm->GetTurnCharacter().lock().get(), ....)
+}
+
+void GameplayStatics::DisplayRangedMenu() {
+
+}
+
+void GameplayStatics::HandleRangedInput(int input, vector<ActiveSpell*> spells) {
+
+}
+
 void GameplayStatics::DisplaySpellMenu() {
 
 	_menu->Clear(2);
@@ -295,6 +337,7 @@ void GameplayStatics::DisplaySpellMenu() {
 	auto spell_type = ESpellType::NONE;
 	int effect_idx = 0;
 	HandleSpellAndEffectSelection(spell_idx, spell_type);
+	if (spell_idx == -1) return;
 
 	HandleSpellTargets(spell_idx, spell_type);
 }
@@ -310,6 +353,7 @@ void GameplayStatics::HandleSpellAndEffectSelection(OUT int& spell_idx, OUT ESpe
 	//} while (_menu->GetBack());
 
 	spell_idx = DisplayEquipedSpells(length, spells);
+	if (spell_idx == -1) return;
 
 	_menu->ANSI_CURSOR_DOWN_N(max(static_cast<int>(spells.size()), 4));
 	_menu->Clear(max(static_cast<int>(spells.size()), 4));
@@ -364,10 +408,13 @@ int GameplayStatics::DisplayEquipedSpells(int& length, vector<ActiveSpell*>& spe
 	vector<string> v;
 	spells.clear();
 	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
-		v.push_back(GetEnumString(spell->GetID()));
-		spells.push_back(spell.get());
+		if (spell->GetClass() == ESpellClass::MAGIC) {
+			v.push_back(GetEnumString(spell->GetID()));
+			spells.push_back(spell.get());
+		}
 		if (static_cast<int>(v.back().size()) > length) length = static_cast<int>(v.back().size());
 	}
+	v.push_back("<--BACK--<");
 	return InteractiveDisplay(v, 0, false);
 }
 
@@ -397,6 +444,8 @@ void GameplayStatics::DisplayInfoMenu() {
 			HandleSpellAndEffectSelection(spell_idx, spell_type);
 			//HandleEffectInfo(spell_idx, spell_type);
 		}
+		case 1:
+			return;
 	}
 }
 

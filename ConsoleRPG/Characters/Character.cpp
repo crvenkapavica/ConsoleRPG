@@ -32,6 +32,11 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 	_crit_chance = 0.07f;
 	_spell_crit_damage = 2.5f;
 	_spell_crit_chance = 0.07f;
+
+	SpellManager& sm = SpellManager::GetInstance();
+	sm.CreateActiveSpell(this, ESpellID::MELEE);
+	sm.CreateActiveSpell(this, ESpellID::RANGED);
+
 	InitStatsPerAttribute();
 	InitStats();
 }

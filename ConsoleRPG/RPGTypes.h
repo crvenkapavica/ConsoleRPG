@@ -141,6 +141,7 @@ enum class EActionType {
 };
 
 enum class ESpellID {
+	// MAGIC
 	NONE,
 	FIREBALL,
 	BURNING,
@@ -163,6 +164,10 @@ enum class ESpellID {
 	VA_TEMP2,
 	VA_TEMP3,
 
+	// MELEE
+	MELEE,
+	// RANGED
+	RANGED,
 
 	// PASSIVES
 	VAMPIRIC_TOUCH
@@ -188,13 +193,9 @@ enum class ESpellType {
 };
 
 enum class ESpellClass {
+	MELEE,
+	RANGED,
 	MAGIC,
-	ABILITY,
-	ITEM
-};
-
-enum class EPassiveType {
-	PASSIVE,
 	ITEM
 };
 

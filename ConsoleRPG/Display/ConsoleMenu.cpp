@@ -40,7 +40,7 @@ int ConsoleMenu::Prompt() {
 
     _last_options = _options;
 
-    return _index;
+    return _index = _options[_index] == "<--BACK--<" ? -1 : _index;
 }
 
 void ConsoleMenu::Display() {

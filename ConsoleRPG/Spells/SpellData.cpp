@@ -6,6 +6,7 @@ std::unordered_map<ESpellID, ActiveConstData> SpellDB::_active_const_map;
 std::unordered_map<ESpellID, PassiveConstData> SpellDB::_passive_const_map;
 
 SpellDB::SpellDataConstructor::SpellDataConstructor() {
+	// MAGIC
 	_data[ESpellID::FIREBALL] = {
 //		app_min	   app_max	   val_min	   val_max	 duration   cd	   e_cost	s_cost
 		{ 5.2f,		6.6f,		0.f,		0.f,		2,		2,		15,		0 },
@@ -84,10 +85,17 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 		{ 1.1f,		1.4f,		13.8f,		19.8f,		2,		4,		20,		0 },
 		{ 1.4f,		2.1f,		21.0f,		26.6f,		2,		4,		20,		0 }
 	};
+	//==============================================================================
+	// MELEE
+	_data[ESpellID::MELEE] = { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 };
+	//==============================================================================
+	// RANGED
+	_data[ESpellID::RANGED] = { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 10 };
 }
 SpellDB::SpellDataConstructor SpellDB::_spell_data_constructor;
 
 SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
+	// MAGIC
 	_active_const_map[ESpellID::FIREBALL] = { EDamageType::FIRE, ESpellType::PROJECTILE, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
 	_active_const_map[ESpellID::BURNING] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
 	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
@@ -99,6 +107,11 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::ARCANE_INFUSION] = { EDamageType::ARCANE, ESpellType::BUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
 	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
 	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
+
+	//MELEE
+	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
+	//RANGED
+	_passive_const_map[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1 };
 };
 SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
 
