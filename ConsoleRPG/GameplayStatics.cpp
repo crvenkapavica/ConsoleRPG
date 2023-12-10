@@ -356,11 +356,11 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 	
 	vector<weak_ptr<Character>> targets;
 	if (e_idx.size() == 0)
-		for (const auto& player : _players)
-			targets.push_back(player);
+		for (int i = 0; i < p_idx.size(); i++)
+			targets.push_back(_players[i]);
 	else
-		for (const auto& enemy : _enemies)
-			targets.push_back(enemy);
+		for (int i = 0; i < e_idx.size(); i++)
+			targets.push_back(_enemies[i]);
 
 	Character* turn_char = _cm->GetTurnCharacter().lock().get();
 	int spell_idx = 0;
