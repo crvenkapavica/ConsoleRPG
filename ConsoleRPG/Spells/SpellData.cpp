@@ -98,7 +98,7 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	// MAGIC
 	_active_const_map[ESpellID::FIREBALL] = { EDamageType::FIRE, ESpellType::PROJECTILE, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
 	_active_const_map[ESpellID::BURNING] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
-	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
+	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
 	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
 	_active_const_map[ESpellID::STONESKIN] = { EDamageType::NONE, ESpellType::BUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
 	_active_const_map[ESpellID::DISARM] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 7 };

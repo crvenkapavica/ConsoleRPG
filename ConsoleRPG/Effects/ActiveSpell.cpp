@@ -123,7 +123,11 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 		} while (any_of(targets.begin(), targets.end(), [&](const std::weak_ptr<Character>& wptr) { return enemies[rnd].expired() || enemies[rnd].lock().get() == wptr.lock().get(); }));
 		targets.push_back(enemies[rnd]);
 	}
-	//sort(targets.begin(), targets.end());
+	sort(targets.begin(), targets.end(), [&](const std::weak_ptr<Character>& a, const std::weak_ptr<Character>& b) { 
+		if (a.lock() && b.lock())
+			if (a.lock()->GetAlias() < b.lock()->GetAlias()) return true;
+		return false;
+		});
 
 	auto& s = GameplayStatics::GetCombatLogStream();
 	static string C = GameplayStatics::GetAliasColor(targets[0].lock()->GetAlias());
@@ -197,12 +201,11 @@ stringstream& Burning::GetTooltip() {
 void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	
 	int rand_targets = AddRandomTargets(2, targets, instigator, "MOLTEN ARMOR EFFECT");
+
 	vector<CharacterStat> enemy_apply_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = static_cast<Character::Stat*>(&targets[i].lock()->GetArmor());
-		//auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
-		auto const_delta = -GetRandOnApplyMinMax(instigator);
-		auto delta = [&](Character* character) { return const_delta; };
+		auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
 		enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	}
 	OnApplyParams apply_params;
