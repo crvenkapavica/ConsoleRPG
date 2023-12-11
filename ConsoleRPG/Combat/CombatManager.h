@@ -55,6 +55,8 @@ public:
 	// Gets the alias of the character currently on turn
 	inline char GetTurnAlias() { return _turn_table[_turn_index].lock()->GetAlias(); }
 
+	inline const int GetTurn() { return _turn; }
+
 	void DestroyDeadCharacters();
 
 	int GetDeadIdx();

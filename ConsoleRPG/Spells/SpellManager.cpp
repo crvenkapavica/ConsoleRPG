@@ -34,11 +34,9 @@ void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	CombatManager& cm = CombatManager::GetInstance();
-	cm.OnCastBegin(instigator, targets);
 
+	cm.OnCastBegin(instigator, targets);
 	instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
-	
-	// provjeriti a se targets number menja kod recimo BURN
 	cm.OnCastEnd(instigator, targets);
 }
 

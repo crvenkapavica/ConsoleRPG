@@ -22,8 +22,8 @@ Character::Character(const CharacterData::EnemyStats& data)
 
 	_team = 2;
 
-	//SpellManager& sm = SpellManager::GetInstance();
-	//sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
+	SpellManager& sm = SpellManager::GetInstance();
+	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
 }
 
 Character::Character(const CharacterData::PlayerAttributes& attributes)
@@ -43,6 +43,7 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 
 	InitStatsPerAttribute();
 	InitStats();
+	UpdateAttribute(_player_attributes._vitality, 200);
 }
 
 Character::Character(const Character& other)
@@ -140,9 +141,14 @@ void Character::RemoveEffectById(ESpellID effect_id) {
 void Character::InitStatsPerAttribute() {
 
 	switch (_class) {
-		case ECharacterClass::BARBARIAN: {
-			InitStatsPerAttirbute_Barbarian();
-		}
+	case ECharacterClass::BARBARIAN:
+		InitStatsPerAttirbute_Barbarian();
+		break;
+	case ECharacterClass::WARLOCK:
+		InitStatsPerAttribute_Warlock();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -174,6 +180,35 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_stamina, 15.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
+}
+
+void Character::InitStatsPerAttribute_Warlock() {
+	stat_pair stat_vector;
+
+	stat_vector.push_back(make_pair(&_crit_damage, 1.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_armor, 5.f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.002f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.005f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 8.f));
+	stat_vector.push_back(make_pair(&_stamina, 3.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 15.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_stamina, 5.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
 }
 

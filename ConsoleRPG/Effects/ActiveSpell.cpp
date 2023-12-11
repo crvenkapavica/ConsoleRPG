@@ -84,7 +84,7 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 		break;
 	}
 
-	if (_damage_type != EDamageType::PHYSICAL)
+	if (_damage_type != EDamageType::PHYSICAL && _damage_type != EDamageType::NONE)
 		damage += character->GetSP().GetActual();
 
 	// Critical Strike
@@ -205,7 +205,8 @@ void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>> targe
 	vector<CharacterStat> enemy_apply_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = static_cast<Character::Stat*>(&targets[i].lock()->GetArmor());
-		auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+		auto const_delta = -GetRandOnApplyMinMax(instigator);
+		auto delta = [=](Character* character) { return const_delta; };
 		enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	}
 	OnApplyParams apply_params;

@@ -193,6 +193,7 @@ protected:
 	void InitStatsPerAttribute();
 
 	void InitStatsPerAttirbute_Barbarian();
+	void InitStatsPerAttribute_Warlock();
 
 public:
 
