@@ -32,11 +32,11 @@ public:
 
 	virtual void TakeTurn() override;
 
-	std::vector<Item*> _item_slots = std::vector<Item*>(ITEM_SLOTS, nullptr);
-	std::vector<Item*> _inventory = std::vector<Item*>(INV_SLOTS, nullptr);
-	std::vector<Item*> _cons_slots;
-	std::vector<ActiveSpell*> _active_slots;
-	std::vector<PassiveSpell*> _passive_slots;
+	std::vector<unique_ptr<Item>> _item_slots = std::vector<unique_ptr<Item>>(ITEM_SLOTS, nullptr);
+	std::vector<unique_ptr<Item>> _inventory = std::vector<unique_ptr<Item>>(INV_SLOTS, nullptr);
+	std::vector<unique_ptr<Item>> _cons_slots;
+	std::vector<unique_ptr<ActiveSpell>> _active_slots;
+	std::vector<unique_ptr<PassiveSpell>> _passive_slots;
 
 protected:
 

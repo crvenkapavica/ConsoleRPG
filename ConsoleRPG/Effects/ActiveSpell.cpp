@@ -245,7 +245,7 @@ void Exposure::Apply(Character* instigator, vector<weak_ptr<Character>> targets)
 	vector<CharacterStat> enemy_apply_res;
 	auto stat = static_cast<float*>(&targets[0].lock()->GetResistances().GetFireRes());
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
-	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
+	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta });
 	OnApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_RES;
@@ -432,7 +432,11 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>> targets)
 //==================================================================================================================================================================================
 
 void Melee::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
-	
+
+	//vector<CharacterStat> enemy_apply_stats;
+	//auto stat = static_cast<Character::Stat*>(&targets[0].lock()->GetHealth());
+	//auto delta = [&](Character* character) { return GameplayStatics::GetRandInt(character->)}
+	//enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta })
 }
 
 

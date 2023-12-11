@@ -150,6 +150,10 @@ public:
 	float _poison_damage = 0.f;
 	float _necrotic_damage = 0.f;
 	float _physical_damage = 0.f;
+	
+	int	_min_damage = 0;
+	int _max_damage = 0;
+	int _avg_damage = 0;
 
 	// healing
 	float _healing = 0.f;
@@ -164,6 +168,7 @@ public:
 	/////////////////////////////////////////
 	float _magic_find = 0.f;
 	int _light_radius = 0;
+
 	int _n_cons_slots = 0;
 	int _n_spell_slots = 0;
 	///////////////////////////////////////////

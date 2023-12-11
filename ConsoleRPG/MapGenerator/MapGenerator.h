@@ -203,6 +203,8 @@ public:
 
 	vector<string> GetCombatDirections(Character* character, OUT map<int, EDirection>& map);
 
+	vector<Character*> GetCharactersInRange(Character* character);
+
 	int GetEnemyIdx(char alias);
 
 	int GetPlayerIdx(char alias);

@@ -305,11 +305,33 @@ void GameplayStatics::DisplayMeleeMenu() {
 	int input = InteractiveDisplay(v);
 	if (input == -1) return;
 
+	vector<Character*> chars_in_range = _map_gen->GetCharactersInRange(_cm->GetTurnCharacter().lock().get());
+
+	vector<string> alias_in_range;
+	for (const auto& c : chars_in_range)
+		if (c) alias_in_range.push_back(string(1, (c->GetAlias())));
+	alias_in_range.push_back("<--BACK--<");
+
+	input = InteractiveDisplay(alias_in_range);
+	if (input == -1) return;
+
 	HandleTarget(spells[input]);
 }
 
 void GameplayStatics::DisplayRangedMenu() {
+	vector<string> v;
+	vector<ActiveSpell*> spells;
+	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
+		if (spell->GetClass() == ESpellClass::RANGED) {
+			v.push_back(GetEnumString(spell->GetID()));
+			spells.push_back(spell.get());
+		}
+	v.push_back("<--BACK--<");
 
+	int input = InteractiveDisplay(v);
+	if (input == -1) return;
+
+	HandleTarget(spells[input]);
 }
 
 

@@ -682,6 +682,17 @@ vector<string> MapGenerator::GetCombatDirections(Character* character, OUT map<i
 	return v;
 }
 
+vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
+	vector<Character*> v;
+	int x = _char_map.at(character->GetAlias()).first;
+	int y = _char_map.at(character->GetAlias()).second;
+
+	for (const auto& c : _char_grid[x][y]._neighbors)
+		v.push_back(c);
+
+	return v;
+}
+
 int MapGenerator::GetEnemyIdx(char alias) {
 	if (UPPER(alias) < 'A' || UPPER(alias) > 'Z') 
 		return -1;
