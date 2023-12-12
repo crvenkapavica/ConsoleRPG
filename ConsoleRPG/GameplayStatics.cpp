@@ -141,54 +141,56 @@ void GameplayStatics::HandleMapInput(int input) {
 }
 
 void GameplayStatics::DisplayItemMenu() {
-	//PlayerCharacter* player = _cm->GetTurnCharacter().lock().get();
-	//vector<string> v = { "EQUIP ITEM", "UN-EQUIP ITEM", "YOUR ITEMS" };
-	//v.push_back("<--BACK--<");
-	//int input = InteractiveDisplay(v);
-	//if (input == -1) return;
-	//switch (input) {
-	//case 0:
-	//	unique_ptr<Item> item = DisplayItems();
-	//	player->EquipItem(item);
-	//case 1:
-	//	unique_ptr<Item> item = DisplayItems();
-	//	player->UnEquipItem(item);
-	//case 2:
-	//	v = { "EQUIPED ITEMS, INVENTORY, SPELL SLOTS, CONSUMABLE SLOTS, INSPECT ITEMS" };
-	//	v.push_back("<--BACK--<");
-	//	input = InteractiveDisplay(v);
-	//	if (input == -1) return;
-	//	switch (input) {
-	//	case 1:
-	//		player->DisplayEquipedItems();
-	//	case 2:
-	//		player->DisplayInventory();
-	//	case 3:
-	//		player->DisplaySpellSlots();
-	//	case 4:
-	//		player->DisplayConsumableSlots();
-	//	case 5:
-	//		unique_ptr<Item> item = DisplayItems();
-	//		player->InspectItem(item);
-	//	}
-	//}
+	PlayerCharacter* player = dynamic_cast<PlayerCharacter*>(_cm->GetTurnCharacter().lock().get());
+	vector<string> v = { "EQUIP ITEM", "UN-EQUIP ITEM", "YOUR ITEMS" };
+	v.push_back("<--BACK--<");
+	int input = InteractiveDisplay(v);
+	if (input == -1) return;
+	switch (input) {
+	case 0:
+		if (unique_ptr<Item> item = DisplayItems())
+			player->EquipItem(move(item));
+	case 1:
+		if (unique_ptr<Item> item = DisplayItems())
+			player->UnEquipItem(move(item));
+	case 2:
+		v = { "EQUIPED ITEMS, INVENTORY, SPELL SLOTS, CONSUMABLE SLOTS, INSPECT ITEMS" };
+		v.push_back("<--BACK--<");
+		input = InteractiveDisplay(v);
+		if (input == -1) return;
+		switch (input) {
+		case 1:
+			player->DisplayEquipedItems();
+		case 2:
+			player->DisplayInventory();
+		case 3:
+			player->DisplaySpellSlots();
+		case 4:
+			player->DisplayConsumableSlots();
+		case 5:
+			if (unique_ptr<Item> item = DisplayItems())
+				player->InspectItem(move(item));
+		default:
+			break;
+		}
+	}
 }
 
 unique_ptr<Item> GameplayStatics::DisplayItems() {
-	//PlayerCharacter* player = _cm->GetTurnCharacter().lock().get();
-	//vector<string> v = { "ALL ITEM", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
-	//v.push_back("<--BACK--<");
-	//int input = InteractiveDisplay(v);
-	//if (input == -1) return;
-	//auto type = static_cast<EItemType>(ITEM_TYPES - input + 1);
+	PlayerCharacter* player = dynamic_cast<PlayerCharacter*>(_cm->GetTurnCharacter().lock().get());
+	vector<string> v = { "ALL ITEM", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
+	v.push_back("<--BACK--<");
+	int input = InteractiveDisplay(v);
+	if (input == -1) return nullptr;
+	auto type = static_cast<EItemType>(ITEM_TYPES - input + 1);
 
-	//v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE" };
-	//v.push_back("<--BACK--<");
-	//input = InteractiveDisplay(v);
-	//if (input == -1) return;
-	//auto rarity = static_cast<EItemRarity>(input);
+	v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE" };
+	v.push_back("<--BACK--<");
+	input = InteractiveDisplay(v);
+	if (input == -1) return nullptr;
+	auto rarity = static_cast<EItemRarity>(input);
 
-	//return player->DisplayAllItems(type, rarity);
+	return player->DisplayAllItems(type, rarity);
 	return nullptr;
 }
 

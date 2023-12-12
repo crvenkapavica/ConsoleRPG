@@ -1,9 +1,8 @@
 #include "Item.h"
 #include "../GameplayStatics.h"
-#include "../Effects/ActiveSpell.h"
-#include "../Effects/PassiveSpell.h"
 #include "../Inventory/ItemData.h"
 #include "../Characters/Character.h"
+#include "../Characters/PlayerCharacter.h"
 
 std::vector<pair<EItemType, double>> DropTable_ItemType{
 	{EItemType::RELIC, 0.02},
@@ -82,36 +81,36 @@ Item::Item(ItemInfo item_info)
 	: _item_info(move(item_info))
 {}
 
-std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
-	std::vector<unique_ptr<Item>> loot;
-	std::vector<pair<int, int>> type_limit = {
-		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
-	};
-
-	while (power_lvl > 0) {
-		for (int i = 0; i < ITEM_TYPES; i++) {
-			while (type_limit[i].first == type_limit[i].second) {
-				++i;
-				// we should adjust the formulas so that this actually never happens
-				if (i == ITEM_TYPES) return loot;
-			}
-
-			int rnd = GameplayStatics::GetRandInt(1, 1000);
-			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
-			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
-				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
-				type_limit[i].first++;
-				power_lvl -= weight;
-				break;
-			}
-			else if (power_lvl - weight < 0) return loot;
-
-			// no loot was rolled
-			if (i == ITEM_TYPES - 1) return loot;
-		}
-	}
-	return loot;
-}
+//std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
+//	std::vector<unique_ptr<Item>> loot;
+//	std::vector<pair<int, int>> type_limit = {
+//		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
+//	};
+//
+//	while (power_lvl > 0) {
+//		for (int i = 0; i < ITEM_TYPES; i++) {
+//			while (type_limit[i].first == type_limit[i].second) {
+//				++i;
+//				// we should adjust the formulas so that this actually never happens
+//				if (i == ITEM_TYPES) return loot;
+//			}
+//
+//			int rnd = GameplayStatics::GetRandInt(1, 1000);
+//			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
+//			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
+//				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
+//				type_limit[i].first++;
+//				power_lvl -= weight;
+//				break;
+//			}
+//			else if (power_lvl - weight < 0) return loot;
+//
+//			// no loot was rolled
+//			if (i == ITEM_TYPES - 1) return loot;
+//		}
+//	}
+//	return loot;
+//}
 
 std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType item_type) {
 
