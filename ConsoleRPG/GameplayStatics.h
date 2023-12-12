@@ -11,6 +11,7 @@ class SpellManager;
 class CombatManager;
 class MapGenerator;
 class ActiveSpell;
+class Item;
 struct EffectParams;
 struct OnApplyParams;
 
@@ -20,14 +21,23 @@ public:
 
 	static void Initialize(vector<shared_ptr<PlayerCharacter>> players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu);
 
-	static void GiveExperience(EnemyCharacter* enemy);
+	static void DisplayAllies();
+	static void DisplayEnemies();
+
+	static int InteractiveDisplay(const vector<string>& options, const int right = 0, const bool clear = true);
+	static void ANSI_CURSOR_DOWN_N(int n);
+
+	static void DisplayMapMenu();
+	static void HandleMapInput(int input);
+
+	static void DisplayItemMenu();
+	static unique_ptr<Item> DisplayItems();
 
 	static void InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemies);
 	static void ExitCombatMode();
 	static void ResetCombatVariables();
 
-	static void DisplayMapMenu();
-	static void HandleMapInput(int input);
+	static void GiveExperience(EnemyCharacter* enemy);
 
 	static int DisplayCombatMenu();
 	static void HandleCombatInput(PlayerCharacter* character, int input);
@@ -51,20 +61,6 @@ public:
 
 	static void RedrawGameScreen();
 
-	static int InteractiveDisplay(const vector<string>& options, const int right = 0, const bool clear = true);
-
-	static void ANSI_CURSOR_DOWN_N(int n);
-
-	static void DisplayAllies();
-	static void DisplayEnemies();
-
-	static float ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params);
-
-	static string GetAliasColor(char alias);
-
-	static void KillEnemy(int idx);
-
 	static stringstream& GetCombatLogStream() { return _combat_log; }
 	static void DisplayCombatLog();
 	static void MoveCursorToCombatLog();
@@ -73,7 +69,14 @@ public:
 	static vector<weak_ptr<Character>> GetPlayerCharacters();
 	static vector<weak_ptr<Character>> GetEnemyCharacters();
 
+	static float ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params);
+
+	static void KillEnemy(int idx);
+
 	static void EndTurn(Character* character);
+
+	static string GetAliasColor(char alias);
 
 	static string string2(float f);
 	static float float2(float f);

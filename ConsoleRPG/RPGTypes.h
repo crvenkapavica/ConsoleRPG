@@ -557,6 +557,7 @@ enum class EWeaponType {
 };
 
 enum class EItemRarity {
+	MISC,
 	COMMON,
 	RARE,
 	EPIC,
@@ -571,7 +572,8 @@ enum class EItemType {
 	ARMOR = 15,
 	JEWLERY = 22,
 	WEAPON = 28,
-	RELIC = 45
+	RELIC = 45,
+	MISC
 };
 
 struct grid_node {

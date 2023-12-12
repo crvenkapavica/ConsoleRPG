@@ -194,5 +194,7 @@ ItemDB::ItemDataConstructor::ItemDataConstructor() {
 
 	//relic
 
+	//Basic Item
+	_data.push_back({ EItemID::TrainBlade,		"Trainee's Blade",				EItemType::WEAPON,		EWeaponType::SWORD_1H,	EItemSlot::WPN_BOTH,	ESpellID::NONE,		3,		35,		4,		8,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.03f,	0.f,	0.f,	0.f,	0.f,	0,		false,     false });
 };
 ItemDB::ItemDataConstructor ItemDB::_item_data_constructor;

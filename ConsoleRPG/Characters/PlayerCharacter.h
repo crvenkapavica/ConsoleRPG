@@ -3,7 +3,8 @@
 #include "../RPGTypes.h"
 #include "Character.h"
 
-class Item;
+//class Item;
+
 
 class PlayerCharacter : public Character {
 
@@ -27,17 +28,29 @@ public:
 	inline int GetLighRadius() const { return _light_radius; }
 	////
 
-
 	void ReceiveExperience(const int experience);
 
 	virtual void TakeTurn() override;
 
-	std::vector<unique_ptr<Item>> _item_slots = std::vector<unique_ptr<Item>>(ITEM_SLOTS, nullptr);
-	std::vector<unique_ptr<Item>> _inventory = std::vector<unique_ptr<Item>>(INV_SLOTS, nullptr);
-	std::vector<unique_ptr<Item>> _cons_slots;
-	std::vector<unique_ptr<ActiveSpell>> _active_slots;
-	std::vector<unique_ptr<PassiveSpell>> _passive_slots;
+	//// INVENTORY
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	//unique_ptr<Item> EquipItem(unique_ptr<Item> item);
+	//void UnEquipItem(unique_ptr<Item> item);
+	//
+	//void DisplayEquipedItems();
+	//void DisplayInventory();
+	//void DisplaySpellSlots();
+	//void DisplayConsumableSlots();
+	//unique_ptr<Item> DisplayAllItems(EItemType type, EItemRarity rarity);
+	//void InspectItem(unique_ptr<Item> item);
 
+
+	//std::vector<unique_ptr<Item>> _item_slots; // = std::vector<unique_ptr<Item>>(ITEM_SLOTS, nullptr);
+	//std::vector<unique_ptr<Item>> _inventory; //= std::vector<unique_ptr<Item>>(INV_SLOTS, nullptr);
+	//std::vector<unique_ptr<Item>> _consumable_slots;
+	//std::vector<unique_ptr<ActiveSpell>> _active_slots;
+	//std::vector<unique_ptr<PassiveSpell>> _passive_slots;
+	///////////////////////////////////////////////////////////////////////////////////////////////
 protected:
 
 	int _unspent_attributes = 0;

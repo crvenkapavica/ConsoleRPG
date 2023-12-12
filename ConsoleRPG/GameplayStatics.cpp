@@ -47,16 +47,6 @@ void GameplayStatics::Initialize(vector<shared_ptr<PlayerCharacter>> players, Sp
 	DisplayMapMenu();
 }
 
-void GameplayStatics::GiveExperience(EnemyCharacter* enemy) {
-
-	//zracunati
-
-	int experience = 0;
-
-	//_player->ReceiveExperience(experience);
-
-}
-
 void GameplayStatics::DisplayAllies() {
 
 	system("cls");
@@ -108,6 +98,109 @@ void GameplayStatics::DisplayEnemies() {
 	}
 }
 
+int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool clear) {
+	_menu->SetOptions(options);
+	_menu->SetUp(static_cast<int>(options.size()));
+	_menu->SetRight(right);
+	_menu->SetClear(clear);
+	return _menu->Select();
+}
+
+void GameplayStatics::ANSI_CURSOR_DOWN_N(int n) {
+	_menu->ANSI_CURSOR_DOWN_N(n);
+}
+
+void GameplayStatics::DisplayMapMenu() {
+	cout << ANSI_COLOR_VIVID_YELLOW;
+	cout << "========     MAP MENU     ========" << endl;
+	cout << "==================================" << endl;
+	cout << ANSI_COLOR_RESET;
+
+	vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS" };
+	int input = InteractiveDisplay(v);
+	HandleMapInput(input);
+}
+
+void GameplayStatics::HandleMapInput(int input) {
+
+	switch (input) {
+	case 0:
+		_map_gen->ShowPosition();
+		break;
+	case 1:
+		_map_gen->ShowMap();
+		break;
+	case 2:
+		_map_gen->HandleMovement();
+		break;
+	case 3:
+		DisplayItemMenu();
+	default:
+		break;
+	}
+}
+
+void GameplayStatics::DisplayItemMenu() {
+	//PlayerCharacter* player = _cm->GetTurnCharacter().lock().get();
+	//vector<string> v = { "EQUIP ITEM", "UN-EQUIP ITEM", "YOUR ITEMS" };
+	//v.push_back("<--BACK--<");
+	//int input = InteractiveDisplay(v);
+	//if (input == -1) return;
+	//switch (input) {
+	//case 0:
+	//	unique_ptr<Item> item = DisplayItems();
+	//	player->EquipItem(item);
+	//case 1:
+	//	unique_ptr<Item> item = DisplayItems();
+	//	player->UnEquipItem(item);
+	//case 2:
+	//	v = { "EQUIPED ITEMS, INVENTORY, SPELL SLOTS, CONSUMABLE SLOTS, INSPECT ITEMS" };
+	//	v.push_back("<--BACK--<");
+	//	input = InteractiveDisplay(v);
+	//	if (input == -1) return;
+	//	switch (input) {
+	//	case 1:
+	//		player->DisplayEquipedItems();
+	//	case 2:
+	//		player->DisplayInventory();
+	//	case 3:
+	//		player->DisplaySpellSlots();
+	//	case 4:
+	//		player->DisplayConsumableSlots();
+	//	case 5:
+	//		unique_ptr<Item> item = DisplayItems();
+	//		player->InspectItem(item);
+	//	}
+	//}
+}
+
+unique_ptr<Item> GameplayStatics::DisplayItems() {
+	//PlayerCharacter* player = _cm->GetTurnCharacter().lock().get();
+	//vector<string> v = { "ALL ITEM", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
+	//v.push_back("<--BACK--<");
+	//int input = InteractiveDisplay(v);
+	//if (input == -1) return;
+	//auto type = static_cast<EItemType>(ITEM_TYPES - input + 1);
+
+	//v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE" };
+	//v.push_back("<--BACK--<");
+	//input = InteractiveDisplay(v);
+	//if (input == -1) return;
+	//auto rarity = static_cast<EItemRarity>(input);
+
+	//return player->DisplayAllItems(type, rarity);
+	return nullptr;
+}
+
+void GameplayStatics::RedrawGameScreen() {
+	DisplayAllies();
+	DisplayEnemies();
+	_map_gen->DisplayGrid();
+	_cm->DisplayTurnOrder();
+	DisplayCombatLog();
+}
+
+
 void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemies) {
 
 	_player.lock()->SetIsInCombat(true);
@@ -143,7 +236,7 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemie
 
 			// OPTIONALLY
 				// -> try to move Map Loop from MapGenerator to GameplayStatics, if that makes sense.
-	
+
 	//std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 195);
 	//for (auto& item : items) {
 	//	cout << item->_item_info._name << "\n";
@@ -165,52 +258,10 @@ void GameplayStatics::ResetCombatVariables() {
 	s.str("");
 }
 
-void GameplayStatics::DisplayMapMenu() {
-	cout << ANSI_COLOR_VIVID_YELLOW;
-	cout << "========     MAP MENU     ========" << endl;
-	cout << "==================================" << endl;
-	cout << ANSI_COLOR_RESET;
-
-	vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE" };
-	int input = InteractiveDisplay(v);
-	HandleMapInput(input);
-}
-
-int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool clear) {
-	_menu->SetOptions(options);
-	_menu->SetUp(static_cast<int>(options.size()));
-	_menu->SetRight(right);
-	_menu->SetClear(clear);
-	return _menu->Select();
-}
-
-void GameplayStatics::ANSI_CURSOR_DOWN_N(int n) {
-	_menu->ANSI_CURSOR_DOWN_N(n);
-}
-
-void GameplayStatics::HandleMapInput(int input) {
-
-	switch (input) {
-	case 0:
-		_map_gen->ShowPosition();
-		break;
-	case 1:
-		_map_gen->ShowMap();
-		break;
-	case 2:
-		_map_gen->HandleMovement();
-		break;
-	default:
-		break;
-	}
-}
-
-void GameplayStatics::RedrawGameScreen() {
-	DisplayAllies();
-	DisplayEnemies();
-	_map_gen->DisplayGrid();
-	_cm->DisplayTurnOrder();
-	DisplayCombatLog();
+void GameplayStatics::GiveExperience(EnemyCharacter* enemy) {
+	//zracunati
+	int experience = 0;
+	//_player->ReceiveExperience(experience);
 }
 
 int GameplayStatics::DisplayCombatMenu() {
@@ -505,10 +556,6 @@ vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
 	return v;
 }
 
-void GameplayStatics::EndTurn(Character* character) {
-	_cm->EndTurn(character);
-}
-
 float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
 
 	damage = float2(damage);
@@ -537,13 +584,17 @@ void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Charact
 	_cm->AddCombatEffect(move(effect));
 }
 
+void GameplayStatics::KillEnemy(int idx) {
+	_map_gen->KillEnemy(idx);
+}
+
+void GameplayStatics::EndTurn(Character* character) {
+	_cm->EndTurn(character);
+}
+
 string GameplayStatics::GetAliasColor(char alias) {
 	if (UPPER(alias) >= 'A' && UPPER(alias) <= 'Z') return COLOR_ENEMY;
 	else return COLOR_PLAYER;
-}
-
-void GameplayStatics::KillEnemy(int idx) {
-	_map_gen->KillEnemy(idx);
 }
 
 string GameplayStatics::string2(float f) {
@@ -741,11 +792,9 @@ std::string GameplayStatics::GetEnumString(EItemSlot _enum) {
 	case EItemSlot::FINGER2:
 		return "Finger";
 	case EItemSlot::WPN_MAIN:
-		return "Two-hand";
+		return "Main-hand";
 	case EItemSlot::WPN_OFF:
 		return "Off-hand";
-	case EItemSlot::WPN_BOTH:
-		return "One-Hand";
 	case EItemSlot::RELIC:
 		return "Relic";
 	default:

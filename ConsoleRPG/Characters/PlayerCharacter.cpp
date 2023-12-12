@@ -1,6 +1,6 @@
 #include "PlayerCharacter.h"
 #include "../GameplayStatics.h"
-#include "../Inventory/Item.h"
+//#include "../Inventory/Item.h"
 
 PlayerCharacter::PlayerCharacter(const CharacterData::PlayerAttributes& attributes)
 	: Character(attributes)
@@ -45,3 +45,43 @@ void PlayerCharacter::TakeTurn() {
 		GameplayStatics::HandleCombatInput(this, input);
 	}
 }
+
+//unique_ptr<Item> PlayerCharacter::EquipItem(unique_ptr<Item> item) {
+//	EItemSlot slot;
+//	if (item->_item_info._item_type == EItemType::WEAPON) {
+//		if (slot == EItemSlot::WPN_BOTH)
+//			slot = EItemSlot::WPN_MAIN;
+//	}
+//	_item_slots[static_cast<int>(slot)].swap(item);
+//}
+//
+//void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
+//
+//}
+//
+//void PlayerCharacter::DisplayEquipedItems() {
+//	for (const auto& item : _item_slots) 
+//		if (item) cout << GameplayStatics::GetEnumString(item->_item_info._item_slot) << " --> " << item->_item_info._name << endl;
+//}
+//
+//void PlayerCharacter::DisplayInventory() {
+//	for (int i = 0; i < _inventory.size(); i++)
+//		cout << i << ".) " << _inventory[i]->_item_info._name << endl;
+//}
+//
+//void PlayerCharacter::DisplaySpellSlots() {
+//
+//}
+//
+//void PlayerCharacter::DisplayConsumableSlots() {
+//
+//}
+//
+//unique_ptr<Item> PlayerCharacter::DisplayAllItems(EItemType type, EItemRarity rarity) {
+//
+//	return nullptr;
+//}
+//
+//void PlayerCharacter::InspectItem(unique_ptr<Item> item) {
+//
+//}

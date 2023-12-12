@@ -2,8 +2,8 @@
 #include "../RPGTypes.h"
 #include "../Characters/PlayerCharacter.h"
 
-class ActiveSpell;
-class PassiveSpell;
+//class ActiveSpell;
+//class PassiveSpell;
 class Character;
 
 class Item {
@@ -15,7 +15,7 @@ public:
 		int				_dmg_max = 0;
 		int				_armor = 0;
 
-		float				_amount;
+		float			_amount;
 
 		int				_n_affixes;
 		float			_modifier;
