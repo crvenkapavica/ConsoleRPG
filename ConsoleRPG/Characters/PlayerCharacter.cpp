@@ -63,11 +63,11 @@ void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 
 	auto slot = EItemSlot::NONE;
 	if (item->_item_info._item_type == EItemType::WEAPON) {
-		if (slot == EItemSlot::WPN_BOTH)
+		if (item->_item_info._item_slot == EItemSlot::WPN_BOTH)
 			slot = EItemSlot::WPN_MAIN;
 	}
-	_item_slots[static_cast<int>(slot)].swap(item);
 
+	_item_slots[static_cast<int>(slot)].swap(item);
 	AddItemToInventory(move(item));
 }
 
