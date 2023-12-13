@@ -36,26 +36,38 @@ public:
 
 	//// INVENTORY
 	///////////////////////////////////////////////////////////////////////////////////////////////
+public:
 	unique_ptr<Item> EquipItem(unique_ptr<Item> item);
+
+	// Return immediately if inventory is full
 	void UnEquipItem(unique_ptr<Item> item);
 
+	// Return true if the item was added, false otherwise
 	bool AddItemToInventory(unique_ptr<Item> item);
+
+	unique_ptr<Item> GetItem(Item* item);
+
+	// Displays all information about the item and its affixes
+	void InspectItem(Item* item);
 	
-	void DisplayEquipedItems();
-	void DisplayInventory();
-	void DisplaySpellSlots();
-	void DisplayConsumableSlots();
-	unique_ptr<Item> DisplayAllItems(EItemType type, EItemRarity rarity);
-	void InspectItem(unique_ptr<Item> item);
+	Item* DisplayEquipedItems();
+	Item* DisplayInventory();
+	Item* DisplayConsumableSlots();
+	ActiveSpell* DisplayActiveSpellSlots();
+	PassiveSpell* DisplayPassiveSpellSlots();
+	Item* DisplayAllItems(EItemType type, EItemRarity rarity);
 
-
+public:
 	std::vector<unique_ptr<Item>> _item_slots;
 	std::vector<unique_ptr<Item>> _inventory;
 	std::vector<unique_ptr<Item>> _consumable_slots;
 	std::vector<unique_ptr<ActiveSpell>> _active_slots;
 	std::vector<unique_ptr<PassiveSpell>> _passive_slots;
 	///////////////////////////////////////////////////////////////////////////////////////////////
+
 protected:
+
+	int _n_inventory = 0;
 
 	int _unspent_attributes = 0;
 	int _experience = 0;

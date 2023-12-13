@@ -118,7 +118,7 @@ void GameplayStatics::DisplayMapMenu() {
 
 	// MAP LOOP
 	while (_player.lock()->IsAlive()) {
-		vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS" };
+		vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS", "SPELLS"};
 		int input = InteractiveDisplay(v);
 		HandleMapInput(input);
 	}
@@ -138,6 +138,8 @@ void GameplayStatics::HandleMapInput(int input) {
 		break;
 	case 3:
 		DisplayItemMenu();
+	//case 4:
+	//	DisplaySpellMenu(); // treba drugu funkciju -> funkciju koja pokazuje v = {ACTIVE, PASSIVE, ALL(instanced)};
 	default:
 		break;
 	}
@@ -152,7 +154,7 @@ void GameplayStatics::DisplayItemMenu() {
 	if ((input = InteractiveDisplay(v)) == -1) return;
 	PlayerCharacter* player = _players[input].lock().get();
 
-	v = { "EQUIP ITEM", "UN-EQUIP ITEM", "YOUR ITEMS" };
+	v = { "EQUIP ITEM", "UN-EQUIP ITEM", "INSPECT ITEMS"};
 	v.push_back("<--BACK--<");
 	if ((input = InteractiveDisplay(v)) == -1) return;
 	switch (input) {
@@ -161,30 +163,32 @@ void GameplayStatics::DisplayItemMenu() {
 			player->EquipItem(move(item));
 		break;
 	case 1:
-		if (unique_ptr<Item> item = DisplayItems(player))
+		if (unique_ptr<Item> item = player->DisplayEquipedItems())
 			player->UnEquipItem(move(item));
 		break;
 	case 2: 
-		v = { "EQUIPED ITEMS", "INVENTORY", "SPELL SLOTS", "CONSUMABLE SLOTS", "INSPECT ITEMS" };
+		v = { "ALL ITEMS", "EQUIPED ITEMS", "INVENTORY"/*, "SPELL SLOTS", "CONSUMABLE SLOTS"*/ };
 		v.push_back("<--BACK--<");
 		if ((input = InteractiveDisplay(v)) == -1) return;
 		switch (input) {
 		case 0:
-			player->DisplayEquipedItems();
+			if (Item* item = DisplayItems(player))
+				player->InspectItem(item);
 			break;
 		case 1:
-			player->DisplayInventory();
+			if (Item* item = player->DisplayEquipedItems())
+				player->InspectItem(item);
 			break;
 		case 2:
-			player->DisplaySpellSlots();
+			if (Item* item = player->DisplayInventory())
+				player->InspectItem(item);
 			break;
-		case 3:
-			player->DisplayConsumableSlots();
-			break;
-		case 4:
-			if (unique_ptr<Item> item = DisplayItems(player))
-				player->InspectItem(move(item));
-			break;
+		//case 3:
+		//	player->DisplaySpellSlots();
+		//	break;
+		//case 4:
+		//	player->DisplayConsumableSlots();
+		//	break;
 		default:
 			break;
 		}
@@ -194,8 +198,8 @@ void GameplayStatics::DisplayItemMenu() {
 	}
 }
 
-unique_ptr<Item> GameplayStatics::DisplayItems(PlayerCharacter* player) {
-	vector<string> v = { "ALL ITEM", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
+Item* GameplayStatics::DisplayItems(PlayerCharacter* player) {
+	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
 	v.push_back("<--BACK--<");
 	int input;
 	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
