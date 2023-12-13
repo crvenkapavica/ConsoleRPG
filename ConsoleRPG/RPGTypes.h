@@ -317,6 +317,7 @@ enum EStructFlags {
 };
 
 enum class EItemID {
+	NONE,
 	//consumables
 	HPotion,
 	EPotion,

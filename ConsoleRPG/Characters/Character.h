@@ -171,6 +171,7 @@ public:
 
 	int _n_cons_slots = 0;
 	int _n_spell_slots = 0;
+	int _n_passive_slots = 0;
 	///////////////////////////////////////////
 
 protected:

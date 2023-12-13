@@ -116,9 +116,12 @@ void GameplayStatics::DisplayMapMenu() {
 	cout << "==================================" << endl;
 	cout << ANSI_COLOR_RESET;
 
-	vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS" };
-	int input = InteractiveDisplay(v);
-	HandleMapInput(input);
+	// MAP LOOP
+	while (_player.lock()->IsAlive()) {
+		vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS" };
+		int input = InteractiveDisplay(v);
+		HandleMapInput(input);
+	}
 }
 
 void GameplayStatics::HandleMapInput(int input) {
@@ -141,57 +144,69 @@ void GameplayStatics::HandleMapInput(int input) {
 }
 
 void GameplayStatics::DisplayItemMenu() {
-	PlayerCharacter* player = dynamic_cast<PlayerCharacter*>(_cm->GetTurnCharacter().lock().get());
-	vector<string> v = { "EQUIP ITEM", "UN-EQUIP ITEM", "YOUR ITEMS" };
+	vector<string> v;
+	for (const auto& p : _players)
+		v.push_back(GameplayStatics::GetEnumString(p.lock()->GetCharacterClass()));
 	v.push_back("<--BACK--<");
-	int input = InteractiveDisplay(v);
-	if (input == -1) return;
+	int input;
+	if ((input = InteractiveDisplay(v)) == -1) return;
+	PlayerCharacter* player = _players[input].lock().get();
+
+	v = { "EQUIP ITEM", "UN-EQUIP ITEM", "YOUR ITEMS" };
+	v.push_back("<--BACK--<");
+	if ((input = InteractiveDisplay(v)) == -1) return;
 	switch (input) {
 	case 0:
-		if (unique_ptr<Item> item = DisplayItems())
+		if (unique_ptr<Item> item = DisplayItems(player))
 			player->EquipItem(move(item));
+		break;
 	case 1:
-		if (unique_ptr<Item> item = DisplayItems())
+		if (unique_ptr<Item> item = DisplayItems(player))
 			player->UnEquipItem(move(item));
-	case 2:
-		v = { "EQUIPED ITEMS, INVENTORY, SPELL SLOTS, CONSUMABLE SLOTS, INSPECT ITEMS" };
+		break;
+	case 2: 
+		v = { "EQUIPED ITEMS", "INVENTORY", "SPELL SLOTS", "CONSUMABLE SLOTS", "INSPECT ITEMS" };
 		v.push_back("<--BACK--<");
-		input = InteractiveDisplay(v);
-		if (input == -1) return;
+		if ((input = InteractiveDisplay(v)) == -1) return;
 		switch (input) {
 		case 1:
 			player->DisplayEquipedItems();
+			break;
 		case 2:
 			player->DisplayInventory();
+			break;
 		case 3:
 			player->DisplaySpellSlots();
+			break;
 		case 4:
 			player->DisplayConsumableSlots();
+			break;
 		case 5:
-			if (unique_ptr<Item> item = DisplayItems())
+			if (unique_ptr<Item> item = DisplayItems(player))
 				player->InspectItem(move(item));
+			break;
 		default:
 			break;
 		}
+		break;
+	default:
+		break;
 	}
 }
 
-unique_ptr<Item> GameplayStatics::DisplayItems() {
-	PlayerCharacter* player = dynamic_cast<PlayerCharacter*>(_cm->GetTurnCharacter().lock().get());
+unique_ptr<Item> GameplayStatics::DisplayItems(PlayerCharacter* player) {
 	vector<string> v = { "ALL ITEM", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
 	v.push_back("<--BACK--<");
-	int input = InteractiveDisplay(v);
-	if (input == -1) return nullptr;
+	int input;
+	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
 	auto type = static_cast<EItemType>(ITEM_TYPES - input + 1);
 
 	v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE" };
 	v.push_back("<--BACK--<");
-	input = InteractiveDisplay(v);
-	if (input == -1) return nullptr;
+	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
 	auto rarity = static_cast<EItemRarity>(input);
 
 	return player->DisplayAllItems(type, rarity);
-	return nullptr;
 }
 
 void GameplayStatics::RedrawGameScreen() {

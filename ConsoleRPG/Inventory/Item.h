@@ -9,26 +9,26 @@ class PlayerCharacter;
 class Item {
 public:
 	struct ItemInfo {
-		EItemID			_ID;
+		EItemID			_ID = EItemID::NONE;
 		int				_lvl = 0;
 		int				_dmg_min = 0;
 		int				_dmg_max = 0;
 		int				_armor = 0;
 
-		float			_amount;
+		float			_amount = 0.f;
 
-		int				_n_affixes;
-		float			_modifier;
+		int				_n_affixes = 0;
+		float			_modifier = 0.f;
 
 		bool			_bOutOfCombat = false;
 		bool			_bUsable = false;
 
-		std::string		_name;
+		std::string		_name = "";
 
-		EItemSlot		_item_slot;
-		EItemRarity		_item_rarity;
-		EItemType		_item_type;
-		EWeaponType		_weapon_type;
+		EItemSlot		_item_slot = EItemSlot::NONE;
+		EItemRarity		_item_rarity = EItemRarity::MISC;
+		EItemType		_item_type = EItemType::MISC;
+		EWeaponType		_weapon_type = EWeaponType::NONE;
 
 		//std::unique_ptr<ActiveSpell> _active_effect;
 		//std::unique_ptr<PassiveSpell> _passive_effect;
