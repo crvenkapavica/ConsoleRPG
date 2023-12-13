@@ -1,22 +1,35 @@
 #include "PlayerCharacter.h"
 #include "../GameplayStatics.h"
+#include "../Inventory/ItemData.h"
 
 PlayerCharacter::PlayerCharacter(const CharacterData::PlayerAttributes& attributes)
 	: Character(attributes)
 {
 	InitExperienceForLevel();
+
+	_item_slots.resize(ITEM_SLOTS);
+	_inventory.resize(INV_SLOTS);
+
+	//unique_ptr<Item> item = Item::CreateItem(_lvl, _magic_find, EItemType::WEAPON);
+	//AddItemToInventory(item);
+
+	/*auto items = Item::GenerateLoot(this, 125);
+	for (auto& item : items)
+		AddItemToInventory(move(item));*/
+
+	AddItemToInventory(Item::GetItemByID(EItemID::HatchAxe));
 }
 
 void PlayerCharacter::LevelUp() {
-	++_level;
+	++_lvl;
 	// print you have leveled up!
 	_unspent_attributes += 2;
 }
 
 void PlayerCharacter::ReceiveExperience(const int experience) {
 	_experience += experience;
-	if (_experience >= _experience_next_level[_level - 1]) {
-		_experience -= _experience_next_level[_level - 1];
+	if (_experience >= _experience_next_level[_lvl - 1]) {
+		_experience -= _experience_next_level[_lvl - 1];
 		LevelUp();
 	}
 }
@@ -60,6 +73,17 @@ void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
 
 }
 
+bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
+
+	for (auto& inv_item : _inventory)
+		if (!inv_item) {
+			inv_item = move(item);
+			return true;
+		}
+
+	return false;
+}
+
 void PlayerCharacter::DisplayEquipedItems() {
 	for (const auto& item : _item_slots) 
 		if (item) cout << GameplayStatics::GetEnumString(item->_item_info._item_slot) << " --> " << item->_item_info._name << endl;
@@ -67,7 +91,11 @@ void PlayerCharacter::DisplayEquipedItems() {
 
 void PlayerCharacter::DisplayInventory() {
 	for (int i = 0; i < _inventory.size(); i++)
-		cout << i << ".) " << _inventory[i]->_item_info._name << endl;
+		if (_inventory[i].get())
+			cout << i << ".) " << _inventory[i]->_item_info._name << "  " << GameplayStatics::GetEnumString(_inventory[i]->_item_info._item_slot) << endl;
+
+	cout << endl << "Press any key to go back.";
+	cin.get();
 }
 
 void PlayerCharacter::DisplaySpellSlots() {

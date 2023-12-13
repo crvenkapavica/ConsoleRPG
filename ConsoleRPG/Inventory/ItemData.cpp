@@ -3,7 +3,7 @@
 std::vector<ItemData> ItemDB::_data;
 
 ItemDB::ItemDataConstructor::ItemDataConstructor() {
-	//																																					  					  <lvl    >lvl    <dmg    >dmg     arm      value  s_slt   m_dmg  c_slt    m_res   ex_dmg  scdmg   armpen  cdmg     2x%    crit%    bld%   sres<%  block   %chnc   non_combat  usable                                                   
+	//																																					  				   <lvl    >lvl    <dmg    >dmg     arm      value  s_slt   m_dmg  c_slt   m_res   ex_dmg  scdmg   armpen   cdmg    2x%    crit%    bld%   sres<%   block  %chnc  non_combat   usable                                                   
 	//consumables
 	_data.push_back({ EItemID::HPotion,			"Health potion",				EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		0.25f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	200,	false,	   true });
 	_data.push_back({ EItemID::EPotion,			"Essence potion",				EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		0.15f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	400,	false,	   true });
@@ -195,6 +195,6 @@ ItemDB::ItemDataConstructor::ItemDataConstructor() {
 	//relic
 
 	//Basic Item
-	_data.push_back({ EItemID::TrainBlade,		"Trainee's Blade",				EItemType::WEAPON,		EWeaponType::SWORD_1H,	EItemSlot::WPN_BOTH,	ESpellID::NONE,		3,		35,		4,		8,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.03f,	0.f,	0.f,	0.f,	0.f,	0,		false,     false });
+	//_data.push_back({ EItemID::TrainBlade,		"Trainee's Blade",				EItemType::WEAPON,		EWeaponType::SWORD_1H,	EItemSlot::WPN_BOTH,	ESpellID::NONE,		3,		35,		4,		8,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.03f,	0.f,	0.f,	0.f,	0.f,	0,		false,     false });
 };
 ItemDB::ItemDataConstructor ItemDB::_item_data_constructor;

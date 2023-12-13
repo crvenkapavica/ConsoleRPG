@@ -100,7 +100,7 @@ protected:
 
 	char _alias = 'X'; // could be made as a static counter, and then convert the counter to char in constructor and assign to _alias
 
-	int	 _level = 1;
+	int	 _lvl = 1;
 	bool _bIsInCombat = false;
 	bool _bIsAlive = true;
 	bool _bIsOnTurn = false;
@@ -207,7 +207,7 @@ public:
 
 	inline const char GetAlias() const { return _alias; }
 	inline void SetAlias(char value) { _alias = value; }
-	inline const int GetLevel() const { return _level; }
+	inline const int GetLevel() const { return _lvl; }
 	inline const bool IsInCombat() const { return _bIsInCombat; }
 	inline const bool IsAlive() const { return _bIsAlive; }
 	inline const bool IsOnTurn() const { return _bIsOnTurn; }

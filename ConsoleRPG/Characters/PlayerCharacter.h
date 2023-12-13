@@ -38,6 +38,8 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	unique_ptr<Item> EquipItem(unique_ptr<Item> item);
 	void UnEquipItem(unique_ptr<Item> item);
+
+	bool AddItemToInventory(unique_ptr<Item> item);
 	
 	void DisplayEquipedItems();
 	void DisplayInventory();
@@ -47,8 +49,8 @@ public:
 	void InspectItem(unique_ptr<Item> item);
 
 
-	std::vector<unique_ptr<Item>> _item_slots; //= std::vector<unique_ptr<Item>>(ITEM_SLOTS, nullptr);
-	std::vector<unique_ptr<Item>> _inventory; //= std::vector<unique_ptr<Item>>(INV_SLOTS, nullptr);
+	std::vector<unique_ptr<Item>> _item_slots;
+	std::vector<unique_ptr<Item>> _inventory;
 	std::vector<unique_ptr<Item>> _consumable_slots;
 	std::vector<unique_ptr<ActiveSpell>> _active_slots;
 	std::vector<unique_ptr<PassiveSpell>> _passive_slots;

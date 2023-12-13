@@ -169,19 +169,19 @@ void GameplayStatics::DisplayItemMenu() {
 		v.push_back("<--BACK--<");
 		if ((input = InteractiveDisplay(v)) == -1) return;
 		switch (input) {
-		case 1:
+		case 0:
 			player->DisplayEquipedItems();
 			break;
-		case 2:
+		case 1:
 			player->DisplayInventory();
 			break;
-		case 3:
+		case 2:
 			player->DisplaySpellSlots();
 			break;
-		case 4:
+		case 3:
 			player->DisplayConsumableSlots();
 			break;
-		case 5:
+		case 4:
 			if (unique_ptr<Item> item = DisplayItems(player))
 				player->InspectItem(move(item));
 			break;

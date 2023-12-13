@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "ItemData.h"
 #include "../GameplayStatics.h"
 #include "../Inventory/ItemData.h"
 #include "../Characters/Character.h"
@@ -10,8 +11,8 @@ std::vector<pair<EItemType, double>> DropTable_ItemType{
 	{EItemType::JEWLERY, 0.7},
 	{EItemType::ARMOR, 0.15},
 	{EItemType::SCROLL, 0.28},
-	//{EItemType::CONSUMABLE, 0.35}
-	{EItemType::CONSUMABLE, 1}
+	{EItemType::CONSUMABLE, 0.35}
+	//{EItemType::CONSUMABLE, 1}
 };
 
 std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
@@ -81,36 +82,57 @@ Item::Item(ItemInfo item_info)
 	: _item_info(move(item_info))
 {}
 
-//std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
-//	std::vector<unique_ptr<Item>> loot;
-//	std::vector<pair<int, int>> type_limit = {
-//		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
-//	};
-//
-//	while (power_lvl > 0) {
-//		for (int i = 0; i < ITEM_TYPES; i++) {
-//			while (type_limit[i].first == type_limit[i].second) {
-//				++i;
-//				// we should adjust the formulas so that this actually never happens
-//				if (i == ITEM_TYPES) return loot;
-//			}
-//
-//			int rnd = GameplayStatics::GetRandInt(1, 1000);
-//			int weight = static_cast<int>(DropTable_ItemType[i].first) * player.lock()->GetLevel();
-//			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
-//				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
-//				type_limit[i].first++;
-//				power_lvl -= weight;
-//				break;
-//			}
-//			else if (power_lvl - weight < 0) return loot;
-//
-//			// no loot was rolled
-//			if (i == ITEM_TYPES - 1) return loot;
-//		}
-//	}
-//	return loot;
-//}
+Item::Item(const ItemData& data)
+{
+	_item_info._ID = data._ID;
+	_item_info._lvl = data._min_lvl;  // we will add only specific items for the start of the game so the ilvl min max will be the same
+	_item_info._min_dmg = data._min_dmg;
+	_item_info._max_dmg = data._max_dmg;
+	_item_info._armor = data._armor;
+	_item_info._amount = data._value; // check if correct
+	_item_info._n_affixes = 0;
+	
+	_item_info._modifier = 0.f; // this has to be done with switch, for each item / weapon type for a different modifier. maybe just keep this at 0 for starting items
+
+	_item_info._bNoCombat = data._bNoCombat;
+	_item_info._bUsable = data._bUsable;
+	_item_info._name = data._name;
+	_item_info._item_slot = data._slot;
+	_item_info._item_rarity = EItemRarity::COMMON;
+	_item_info._item_type = data._item_type;
+	_item_info._wpn_type = data._wpn_type;
+}
+
+std::vector<std::unique_ptr<Item>> Item::GenerateLoot(PlayerCharacter* player, int power_lvl) {
+	std::vector<unique_ptr<Item>> loot;
+	std::vector<pair<int, int>> type_limit = {
+		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
+	};
+
+	while (power_lvl > 0) {
+		for (int i = 0; i < ITEM_TYPES; i++) {
+			while (type_limit[i].first == type_limit[i].second) {
+				++i;
+				// we should adjust the formulas so that this actually never happens
+				if (i == ITEM_TYPES) return loot;
+			}
+
+			int rnd = GameplayStatics::GetRandInt(1, 1000);
+			int weight = static_cast<int>(DropTable_ItemType[i].first) * player->GetLevel();
+			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
+				loot.push_back(Item::CreateItem(player->GetLevel(), player->GetMagicFind(), DropTable_ItemType[i].first));
+				type_limit[i].first++;
+				power_lvl -= weight;
+				break;
+			}
+			else if (power_lvl - weight < 0) return loot;
+
+			// no loot was rolled
+			if (i == ITEM_TYPES - 1) return loot;
+		}
+	}
+	return loot;
+}
 
 std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType item_type) {
 
@@ -127,16 +149,21 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 		}
 	}
 
-
 	int b_Ilvl = player_lvl * 8;
 	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
 	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
 	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
-	int item_lvl = GameplayStatics::GetRandInt(max_Ilvl - min_Ilvl, min_Ilvl);
+	int item_lvl = GameplayStatics::GetRandInt(min_Ilvl, max_Ilvl - min_Ilvl);
 
 	ItemInfo item_info = GenerateItemInfo(item_lvl, item_type, item_rarity);
 
 	return make_unique<Item>(move(item_info));
+}
+
+std::unique_ptr<Item> Item::GetItemByID(EItemID id) {
+	for (const auto& item : ItemDB::_data)
+		if (item._ID == id)
+			return make_unique<Item>(item);
 }
 
 Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {
@@ -145,7 +172,7 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	item_info._n_affixes = ITEM_RARITIES - 1 - static_cast<int>(item_rarity);
 	item_info._item_rarity = item_rarity;
 	item_info._item_type = item_type;
-	item_info._weapon_type = EWeaponType::NONE;
+	item_info._wpn_type = EWeaponType::NONE;
 
 	if (item_rarity == EItemRarity::UNIQUE) item_info._name = "UNIQUE";
 
@@ -176,8 +203,8 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 			rnd = GameplayStatics::GetRandInt(0, static_cast<int>(EWeaponType::LAST));
 		else
 			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
-		item_info._weapon_type = static_cast<EWeaponType>(rnd);
-		CalcItemDamage(item_lvl, item_info._weapon_type, item_info._dmg_min, item_info._dmg_max);
+		item_info._wpn_type = static_cast<EWeaponType>(rnd);
+		CalcItemDamage(item_lvl, item_info._wpn_type, item_info._min_dmg, item_info._max_dmg);
 		break;
 	case EItemType::RELIC:
 		item_info._item_slot = EItemSlot::RELIC;
@@ -185,6 +212,9 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	default:
 		break;
 	}
+
+	if (item_info._item_type != EItemType::CONSUMABLE && item_info._item_type != EItemType::SCROLL)
+		GenerateItemName(item_info);
 
 	return item_info;
 }
@@ -257,6 +287,16 @@ void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
 			item_info._amount = item._value * item_info._n_affixes;
 		}
 	}
+}
+
+void Item::GenerateItemName(ItemInfo& item_info) {
+	for (const auto& item : ItemDB::_data)
+		if (item._item_type == item_info._item_type &&
+			item._slot == item_info._item_slot &&
+			item_info._lvl >= item._min_lvl && item_info._lvl <= item._max_lvl) {
+			item_info._ID = item._ID;
+			item_info._name = item._name;
+		}
 }
 
 
