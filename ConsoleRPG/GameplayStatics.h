@@ -31,7 +31,6 @@ public:
 	static void HandleMapInput(int input);
 
 	static void DisplayItemMenu();
-	static Item* DisplayItems(PlayerCharacter* player);
 
 	static void InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemies);
 	static void ExitCombatMode();

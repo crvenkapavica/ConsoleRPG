@@ -58,7 +58,9 @@ void PlayerCharacter::TakeTurn() {
 	}
 }
 
-unique_ptr<Item> PlayerCharacter::EquipItem(unique_ptr<Item> item) {
+void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
+	if (!item || _n_inventory == INV_SLOTS) return;
+
 	auto slot = EItemSlot::NONE;
 	if (item->_item_info._item_type == EItemType::WEAPON) {
 		if (slot == EItemSlot::WPN_BOTH)
@@ -66,7 +68,7 @@ unique_ptr<Item> PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 	}
 	_item_slots[static_cast<int>(slot)].swap(item);
 
-	return nullptr;
+	AddItemToInventory(move(item));
 }
 
 void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
@@ -85,15 +87,6 @@ bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
 	}
 
 	return false;
-}
-
-unique_ptr<Item> PlayerCharacter::GetItem(Item* item) {
-	for (const auto& i : _inventory)
-		if (i.get() == item)
-			return i;
-	for (const auto& i : _item_slots)
-		if (i.get() == item)
-			return i;
 }
 
 void PlayerCharacter::InspectItem(Item* item) {
@@ -130,28 +123,40 @@ PassiveSpell* PlayerCharacter::DisplayPassiveSpellSlots() {
 	return nullptr;
 }
 
-Item* PlayerCharacter::DisplayAllItems(EItemType type, EItemRarity rarity) {
+std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(bool& bIsEquiped) {
 
-	vector<string> v;
-	for (const auto& item : _inventory)
-		if (!item) break;
-		else ((item->_item_info._item_type == type || type == EItemType::MISC) && (item->_item_info == rarity || rarity == EItemRarity::MISC))
-			v.push_back("Inventory: -> " + item->_item_info._name);
-	for (const auto& item : _item_slots)
-		if (item && (item->_item_info._item_type == type || type == EItemType::MISC) && (item->_item_info == rarity || rarity == EItemRarity::MISC))
-			v.push_back(GameplayStatics::GetEnumString(type) + ": -> " + item->_item_info._name);
-	v.push_back("<--BACK--<");
+	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES", "<--BACK--<" };
 	int input;
 	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+	auto type = static_cast<EItemType>(ITEM_TYPES - input);
 
-	Item* item;
+	v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE", "<--BACK--<"};
+	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+	auto rarity = static_cast<EItemRarity>(input);
+
+	v.clear();
+	for (const auto& item : _inventory)
+		if (!item.get()) break;
+		else if ((item->_item_info._item_type == type || type == EItemType::MISC) && (item->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC))
+			v.push_back("Inventory: --> " + item->_item_info._name);
+
+	for (int i = 0; i < _item_slots.size(); i++)
+		if (!_item_slots[i])
+			v.push_back(GameplayStatics::GetEnumString(static_cast<EItemSlot>(i)) + ": --> (empty)");
+		else
+			v.push_back(GameplayStatics::GetEnumString(static_cast<EItemSlot>(i)) + ": --> " + _item_slots[i]->_item_info._name);
+	v.push_back("<--BACK--<");
+	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+
+	std::unique_ptr<Item> item;
 	// item is from inventory
 	if (input < _n_inventory) {
-		item = _inventory[input].get();
+		item = move(_inventory[input]);
 	}
 	// item is equiped
 	else {
-
+		item = move(_item_slots[input - _n_inventory]);
+		bIsEquiped = true;
 	}	
 	return item;
 }

@@ -37,15 +37,13 @@ public:
 	//// INVENTORY
 	///////////////////////////////////////////////////////////////////////////////////////////////
 public:
-	unique_ptr<Item> EquipItem(unique_ptr<Item> item);
+	void EquipItem(unique_ptr<Item> item);
 
 	// Return immediately if inventory is full
 	void UnEquipItem(unique_ptr<Item> item);
 
 	// Return true if the item was added, false otherwise
 	bool AddItemToInventory(unique_ptr<Item> item);
-
-	unique_ptr<Item> GetItem(Item* item);
 
 	// Displays all information about the item and its affixes
 	void InspectItem(Item* item);
@@ -55,7 +53,7 @@ public:
 	Item* DisplayConsumableSlots();
 	ActiveSpell* DisplayActiveSpellSlots();
 	PassiveSpell* DisplayPassiveSpellSlots();
-	Item* DisplayAllItems(EItemType type, EItemRarity rarity);
+	unique_ptr<Item> DisplayAllItems(bool& bIsEquiped);
 
 public:
 	std::vector<unique_ptr<Item>> _item_slots;

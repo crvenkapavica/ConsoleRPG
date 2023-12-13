@@ -5,13 +5,13 @@
 #include "../Characters/Character.h"
 #include "../Characters/PlayerCharacter.h"
 
-std::vector<pair<EItemType, double>> DropTable_ItemType{
-	{EItemType::RELIC, 0.02},
-	{EItemType::WEAPON, 0.5},
-	{EItemType::JEWLERY, 0.7},
-	{EItemType::ARMOR, 0.15},
-	{EItemType::SCROLL, 0.28},
-	{EItemType::CONSUMABLE, 0.35}
+std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType{
+	{EItemType::RELIC,		{ 45, 0.02 } },
+	{EItemType::WEAPON,		{ 28, 0.5 } },
+	{EItemType::JEWLERY,	{ 22, 0.7 } },
+	{EItemType::ARMOR,		{ 15, 0.15 } },
+	{EItemType::SCROLL,		{ 6, 0.28 } },
+	{EItemType::CONSUMABLE, { 2, 0.35 } }
 	//{EItemType::CONSUMABLE, 1}
 };
 
@@ -118,8 +118,8 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(PlayerCharacter* player, i
 			}
 
 			int rnd = GameplayStatics::GetRandInt(1, 1000);
-			int weight = static_cast<int>(DropTable_ItemType[i].first) * player->GetLevel();
-			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second * 1000) {
+			int weight = DropTable_ItemType[i].second.first * player->GetLevel();
+			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second.second * 1000) {
 				loot.push_back(Item::CreateItem(player->GetLevel(), player->GetMagicFind(), DropTable_ItemType[i].first));
 				type_limit[i].first++;
 				power_lvl -= weight;

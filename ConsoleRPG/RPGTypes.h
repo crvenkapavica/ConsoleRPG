@@ -526,14 +526,14 @@ enum class EItemSlot {
 	BELT,
 	LEGS,
 	FEET,
-	NECK = 10,
+	NECK,
 	FINGER1,
 	FINGER2,
-	WPN_MAIN = 20,
+	WPN_MAIN,
 	WPN_OFF,
-	RELIC = 30,
+	RELIC,
 
-	WPN_BOTH,
+	WPN_BOTH = 100,
 	FINGER
 };
 
@@ -568,13 +568,18 @@ enum class EItemRarity {
 };
 
 enum class EItemType {
-	CONSUMABLE = 2,
-	SCROLL = 6,
-	ARMOR = 15,
-	JEWLERY = 22,
-	WEAPON = 28,
-	RELIC = 45,
+	CONSUMABLE,
+	SCROLL,
+	ARMOR,
+	JEWLERY,
+	WEAPON,
+	RELIC,
 	MISC
+};
+
+enum class EItemType2 {
+	MISC,
+	
 };
 
 struct grid_node {

@@ -154,63 +154,27 @@ void GameplayStatics::DisplayItemMenu() {
 	if ((input = InteractiveDisplay(v)) == -1) return;
 	PlayerCharacter* player = _players[input].lock().get();
 
-	v = { "EQUIP ITEM", "UN-EQUIP ITEM", "INSPECT ITEMS"};
-	v.push_back("<--BACK--<");
-	if ((input = InteractiveDisplay(v)) == -1) return;
-	switch (input) {
-	case 0:
-		if (unique_ptr<Item> item = DisplayItems(player))
-			player->EquipItem(move(item));
-		break;
-	case 1:
-		if (unique_ptr<Item> item = player->DisplayEquipedItems())
-			player->UnEquipItem(move(item));
-		break;
-	case 2: 
-		v = { "ALL ITEMS", "EQUIPED ITEMS", "INVENTORY"/*, "SPELL SLOTS", "CONSUMABLE SLOTS"*/ };
-		v.push_back("<--BACK--<");
+	bool bIsEquiped = false;
+	unique_ptr<Item> item;
+	if (!(item = player->DisplayAllItems(bIsEquiped))) return;
+	
+	v.clear();
+	if (bIsEquiped) {
+		v = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((input = InteractiveDisplay(v)) == -1) return;
-		switch (input) {
-		case 0:
-			if (Item* item = DisplayItems(player))
-				player->InspectItem(item);
-			break;
-		case 1:
-			if (Item* item = player->DisplayEquipedItems())
-				player->InspectItem(item);
-			break;
-		case 2:
-			if (Item* item = player->DisplayInventory())
-				player->InspectItem(item);
-			break;
-		//case 3:
-		//	player->DisplaySpellSlots();
-		//	break;
-		//case 4:
-		//	player->DisplayConsumableSlots();
-		//	break;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
+		if (input == 0)
+			player->UnEquipItem(move(item));
+		// Destroy item [TEST THIS]
+		else item.reset(); 
 	}
-}
-
-Item* GameplayStatics::DisplayItems(PlayerCharacter* player) {
-	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES" };
-	v.push_back("<--BACK--<");
-	int input;
-	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
-	auto type = static_cast<EItemType>(ITEM_TYPES - input + 1);
-
-	v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE" };
-	v.push_back("<--BACK--<");
-	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
-	auto rarity = static_cast<EItemRarity>(input);
-
-	return player->DisplayAllItems(type, rarity);
+	else {
+		v = { "EQUIP", "DESTROY", "<--BACK--<" };
+		if ((input = InteractiveDisplay(v)) == -1) return;
+		if (input == 0)
+			player->EquipItem(move(item));
+		// Destroy [TEST]
+		else item.reset();
+	}
 }
 
 void GameplayStatics::RedrawGameScreen() {
