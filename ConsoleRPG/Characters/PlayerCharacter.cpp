@@ -56,12 +56,15 @@ void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 
 	SortInventory();
 	CalcPlayerItemSlots();
+	CalcInvSlots();
 }
 
 void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
 	if (!item || _n_inventory == INV_SLOTS) return;
 
+	AddItemToInventory(move(item));
 	CalcPlayerItemSlots();
+	CalcInvSlots();
 }
 
 bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
@@ -69,12 +72,11 @@ bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
 	for (auto& inv_item : _inventory) {
 		if (!inv_item) {
 			inv_item = move(item);
-			++_n_inventory;
+			CalcInvSlots();
 			return true;
 		}
-		++_n_inventory;
 	}
-
+	CalcInvSlots();
 	return false;
 }
 
@@ -87,6 +89,7 @@ void PlayerCharacter::DestroyItem(unique_ptr<Item> item) {
 
 	SortInventory();
 	CalcPlayerItemSlots();
+	CalcInvSlots();
 }
 
 Item* PlayerCharacter::DisplayEquipedItems() {
@@ -140,6 +143,8 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 		else if ((item->_item_info._item_type == type || type == EItemType::MISC) && (item->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC))
 			v.push_back("INVENTORY --> " + item->_item_info._name);
 
+	map<int, int> equip_map;
+	int equip_index = 0;
 	for (int i = 0; i < _item_slots.size(); i++)
 		if (((_item_slots[i] && (_item_slots[i]->_item_info._item_type == type || type == EItemType::MISC)) || type == EItemType::MISC)
 			&&
@@ -149,6 +154,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 			if (_item_slots[i]) s += _item_slots[i]->_item_info._name;
 			else s += "(empty)";
 			v.push_back(s);
+			equip_map[equip_index++] = i;
 		}
 			
 	v.push_back("<--BACK--<");
@@ -161,7 +167,9 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 	}
 	// item is equiped
 	else {
-		item = move(_item_slots[input - _n_inventory]);
+		int start = static_cast<int>(v.size() - equip_map.size());
+		int index = input - start + 1;
+		item = move(_item_slots[equip_map[index]]);
 		bIsEquiped = true;
 	}	
 	return item;
@@ -219,4 +227,11 @@ void PlayerCharacter::CalcPlayerItemSlots() {
 	_avg_damage = _min_damage && _max_damage ? static_cast<int>((_min_damage + _max_damage) / 2) : 0;
 
 	InitStats();
+}
+
+void PlayerCharacter::CalcInvSlots() {
+	_n_inventory = 0;
+	for (const auto& item : _inventory)
+		if (item) ++_n_inventory;
+		else break;
 }

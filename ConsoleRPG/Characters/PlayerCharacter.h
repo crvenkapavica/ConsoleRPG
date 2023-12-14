@@ -83,4 +83,6 @@ protected:
 	void SortInventory();
 
 	void CalcPlayerItemSlots();
+
+	void CalcInvSlots();
 };

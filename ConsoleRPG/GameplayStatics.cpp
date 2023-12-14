@@ -190,7 +190,7 @@ void GameplayStatics::DisplayItemMenu() {
 	if (bIsEquiped) {
 		v = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((input = InteractiveDisplay(v)) == -1) {
-			player->AddItemToInventory(move(item));
+			player->EquipItem(move(item));
 			return;
 		}
 		if (input == 0) player->UnEquipItem(move(item));
