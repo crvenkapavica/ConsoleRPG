@@ -165,7 +165,7 @@ void GameplayStatics::DisplayItemMenu() {
 		if (input == 0)
 			player->UnEquipItem(move(item));
 		// Destroy item [TEST THIS]
-		else item.reset(); 
+		else player->DestroyItem(move(item));
 	}
 	else {
 		v = { "EQUIP", "DESTROY", "<--BACK--<" };
@@ -173,7 +173,7 @@ void GameplayStatics::DisplayItemMenu() {
 		if (input == 0)
 			player->EquipItem(move(item));
 		// Destroy [TEST]
-		else item.reset();
+		else player->DestroyItem(move(item));
 	}
 }
 
@@ -760,28 +760,28 @@ std::string GameplayStatics::GetEnumString(EItemSlot _enum) {
 	case EItemSlot::NONE:
 		return "None";
 	case EItemSlot::HEAD:
-		return "Head";
+		return "HEAD";
 	case EItemSlot::CHEST:
-		return "Chest";
+		return "CHEST";
 	case EItemSlot::HANDS:
-		return "Hands";
+		return "HANDS";
 	case EItemSlot::BELT:
-		return "Belt";
+		return "BELT";
 	case EItemSlot::LEGS:
-		return "Legs";
+		return "LEGS";
 	case EItemSlot::FEET:
-		return "Feet";
+		return "FEET";
 	case EItemSlot::NECK:
-		return "Neck";
+		return "NECK";
 	case EItemSlot::FINGER1:
 	case EItemSlot::FINGER2:
-		return "Finger";
+		return "FINGER";
 	case EItemSlot::WPN_MAIN:
-		return "Main-hand";
+		return "MAIN-HAND";
 	case EItemSlot::WPN_OFF:
-		return "Off-hand";
+		return "OFF-HAND";
 	case EItemSlot::RELIC:
-		return "Relic";
+		return "RELIC";
 	default:
 		return "";
 	}

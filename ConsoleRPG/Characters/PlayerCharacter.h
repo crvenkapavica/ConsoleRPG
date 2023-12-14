@@ -47,6 +47,8 @@ public:
 
 	// Displays all information about the item and its affixes
 	void InspectItem(Item* item);
+
+	void DestroyItem(unique_ptr<Item> item);
 	
 	Item* DisplayEquipedItems();
 	Item* DisplayInventory();
@@ -72,8 +74,12 @@ protected:
 
 	int _experience_next_level[MAX_LVL] = { 0 };
 
-private:
+protected:
 	void InitExperienceForLevel();
 
 	void LevelUp();
+
+	void SortInventory();
+
+	void CalcPlayerStats();
 };
