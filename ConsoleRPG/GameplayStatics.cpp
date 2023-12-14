@@ -117,6 +117,21 @@ void GameplayStatics::DisplayMapMenuTitle() {
 	cout << ANSI_COLOR_RESET;
 }
 
+void GameplayStatics::DisplayCombatMenuTitle() {
+	cout << ANSI_COLOR_CYAN_LIGHT;
+	cout << "=> COMBAT MENU <=" << endl;
+	cout << "=================" << endl;
+	cout << ANSI_COLOR_RESET;
+}
+
+void GameplayStatics::DisplaySpellMenuTitle() {
+	_menu->Clear(2);
+	cout << ANSI_COLOR_CYAN_LIGHT;
+	cout << "=> AVAILABLE SPELLS <=" << endl;
+	cout << "======================" << endl;
+	cout << ANSI_COLOR_RESET;
+}
+
 void GameplayStatics::DisplayMapMenu() {
 	DisplayMapMenuTitle();
 
@@ -272,11 +287,7 @@ void GameplayStatics::GiveExperience(EnemyCharacter* enemy) {
 }
 
 int GameplayStatics::DisplayCombatMenu() {
-
-	cout << ANSI_COLOR_CYAN_LIGHT;
-	cout << "=> COMBAT MENU <=" << endl;
-	cout << "=================" << endl;
-	cout << ANSI_COLOR_RESET;
+	DisplayCombatMenuTitle();
 	vector<string> v = { "MELEE ATTACK", "RANGED ATTACK", "CAST SPELL", "MOVE", "INFO", "END TURN" };
 	return InteractiveDisplay(v);
 }
@@ -394,12 +405,7 @@ void GameplayStatics::DisplayRangedMenu() {
 
 
 void GameplayStatics::DisplaySpellMenu() {
-
-	_menu->Clear(2);
-	cout << ANSI_COLOR_CYAN_LIGHT;
-	cout << "=> AVAILABLE SPELLS <=" << endl;
-	cout << "======================" << endl;
-	cout << ANSI_COLOR_RESET;
+	DisplaySpellMenuTitle();
 
 	vector<string> v;
 	vector<ActiveSpell*> spells;

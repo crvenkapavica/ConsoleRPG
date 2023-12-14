@@ -25,6 +25,8 @@ public:
 	static void DisplayEnemies();
 
 	static void DisplayMapMenuTitle();
+	static void DisplayCombatMenuTitle();
+	static void DisplaySpellMenuTitle();
 
 	static int InteractiveDisplay(const vector<string>& options, const int right = 0, const bool clear = true);
 	static void ANSI_CURSOR_DOWN_N(int n);
