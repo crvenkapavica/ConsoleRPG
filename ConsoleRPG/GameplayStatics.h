@@ -24,13 +24,19 @@ public:
 	static void DisplayAllies();
 	static void DisplayEnemies();
 
+	static void DisplayMapMenuTitle();
+
 	static int InteractiveDisplay(const vector<string>& options, const int right = 0, const bool clear = true);
 	static void ANSI_CURSOR_DOWN_N(int n);
 
 	static void DisplayMapMenu();
 	static void HandleMapInput(int input);
 
+	static PlayerCharacter* GetPlayer();
+
 	static void DisplayItemMenu();
+	//static void DisplaySomeSpellMenu();
+	static void DisplayPlayerStats();
 
 	static void InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemies);
 	static void ExitCombatMode();

@@ -43,7 +43,7 @@ void PlayerCharacter::TakeTurn() {
 }
 
 void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
-	if (!item || _n_inventory == INV_SLOTS) return;
+	if (!item || _n_inventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
 	auto slot = EItemSlot::NONE;
 	if (item->_item_info._item_type == EItemType::WEAPON) {
@@ -52,16 +52,16 @@ void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 	}
 
 	_item_slots[static_cast<int>(slot)].swap(item);
-	AddItemToInventory(move(item));
+	if (item) AddItemToInventory(move(item));
 
 	SortInventory();
-	// CalculatePlayerItemValue (stats);
+	CalcPlayerItemSlots();
 }
 
 void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
-	// if inventory is full -> return;
+	if (!item || _n_inventory == INV_SLOTS) return;
 
-	// CalculatePlayerItemValue (stats);
+	CalcPlayerItemSlots();
 }
 
 bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
@@ -84,7 +84,9 @@ void PlayerCharacter::InspectItem(Item* item) {
 
 void PlayerCharacter::DestroyItem(unique_ptr<Item> item) {
 	item.reset();
+
 	SortInventory();
+	CalcPlayerItemSlots();
 }
 
 Item* PlayerCharacter::DisplayEquipedItems() {
@@ -117,7 +119,7 @@ PassiveSpell* PlayerCharacter::DisplayPassiveSpellSlots() {
 	return nullptr;
 }
 
-std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(bool& bIsEquiped) {
+std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 
 	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES", "<--BACK--<" };
 	int input;
@@ -131,8 +133,8 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(bool& bIsEquiped) {
 	v.clear();
 	// treba auto sortirati da su svi v inventoriju po redu a na kraju nullptr
 	for (const auto& item : _inventory)
-		if (!item.get()) {
-			if (type == EItemType::MISC)
+		if (!item) {
+			if (type == EItemType::MISC && rarity == EItemRarity::MISC)
 				v.push_back("INVENTORY --> (empty)");
 		}
 		else if ((item->_item_info._item_type == type || type == EItemType::MISC) && (item->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC))
@@ -165,18 +167,29 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(bool& bIsEquiped) {
 	return item;
 }
 
+void PlayerCharacter::DisplayStats() {
+	system("cls");
+	cout << "========     STATS    ============" << endl;
+	cout << "==================================" << endl;
+	cout << "STR: " << _player_attributes._strength + _i_str << "\nAGI: " << _player_attributes._agility + _i_agi << "\nINT: " << _player_attributes._intelligence + _i_int << endl;
+	cout << "VIT: " << _player_attributes._vitality + _i_vit << "\nCON: " << _player_attributes._consciousness + _i_con << "\nEND: " << _player_attributes._endurance + _i_end << endl;
+	cout << "MinDmg: " << _min_damage << "\nMaxDmg: " << _max_damage << "\nAvgDmg: " << _avg_damage << endl;
+	
+	cout << endl << "Press any key to go back.\n";
+	auto input = _getch();
+	system("cls");
+	GameplayStatics::DisplayMapMenuTitle();
+}
+
 void PlayerCharacter::InitExperienceForLevel() {
 
 	int start = 17;
-	_experience_next_level[0] = 17;
+	_experience_next_level[0] = start;
 
 	int constant = 7;
 	for (int i = 1; i <= MAX_LVL; i++) {
-		if (i % 3 == 0) {
-			constant += constant / 2;
-		}
-		int next_level = static_cast<int>(_experience_next_level[i - 1] + (_experience_next_level[i - 1] * 0.1) + constant);
-		_experience_next_level[i] = next_level;
+		if (i % 3 == 0) constant += constant / 2;
+		_experience_next_level[i] = static_cast<int>(_experience_next_level[i - 1] + (_experience_next_level[i - 1] * 0.1) + constant);
 	}
 }
 
@@ -188,4 +201,22 @@ void PlayerCharacter::LevelUp() {
 
 void PlayerCharacter::SortInventory() {
 	sort(_inventory.begin(), _inventory.end(), [&](const std::unique_ptr<Item>& first, const std::unique_ptr<Item>& second) { return first && !second; });
+}
+
+void PlayerCharacter::CalcPlayerItemSlots() {
+	_health = _essence = _stamina = _armor = _attack_power = _crit_chance = _crit_damage = _spell_power = _spell_crit_chance = _spell_crit_damage = 0.f;
+	_i_str = _i_agi = _i_int = _i_vit = _i_con = _i_end = 0;
+	_min_damage = _max_damage = 0;
+
+
+	for (const auto& item : _item_slots)
+		if (item) {
+			_min_damage += item->_item_info._min_dmg;
+			_max_damage += item->_item_info._max_dmg;
+			_armor.UpdateBase(static_cast<float>(item->_item_info._armor));   // check if base works fine in conjunction with max
+		}
+
+	_avg_damage = _min_damage && _max_damage ? static_cast<int>((_min_damage + _max_damage) / 2) : 0;
+
+	InitStats();
 }

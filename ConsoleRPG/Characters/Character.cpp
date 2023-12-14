@@ -69,6 +69,7 @@ Character::~Character()
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;
 	_actual += value;
+	_max += value;
 }
 
 void Character::Stat::SetActual(const float value) {
@@ -77,49 +78,60 @@ void Character::Stat::SetActual(const float value) {
 
 void Character::Stat::SetMax(const float value) {
 	_max = value;
+	
+	if (_actual > _max)
+		_actual = _max;
 }
 
 void Character::Stat::UpdateActual(const float value, Character* character) {
 	_actual += value;
 	if (_actual > _max)
-		_max = _actual;
+		_actual = _max;
 
 	if (character->GetHealth().GetActual() <= 0)
 		character->Die();
 }
 
+void Character::Stat::UpdateMax(const float value) {
+	_max += value;
+
+	if (value > 0)
+		_actual += value;
+	
+	if (_max < _actual)
+		_actual = _max;
+}
+
 void Character::InitStats() {
-	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx) {
+
+	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx)
 		if (_stat_per_attribute[idx].first == &_player_attributes._strength)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._strength);
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._strength + _i_str));
 		else if (_stat_per_attribute[idx].first == &_player_attributes._agility)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._agility);
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._agility + _i_agi));
 		else if (_stat_per_attribute[idx].first == &_player_attributes._intelligence)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._intelligence);
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._intelligence + _i_int));
 		else if (_stat_per_attribute[idx].first == &_player_attributes._vitality)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._vitality);
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._vitality + _i_vit));
 		else if (_stat_per_attribute[idx].first == &_player_attributes._consciousness)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._consciousness);
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._consciousness + _i_con));
 		else if (_stat_per_attribute[idx].first == &_player_attributes._endurance)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * _player_attributes._endurance);
-	}
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._endurance + _i_end));
 }
 
 void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 
-	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx) {
-		if (_stat_per_attribute[idx].first == &attribute) {
-			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++) {
+	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx)
+		if (_stat_per_attribute[idx].first == &attribute) 
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++) 
 				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * amount);
-			}
-		}
-	}
+
 	attribute += amount;
 }
 

@@ -164,6 +164,8 @@ std::unique_ptr<Item> Item::GetItemByID(EItemID id) {
 	for (const auto& item : ItemDB::_data)
 		if (item._ID == id)
 			return make_unique<Item>(item);
+
+	return nullptr;
 }
 
 Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {

@@ -40,7 +40,7 @@ class Character;
 #define CHAR_GRID_X ((GRID_X - 1) / 4)
 #define CHAR_GRID_Y ((GRID_Y - 1) / 8)
 
-#define MAX_LVL 99
+#define MAX_LVL 75
 #define NUM_PLYR_CLASSES 1
 #define NUM_ENEMY_CLASSES 1
 
@@ -304,7 +304,6 @@ enum class ECombatEvent {
 };
 
 enum class EStatValueAction {
-	DEFAULT,
 	UPDATE_BASE,
 	UPDATE_ACTUAL,
 	UPDATE_MAX

@@ -55,7 +55,8 @@ public:
 	Item* DisplayConsumableSlots();
 	ActiveSpell* DisplayActiveSpellSlots();
 	PassiveSpell* DisplayPassiveSpellSlots();
-	unique_ptr<Item> DisplayAllItems(bool& bIsEquiped);
+	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquiped);
+	void DisplayStats();
 
 public:
 	std::vector<unique_ptr<Item>> _item_slots;
@@ -81,5 +82,5 @@ protected:
 
 	void SortInventory();
 
-	void CalcPlayerStats();
+	void CalcPlayerItemSlots();
 };

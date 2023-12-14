@@ -110,15 +110,19 @@ void GameplayStatics::ANSI_CURSOR_DOWN_N(int n) {
 	_menu->ANSI_CURSOR_DOWN_N(n);
 }
 
-void GameplayStatics::DisplayMapMenu() {
+void GameplayStatics::DisplayMapMenuTitle() {
 	cout << ANSI_COLOR_VIVID_YELLOW;
 	cout << "========     MAP MENU     ========" << endl;
 	cout << "==================================" << endl;
 	cout << ANSI_COLOR_RESET;
+}
+
+void GameplayStatics::DisplayMapMenu() {
+	DisplayMapMenuTitle();
 
 	// MAP LOOP
 	while (_player.lock()->IsAlive()) {
-		vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS", "SPELLS"};
+		vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS", "SPELLS", "STATS"};
 		int input = InteractiveDisplay(v);
 		HandleMapInput(input);
 	}
@@ -138,43 +142,61 @@ void GameplayStatics::HandleMapInput(int input) {
 		break;
 	case 3:
 		DisplayItemMenu();
+		break;
 	//case 4:
 	//	DisplaySpellMenu(); // treba drugu funkciju -> funkciju koja pokazuje v = {ACTIVE, PASSIVE, ALL(instanced)};
+	case 5:
+		DisplayPlayerStats();
 	default:
 		break;
 	}
 }
 
-void GameplayStatics::DisplayItemMenu() {
+PlayerCharacter* GameplayStatics::GetPlayer() {
 	vector<string> v;
 	for (const auto& p : _players)
 		v.push_back(GameplayStatics::GetEnumString(p.lock()->GetCharacterClass()));
 	v.push_back("<--BACK--<");
 	int input;
-	if ((input = InteractiveDisplay(v)) == -1) return;
-	PlayerCharacter* player = _players[input].lock().get();
+	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
+	return _players[input].lock().get();
+}
+
+void GameplayStatics::DisplayItemMenu() {
+	PlayerCharacter* player;
+	if ((player = GetPlayer()) == nullptr) return;
 
 	bool bIsEquiped = false;
 	unique_ptr<Item> item;
 	if (!(item = player->DisplayAllItems(bIsEquiped))) return;
 	
-	v.clear();
+	vector<string> v;
+	int input;
 	if (bIsEquiped) {
 		v = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
-		if ((input = InteractiveDisplay(v)) == -1) return;
-		if (input == 0)
-			player->UnEquipItem(move(item));
-		// Destroy item [TEST THIS]
+		if ((input = InteractiveDisplay(v)) == -1) {
+			player->AddItemToInventory(move(item));
+			return;
+		}
+		if (input == 0) player->UnEquipItem(move(item));
 		else player->DestroyItem(move(item));
 	}
 	else {
 		v = { "EQUIP", "DESTROY", "<--BACK--<" };
-		if ((input = InteractiveDisplay(v)) == -1) return;
-		if (input == 0)
-			player->EquipItem(move(item));
-		// Destroy [TEST]
+		if ((input = InteractiveDisplay(v)) == -1) {
+			player->AddItemToInventory(move(item));
+			return;
+		}
+		if (input == 0) player->EquipItem(move(item));
 		else player->DestroyItem(move(item));
 	}
+}
+
+//void GameplayStatics::DisplaySomePlayerSpellMenu() {}
+
+void GameplayStatics::DisplayPlayerStats() {
+	PlayerCharacter* player = GetPlayer();
+	player->DisplayStats();
 }
 
 void GameplayStatics::RedrawGameScreen() {

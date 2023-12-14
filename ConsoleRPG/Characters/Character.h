@@ -71,6 +71,7 @@ public:
 
 		void UpdateBase(const float value);
 		void UpdateActual(const float value, Character* character);
+		void UpdateMax(const float value);
 
 		void SetActual(const float value);
 		void SetMax(const float value);
@@ -141,6 +142,14 @@ public:
 
 	// EXTRA STATS COMBAT
 	//////////////////////////////////////////
+	// item attributes
+	int _i_str = 0;
+	int _i_agi = 0;
+	int _i_int = 0;
+	int _i_vit = 0;
+	int _i_con = 0;
+	int _i_end = 0;
+
 	int _multi_strike = 0;
 	// damage
 	float _arcane_damage = 0.f;
