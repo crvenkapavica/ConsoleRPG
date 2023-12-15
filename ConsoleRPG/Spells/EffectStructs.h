@@ -32,7 +32,6 @@ struct EffectParams {
 
 struct ApplyParams {
 
-	ECombatEvent _on_event;
 	int _struct_flags = 0;
 
 	std::optional<Effect_Stat> _effect_stat;
@@ -43,14 +42,14 @@ struct CombatEffect {
 	Character* _instigator;
 	std::vector<weak_ptr<Character>> _targets;
 	std::unique_ptr<ActiveSpell> _spell;
-	ApplyParams _apply_params;
-	EffectParams _effect_params;
+	std::optional<ApplyParams> _apply_params;
+	std::optional<EffectParams> _effect_params;
 	int _duration;
 
 	int i = 0;
 	int _turn_applied = -1;
 
-	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, ApplyParams apply_params, EffectParams effect_params, int duration)
+	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params, int duration)
 		: _instigator(instigator)
 		, _targets(targets)
 		, _spell(move(spell))

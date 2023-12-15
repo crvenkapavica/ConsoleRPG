@@ -123,17 +123,24 @@ void CombatManager::ApplyStat(CombatEffect* effect, CharacterStat& character_sta
 
 void CombatManager::HandleCombatEffect(CombatEffect* effect, Character* target) {
 
-	int struct_flags = effect->_apply_params._struct_flags;
-	if (struct_flags & 1) HandleApplyStat(effect, target);
+	//int struct_flags = effect->_apply_params ? effect->_apply_params->_struct_flags : 0;
+	//if (struct_flags & 1) HandleApplyStat(effect, target);
+	//effect->_turn_applied = _turn;
+
+	//struct_flags = effect->_effect_params ? effect->_effect_params->_struct_flags : 0;
+	//if (struct_flags & 1) HandleEffectStat(effect, target);
+
+	if (effect->_apply_params)
+		HandleApplyStat(effect, target);
 	effect->_turn_applied = _turn;
 
-	struct_flags = effect->_effect_params._struct_flags;
-	if (struct_flags & 1) HandleEffectStat(effect, target);
+	if (effect->_effect_params)
+		HandleEffectStat(effect, target);
 }
 
 void CombatManager::HandleApplyStat(CombatEffect* effect, Character* target) {
-	auto& ally_stats = effect->_apply_params._effect_stat->_ally_stat;
-	auto& enemy_stats = effect->_apply_params._effect_stat->_enemy_stat;
+	auto& ally_stats = effect->_apply_params->_effect_stat->_ally_stat;
+	auto& enemy_stats = effect->_apply_params->_effect_stat->_enemy_stat;
 
 	for (auto& stat : ally_stats)
 		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
@@ -145,8 +152,8 @@ void CombatManager::HandleApplyStat(CombatEffect* effect, Character* target) {
 }
 
 void CombatManager::HandleEffectStat(CombatEffect* effect, Character* target) {
-	auto& ally_stats = effect->_effect_params._effect_stat->_ally_stat;
-	auto& enemy_stats = effect->_effect_params._effect_stat->_enemy_stat;
+	auto& ally_stats = effect->_effect_params->_effect_stat->_ally_stat;
+	auto& enemy_stats = effect->_effect_params->_effect_stat->_enemy_stat;
 
 	for (auto& stat : ally_stats)
 		if (stat._character == target || stat._character == effect->_instigator)
@@ -208,7 +215,7 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 
 	for (auto& effect : _combat_effects) {
 		int idx = effect.second->i % static_cast<int>(effect.second->_targets.size());
-		if ((effect.second->_effect_params._on_event == on_event || effect.second->_apply_params._on_event == on_event))
+		if ((effect.second->_effect_params && effect.second->_effect_params->_on_event == on_event) || effect.second->_apply_params)/*effect.second->_apply_params->_on_event == on_event*/
 			if (!effect.second->_targets[idx].expired()) {
 				if (effect.second->_targets[idx].lock()->GetAlias() == GetTurnAlias()) {
 					effect.second->i++;
@@ -297,7 +304,7 @@ void CombatManager::ResetCombatVariables() {
 
 void CombatManager::OnApplyEffect() {
 	auto& effect = _combat_effects.back().second;
-	if (effect->_apply_params._struct_flags) {
+	if (effect->_apply_params->_struct_flags) {
 		HandleCombatEffect(effect.get());
 	}
 

@@ -77,7 +77,7 @@ public:
 	static vector<weak_ptr<Character>> GetEnemyCharacters();
 
 	static float ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, ApplyParams& apply_params, EffectParams& effect_params);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
 
 	static void KillEnemy(int idx);
 

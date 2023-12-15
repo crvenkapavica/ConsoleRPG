@@ -589,7 +589,7 @@ float GameplayStatics::ApplyDamage(Character* instigator, Character* target, flo
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, ApplyParams& apply_params, EffectParams& effect_params) {
+void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
 	
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());

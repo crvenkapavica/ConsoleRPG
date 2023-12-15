@@ -142,19 +142,15 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 void Fireball::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	float f = 10;
 	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
-	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
 	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats));
 
-	EffectParams effect_params;
-
 	unique_ptr<Fireball> spell = make_unique<Fireball>();
-	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, {});
 }
 
 stringstream& Fireball::GetTooltip() {
@@ -210,7 +206,6 @@ void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>> targe
 		enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	}
 	ApplyParams apply_params;
-	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
 	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats));
 
@@ -247,14 +242,11 @@ void Exposure::Apply(Character* instigator, vector<weak_ptr<Character>> targets)
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
-	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
 	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_res));
 
-	EffectParams effect_params;
-
 	unique_ptr<Exposure> spell = make_unique<Exposure>();
-	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, {});
 }
 
 stringstream& Exposure::GetTooltip() {
