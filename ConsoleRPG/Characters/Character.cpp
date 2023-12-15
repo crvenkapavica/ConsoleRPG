@@ -1,9 +1,8 @@
 #include "Character.h"
-#include "../Spells/SpellBook.h"
 #include "../Spells/SpellManager.h"
 #include "../GameplayStatics.h"
-#include "../Effects/PassiveSpell.h"
-#include "../Effects/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
+#include "../Spells/ActiveSpell.h"
 
 Character::Character(const CharacterData::EnemyStats& data)
 {

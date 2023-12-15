@@ -2,9 +2,9 @@
 #include "../Characters/Character.h"
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/EnemyCharacter.h"
-#include "../Effects/EffectStructs.h"
+#include "../Spells/EffectStructs.h"
 #include "../Combat/CombatManager.h"
-#include "../Effects/PassiveSpell.h"
+#include "../Spells/PassiveSpell.h"
 
 SpellManager& SpellManager::GetInstance() {
 	static SpellManager _instance;

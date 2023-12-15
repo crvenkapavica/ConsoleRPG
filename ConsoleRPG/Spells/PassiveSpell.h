@@ -1,6 +1,6 @@
 #pragma once
 #include "../RPGTypes.h"
-#include "../Effects/Spell.h"
+#include "../Spells/Spell.h"
 #include "../Characters/Character.h"
 
 class PassiveSpell : public Spell {

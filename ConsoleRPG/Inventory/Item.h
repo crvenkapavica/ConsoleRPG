@@ -1,7 +1,7 @@
 #pragma once
 #include "../RPGTypes.h"
-#include "../Effects/ActiveSpell.h"
-#include "../Effects/PassiveSpell.h"
+#include "../Spells/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
 #include "ItemData.h"
 
 class Character;

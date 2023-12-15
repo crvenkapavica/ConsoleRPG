@@ -1,10 +1,9 @@
-#include "../Effects/ActiveSpell.h"
+#include "../Spells/ActiveSpell.h"
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/EnemyCharacter.h"
-#include "../Spells/SpellBook.h"
 #include "../Spells/SpellData.h"
 #include "../GameplayStatics.h"
-#include "../Effects/EffectStructs.h"
+#include "../Spells/EffectStructs.h"
 
 ActiveSpell::ActiveSpell(ESpellID id, int lvl)
 	: Spell(id, ESpellActivity::ACTIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._class, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)

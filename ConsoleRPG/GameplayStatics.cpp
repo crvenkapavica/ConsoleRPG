@@ -2,14 +2,13 @@
 #include "Characters/Character.h"
 #include "Characters/PlayerCharacter.h"
 #include "Characters/EnemyCharacter.h"
-#include "Spells/SpellBook.h"
 #include "Spells/SpellData.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
 #include "MapGenerator/MapGenerator.h"
 #include "Resistances.h"
-#include "Effects/EffectStructs.h"
-#include "Effects/ActiveSpell.h"
+#include "Spells/EffectStructs.h"
+#include "Spells/ActiveSpell.h"
 #include "Inventory/Item.h"
 
 weak_ptr<PlayerCharacter> GameplayStatics::_player;

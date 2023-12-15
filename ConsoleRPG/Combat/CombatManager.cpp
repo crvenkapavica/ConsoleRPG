@@ -1,9 +1,9 @@
 #include "../Combat/CombatManager.h"
 #include "../Spells/SpellManager.h"
-#include "../Effects/EffectStructs.h"
+#include "../Spells/EffectStructs.h"
 #include "../Characters/Character.h"
 #include "../Characters/EnemyCharacter.h"
-#include "../Effects/PassiveSpell.h"
+#include "../Spells/PassiveSpell.h"
 
 CombatManager& CombatManager::GetInstance() {
 	static CombatManager _instance;

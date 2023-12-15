@@ -1,7 +1,7 @@
 #pragma once
 #include "../GameplayStatics.h"
 #include "../RPGTypes.h"
-#include "../Effects/EffectStructs.h"
+#include "../Spells/EffectStructs.h"
 #include "../Characters/PlayerCharacter.h"
 
 

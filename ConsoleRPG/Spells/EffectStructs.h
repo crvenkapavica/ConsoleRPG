@@ -1,7 +1,7 @@
 #pragma once
 #include "../RPGTypes.h"
 #include "../Characters/Character.h"
-#include "../Effects/ActiveSpell.h"
+#include "../Spells/ActiveSpell.h"
 
 struct Effect_MultiTarget {
 	int min;
@@ -44,7 +44,7 @@ struct EffectParams {
 
 	ECombatEvent _on_event;
 
-	uint8_t	_struct_flags = 0;
+	int	_struct_flags = 0;
 
 	std::optional<Effect_MultiTarget>	_effect_multi_target;
 	std::optional<Effect_Stat>			_effect_stat;

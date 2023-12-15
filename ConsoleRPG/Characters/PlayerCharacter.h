@@ -3,8 +3,8 @@
 #include "../RPGTypes.h"
 #include "Character.h"
 #include "../Inventory/Item.h"
-#include "../Effects/ActiveSpell.h"
-#include "../Effects/PassiveSpell.h"
+#include "../Spells/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
 
 
 class PlayerCharacter : public Character {
