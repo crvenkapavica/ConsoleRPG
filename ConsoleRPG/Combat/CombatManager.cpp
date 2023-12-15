@@ -104,7 +104,7 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_RESET;
 }
 
-void CombatManager::ApplyStat(CombatEffect* effect, CharacterStat& character_stat, EStatValueAction value_action, float& _total, bool isOnApply) {
+void CombatManager::ApplyStat(CombatEffect* effect, CharacterStat& character_stat, float& _total, bool isOnApply) {
 
 	float value;
 	float delta = character_stat.GetDelta(effect->_instigator);
@@ -118,102 +118,43 @@ void CombatManager::ApplyStat(CombatEffect* effect, CharacterStat& character_sta
 	if (character_stat._stat_type == EStatType::HEALTH)
 		value = GameplayStatics::ApplyDamage(GetTurnCharacter().lock().get(), character_stat._character, delta, effect->_spell, isOnApply);
 
-	switch (value_action) {
-		case EStatValueAction::UPDATE_BASE: {
-			static_cast<Character::Stat*>(character_stat._stat)->UpdateBase(value);
-			break;
-		}
-		case EStatValueAction::UPDATE_ACTUAL: {
-			static_cast<Character::Stat*>(character_stat._stat)->UpdateActual(value, character_stat._character);
-			break;
-		}
-		default:
-			break;
-	}
-}
-
-void CombatManager::ApplyRes(CombatEffect* effect, CharacterStat& character_res, float& _total) {
-
-	float value;
-	float delta = character_res.GetDelta(effect->_instigator);
-
-	if (character_res._stat_mod == EStatMod::ADDITIVE) {
-		_total += delta;
-		value = _total;
-	}
-	else value = delta;
-
-	*(static_cast<float*>(character_res._stat)) += value;
+	*character_stat._stat += value;
 }
 
 void CombatManager::HandleCombatEffect(CombatEffect* effect, Character* target) {
 
-	uint8_t struct_flags = effect->_apply_params._struct_flags;
-	if (struct_flags & 1) {} // MULTI_TARGET;
-	if (struct_flags >> 1 & 1) HandleApplyStat(effect, target);
-	if (struct_flags >> 2 & 1) HandleApplyRes(effect, target);
-
-	//if (effect->_turn_applied == -1)
-		effect->_turn_applied = _turn;
+	int struct_flags = effect->_apply_params._struct_flags;
+	if (struct_flags & 1) HandleApplyStat(effect, target);
+	effect->_turn_applied = _turn;
 
 	struct_flags = effect->_effect_params._struct_flags;
-	if (struct_flags & 1) {} // MULTI_TARGET
-	if (struct_flags >> 1 & 1) HandleEffectStat(effect, target);
-	if (struct_flags >> 2 & 1) HandleEffectRes(effect, target);
-	
+	if (struct_flags & 1) HandleEffectStat(effect, target);
 }
 
 void CombatManager::HandleApplyStat(CombatEffect* effect, Character* target) {
 	auto& ally_stats = effect->_apply_params._effect_stat->_ally_stat;
 	auto& enemy_stats = effect->_apply_params._effect_stat->_enemy_stat;
-	auto value_action = effect->_apply_params._effect_stat->_value_action;
 
 	for (auto& stat : ally_stats)
-		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
-			ApplyStat(effect, stat, value_action, stat._total, 1);
+		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
+			ApplyStat(effect, stat, stat._total, 1);
 
 	for (auto& stat : enemy_stats)
-		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat != &stat._character->GetHealth()))
-			ApplyStat(effect, stat, value_action, stat._total, 1);
+		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
+			ApplyStat(effect, stat, stat._total, 1);
 }
 
 void CombatManager::HandleEffectStat(CombatEffect* effect, Character* target) {
 	auto& ally_stats = effect->_effect_params._effect_stat->_ally_stat;
 	auto& enemy_stats = effect->_effect_params._effect_stat->_enemy_stat;
-	auto value_action = effect->_effect_params._effect_stat->_value_action;
 
 	for (auto& stat : ally_stats)
 		if (stat._character == target || stat._character == effect->_instigator)
-			ApplyStat(effect, stat, value_action, stat._total, 0);
+			ApplyStat(effect, stat, stat._total, 0);
 
 	for (auto& stat : enemy_stats)
 		if (stat._character == target || stat._character == effect->_instigator)
-			ApplyStat(effect, stat, value_action, stat._total, 0);
-}
-
-void CombatManager::HandleApplyRes(CombatEffect* effect, Character* target) {
-	auto& ally_res = effect->_apply_params._effect_res->_ally_res;
-	auto& enemy_res = effect->_apply_params._effect_res->_enemy_res;
-
-	for (auto& res : ally_res)
-		if (effect->_turn_applied == -1 || res._character == target)
-			ApplyRes(effect, res, res._total);
-	for (auto& res : enemy_res)
-		if (effect->_turn_applied == -1 || res._character == target)
-			ApplyRes(effect, res, res._total);
-}
-
-void CombatManager::HandleEffectRes(CombatEffect* effect, Character* target) {
-	auto& ally_res = effect->_effect_params._effect_res->_ally_res;
-	auto& enemy_res = effect->_effect_params._effect_res->_enemy_res;;
-
-	for (auto& res : ally_res)
-		if (res._character == target || res._character == effect->_instigator) // treba provjeriti ako ide instigator tu...
-			ApplyRes(effect, res, res._total);
-
-	for (auto& res : enemy_res)
-		if (res._character == target || res._character == effect->_instigator)
-			ApplyRes(effect, res, res._total);
+			ApplyStat(effect, stat, stat._total, 0);
 }
 
 void CombatManager::GetCharactersBase() {

@@ -15,8 +15,6 @@ class SpellManager {
 	SpellManager(const SpellManager&) = delete;
 	SpellManager& operator=(const SpellManager&) = delete;
 
-	unordered_map<ESpellBookID, SpellBook*> _instanced_spells;
-
 public:
 
 	static SpellManager& GetInstance();

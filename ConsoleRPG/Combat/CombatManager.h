@@ -75,19 +75,13 @@ private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(CombatEffect* effect, CharacterStat& character_stat, EStatValueAction value_action, float& _total, bool isOnApply);
-
-	void ApplyRes(CombatEffect* effect, CharacterStat& character_res, float& _total);
+	void ApplyStat(CombatEffect* effect, CharacterStat& character_stat, float& _total, bool isOnApply);
 
 	void HandleCombatEffect(CombatEffect* effect, Character* target = nullptr);
 
 	void HandleApplyStat(CombatEffect* effect, Character* target);
 
 	void HandleEffectStat(CombatEffect* effect, Character* target);
-
-	void HandleApplyRes(CombatEffect* effect, Character* target);
-
-	void HandleEffectRes(CombatEffect* effect, Character* target);
 
 	void GetCharactersBase();
 

@@ -75,7 +75,7 @@ void Character::Stat::SetActual(const float value) {
 	_actual = value;
 }
 
-void Character::Stat::SetMax(const float value) {
+void Character::Stat::SetMax(float value) {
 	_max = value;
 	
 	if (_actual > _max)

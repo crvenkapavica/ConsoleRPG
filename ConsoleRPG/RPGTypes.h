@@ -124,20 +124,13 @@ class Character;
 
 enum class EStatType {
 	ANY,
-	HEALTH
+	HEALTH,
+	RESISTANCE
 };
 
 enum class EStatMod {
 	CONSTANT,
 	ADDITIVE
-};
-
-enum class EActionType {
-	MELEE,
-	RANGED,
-	SPELL,
-	EFFECT,
-	MOVEMENT
 };
 
 enum class ESpellID {
@@ -171,15 +164,6 @@ enum class ESpellID {
 
 	// PASSIVES
 	VAMPIRIC_TOUCH
-};
-
-enum class ESpellBookID {
-	NONE,
-	FIREBALL,
-	STONESKIN,
-	ARCANE_INFUSION,
-	BLOOD_RAIN,
-	VISCOUS_ACID
 };
 
 enum class ESpellType {
@@ -303,16 +287,8 @@ enum class ECombatEvent {
 	ON_CAST_END
 };
 
-enum class EStatValueAction {
-	UPDATE_BASE,
-	UPDATE_ACTUAL,
-	UPDATE_MAX
-};
-
 enum EStructFlags {
-	EFFECT_MULTI_TARGET = 1,
-	EFFECT_STAT = 2,
-	EFFECT_RES = 4
+	EFFECT_STAT = 1,
 };
 
 enum class EItemID {

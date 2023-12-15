@@ -13,7 +13,7 @@ class MapGenerator;
 class ActiveSpell;
 class Item;
 struct EffectParams;
-struct OnApplyParams;
+struct ApplyParams;
 
 class GameplayStatics {
 
@@ -77,7 +77,7 @@ public:
 	static vector<weak_ptr<Character>> GetEnemyCharacters();
 
 	static float ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params);
+	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, ApplyParams& apply_params, EffectParams& effect_params);
 
 	static void KillEnemy(int idx);
 
@@ -105,7 +105,6 @@ private:
 	static stringstream							_combat_log;
 
 public:
-	static std::string GetEnumString(ESpellBookID _enum);
 	static std::string GetEnumString(ESpellID _enum);
 	static std::string GetEnumString(ESpellType _enum);
 	static std::string GetEnumString(ESpellActivity _enum);

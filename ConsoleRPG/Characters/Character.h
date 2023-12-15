@@ -66,7 +66,7 @@ public:
 		}
 
 		inline const float& GetBase() const { return _base; }
-		inline const float& GetActual() const { return _actual; }
+		inline float& GetActual() { return _actual; }
 		inline const float& GetMax() const { return _max; }
 
 		void UpdateBase(const float value);
@@ -74,7 +74,7 @@ public:
 		void UpdateMax(const float value);
 
 		void SetActual(const float value);
-		void SetMax(const float value);
+		void SetMax(float value);
 
 	private:
 		//void OnStatChanged();

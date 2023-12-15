@@ -571,8 +571,11 @@ vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
 float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
 
 	damage = float2(damage);
-	float actual_damage = Resistances::CalculateDamage(damage, spell->GetDamageType(), target);
-	float resisted = float2(damage - actual_damage);
+	float actual_damage;
+	if (spell->GetDamageType() != EDamageType::PURE)
+		actual_damage = Resistances::CalculateDamage(damage, spell->GetDamageType(), target);
+	else actual_damage = damage;
+	float resisted = float2(damage - actual_damage);   // resisted / armor blocked - znaci change i u combat logu...ovisno o damage type..
 
 	// POGLEDATI ZAKAJ TU IMA IKAKSE VEZE BOOLEAN
 	//==============================================
@@ -586,7 +589,7 @@ float GameplayStatics::ApplyDamage(Character* instigator, Character* target, flo
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, OnApplyParams& apply_params, EffectParams& effect_params) {
+void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, ApplyParams& apply_params, EffectParams& effect_params) {
 	
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
@@ -629,60 +632,6 @@ float GameplayStatics::GetRandFloat(float a, float b) {
 	static std::mt19937 generator(std::random_device{}());
 	std::uniform_real_distribution<float> distribution(a, b);
 	return float2(distribution(generator));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-std::string GameplayStatics::GetEnumString(ESpellBookID _enum) {
-	switch (_enum) {
-	case ESpellBookID::NONE:
-		return "NONE";
-	case ESpellBookID::FIREBALL:
-		return "FIREBALL";
-	case ESpellBookID::STONESKIN:
-		return "STONESKIN";
-	case ESpellBookID::ARCANE_INFUSION:
-		return "ARCANE INFUSION";
-	case ESpellBookID::BLOOD_RAIN:
-		return "BLOOD RAIN";
-	case ESpellBookID::VISCOUS_ACID:
-		return "VISCOUS ACID";
-	default:
-		return "error";
-	}
 }
 
 std::string GameplayStatics::GetEnumString(ESpellID _enum) {

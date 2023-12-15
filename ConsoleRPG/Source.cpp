@@ -6,7 +6,6 @@
 #include "MapGenerator/MapGenerator.h"
 #include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
-#include "Spells/SpellBook.h"
 #include "Spells/SpellData.h"
 #include "GameplayStatics.h"
 #include "Spells/SpellManager.h"

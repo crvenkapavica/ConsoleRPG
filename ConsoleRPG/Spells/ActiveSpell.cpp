@@ -74,7 +74,7 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 		damage += damage * character->_necrotic_damage;
 		break;
 	case EDamageType::PHYSICAL:
-		damage += damage * character->_necrotic_damage;
+		damage += damage * character->_physical_damage;
 		damage += character->GetAP().GetActual();
 	case EDamageType::HEALING:
 		damage += damage * character->_healing;
@@ -132,7 +132,7 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 	static string C = GameplayStatics::GetAliasColor(targets[0].lock()->GetAlias());
 	s << "Characters: " << C << targets[0].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
 	for (int i = 0; i < r; i++) {
-		s << targets[i + 1].lock()->GetAlias();
+		s << targets[i + 1].lock()->GetAlias(); // POGLEDATI KAJ JE TAJ WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
 	}
 	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
@@ -142,13 +142,14 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 void Fireball::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	auto stat = static_cast<Character::Stat*>(&targets[0].lock().get()->GetHealth());
+	float f = 10;
+	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
-	OnApplyParams apply_params;
+	ApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
+	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats));
 
 	EffectParams effect_params;
 
@@ -165,7 +166,7 @@ stringstream& Fireball::GetTooltip() {
 
 void Burning::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
-	//OnApplyParams apply_params;
+	//ApplyParams apply_params;
 
 	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
 	//vector<CharacterStat> enemy_effect_stats;
@@ -203,26 +204,26 @@ void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>> targe
 
 	vector<CharacterStat> enemy_apply_stats;
 	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = static_cast<Character::Stat*>(&targets[i].lock()->GetArmor());
+		auto stat = &targets[i].lock()->GetArmor().GetActual();
 		auto const_delta = -GetRandOnApplyMinMax(instigator);
 		auto delta = [=](Character* character) { return const_delta; };
 		enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	}
-	OnApplyParams apply_params;
+	ApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
+	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats));
 
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = static_cast<Character::Stat*>(&targets[i].lock()->GetArmor());
+		auto stat = &targets[i].lock()->GetArmor().GetActual();
 		auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
 	}
 	EffectParams effect_params;
 	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
+	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats));
 
 	unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
@@ -242,13 +243,13 @@ stringstream& MoltenArmor::GetTooltip() {
 void Exposure::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	vector<CharacterStat> enemy_apply_res;
-	auto stat = static_cast<float*>(&targets[0].lock()->GetResistances().GetFireRes());
+	auto stat = &targets[0].lock()->GetResistances().GetFireRes();
 	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta });
-	OnApplyParams apply_params;
+	ApplyParams apply_params;
 	apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	apply_params._struct_flags |= EStructFlags::EFFECT_RES;
-	apply_params._effect_res = Effect_Res({}, move(enemy_apply_res));
+	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_res));
 
 	EffectParams effect_params;
 
@@ -269,7 +270,7 @@ void Stoneskin::Apply(Character* instigator, vector<weak_ptr<Character>> targets
 
 	//vector<CharacterStat> ally_apply_stats;
 	//ally_apply_stats.push_back(CharacterStat{ team1[t1_idx[0]], EStatType::ANY, EStatMod::ADDITIVE, &team1[t1_idx[0]]->GetArmor(), GetRandOnApplyMinMax() });
-	//OnApplyParams apply_params;
+	//ApplyParams apply_params;
 	//apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	//apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
 	//apply_params._effect_stat = Effect_Stat(move(ally_apply_stats), {}, EStatValueAction::UPDATE_ACTUAL);
@@ -316,7 +317,7 @@ void ArcaneInfusion::Apply(Character* instigator, vector<weak_ptr<Character>> ta
 
 	//vector<CharacterStat> ally_apply_stats;
 	//ally_apply_stats.push_back(CharacterStat{ team1[t1_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team1[t1_idx[0]]->GetDmgMelee(), GetRandOnApplyMinMax() });
-	//OnApplyParams apply_params;
+	//ApplyParams apply_params;
 	//apply_params._on_event = ECombatEvent::ON_TURN_BEGIN;
 	//apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
 	//apply_params._effect_stat = Effect_Stat(move(ally_apply_stats), {}, EStatValueAction::UPDATE_ACTUAL);
@@ -351,7 +352,7 @@ void BloodRain::Apply(Character* instigator, vector<weak_ptr<Character>> targets
 
 	//float drain = GetRandEffectMinMax();
 
-	//OnApplyParams apply_params;
+	//ApplyParams apply_params;
 
 	//vector<CharacterStat> ally_effect_stats;
 	//ally_effect_stats.push_back(CharacterStat{ instigator, EStatType::HEALTH, EStatMod::CONSTANT, &instigator->GetHealth(), drain });
@@ -384,7 +385,7 @@ void ViscousAcid::Apply(Character* instigator, vector<weak_ptr<Character>> targe
 
 	//vector<CharacterStat> enemy_apply_stats;
 	//enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team2[t2_idx[0]]->GetArmor(), -GetRandOnApplyMinMax() });
-	//OnApplyParams apply_params;
+	//ApplyParams apply_params;
 	//apply_params._on_apply = ECombatEvent::ON_APPLY;
 	//apply_params._apply_params_struct = EEffectParamsStruct::EFFECT_STAT;
 	//apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats), EStatValueAction::UPDATE_ACTUAL);
