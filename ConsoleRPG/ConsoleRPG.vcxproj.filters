@@ -39,7 +39,7 @@
     <ClCompile Include="Characters\Character.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="Spells\CSpellData.cpp">
+    <ClCompile Include="Spells\SpellData.cpp">
       <Filter>Source Files\Spells</Filter>
     </ClCompile>
     <ClCompile Include="Characters\PlayerCharacter.cpp">
@@ -47,9 +47,6 @@
     </ClCompile>
     <ClCompile Include="Characters\EnemyCharacter.cpp">
       <Filter>Source Files\Characters</Filter>
-    </ClCompile>
-    <ClCompile Include="Spells\Spell.cpp">
-      <Filter>Source Files\Spells</Filter>
     </ClCompile>
     <ClCompile Include="MapGenerator\MapGenerator.cpp">
       <Filter>Source Files\MapGenerator</Filter>
@@ -63,7 +60,7 @@
     <ClCompile Include="Characters\CharacterData.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="Effects\Effect.cpp">
+    <ClCompile Include="Spells\Spell.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
     <ClCompile Include="Combat\CombatManager.cpp">
@@ -75,11 +72,17 @@
     <ClCompile Include="Resistances.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Effects\PassiveEffect.cpp">
+    <ClCompile Include="Spells\PassiveSpell.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="Effects\ActiveEffect.cpp">
+    <ClCompile Include="Spells\ActiveSpell.cpp">
       <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory\ItemData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,10 +98,7 @@
     <ClInclude Include="RPGTypes.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Spells\CSpellData.h">
-      <Filter>Source Files\Spells</Filter>
-    </ClInclude>
-    <ClInclude Include="Spells\Spell.h">
+    <ClInclude Include="Spells\SpellData.h">
       <Filter>Source Files\Spells</Filter>
     </ClInclude>
     <ClInclude Include="MapGenerator\MapGenerator.h">
@@ -110,7 +110,7 @@
     <ClInclude Include="Spells\SpellManager.h">
       <Filter>Source Files\Spells</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\Effect.h">
+    <ClInclude Include="Spells\Spell.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Combat\CombatManager.h">
@@ -122,16 +122,22 @@
     <ClInclude Include="Resistances.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\EffectStructs.h">
+    <ClInclude Include="Spells\EffectStructs.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\PassiveEffect.h">
+    <ClInclude Include="Spells\PassiveSpell.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Effects\ActiveEffect.h">
+    <ClInclude Include="Spells\ActiveSpell.h">
       <Filter>Source Files\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Characters\CharacterData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory\Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory\ItemData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

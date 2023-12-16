@@ -1,12 +1,17 @@
 #pragma once
 
+#include "../RPGTypes.h"
 #include "Character.h"
+#include "../Inventory/Item.h"
+#include "../Spells/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
+
 
 class PlayerCharacter : public Character {
 
 public:
 
-	PlayerCharacter(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes);
+	PlayerCharacter(const CharacterData::PlayerAttributes& attributes);
 
 	PlayerCharacter(const PlayerCharacter& other) : Character(other) {}
 
@@ -19,27 +24,65 @@ public:
 
 public:
 
+	/// remove
+	inline float GetMagicFind() const { return _magic_find; }
+	inline int GetLighRadius() const { return _light_radius; }
+	////
+
 	void ReceiveExperience(const int experience);
-
-	int GetLevel() const { return _level; }
-
-	inline Stat GetMagicFind() const { return _magic_find; }
-	inline Stat GetLighRadius() const { return _light_radius; }
 
 	virtual void TakeTurn() override;
 
+
+	//// INVENTORY
+	///////////////////////////////////////////////////////////////////////////////////////////////
+public:
+	void EquipItem(unique_ptr<Item> item);
+
+	// Return immediately if inventory is full
+	void UnEquipItem(unique_ptr<Item> item);
+
+	// Return true if the item was added, false otherwise
+	bool AddItemToInventory(unique_ptr<Item> item);
+
+	// Displays all information about the item and its affixes
+	void InspectItem(Item* item);
+
+	void DestroyItem(unique_ptr<Item> item);
+	
+	Item* DisplayEquipedItems();
+	Item* DisplayInventory();
+	Item* DisplayConsumableSlots();
+	ActiveSpell* DisplayActiveSpellSlots();
+	PassiveSpell* DisplayPassiveSpellSlots();
+	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquiped);
+	void DisplayStats();
+
+public:
+	std::vector<unique_ptr<Item>> _item_slots;
+	std::vector<unique_ptr<Item>> _inventory;
+	std::vector<unique_ptr<Item>> _consumable_slots;
+	std::vector<unique_ptr<ActiveSpell>> _active_slots;
+	std::vector<unique_ptr<PassiveSpell>> _passive_slots;
+	///////////////////////////////////////////////////////////////////////////////////////////////
+
 protected:
 
-	Stat _magic_find;
-	Stat _light_radius;
+	int _n_inventory = 0;
 
-	int _unspent_attributes;
-	int _experience;
+	int _unspent_attributes = 0;
+	int _experience = 0;
 
 	int _experience_next_level[MAX_LVL] = { 0 };
 
-private:
+protected:
 	void InitExperienceForLevel();
 
 	void LevelUp();
+
+	void SortInventory();
+
+	void CalcPlayerItemSlots();
+
+	void CalcInvSlots();
 };

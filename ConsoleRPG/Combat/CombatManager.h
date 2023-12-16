@@ -1,7 +1,7 @@
 #pragma once
 #include "../GameplayStatics.h"
 #include "../RPGTypes.h"
-#include "../Effects/EffectStructs.h"
+#include "../Spells/EffectStructs.h"
 #include "../Characters/PlayerCharacter.h"
 
 
@@ -38,7 +38,9 @@ public:
 
 	void SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vector<weak_ptr<EnemyCharacter>> characters_2);
 
-	void AddCombatEffect(unique_ptr<CombatEffect> combat_effect);
+	void StartCombat(weak_ptr<PlayerCharacter> player);
+
+	void AddCombatEffect(unique_ptr<CombatEffect> effect);
 
 	void BeginTurn(Character* character);
 
@@ -53,11 +55,11 @@ public:
 	// Gets the alias of the character currently on turn
 	inline char GetTurnAlias() { return _turn_table[_turn_index].lock()->GetAlias(); }
 
+	inline const int GetTurn() { return _turn; }
 
-	// ve sam za test
-	//-------------------
+	void DestroyDeadCharacters();
+
 	int GetDeadIdx();
-	//-------------------
 
 	void RemoveDeadCharacters();
 
@@ -66,26 +68,20 @@ public:
 	void ResetCombatVariables();
 
 
-	void OnCastBegin(Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets);
-	void OnCastEnd(Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets);
+	void OnCastBegin(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnCastEnd(Character* instigator, vector<weak_ptr<Character>> targets);
 
 private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(EEffectValueAction value_action, CharacterStat& character_stat, shared_ptr<ActiveEffect> effect, float& total, bool isOnApply);
+	void ApplyStat(CombatEffect* effect, CharacterStat& character_stat, float& _total, bool isOnApply);
 
-	void ApplyRes(CharacterRes& character_res, float& total);
+	void HandleCombatEffect(CombatEffect* effect, Character* target = nullptr);
 
-	void HandleCombatEffect(CombatEffect* combat_effect, Character* target = nullptr);
+	void HandleApplyStat(CombatEffect* effect, Character* target);
 
-	void HandleApplyStat(CombatEffect* combat_effect, Character* target);
-
-	void HandleEffectStat(CombatEffect* combat_effect, Character* target);
-
-	void HandleApplyRes(CombatEffect* combat_effect, Character* target);
-
-	void HandleEffectRes(CombatEffect* combat_effect, Character* target);
+	void HandleEffectStat(CombatEffect* effect, Character* target);
 
 	void GetCharactersBase();
 
@@ -93,9 +89,9 @@ private:
 
 	void RemoveExpiredCombatEffects();
 
-	void ApplyEffectsOnEvent(EEffectEvent on_event);
+	void ApplyEffectsOnEvent(ECombatEvent on_event);
 
-	void ApplyPassiveEffects(EEffectEvent on_event, Character* instigator, vector<Character*> team1, vector<Character*> team2, vector<Character*> targets);
+	void ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
 
 	//=====  EVENTS ===== //
 	///////////////////////

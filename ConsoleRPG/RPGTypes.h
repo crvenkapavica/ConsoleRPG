@@ -28,6 +28,7 @@ class Character;
 
 #undef _stat
 #undef max
+#undef PURE
 
 #define START_X 8
 #define START_Y 8
@@ -39,9 +40,14 @@ class Character;
 #define CHAR_GRID_X ((GRID_X - 1) / 4)
 #define CHAR_GRID_Y ((GRID_Y - 1) / 8)
 
-#define MAX_LVL 99
+#define MAX_LVL 75
 #define NUM_PLYR_CLASSES 1
 #define NUM_ENEMY_CLASSES 1
+
+#define ITEM_TYPES 6
+#define ITEM_RARITIES 6
+#define ITEM_SLOTS 12
+#define INV_SLOTS 30
 
 #define ANSI_COLOR_RESET		"\x1b[0m"
 #define ANSI_COLOR_BOLD			"\033[1m"
@@ -118,7 +124,8 @@ class Character;
 
 enum class EStatType {
 	ANY,
-	HEALTH
+	HEALTH,
+	RESISTANCE
 };
 
 enum class EStatMod {
@@ -126,21 +133,37 @@ enum class EStatMod {
 	ADDITIVE
 };
 
-enum class EActionType {
-	MELEE,
-	RANGED,
-	SPELL,
-	EFFECT,
-	MOVEMENT
-};
-
 enum class ESpellID {
+	// MAGIC
 	NONE,
 	FIREBALL,
+	BURNING,
+	MOLTEN_ARMOR,
+	EXPOSURE,
 	STONESKIN,
+	DISARM,
+	THRONS,
+	BLOODBATH,
 	ARCANE_INFUSION,
+	AI_TEMP1,
+	AI_TEMP2,
+	AI_TEMP3,
 	BLOOD_RAIN,
-	VISCOUS_ACID
+	BR_TEMP1,
+	BR_TEMP2,
+	BR_TEMP3,
+	VISCOUS_ACID,
+	VA_TEMP1,
+	VA_TEMP2,
+	VA_TEMP3,
+
+	// MELEE
+	MELEE,
+	// RANGED
+	RANGED,
+
+	// PASSIVES
+	VAMPIRIC_TOUCH
 };
 
 enum class ESpellType {
@@ -148,11 +171,19 @@ enum class ESpellType {
 	BUFF,
 	DEBUFF,
 	AURA,
-	PROJECTILE
+	PROJECTILE, //rename to v nekaj kaj nije sinonim ranged abilitiju
+	MELEE,
+	RANGED
+};
+
+enum class ESpellClass {
+	MELEE,
+	RANGED,
+	MAGIC,
+	ITEM
 };
 
 enum class ESpellActivity {
-	NONE,
 	PASSIVE,
 	ACTIVE
 };
@@ -167,7 +198,7 @@ enum class EDamageType {
 	NECROTIC,
 	PHYSICAL,
 	HEALING,
-	PUREE,
+	PURE,
 };
 
 enum class EResistanceType {
@@ -235,35 +266,7 @@ enum class EDirection {
 	NORTHWEST
 };
 
-enum class EEffectID {
-	NONE,
-	FIREBALL,
-	BURNING,
-	MOLTEN_ARMOR,
-	EXPOSURE,
-	STONESKIN,
-	DISARM,
-	THRONS,
-	BLOODBATH,
-	ARCANE_INFUSION,
-	AI_TEMP1,
-	AI_TEMP2,
-	AI_TEMP3,
-	BLOOD_RAIN,
-	BR_TEMP1,
-	BR_TEMP2,
-	BR_TEMP3,
-	VISCOUS_ACID,
-	VA_TEMP1,
-	VA_TEMP2,
-	VA_TEMP3,
-
-
-	// PASSIVES
-	VAMPIRIC_TOUCH
-};
-
-enum class EEffectEvent {
+enum class ECombatEvent {
 	ON_APPLY,
 	ON_SKIP_APPLY,
 	ON_COMBAT_BEGIN,
@@ -284,28 +287,274 @@ enum class EEffectEvent {
 	ON_CAST_END
 };
 
-enum class EEffectValueAction {
-	DEFAULT,
-	UPDATE_BASE,
-	UPDATE_ACTUAL,
-	UPDATE_BONUS
-};
-
-enum class EEffectDamageType {
-	BURNING,
-	PHYSICAL,
-	PUREE,
-};
-
-enum class EEffectType {
-	PASSIVE,
-	ITEM
-};
-
 enum EStructFlags {
-	EFFECT_MULTI_TARGET = 1,
-	EFFECT_STAT = 2,
-	EFFECT_RES = 4
+	EFFECT_STAT = 1,
+};
+
+enum class EItemID {
+	NONE,
+	//consumables
+	HPotion,
+	EPotion,
+	FortElixir,
+	StrElixir,
+	AgiElixir,
+
+	//scrolls
+	Scroll,
+	//armor
+	//head
+	ClothCap,
+	LeatherHood,
+	RusticHelm,
+	IronCasque,
+	HardColf,
+	GoldDiadem,
+	WarCasque,
+	PhoCrown,
+	CelDiadem,
+	CrownCosmos,
+	//Chest
+	ClothTunic,
+	PadVest,
+	StudLeather,
+	HardCuirass,
+	ScaleMail,
+	KnightPlate,
+	DraghideArm,
+	PhoMail,
+	CelAegis,
+	ArmAncient,
+	//Hands
+	ClothWraps,
+	StudGauntlets,
+	IronBracers,
+	ChainGloves,
+	SilvGauntlets,
+	KnightVambrace,
+	TitanGrasp,
+	PhoTalons,
+	CelHandwraps,
+	InfHandGrds,
+	//Belt
+	WovenSash,
+	LeatherBelt,
+	IronBuckBelt,
+	ReinfGirdle,
+	ChainLBelt,
+	PlatedWaist,
+	DragBelt,
+	PhoWaistwrap,
+	AncGirdle,
+	InfWaistguard,
+	//Legs
+	ThistTrous,
+	IronGreaves,
+	RunicTrTr,
+	MoonLegg,
+	PhantStriders,
+	TempWalkers,
+	TitanMarch,
+	AbStrGrvs,
+	PyrWarKilt,
+	CosmosGreaves,
+	//Feet
+	TrailBBoots,
+	CobStompers,
+	SerpSlip,
+	EmberGreaves,
+	WhispBoots,
+	NightFoot,
+	TitanTrek,
+	FlameWalk,
+	CelFoot,
+	StarFoot,
+	//jewl
+	//ring
+	
+	//neck
+
+	//weapon
+	//bows
+	ShortBow,
+	LongBow,
+	RecBow,
+	CompBow,
+	RangBow,
+	ElvenLBow,
+	DragBow,
+	PhoBow,
+	InfFurBow,
+	SoulBow,
+	//staff
+	WoodStf,
+	AppStf,
+	SageStick,
+	SorcCane,
+	SunStf,
+	GlacRod,
+	EarthStf,
+	CelScep,
+	EclStf,
+	VoidStf,
+	//Axe 2H
+	TimbAxe,
+	IronSplt,
+	BerHatch,
+	StReav,
+	RavCleav,
+	WarChop,
+	NightEx,
+	InfEdge,
+	AbDestr,
+	SoulHarv,
+	//Mace 2h
+	WoodClub,
+	IronMaul,
+	StoneSled,
+	SpikBlud,
+	BoneMace,
+	SkyHammer,
+	TideBreak,
+	SoulMaul,
+	PhantFlail,
+	DeathDcree,
+	//Sword 2h
+	GraveBld,
+	IronReq,
+	GhoulSlyr,
+	SoulClay,
+	PlagZwei,
+	SpecEdge,
+	EbonReap,
+	DreadDecap,
+	EclDeathBld,
+	ShadMonGuil,
+	//Axe 1H
+	HatchAxe,
+	TimbCut,
+	IronTom,
+	BronzeHat,
+	MercAxe,
+	SteelChop,
+	SilvHat,
+	BloodAxe,
+	RavenAxe,
+	PhantBane,
+	//Mace 1H
+	NovMac,
+	IronClub,
+	StoneMallet,
+	BrassKnob,
+	ThornMace,
+	SilverSc,
+	CrystSc,
+	NightMaul,
+	VoidCudg,
+	EthCrush,
+	//Sword 1H
+	TrainBlade,
+	IronShortS,
+	MercSabre,
+	BronzeCut,
+	TGuardRap,
+	BersScim,
+	DragSabre,
+	SunShort,
+	ShadBlade,
+	PhantRap,
+	//Dagger
+	RogShiv,
+	IronStil,
+	HuntKnife,
+	ThiefBlad,
+	SerpFang,
+	AssNeedle,
+	VipersKiss,
+	WindShank,
+	ShadPierc,
+	EthRipp,
+	//Orb
+	NovSph,
+	MystMarb,
+	DruidStone,
+	AethOrb,
+	WizEye,
+	DivGlobe,
+	NethStone,
+	PhoTear,
+	RealShard,
+	CosSphere,
+	//Shield
+
+
+
+
+	//relic
+};
+
+enum class EItemSlot {
+	NONE = -1,
+	HEAD = 0,
+	CHEST,
+	HANDS,
+	BELT,
+	LEGS,
+	FEET,
+	NECK,
+	FINGER1,
+	FINGER2,
+	WPN_MAIN,
+	WPN_OFF,
+	RELIC,
+
+	WPN_BOTH = 100,
+	FINGER
+};
+
+enum class EWeaponType {
+	NONE = -1,
+	BOW = 0,		// % extra random magic damage  f
+	FIRST_2H = BOW,
+	STAFF,			// spell_crit damage %   f
+	AXE_2H,			// armor penetration amount  f
+	MACE_2H,		// crit damage   f
+	SWORD_2H,		// double_strike chance  f
+	LAST_2H = SWORD_2H,
+	AXE_1H,			// armor penetration amount  f
+	FIRST_1H = AXE_1H,
+	MACE_1H,		// crit chance  f
+	SWORD_1H,		// double_strike chance  f
+	DAGGER,			// bleed chance (a bleed damage je isti?)  f
+	ORB,			// spell_crit_chance %
+	SHIELD,			// % amount to block  f
+	LAST_1H = SHIELD,
+	LAST = SHIELD
+};
+
+enum class EItemRarity {
+	MISC,
+	COMMON,
+	RARE,
+	EPIC,
+	LEGENDARY,
+	GODLIKE,
+	UNIQUE
+};
+
+enum class EItemType {
+	CONSUMABLE,
+	SCROLL,
+	ARMOR,
+	JEWLERY,
+	WEAPON,
+	RELIC,
+	MISC
+};
+
+enum class EItemType2 {
+	MISC,
+	
 };
 
 struct grid_node {

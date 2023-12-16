@@ -1,22 +1,8 @@
 #include "Character.h"
-#include "../Spells/Spell.h"
 #include "../Spells/SpellManager.h"
 #include "../GameplayStatics.h"
-#include "../Effects/PassiveEffect.h"
-
-Character::Character(const CharacterData::PlayerStats& data)
-{
-	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_attack_speed = data._attack_speed;
-	_damage_melee = data._damage_melee;
-	_damage_ranged = data._damage_ranged;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-}
+#include "../Spells/PassiveSpell.h"
+#include "../Spells/ActiveSpell.h"
 
 Character::Character(const CharacterData::EnemyStats& data)
 {
@@ -25,32 +11,38 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_essence = data._essence;
 	_stamina = data._stamina;
 	_armor = data._armor;
-	_attack_speed = data._attack_speed;
-	_damage_melee = data._damage_melee;
-	_damage_ranged = data._damage_ranged;
+	_attack_power = data._attack_power;
 	_crit_chance = data._crit_chance;
 	_crit_damage = data._crit_damage;
+	_spell_power = data._spell_power;
+	_spell_crit_chance = data._spell_crit_chance;
+	_spell_crit_damage = data._spell_crit_damage;
 	_resistances = data._resistances;
 
+	_team = 2;
+
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateSpell(this, data._spell1.first, data._spell1.second);
+	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
 }
 
-Character::Character(const CharacterData::PlayerStats& data, const CharacterData::PlayerAttributes& attributes)
+Character::Character(const CharacterData::PlayerAttributes& attributes)
 	: _player_attributes(attributes)
 {
-	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_attack_speed = data._attack_speed;
-	_damage_melee = data._damage_melee;
-	_damage_ranged = data._damage_ranged;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
+	_class = attributes._class;
+	_crit_damage = 2.f;
+	_crit_chance = 0.07f;
+	_spell_crit_damage = 2.5f;
+	_spell_crit_chance = 0.07f;
+
+	SpellManager& sm = SpellManager::GetInstance();
+	sm.CreateActiveSpell(this, ESpellID::MELEE);
+	sm.CreateActiveSpell(this, ESpellID::RANGED);
+
+	_team = 1;
 
 	InitStatsPerAttribute();
+	InitStats();
+	UpdateAttribute(_player_attributes._vitality, 200);
 }
 
 Character::Character(const Character& other)
@@ -59,18 +51,14 @@ Character::Character(const Character& other)
 	, _essence(other._essence)
 	, _stamina(other._stamina)
 	, _armor(other._armor)
-	, _attack_speed(other._attack_speed)
-	, _damage_melee(other._damage_melee)
-	, _damage_ranged(other._damage_ranged)
+	, _attack_power(other._attack_power)
 	, _crit_chance(other._crit_chance)
 	, _crit_damage(other._crit_damage)
+	, _spell_power(other._spell_power)
 	, _spell_crit_chance(other._spell_crit_chance)
 	, _spell_crit_damage(other._spell_crit_damage)
 	, _player_attributes(other._player_attributes)
 	, _resistances(other._resistances)
-	, _alias(other._alias)
-	, _level(other._level)
-	, _multi_strike(other._multi_strike)
 {}
 
 Character::~Character() 
@@ -79,65 +67,96 @@ Character::~Character()
 
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;
-	_max = _base + _bonus;
-	//OnStatChanged();
+	_actual += value;
+	_max += value;
 }
 
 void Character::Stat::SetActual(const float value) {
 	_actual = value;
-	//OnStatChanged();
+}
+
+void Character::Stat::SetMax(float value) {
+	_max = value;
+	
+	if (_actual > _max)
+		_actual = _max;
 }
 
 void Character::Stat::UpdateActual(const float value, Character* character) {
 	_actual += value;
-	if (character->GetHealth().GetActual() <= 0)
-		character->Die();
+	if (_actual > _max)
+		_actual = _max;
 }
 
-void Character::Stat::UpdateBonus(const float value) {
-	_bonus += value;
-	if (_bonus < 0)
-		_bonus = 0.f;
-	_max = _base + _bonus;
-	//OnStatChanged();
+void Character::Stat::UpdateMax(const float value) {
+	_max += value;
+
+	if (value > 0)
+		_actual += value;
+	
+	if (_max < _actual)
+		_actual = _max;
+}
+
+void Character::InitStats() {
+
+	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx)
+		if (_stat_per_attribute[idx].first == &_player_attributes._strength)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._strength + _i_str));
+		else if (_stat_per_attribute[idx].first == &_player_attributes._agility)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._agility + _i_agi));
+		else if (_stat_per_attribute[idx].first == &_player_attributes._intelligence)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._intelligence + _i_int));
+		else if (_stat_per_attribute[idx].first == &_player_attributes._vitality)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._vitality + _i_vit));
+		else if (_stat_per_attribute[idx].first == &_player_attributes._consciousness)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._consciousness + _i_con));
+		else if (_stat_per_attribute[idx].first == &_player_attributes._endurance)
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._endurance + _i_end));
 }
 
 void Character::UpdateAttribute(Attribute& attribute, const int amount) {
 
-	// have to TEST
-	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx) {
-		if (_stat_per_attribute[idx].first == &attribute) {
-			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++) {
+	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx)
+		if (_stat_per_attribute[idx].first == &attribute) 
+			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++) 
 				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * amount);
-			}
-		}
-	}
-	/*
-	int idx = 0;
-	for (auto& _attribute : _stat_per_attribute) {
-		if (_attribute.first == &attribute) {
-			for (int i = 0; i < _attribute.second.size(); i++) {
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * amount);
-			}
-			++idx;
-		}
-	}*/
+
+	attribute += amount;
 }
 
-void Character::AddSpell(shared_ptr<Spell> spell) {
-	_spells.push_back(spell);
+void Character::AddActiveSpell(unique_ptr<ActiveSpell>& spell) {
+	_active_spells.push_back(move(spell));
 }
 
-void Character::AddPassive(shared_ptr<PassiveEffect> passive) {
-	_passives.push_back(passive);
+void Character::AddPassiveSpell(unique_ptr<PassiveSpell>& spell) {
+	_passive_spells.push_back(move(spell));
+}
+
+void Character::RemoveEffectById(ESpellID effect_id) {
+	for (auto it = _effect_ids.begin(); it != _effect_ids.end();)
+		if (*it == effect_id)
+			it = _effect_ids.erase(it);
+		else ++it;
 }
 
 void Character::InitStatsPerAttribute() {
 
 	switch (_class) {
-		case ECharacterClass::BARBARIAN: {
-			InitStatsPerAttirbute_Barbarian();
-		}
+	case ECharacterClass::BARBARIAN:
+		InitStatsPerAttirbute_Barbarian();
+		break;
+	case ECharacterClass::WARLOCK:
+		InitStatsPerAttribute_Warlock();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -145,41 +164,67 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_pair stat_vector;
 
-	stat_vector.push_back(make_pair(&_health, 1.f));
-	stat_vector.push_back(make_pair(&_stamina, 2.f));
-	stat_vector.push_back(make_pair(&_damage_melee, 2.6f));
-	stat_vector.push_back(make_pair(&_crit_damage, 8.f));
+	stat_vector.push_back(make_pair(&_crit_damage, 5.f));
+	stat_vector.push_back(make_pair(&_attack_power, 12.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_armor, 0.3f));
-	stat_vector.push_back(make_pair(&_attack_speed, 0.15f));
-	stat_vector.push_back(make_pair(&_damage_ranged, 0.3f));
-	stat_vector.push_back(make_pair(&_crit_chance, 0.3f));
+	stat_vector.push_back(make_pair(&_armor, 20.f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.002f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_essence, 5.f));
-	stat_vector.push_back(make_pair(&_crit_chance, 0.5f));
+	//stat_vector.push_back(make_pair(&_spell_crit_chance, 0.00125f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_health, 0.5f));
-	stat_vector.push_back(make_pair(&_stamina, 0.7f));
-	stat_vector.push_back(make_pair(&_attack_speed, 0.08f));
-	//stat_vector.push_back(make_pair(&_light_radius, 0.25f));
+	stat_vector.push_back(make_pair(&_health, 10.f));
+	stat_vector.push_back(make_pair(&_stamina, 2.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 5.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
 
 	stat_vector.clear();
-	stat_vector.push_back(make_pair(&_health, 6.f));
-	stat_vector.push_back(make_pair(&_stamina, 0.8f));
+	stat_vector.push_back(make_pair(&_stamina, 15.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
+}
+
+void Character::InitStatsPerAttribute_Warlock() {
+	stat_pair stat_vector;
+
+	stat_vector.push_back(make_pair(&_crit_damage, 1.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_armor, 5.f));
+	stat_vector.push_back(make_pair(&_crit_chance, 0.002f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.005f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_health, 8.f));
+	stat_vector.push_back(make_pair(&_stamina, 3.f));
 	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_essence, 15.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+
+	stat_vector.clear();
+	stat_vector.push_back(make_pair(&_stamina, 5.f));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
 }
 
 void Character::EndTurn() {
 	GameplayStatics::EndTurn(this);
 }
 
-void Character::Die() {
-	_bIsAlive = false;
+void Character::CheckDie() {
+	if (GetHealth().GetActual() <= 0.005f)
+		_bIsAlive = false;
 }

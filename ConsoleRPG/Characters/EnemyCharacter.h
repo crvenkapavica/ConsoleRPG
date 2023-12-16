@@ -20,13 +20,15 @@ public:
 
 private:
 
-	vector<weak_ptr<PlayerCharacter>> _player_characters;
-	vector<weak_ptr<EnemyCharacter>> _enemy_characters;
+	vector<weak_ptr<Character>> _players;
+	vector<weak_ptr<Character>> _enemies;
 
 	int _level;
 	int _count;
 
 private:
+
+	void Move();
 
 	void CastSpell();
 };
