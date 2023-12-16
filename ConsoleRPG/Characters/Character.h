@@ -200,8 +200,6 @@ protected:
 
 protected:
 
-	void Die();
-
 	void InitStats();
 
 	// Set stat gain / loss per attribute for each class
@@ -211,6 +209,8 @@ protected:
 	void InitStatsPerAttribute_Warlock();
 
 public:
+
+	void CheckDie();
 
 	void EndTurn();
 

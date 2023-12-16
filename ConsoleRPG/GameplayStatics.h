@@ -56,11 +56,14 @@ public:
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
 
+	static int GetSpellIdx(ActiveSpell* spell, OUT Character*& character);
+
 	static void DisplayMeleeMenu();
 	static void DisplayRangedMenu();
 	static void DisplaySpellMenu();
 
 	static void HandleTarget(ActiveSpell* spell);
+	static void HandleMeleeTarget(ActiveSpell* spell);
 
 	static void DisplayInfoMenu();
 	static void HandleInfoInput(int input);
@@ -71,7 +74,7 @@ public:
 	static stringstream& GetCombatLogStream() { return _combat_log; }
 	static void DisplayCombatLog();
 	static void MoveCursorToCombatLog();
-	static void ExtractLinesFromStringtream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
+	static void ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
 
 	static vector<weak_ptr<Character>> GetPlayerCharacters();
 	static vector<weak_ptr<Character>> GetEnemyCharacters();

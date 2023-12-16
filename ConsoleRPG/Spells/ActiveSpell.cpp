@@ -427,7 +427,7 @@ void Melee::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [&](Character* character) { return static_cast<float>(GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
+	auto delta = [&](Character* character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;

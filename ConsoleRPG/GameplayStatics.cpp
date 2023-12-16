@@ -360,6 +360,16 @@ int GameplayStatics::GetEnemyIdx(char c) {
 	return ret;
 }
 
+int GameplayStatics::GetSpellIdx(ActiveSpell* spell, OUT Character*& character) {
+	character = _cm->GetTurnCharacter().lock().get();
+	for (int i = 0; i < character->GetActiveSpells().size(); i++) {
+		if (spell == character->GetActiveSpells()[i].get()) {
+			return i;
+		}
+	}
+	throw std::invalid_argument("Invalid Spell");
+}
+
 void GameplayStatics::DisplayMeleeMenu() {
 	vector<string> v;
 	vector<ActiveSpell*> spells;
@@ -370,20 +380,10 @@ void GameplayStatics::DisplayMeleeMenu() {
 		}
 	v.push_back("<--BACK--<");
 
-	int input = InteractiveDisplay(v);
-	if (input == -1) return;
+	int input;
+	if ((input = InteractiveDisplay(v)) == -1) return;
 
-	vector<Character*> chars_in_range = _map_gen->GetCharactersInRange(_cm->GetTurnCharacter().lock().get());
-
-	vector<string> alias_in_range;
-	for (const auto& c : chars_in_range)
-		if (c) alias_in_range.push_back(string(1, (c->GetAlias())));
-	alias_in_range.push_back("<--BACK--<");
-
-	input = InteractiveDisplay(alias_in_range);
-	if (input == -1) return;
-
-	HandleTarget(spells[input]);
+	HandleMeleeTarget(spells[input]);
 }
 
 void GameplayStatics::DisplayRangedMenu() {
@@ -396,8 +396,8 @@ void GameplayStatics::DisplayRangedMenu() {
 		}
 	v.push_back("<--BACK--<");
 
-	int input = InteractiveDisplay(v);
-	if (input == -1) return;
+	int input; 
+	if ((input = InteractiveDisplay(v)) == -1) return;
 
 	HandleTarget(spells[input]);
 }
@@ -416,8 +416,8 @@ void GameplayStatics::DisplaySpellMenu() {
 	}
 	v.push_back("<--BACK--<");
 
-	int input = InteractiveDisplay(v);
-	if (input == -1) return;
+	int input;
+	if ((input = InteractiveDisplay(v)) == -1) return;
 
 	HandleTarget(spells[input]);
 }
@@ -447,16 +447,28 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		for (int i = 0; i < e_idx.size(); i++)
 			targets.push_back(_enemies[e_idx[i]]);
 
-	Character* turn_char = _cm->GetTurnCharacter().lock().get();
-	int spell_idx = 0;
-	for (int i = 0; i < turn_char->GetActiveSpells().size(); i++) {
-		if (spell == turn_char->GetActiveSpells()[i].get()) {
-			spell_idx = i;
-			break;
-		}
-	}
+	Character* character = nullptr;
+	int spell_idx = GetSpellIdx(spell, character);
+	_sm->CastSpell(spell_idx, character, targets);
+}
 
-	_sm->CastSpell(spell_idx, turn_char, targets);
+void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
+	Character* character = nullptr;
+	int spell_idx = GetSpellIdx(spell, character);
+
+	vector<Character*> characters = _map_gen->GetCharactersInRange(_cm->GetTurnCharacter().lock().get());
+
+	vector<string> alias;
+	for (const auto& c : characters)
+		if (c) alias.push_back(string(1, (c->GetAlias())));
+	alias.push_back("<--BACK--<");
+
+	int input;
+	if ((input = InteractiveDisplay(alias)) == -1) return;
+
+	int enemy_idx = GetEnemyIdx(alias[input][0]);
+	vector<weak_ptr<Character>> targets = { _enemies[enemy_idx] };
+	_sm->CastSpell(spell_idx, character, targets);
 }
 
 void GameplayStatics::DisplayInfoMenu() {
@@ -493,7 +505,7 @@ void GameplayStatics::HandleInfoInput(int input) {
 //			const int max_lines = 19;
 //			vector<string> lines;
 //			int start_index;
-//			ExtractLinesFromStringtream(lines, max_lines, ss, start_index);
+//			ExtractLinesFromStringstream(lines, max_lines, ss, start_index);
 //
 //			_menu->ClearRight(23);
 //			cout << CURSOR_LOG_LEFT << ANSI_COLOR_ORANGE;
@@ -524,7 +536,7 @@ void GameplayStatics::DisplayCombatLog() {
 	const int max_lines = 19;
 	vector<string> lines;
 	int start_index;
-	ExtractLinesFromStringtream(lines, max_lines, _combat_log, start_index);
+	ExtractLinesFromStringstream(lines, max_lines, _combat_log, start_index);
 
 	for (int i = start_index; i < lines.size(); i++) {
 		cout << CURSOR_LOG_RIGHT << lines[i];
@@ -539,7 +551,7 @@ void GameplayStatics::MoveCursorToCombatLog() {
 	_menu->ANSI_CURSOR_DOWN_N(21 + e_size + static_cast<int>(_players.size()));
 }
 
-void GameplayStatics::ExtractLinesFromStringtream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index) {
+void GameplayStatics::ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index) {
 	string content = ss.str();
 	if (content == "") ss << fixed << setprecision(2);
 	int start = 0;

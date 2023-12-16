@@ -119,6 +119,7 @@ void CombatManager::ApplyStat(CombatEffect* effect, CharacterStat& character_sta
 		value = GameplayStatics::ApplyDamage(GetTurnCharacter().lock().get(), character_stat._character, delta, effect->_spell, isOnApply);
 
 	*character_stat._stat += value;
+	character_stat._character->CheckDie();
 }
 
 void CombatManager::HandleCombatEffect(CombatEffect* effect, Character* target) {

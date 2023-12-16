@@ -688,7 +688,7 @@ vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
 	int y = _char_map.at(character->GetAlias()).second;
 
 	for (const auto& c : _char_grid[x][y]._neighbors)
-		v.push_back(c);
+		if (c) v.push_back(c);
 
 	return v;
 }
@@ -720,6 +720,7 @@ void MapGenerator::KillEnemy(int idx) {
 		int x = _char_map.at(character->GetAlias()).first;
 		int y = _char_map.at(character->GetAlias()).second;
 		_char_grid[x][y]._here = nullptr;
+		UpdateCharacterGrid();	// to make it more efficient we can just update the killed characters neighbours' neighbours
 		_grid[x * 4 + 2][y * 8 + 4] = ' ';
 
 		_char_map.erase(character->GetAlias());

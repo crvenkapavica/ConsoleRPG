@@ -86,9 +86,6 @@ void Character::Stat::UpdateActual(const float value, Character* character) {
 	_actual += value;
 	if (_actual > _max)
 		_actual = _max;
-
-	if (character->GetHealth().GetActual() <= 0)
-		character->Die();
 }
 
 void Character::Stat::UpdateMax(const float value) {
@@ -227,6 +224,7 @@ void Character::EndTurn() {
 	GameplayStatics::EndTurn(this);
 }
 
-void Character::Die() {
-	_bIsAlive = false;
+void Character::CheckDie() {
+	if (GetHealth().GetActual() <= 0.005f)
+		_bIsAlive = false;
 }
