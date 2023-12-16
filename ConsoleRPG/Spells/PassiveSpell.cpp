@@ -12,7 +12,9 @@ unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 
 	switch (id) {
 	case ESpellID::VAMPIRIC_TOUCH:
-		return make_unique<VampiricTouch>(id);
+		return make_unique<VampiricTouch>();
+	case ESpellID::THORNS:
+		return make_unique<Thorns>();
 	}
 
 	return nullptr;
@@ -20,10 +22,10 @@ unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void VampiricTouch::Apply() {
 	for (auto& target : _targets) {
-		float value = _value * target.lock()->GetHealth().GetMax();
-		target.lock()->GetHealth().UpdateActual(-value, target.lock().get());
-		target.lock()->AddEffectId(_ID);
-		_instigator->GetHealth().UpdateActual(value, _instigator);
+		//float value = _value * target->GetHealth().GetMax();
+		//target->GetHealth().UpdateActual(-value, target.lock().get());
+		//target->AddEffectId(_ID);
+		//_instigator->GetHealth().UpdateActual(value, _instigator);
 	}
 }
 
@@ -32,5 +34,9 @@ stringstream& VampiricTouch::GetTooltip() {
 		_tooltip << CI << "Drains all afflicted targets for " << CV << GameplayStatics::float2(_value) << CI << " damage and transfers it to the caster.\n";
 	}
 	return _tooltip;
+}
+
+void Thorns::Apply() {
+	_instigator->GetHealth().GetActual() -= _value;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -80,13 +80,6 @@ public:
     virtual void Apply(Character* instigator, vector<weak_ptr<Character>> targets) override;
 };
 
-class Thorns : public ActiveSpell {
-public:
-    Thorns() : ActiveSpell(ESpellID::THRONS) {}
-    virtual void Apply(Character* instigator, vector<weak_ptr<Character>> targets) override;
-    virtual stringstream& GetTooltip() override;
-};
-
 class Bloodbath : public ActiveSpell {
 public:
     Bloodbath() : ActiveSpell(ESpellID::BLOODBATH) {}

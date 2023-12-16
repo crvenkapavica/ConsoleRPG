@@ -50,13 +50,6 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
 		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 }
 	};
-	_data[ESpellID::THRONS] = {
-		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
-		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
-		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
-		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
-		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 }
-	};
 	_data[ESpellID::BLOODBATH] = {
 		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
 		{ 0.0f,		0.0f,		0.0f,		0.0f,		0,		0,		0,		0 },
@@ -102,7 +95,6 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
 	_active_const_map[ESpellID::STONESKIN] = { EDamageType::NONE, ESpellType::BUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
 	_active_const_map[ESpellID::DISARM] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 7 };
-	_active_const_map[ESpellID::THRONS] = { EDamageType::PHYSICAL, ESpellType::BUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 9 };
 	_active_const_map[ESpellID::BLOODBATH] = { EDamageType::PURE, ESpellType::BUFF, ESpellRarity::EPIC, ESpellClass::MAGIC, 12 };
 	_active_const_map[ESpellID::ARCANE_INFUSION] = { EDamageType::ARCANE, ESpellType::BUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
 	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
@@ -116,6 +108,7 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
 
 SpellDB::PassiveConstDataConstructor::PassiveConstDataConstructor() {
-	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_CAST_END, ESpellRarity::EPIC, ESpellClass::MAGIC, 1 };
+	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_MAGIC_END, ESpellRarity::EPIC, ESpellClass::MAGIC, 1 };
+	_passive_const_map[ESpellID::THORNS] = { ECombatEvent::ON_MELEE_RECEIVED_END, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
 };
 SpellDB::PassiveConstDataConstructor SpellDB::_passive_const_data_constructor;

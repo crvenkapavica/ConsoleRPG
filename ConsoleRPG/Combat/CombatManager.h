@@ -101,7 +101,7 @@ private:
 
 	void ApplyEffectsOnEvent(ECombatEvent on_event);
 
-	void ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets);
+	void ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<Character*> targets);
 
 	//=====  EVENTS ===== //
 	///////////////////////

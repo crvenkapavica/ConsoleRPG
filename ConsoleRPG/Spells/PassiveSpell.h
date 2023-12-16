@@ -17,12 +17,14 @@ public:
 public:
 
 	Character* _instigator;
-	vector<weak_ptr<Character>> _team1;
-	vector<weak_ptr<Character>> _team2;
-	vector<weak_ptr<Character>> _targets;
+	//vector<weak_ptr<Character>> _team1;
+	//vector<weak_ptr<Character>> _team2;
+	//vector<weak_ptr<Character>> _targets;
+
+	vector<Character*> _targets;
 
 protected:
-	const ECombatEvent _combat_event;
+	ECombatEvent _combat_event;
 };
 
 
@@ -30,7 +32,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class VampiricTouch : public PassiveSpell {
 public:
-	VampiricTouch(ESpellID id) : PassiveSpell(id) {}
+	VampiricTouch() : PassiveSpell(ESpellID::VAMPIRIC_TOUCH) {}
 	
 	virtual void Apply() override;
 
@@ -38,4 +40,16 @@ public:
 
 private:
 	float _value = 0.1f;	
+};
+
+class Thorns : public PassiveSpell {
+public:
+	Thorns() : PassiveSpell(ESpellID::THORNS) {}
+
+	virtual void Apply() override;
+
+	//virtual stringstream& GetTooltip() override;
+
+private:
+	float _value = 10.f;
 };

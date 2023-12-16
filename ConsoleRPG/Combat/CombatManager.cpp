@@ -161,11 +161,12 @@ void CombatManager::HandleApplyStat(CombatEffect* effect, Character* target) {
 	auto& enemy_stats = effect->_apply_params->_effect_stat->_enemy_stat;
 
 	for (auto& stat : ally_stats)
-		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
+		//if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
 			ApplyStat(effect, target, stat, stat._total, 1);
 
 	for (auto& stat : enemy_stats)
-		if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
+		//if ((effect->_turn_applied == -1) || (stat._character == target && stat._stat_type != EStatType::HEALTH))
+		if (stat._character == target)
 			ApplyStat(effect, target, stat, stat._total, 1);
 }
 
@@ -244,13 +245,13 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 	}
 }
 
-void CombatManager::ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<weak_ptr<Character>> team1, vector<weak_ptr<Character>> team2, vector<weak_ptr<Character>> targets) {
-	for (const auto& passive : instigator->GetPassiveSpells()) {
+void CombatManager::ApplyPassiveEffects(ECombatEvent on_event, Character* instigator, vector<Character*> targets) {
+	for (const auto& passive : targets[0]->GetPassiveSpells()) {
 		if (passive->GetOnEvent() == on_event) {
 			passive->_instigator = instigator;
 			passive->_targets = targets;
-			passive->_team1 = team1;
-			passive->_team2 = team2;
+			//passive->_team1 = team1;
+			//passive->_team2 = team2;
 			passive->Apply();
 		}
 	}
@@ -323,7 +324,7 @@ void CombatManager::ResetCombatVariables() {
 void CombatManager::OnApplyEffect() {
 	auto& effect = _combat_effects.back().second;
 	if (effect->_apply_params->_struct_flags) {
-		HandleCombatEffect(effect.get());
+		HandleCombatEffect(effect.get(), effect->_targets[0].lock().get());
 	}
 
 	for (auto& e : effect->_targets) {
@@ -395,6 +396,9 @@ void CombatManager::OnMeleeReceivedBegin(Character* instigator, Character* targe
 }
 
 void CombatManager::OnMeleeReceivedEnd(Character* instigator, Character* target) {
+	vector<Character*> targets = { target };
+	ApplyPassiveEffects(ECombatEvent::ON_MELEE_RECEIVED_END, instigator, targets);
+
 	target->OnMeleeReceivedEnd(instigator);
 }
 

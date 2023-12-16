@@ -287,20 +287,6 @@ void Disarm::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "SS_disarm" << endl;
 }
 
-void Thorns::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
-
-	// TO BE APPLIED WHEN WE HAVE ON DAMAGE RECEIVED EVENTS AND PHYSICAL ATTACKS
-
-}
-
-stringstream& Thorns::GetTooltip() {
-	//if (_tooltip.str().empty()) {
-	//	_tooltip << "Surounds the targets skin with deadly thron which return a portion of damage received back to the attacker.\n";
-	//	_tooltip << "Only physical damage is returned. Returns \n";
-	//}
-	return _tooltip;
-}
-
 void Bloodbath::Apply(Character* instigator, vector<weak_ptr<Character>> targets) {
 	cout << "SS_bloodath" << endl;
 }

@@ -22,7 +22,9 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_team = 2;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
+	//sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
+
+	sm.CreatePassiveSpell(this, data._spell1.first);
 }
 
 Character::Character(const CharacterData::PlayerAttributes& attributes)
@@ -242,7 +244,7 @@ void Character::OnMeleeReceivedBegin(Character* instigator) {
 }
 
 void Character::OnMeleeReceivedEnd(Character* instigator) {
-
+	GetPassiveSpells()[0]->Apply();
 }
 
 void Character::OnRangedReceivedBegin(Character* instigator) {
