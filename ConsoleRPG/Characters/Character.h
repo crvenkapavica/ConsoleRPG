@@ -227,10 +227,10 @@ public:
 	inline Resistances& GetResistances() { return _resistances; }
 
 public:
-	void OnMagicReceivedBegin(Character* instigator);
-	void OnMagicReceivedEnd(Character* instigator);
-	void OnMeleeReceivedBegin(Character* instigator);
-	void OnMeleeReceivedEnd(Character* instigator);
-	void OnRangedReceivedBegin(Character* instigator);
-	void OnRangedReceivedEnd(Character* instigator);
+	void OnMagicReceivedBegin();
+	void OnMagicReceivedEnd();
+	void OnMeleeReceivedBegin();
+	void OnMeleeReceivedEnd();
+	void OnRangedReceivedBegin();
+	void OnRangedReceivedEnd();
 };

@@ -52,13 +52,3 @@ void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_p
 	else if (spell->GetClass() == ESpellClass::RANGED)
 		cm.OnRangedEnd(instigator, targets);
 }
-
-
-//void SpellManager::UnequipSpell(ESpellBookID spell_id) {
-//	//dok se unequipa spell
-//	// push spella na _instanced_spells
-//}
-//
-//void SpellManager::EquipSpell(ESpellBookID spell_id) {
-//
-//}

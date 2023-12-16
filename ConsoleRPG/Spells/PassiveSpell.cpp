@@ -22,10 +22,10 @@ unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void VampiricTouch::Apply() {
 	for (auto& target : _targets) {
-		//float value = _value * target->GetHealth().GetMax();
-		//target->GetHealth().UpdateActual(-value, target.lock().get());
-		//target->AddEffectId(_ID);
-		//_instigator->GetHealth().UpdateActual(value, _instigator);
+		float value = _value * target.lock()->GetHealth().GetMax();
+		target.lock()->GetHealth().GetActual() -= value;
+		target.lock()->AddEffectId(_ID);
+		_instigator->GetHealth().GetActual() += value;
 	}
 }
 

@@ -231,26 +231,26 @@ void Character::CheckDie() {
 		_bIsAlive = false;
 }
 
-void Character::OnMagicReceivedBegin(Character* instigator) {
+void Character::OnMagicReceivedBegin() {
 
 }
 
-void Character::OnMagicReceivedEnd(Character* instigator) {
+void Character::OnMagicReceivedEnd() {
 
 }
 
-void Character::OnMeleeReceivedBegin(Character* instigator) {
+void Character::OnMeleeReceivedBegin() {
 
 }
 
-void Character::OnMeleeReceivedEnd(Character* instigator) {
+void Character::OnMeleeReceivedEnd() {
 	GetPassiveSpells()[0]->Apply();
 }
 
-void Character::OnRangedReceivedBegin(Character* instigator) {
+void Character::OnRangedReceivedBegin() {
 
 }
 
-void Character::OnRangedReceivedEnd(Character* instigator) {
+void Character::OnRangedReceivedEnd() {
 
 }

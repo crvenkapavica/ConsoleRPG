@@ -17,11 +17,7 @@ public:
 public:
 
 	Character* _instigator;
-	//vector<weak_ptr<Character>> _team1;
-	//vector<weak_ptr<Character>> _team2;
-	//vector<weak_ptr<Character>> _targets;
-
-	vector<Character*> _targets;
+	vector<weak_ptr<Character>> _targets;
 
 protected:
 	ECombatEvent _combat_event;
