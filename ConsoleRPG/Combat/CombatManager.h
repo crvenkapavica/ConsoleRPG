@@ -68,14 +68,24 @@ public:
 	void ResetCombatVariables();
 
 
-	void OnCastBegin(Character* instigator, vector<weak_ptr<Character>> targets);
-	void OnCastEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnMagicBegin(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnMagicEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnMagicReceivedBegin(Character* instigator, Character* target);
+	void OnMagicReceivedEnd(Character* instigator, Character* target);
+	void OnMeleeBegin(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnMeleeEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnMeleeReceivedBegin(Character* instigator, Character* target);
+	void OnMeleeReceivedEnd(Character* instigator, Character* target);
+	void OnRangedBegin(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnRangedEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+	void OnRangedReceivedBegin(Character* instigator, Character* target);
+	void OnRangedReceivedEnd(Character* instigator, Character* target);
 
 private:
 
 	//GetParamsEffectStruct()
 
-	void ApplyStat(CombatEffect* effect, CharacterStat& character_stat, float& _total, bool isOnApply);
+	void ApplyStat(CombatEffect* effect, Character* target, CharacterStat& character_stat, float& _total, bool isOnApply);
 
 	void HandleCombatEffect(CombatEffect* effect, Character* target = nullptr);
 

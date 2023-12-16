@@ -33,11 +33,24 @@ void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 
 void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets) {
 
+	ActiveSpell* spell = instigator->GetActiveSpells()[spell_idx].get();
 	CombatManager& cm = CombatManager::GetInstance();
 
-	cm.OnCastBegin(instigator, targets);
-	instigator->GetActiveSpells()[spell_idx]->Apply(instigator, targets);
-	cm.OnCastEnd(instigator, targets);
+	if (spell->GetClass() == ESpellClass::MAGIC)
+		cm.OnMagicBegin(instigator, targets);
+	else if (spell->GetClass() == ESpellClass::MELEE)
+		cm.OnMeleeBegin(instigator, targets);
+	else if (spell->GetClass() == ESpellClass::RANGED)
+		cm.OnRangedBegin(instigator, targets);
+
+	spell->Apply(instigator, targets);
+
+	if (spell->GetClass() == ESpellClass::MAGIC)
+		cm.OnMagicEnd(instigator, targets);
+	else if (spell->GetClass() == ESpellClass::MELEE)
+		cm.OnMeleeEnd(instigator, targets);
+	else if (spell->GetClass() == ESpellClass::RANGED)
+		cm.OnRangedEnd(instigator, targets);
 }
 
 

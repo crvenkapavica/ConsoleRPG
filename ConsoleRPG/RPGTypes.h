@@ -171,9 +171,8 @@ enum class ESpellType {
 	BUFF,
 	DEBUFF,
 	AURA,
-	PROJECTILE, //rename to v nekaj kaj nije sinonim ranged abilitiju
-	MELEE,
-	RANGED
+	DAMAGE,
+	HEALING
 };
 
 enum class ESpellClass {

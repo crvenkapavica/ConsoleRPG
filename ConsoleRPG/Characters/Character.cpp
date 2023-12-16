@@ -228,3 +228,27 @@ void Character::CheckDie() {
 	if (GetHealth().GetActual() <= 0.005f)
 		_bIsAlive = false;
 }
+
+void Character::OnMagicReceivedBegin(Character* instigator) {
+
+}
+
+void Character::OnMagicReceivedEnd(Character* instigator) {
+
+}
+
+void Character::OnMeleeReceivedBegin(Character* instigator) {
+
+}
+
+void Character::OnMeleeReceivedEnd(Character* instigator) {
+
+}
+
+void Character::OnRangedReceivedBegin(Character* instigator) {
+
+}
+
+void Character::OnRangedReceivedEnd(Character* instigator) {
+
+}

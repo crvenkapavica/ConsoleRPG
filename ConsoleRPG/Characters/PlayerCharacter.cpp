@@ -189,7 +189,7 @@ void PlayerCharacter::DisplayStats() {
 	GameplayStatics::DisplayMapMenuTitle();
 }
 
-void PlayerCharacter::InitExperienceForLevel() {
+void constexpr PlayerCharacter::InitExperienceForLevel() {
 
 	int start = 17;
 	_experience_next_level[0] = start;

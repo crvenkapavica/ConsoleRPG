@@ -480,14 +480,6 @@ void GameplayStatics::DisplayInfoMenu() {
 
 	vector<string> v = { "SPELLS", "BACK" };
 	int input = InteractiveDisplay(v);
-	
-	switch (input) {
-		case 0: {
-			auto spell_type = ESpellType::NONE;
-		}
-		case 1:
-			return;
-	}
 }
 
 void GameplayStatics::HandleInfoInput(int input) {

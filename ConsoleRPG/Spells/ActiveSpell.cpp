@@ -88,12 +88,12 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 
 	// Critical Strike
 	int rnd = GameplayStatics::GetRandInt(0, 100000);
-	if (_spell_type == ESpellType::PROJECTILE) {
+	if (GetClass() == ESpellClass::MAGIC) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
 		if (rnd <= chance)
 			damage *= character->GetSpellCritDmg().GetActual();
 	}
-	else if (_spell_type == ESpellType::MELEE || _spell_type == ESpellType::RANGED) {
+	else if (GetClass() == ESpellClass::MELEE || GetClass() == ESpellClass::RANGED) {
 		float chance = character->GetCritChance().GetActual() * 100000; 
 		if (rnd <= chance)
 			damage *= character->GetCritDmg().GetActual();

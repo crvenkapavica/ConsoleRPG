@@ -76,7 +76,7 @@ protected:
 	int _experience_next_level[MAX_LVL] = { 0 };
 
 protected:
-	void InitExperienceForLevel();
+	void constexpr InitExperienceForLevel();
 
 	void LevelUp();
 
