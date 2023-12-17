@@ -306,6 +306,7 @@ int GameplayStatics::DisplayCombatMenu(Character* character) {
 			break;
 		}
 	}
+	return -1;
 }
 
 void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {
@@ -456,12 +457,17 @@ void GameplayStatics::DisplaySpellMenu() {
 }
 
 void GameplayStatics::HandleTarget(ActiveSpell* spell) {
+
 	string s_input;
-	int n_targets = 1;
-	for (int i = 0; i < n_targets; i++) {
-		cout << "Input target alias:" << endl;
-		cout << "-> ";
-		cin >> s_input;
+	int n_targets = 0;
+
+	if (spell->GetSpellType() != ESpellType::SUMMON) {
+		n_targets = 1;
+		for (int i = 0; i < n_targets; i++) {
+			cout << "Input target alias:" << endl;
+			cout << "-> ";
+			cin >> s_input;
+		}
 	}
 
 	vector<int> p_idx;
@@ -683,6 +689,8 @@ std::string GameplayStatics::GetEnumString(ESpellID _enum) {
 		return "EXPOSURE";
 	case ESpellID::VISCOUS_ACID:
 		return "VISCOUS ACID";
+	case ESpellID::SUM_FIRE_ELE:
+		return "SUMMON FIRE ELEMENTAL";
 	default:
 		return "DEFAULT";
 	}

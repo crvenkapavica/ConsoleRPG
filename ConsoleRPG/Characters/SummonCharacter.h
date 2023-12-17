@@ -4,7 +4,7 @@
 
 class SummonCharacter : public Character {
 public:
-	SummonCharacter(const CharacterData& data);
+	SummonCharacter(const CharacterData& data, int team);
 
 	virtual void TakeTurn() override;
 

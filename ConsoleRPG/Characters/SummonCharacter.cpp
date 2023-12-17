@@ -1,8 +1,8 @@
 #include "SummonCharacter.h"
 #include "../GameplayStatics.h"
 
-SummonCharacter::SummonCharacter(const CharacterData& data)
-    : Character(data.GetSummonData())
+SummonCharacter::SummonCharacter(const CharacterData& data, int team)
+    : Character(data.GetSummonData(), team)
 	, _class(data.GetSummonData()._class)
 	, _summon_type(data.GetSummonData()._summon_type)
 	, _dmg_type(data.GetSummonData()._dmg_type)

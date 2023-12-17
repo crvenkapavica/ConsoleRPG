@@ -24,6 +24,7 @@ public:
 
 	static void DisplayAllies();
 	static void DisplayEnemies();
+	//static void DisplaySummons();
 
 	static void DisplayMapMenuTitle();
 	static void DisplayCombatMenuTitle();

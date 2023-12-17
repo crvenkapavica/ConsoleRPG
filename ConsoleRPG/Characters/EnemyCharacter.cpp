@@ -3,8 +3,10 @@
 #include "../Spells/SpellManager.h"
 #include "../Combat/CombatManager.h"
 
+int EnemyCharacter::_n = 0;
+
 EnemyCharacter::EnemyCharacter(const CharacterData& data) 
-	: Character(data.GetEnemyData())
+	: Character(data.GetEnemyData(), 'A' + _n++)
 	, _level(0)
 	, _count(0)
 {}

@@ -1,9 +1,11 @@
 #include "../Spells/ActiveSpell.h"
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/EnemyCharacter.h"
+#include "../Characters/SummonCharacter.h"
 #include "../Spells/SpellData.h"
 #include "../GameplayStatics.h"
 #include "../Spells/EffectStructs.h"
+#include "../Combat/CombatManager.h"
 
 ActiveSpell::ActiveSpell(ESpellID id, int lvl)
 	: Spell(id, ESpellActivity::ACTIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._class, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
@@ -146,7 +148,7 @@ void Fireball::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
-	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [this](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -242,7 +244,7 @@ void Exposure::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 
 	vector<CharacterStat> enemy_apply_res;
 	auto stat = &targets[0].lock()->GetResistances().GetFireRes();
-	auto delta = [&](Character* character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [this](Character* character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::RESISTANCE, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -415,7 +417,12 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 
 
 void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
-
+	CombatManager& cm = CombatManager::GetInstance();
+	auto summon = make_shared<SummonCharacter>(CharacterData(ESummonClass::FIRE_ELEMENTAL), instigator->GetTeam());
+	summon->SetAlias('G');
+	//summon->GetTeam;
+	int duration = 2; // REMOVE HARDCODE
+	cm.AddSummonToCombat(move(summon), duration);
 }
 
 
@@ -428,7 +435,7 @@ void Melee::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [&](Character* character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
+	auto delta = [this](Character* character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;

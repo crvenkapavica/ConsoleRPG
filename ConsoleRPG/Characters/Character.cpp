@@ -4,7 +4,9 @@
 #include "../Spells/PassiveSpell.h"
 #include "../Spells/ActiveSpell.h"
 
-Character::Character(const CharacterData::EnemyStats& data)
+Character::Character(const CharacterData::EnemyStats& data, char alias)
+	: _alias(alias)
+	, _team(2)
 {
 	_class = data._class;
 	_health = data._health;
@@ -19,16 +21,16 @@ Character::Character(const CharacterData::EnemyStats& data)
 	_spell_crit_damage = data._spell_crit_damage;
 	_resistances = data._resistances;
 
-	_team = 2;
-
 	SpellManager& sm = SpellManager::GetInstance();
 	//sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
 
 	sm.CreatePassiveSpell(this, data._spell1.first);
 }
 
-Character::Character(const CharacterData::PlayerAttributes& attributes)
+Character::Character(const CharacterData::PlayerAttributes& attributes, char alias)
 	: _player_attributes(attributes)
+	, _alias(alias)
+	, _team(1)
 {
 	_class = attributes._class;
 	_crit_damage = 2.f;
@@ -40,14 +42,13 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 	sm.CreateActiveSpell(this, ESpellID::MELEE);
 	sm.CreateActiveSpell(this, ESpellID::RANGED);
 
-	_team = 1;
-
 	InitStatsPerAttribute();
 	InitStats();
-	UpdateAttribute(_player_attributes._vitality, 200);
 }
 
-Character::Character(const CharacterData::SummonData& data) {
+Character::Character(const CharacterData::SummonData& data, int team)
+	: _team(team)
+{
 	_health = data._health;
 	_min_damage = data._min_dmg;
 	_max_damage = data._max_dmg;

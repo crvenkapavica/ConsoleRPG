@@ -100,6 +100,9 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
 	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
 
+	// SUMMON
+	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::MAGIC, 1 };
+
 	//MELEE
 	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
 	//RANGED

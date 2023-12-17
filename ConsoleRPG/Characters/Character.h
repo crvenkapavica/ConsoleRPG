@@ -17,13 +17,13 @@ public:
 	Character() = delete;
 
 	// Enemy
-	Character(const CharacterData::EnemyStats& data);
+	Character(const CharacterData::EnemyStats& data, char alias);
 
 	// Player
-	Character(const CharacterData::PlayerAttributes& attributes);
+	Character(const CharacterData::PlayerAttributes& attributes, char alias);
 
 	// Summon
-	Character(const CharacterData::SummonData& data);
+	Character(const CharacterData::SummonData& data, int team);
 
 
 	Character(const Character& other);
@@ -105,7 +105,7 @@ protected:
 	CharacterData::PlayerAttributes	_player_attributes;
 	Resistances	_resistances;
 
-	char _alias = 'X'; // could be made as a static counter, and then convert the counter to char in constructor and assign to _alias
+	char _alias = 'X';
 
 	int	 _lvl = 1;
 	bool _bIsInCombat = false;

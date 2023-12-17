@@ -106,11 +106,10 @@ int main() {
 
     auto player_main = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::BARBARIAN));
     auto player_warlock = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
-    player_warlock->SetAlias('1');
 
     player_characters = { player_main, player_warlock };
 
-    auto summon = make_unique<SummonCharacter>(CharacterData(ESummonClass::ARCANE_ELEMENTAL));
+    //auto summon = make_unique<SummonCharacter>(CharacterData(ESummonClass::ARCANE_ELEMENTAL));
 
     SpellManager& sm = SpellManager::GetInstance();
 
@@ -118,7 +117,7 @@ int main() {
     sm.CreateActiveSpell(player_main.get(), ESpellID::BURNING);
     sm.CreateActiveSpell(player_main.get(), ESpellID::EXPOSURE);
     sm.CreateActiveSpell(player_main.get(), ESpellID::MOLTEN_ARMOR);
-
+    sm.CreateActiveSpell(player_main.get(), ESpellID::SUM_FIRE_ELE);
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
 	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
  //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::ARCANE_INFUSION, 0);

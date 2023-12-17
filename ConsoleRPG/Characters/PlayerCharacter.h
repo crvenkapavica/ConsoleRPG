@@ -83,4 +83,7 @@ protected:
 	void CalcPlayerItemSlots();
 
 	void CalcInvSlots();
+
+private:
+	static int _n;
 };

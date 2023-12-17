@@ -2,8 +2,10 @@
 #include "../GameplayStatics.h"
 #include "../Inventory/ItemData.h"
 
+int PlayerCharacter::_n = 0;
+
 PlayerCharacter::PlayerCharacter(const CharacterData& data)
-	: Character(data.GetPlayerAttributeData())
+	: Character(data.GetPlayerAttributeData(), '0' + _n++)
 {
 	InitExperienceForLevel();
 

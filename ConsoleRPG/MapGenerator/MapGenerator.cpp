@@ -498,10 +498,7 @@ void MapGenerator::AddRandomMapEnemies() {
 				for (int k = 0; k < rnd_enemies; k++) { 
 					int rnd = rand() % 3 + 50;
 					auto character_class = static_cast<ECharacterClass>(rnd);
-					auto enemy = make_shared<EnemyCharacter>(CharacterData(character_class));
-					enemy->SetAlias('A' + k);
-					enemies_vector.push_back(move(enemy));
-					//enemies_vector.push_back(make_shared<EnemyCharacter>(data.GetEnemyData()));
+					enemies_vector.push_back(make_shared<EnemyCharacter>(CharacterData(character_class)));
 					enemies_map['A' + k] = enemies_vector[k].get();
 				}
 				_enemy_map.push_back(move(enemies_vector));
@@ -588,7 +585,6 @@ void MapGenerator::GenerateCharacterGridPositions() {
 	//add player characters
 	for (int i = 0; i < _player_characters.size(); i++) {
 		_char_grid[i][0]._here = _player_characters[i];
-		_char_grid[i][0]._here->SetAlias('0' + i);
 		_char_map['0' + i] = make_pair(i, 0);
 	}
 }

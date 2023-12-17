@@ -3,6 +3,7 @@
 #include "../Spells/EffectStructs.h"
 #include "../Characters/Character.h"
 #include "../Characters/EnemyCharacter.h"
+#include "../Characters/SummonCharacter.h"
 #include "../Spells/PassiveSpell.h"
 
 CombatManager& CombatManager::GetInstance() {
@@ -66,6 +67,25 @@ void CombatManager::EndTurn(Character* character) {
 	}
 
 	BeginTurn(_turn_table[_turn_index].lock().get());
+}
+
+void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon, int duration) {
+	weak_ptr<Character> wptr_summon = summon;
+	weak_ptr<Character> owner = _turn_table[_turn_index];
+	_summons.push_back(make_pair(move(summon), make_pair(owner, duration)));
+	int turn = _turn_index + 1 > _turn_table.size() - 1 ? 0 : _turn_index + 1;
+	_turn_table.insert(_turn_table.begin() + turn, wptr_summon);
+}
+
+void CombatManager::CheckSummonLifespan() {
+	for (auto& summon : _summons) {
+		if (summon.second.first.lock().get() == GetTurnCharacter().lock().get())
+			--summon.second.second;
+		if (!summon.second.second)
+			summon.first.reset();
+	}
+	(void)std::remove_if(_summons.begin(), _summons.end(), [](pair<shared_ptr<SummonCharacter>, pair<weak_ptr<Character>, int>> summon) { return summon.first; });
+	RemoveDeadCharacters();
 }
 
 void CombatManager::DisplayTurnOrder() {
@@ -266,8 +286,9 @@ void CombatManager::TriggerPassiveEffects(Character* character, Character* insti
 }
 
 void CombatManager::DestroyDeadCharacters() {
-	int idx = GetDeadIdx();
-	if (idx != -1) GameplayStatics::KillEnemy(idx);
+	int idx; 
+	if ((idx = GetDeadIdx()) != -1) 
+		GameplayStatics::KillEnemy(idx);
 	RemoveDeadCharacters();
 }
 
@@ -326,6 +347,7 @@ void CombatManager::ResetCombatVariables() {
 	_enemies_base.clear();
 	_combat_effects.clear();
 	_turn_table.clear();
+	_summons.clear();
 	_turn_index = 0;
 	_turn = 0;
 }
@@ -350,17 +372,13 @@ void CombatManager::OnCombatEnd() {
 }
 
 void CombatManager::OnTurnBegin() {
-	//auto& s = GameplayStatics::GetCombatLogStream();
-	//s << "BEGIN ===== INDEX: " << _turn_index << " SIZE: " << _turn_table.size() << " ALIAS: " << GetTurnAlias() << "\n";
-
+	CheckSummonLifespan();
 	RemoveExpiredCombatEffects();
 	ApplyEffectsOnEvent(ECombatEvent::ON_TURN_BEGIN);
 }
 
 void CombatManager::OnTurnEnd() {
 	bDeadOnTurn = false;
-	//auto& s = GameplayStatics::GetCombatLogStream();
-	//s << "END ===== INDEX: " << _turn_index << " SIZE: " << _turn_table.size() << " ALIAS: " << GetTurnAlias() << "\n";
 
 	ApplyEffectsOnEvent(ECombatEvent::ON_TURN_END);
 }

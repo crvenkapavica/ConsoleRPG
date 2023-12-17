@@ -29,4 +29,8 @@ private:
 	void Move();
 
 	void CastSpell();
+
+private:
+
+	static int _n;
 };
