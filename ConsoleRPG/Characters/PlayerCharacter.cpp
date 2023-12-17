@@ -7,6 +7,7 @@ int PlayerCharacter::_n = 0;
 PlayerCharacter::PlayerCharacter(const CharacterData& data)
 	: Character(data.GetPlayerAttributeData(), '0' + _n++)
 {
+	++_n;
 	InitExperienceForLevel();
 
 	_item_slots.resize(ITEM_SLOTS);
@@ -29,7 +30,9 @@ PlayerCharacter::PlayerCharacter(const CharacterData& data)
 
 PlayerCharacter::PlayerCharacter(const PlayerCharacter& other)
 	: Character(other)
-{}
+{
+	--_n;
+}
 
 void PlayerCharacter::ReceiveExperience(const int experience) {
 	_experience += experience;

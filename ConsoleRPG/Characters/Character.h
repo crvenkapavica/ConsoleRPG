@@ -23,7 +23,7 @@ public:
 	Character(const CharacterData::PlayerAttributes& attributes, char alias);
 
 	// Summon
-	Character(const CharacterData::SummonData& data, int team);
+	Character(const CharacterData::SummonData& data, int team, char alias);
 
 
 	Character(const Character& other);
@@ -44,7 +44,7 @@ public:
 		return *this;
 	}
 
-	virtual ~Character();
+	~Character();
 
 	virtual void TakeTurn() = 0;
 

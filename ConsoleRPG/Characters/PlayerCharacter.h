@@ -13,12 +13,16 @@ public:
 
 	PlayerCharacter(const PlayerCharacter& other);
 
+	~PlayerCharacter() { --_n; }
+
 	PlayerCharacter& operator=(const PlayerCharacter& other) {
 		if (this != &other) {
 			Character::operator=(other);
 		}
 		return *this;
 	}
+
+	static int _n = 0;
 
 public:
 
@@ -83,7 +87,4 @@ protected:
 	void CalcPlayerItemSlots();
 
 	void CalcInvSlots();
-
-private:
-	static int _n;
 };

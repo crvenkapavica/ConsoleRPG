@@ -5,7 +5,7 @@
 
 int EnemyCharacter::_n = 0;
 
-EnemyCharacter::EnemyCharacter(const CharacterData& data) 
+EnemyCharacter::EnemyCharacter(const CharacterData& data)
 	: Character(data.GetEnemyData(), 'A' + _n++)
 	, _level(0)
 	, _count(0)

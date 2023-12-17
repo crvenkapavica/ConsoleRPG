@@ -14,6 +14,8 @@ public:
 		return *this;
 	}
 
+	static int _n;
+
 	virtual void TakeTurn() override;
 
 private:
@@ -29,8 +31,4 @@ private:
 	void Move();
 
 	void CastSpell();
-
-private:
-
-	static int _n;
 };
