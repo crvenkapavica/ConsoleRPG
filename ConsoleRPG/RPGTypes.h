@@ -155,7 +155,7 @@ enum class ESpellID {
 	VA_TEMP1,
 	VA_TEMP2,
 	VA_TEMP3,
-
+	
 	// MELEE
 	MELEE,
 	// RANGED
@@ -171,6 +171,7 @@ enum class ESpellType {
 	BUFF,
 	DEBUFF,
 	AURA,
+	SUMMON,
 	DAMAGE,
 	HEALING
 };

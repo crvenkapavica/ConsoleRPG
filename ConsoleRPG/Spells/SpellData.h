@@ -12,6 +12,10 @@ struct SpellData {
 	int		_stamina_cost;
 };
 
+
+
+
+
 struct ActiveConstData {
 	EDamageType _damage_type;
 	ESpellType _spell_type;

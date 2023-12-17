@@ -103,7 +103,6 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 }
 
 int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, Character* character, const string& name) {
-
 	vector<weak_ptr<Character>> enemies;
 	if (character->GetTeam() == 1)
 		enemies = GameplayStatics::GetEnemyCharacters();

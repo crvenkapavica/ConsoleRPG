@@ -16,11 +16,12 @@ private:
 	CombatManager(const CombatManager&) = delete;
 	CombatManager& operator=(const CombatManager&) = delete;
 
-	vector<weak_ptr<PlayerCharacter>> _player_characters;
-	vector<PlayerCharacter> _player_characters_base;
+	vector<weak_ptr<Character>> _players;
+	vector<PlayerCharacter> _players_base;
 
-	vector<weak_ptr<EnemyCharacter>> _enemy_characters;
-	vector<EnemyCharacter> _enemy_characters_base;
+	vector<weak_ptr<Character>> _enemies;
+	vector<EnemyCharacter> _enemies_base;
+
 
 	vector<pair<int, unique_ptr<CombatEffect>>> _combat_effects;
 

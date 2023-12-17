@@ -15,15 +15,14 @@ void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vec
 
 	for (auto& character : characters_1) {
 		_turn_table.push_back(character);
+		_players.push_back(character);
 		character.lock()->SetIsInCombat(true);
 	}
 
 	for (auto& character : characters_2) {
 		_turn_table.push_back(character); 
+		_enemies.push_back(character);
 	}
-
-	_player_characters = characters_1;
-	_enemy_characters = characters_2;
 
 	OnCombatBegin();
 	OnCycleBegin();
@@ -35,7 +34,7 @@ void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
 
 	while (player.lock()->IsInCombat()) {
 		DestroyDeadCharacters();
-		if (!(all_of(_enemy_characters.begin(), _enemy_characters.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return wptr.expired(); })))
+		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); })))
 			GetTurnCharacter().lock()->TakeTurn();
 	}
 	ResetCombatVariables();
@@ -183,28 +182,28 @@ void CombatManager::HandleEffectStat(CombatEffect* effect, Character* target) {
 }
 
 void CombatManager::GetCharactersBase() {
-	for (auto& character : _player_characters) {
-		PlayerCharacter c = *character.lock().get();
-		_player_characters_base.push_back(c);
+	for (auto& character : _players) {
+		PlayerCharacter c = *dynamic_cast<PlayerCharacter*>(character.lock().get());
+		_players_base.push_back(c);
 	}
 
-	for (auto& character : _enemy_characters) {
-		EnemyCharacter c = *character.lock().get();
-		_enemy_characters_base.push_back(c);
+	for (auto& character : _enemies) {
+		EnemyCharacter c = *dynamic_cast<EnemyCharacter*>(character.lock().get());
+		_enemies_base.push_back(c);
 	}
 }
 
 void CombatManager::ResetCharacterValues() {
 	// Reset player characters for re-application of spells
-	for (int i = 0; i < _player_characters.size(); i++) {
-		if (GetTurnCharacter().lock().get() == _player_characters[i].lock().get())
-			*_player_characters[i].lock().get() = _player_characters_base[i];
+	for (int i = 0; i < _players.size(); i++) {
+		if (GetTurnCharacter().lock().get() == _players[i].lock().get())
+			*_players[i].lock().get() = _players_base[i];
 	}
 
 	// Reset enemy characters for re-application of spells
-	for (int i = 0; i < _enemy_characters.size(); i++) {
-		if (GetTurnCharacter().lock().get() == _enemy_characters[i].lock().get())
-			*_enemy_characters[i].lock().get() = _enemy_characters_base[i];
+	for (int i = 0; i < _enemies.size(); i++) {
+		if (GetTurnCharacter().lock().get() == _enemies[i].lock().get())
+			*_enemies[i].lock().get() = _enemies_base[i];
 	}
 }
 
@@ -245,15 +244,15 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 }
 
 void CombatManager::InstigatePassiveEffects(Character* instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
-	//for (const auto& target : targets) {
-		for (const auto& passive : instigator->GetPassiveSpells()) {
-			if (passive->GetOnEvent() == on_event) {
-				passive->_instigator = instigator;
-				passive->_targets = targets;
-				passive->Apply();
-			}
+	for (const auto& passive : instigator->GetPassiveSpells()) {
+		if (passive->GetOnEvent() == on_event) {
+			passive->_instigator = instigator;
+			passive->_targets = targets;
+			passive->Apply();
 		}
-	//}
+	}
+	for (const auto& target : targets)
+		target.lock()->CheckDie();
 }
 
 void CombatManager::TriggerPassiveEffects(Character* character, Character* instigator, ECombatEvent on_event) {
@@ -263,6 +262,7 @@ void CombatManager::TriggerPassiveEffects(Character* character, Character* insti
 			passive->Apply();
 		}
 	}
+	instigator->CheckDie();
 }
 
 void CombatManager::DestroyDeadCharacters() {
@@ -273,9 +273,9 @@ void CombatManager::DestroyDeadCharacters() {
 
 int CombatManager::GetDeadIdx() {
 
-	for (int i = 0; i < _enemy_characters.size(); i++)
-		if (!_enemy_characters[i].expired() && !_enemy_characters[i].lock()->IsAlive()) {
-			if (_enemy_characters[i].lock() == GetTurnCharacter().lock())
+	for (int i = 0; i < _enemies.size(); i++)
+		if (!_enemies[i].expired() && !_enemies[i].lock()->IsAlive()) {
+			if (_enemies[i].lock() == GetTurnCharacter().lock())
 				bDeadOnTurn = true;
 			return i;
 		}
@@ -288,7 +288,7 @@ void CombatManager::RemoveDeadCharacters() {
 		if (it->expired()) {
 			it = _turn_table.erase(it);
 			if (bDeadOnTurn) {
-				if (_turn_table.size() == _player_characters.size()) {
+				if (_turn_table.size() == _players.size()) {
 					_turn_index = 0;
 				}
 				else {
@@ -296,8 +296,9 @@ void CombatManager::RemoveDeadCharacters() {
 						_turn_index = 0;
 					BeginTurn(_turn_table[_turn_index].lock().get());
 
-					int idx = GetDeadIdx();
-					if (idx != -1) GameplayStatics::KillEnemy(idx);
+					int idx; 
+					if ((idx = GetDeadIdx()) != -1) 
+						GameplayStatics::KillEnemy(idx);
 				}
 			}
 		}
@@ -307,11 +308,11 @@ void CombatManager::RemoveDeadCharacters() {
 }
 
 void CombatManager::ExitCombatMode() {
-	if (all_of(_enemy_characters.begin(), _enemy_characters.end(), [](const weak_ptr<EnemyCharacter>& wp) { return wp.expired(); })) {
+	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
 
 		OnCombatEnd();
 
-		for (auto& c : _player_characters)
+		for (auto& c : _players)
 			c.lock()->SetIsInCombat(false);
 
 		GameplayStatics::ExitCombatMode();
@@ -319,10 +320,10 @@ void CombatManager::ExitCombatMode() {
 }
 
 void CombatManager::ResetCombatVariables() {
-	_player_characters.clear();
-	_player_characters_base.clear();
-	_enemy_characters.clear();
-	_enemy_characters_base.clear();
+	_players.clear();
+	_players_base.clear();
+	_enemies.clear();
+	_enemies_base.clear();
 	_combat_effects.clear();
 	_turn_table.clear();
 	_turn_index = 0;
