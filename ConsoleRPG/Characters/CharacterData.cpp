@@ -1,12 +1,16 @@
 #include "CharacterData.h"
 
 CharacterData::CharacterData(ECharacterClass character_class)
-	: _player_attribute_data(InitPlayerCharacterAttributes(character_class))
+	: _player_attribute_data(InitPlayerCharacterAttributes(character_class))  // we should fix this, becuase this gets called for each enemy class, which is WRONG!
 {
 	if (static_cast<int>(character_class) >= 50) {
 		_enemy_data = InitEnemyCharacterStats(character_class);
 	}
 }
+
+CharacterData::CharacterData(ESummonClass summon_class)
+	: _summon_data(InitSummonData(summon_class))
+{}
 
 CharacterData::EnemyStats CharacterData::InitEnemyCharacterStats(ECharacterClass enemy_class) {
 	
@@ -38,4 +42,9 @@ CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECh
 		if (attributes._class == player_class) return attributes;
 
 	return PlayerAttributes();
+}
+
+CharacterData::SummonData CharacterData::InitSummonData(ESummonClass summon_class) {
+
+	return SummonData();
 }

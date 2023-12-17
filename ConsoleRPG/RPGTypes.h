@@ -255,6 +255,25 @@ enum class ECharacterClass {
 	ENEMY_WARLOCK_LVL2
 };
 
+enum class ESummonClass {
+	WATER_ELEMENTAL,
+	FIRE_ELEMENTAL,
+	ARCANE_ELEMENTAL,
+
+	CHAOS_GOLEM,
+	MAGMA_GOLEM,
+
+	NATURES_PROPHET,
+	DEATH_PROPHET
+};
+
+enum class ESummonType {
+	MAGIC,
+	MELEE,
+	RANGED,
+	HEALER
+};
+
 enum class EDirection {
 	NORTH = 0,
 	NORTHEAST, 

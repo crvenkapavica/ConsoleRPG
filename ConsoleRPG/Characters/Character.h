@@ -22,6 +22,10 @@ public:
 	// Player
 	Character(const CharacterData::PlayerAttributes& attributes);
 
+	// Summon
+	Character(const CharacterData::SummonData& data);
+
+
 	Character(const Character& other);
 
 	Character& operator=(const Character& other) {
@@ -41,6 +45,8 @@ public:
 	}
 
 	virtual ~Character();
+
+	virtual void TakeTurn() = 0;
 
 public:
 
@@ -135,8 +141,6 @@ public:
 	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
 	void RemoveEffectById(ESpellID effect_id);
 	inline const vector<ESpellID>& GetEffectIds() { return _effect_ids; }
-
-	virtual void TakeTurn() = 0;
 
 public:
 

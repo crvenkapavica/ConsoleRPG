@@ -46,7 +46,7 @@ public:
 
 	static void GiveExperience(EnemyCharacter* enemy);
 
-	static int DisplayCombatMenu();
+	static int DisplayCombatMenu(Character* character);
 	static void HandleCombatInput(PlayerCharacter* character, int input);
 	
 	static void CombatMove();

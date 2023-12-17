@@ -47,6 +47,13 @@ Character::Character(const CharacterData::PlayerAttributes& attributes)
 	UpdateAttribute(_player_attributes._vitality, 200);
 }
 
+Character::Character(const CharacterData::SummonData& data) {
+	_health = data._health;
+	_min_damage = data._min_dmg;
+	_max_damage = data._max_dmg;
+	_armor = data._armor;
+}
+
 Character::Character(const Character& other)
 	: _class(other._class)
 	, _health(other._health)

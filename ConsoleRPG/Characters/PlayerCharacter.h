@@ -1,19 +1,17 @@
 #pragma once
 
-#include "../RPGTypes.h"
 #include "Character.h"
 #include "../Inventory/Item.h"
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"
 
-
 class PlayerCharacter : public Character {
 
 public:
 
-	PlayerCharacter(const CharacterData::PlayerAttributes& attributes);
+	PlayerCharacter(const CharacterData& data);
 
-	PlayerCharacter(const PlayerCharacter& other) : Character(other) {}
+	PlayerCharacter(const PlayerCharacter& other);
 
 	PlayerCharacter& operator=(const PlayerCharacter& other) {
 		if (this != &other) {

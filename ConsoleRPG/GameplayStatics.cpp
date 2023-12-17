@@ -285,10 +285,14 @@ void GameplayStatics::GiveExperience(EnemyCharacter* enemy) {
 	//_player->ReceiveExperience(experience);
 }
 
-int GameplayStatics::DisplayCombatMenu() {
+int GameplayStatics::DisplayCombatMenu(Character* character) {
 	DisplayCombatMenuTitle();
-	vector<string> v = { "MELEE ATTACK", "RANGED ATTACK", "CAST SPELL", "MOVE", "INFO", "END TURN" };
-	return InteractiveDisplay(v);
+	vector<string> v;
+
+	if (dynamic_cast<PlayerCharacter*>(character)) {
+		v = { "MELEE ATTACK", "RANGED ATTACK", "CAST SPELL", "MOVE", "INFO", "END TURN" };
+		return InteractiveDisplay(v);
+	}
 }
 
 void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {

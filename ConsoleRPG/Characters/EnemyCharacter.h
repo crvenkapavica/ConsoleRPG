@@ -1,13 +1,11 @@
 #pragma once
 
-#include "../RPGTypes.h"
 #include "Character.h"
-#include "PlayerCharacter.h"
 
 class EnemyCharacter : public Character { 
 
 public:
-	EnemyCharacter(const CharacterData::EnemyStats& data);
+	EnemyCharacter(const CharacterData& data);
 
 	EnemyCharacter& operator=(const EnemyCharacter& other) {
 		if (this != &other) {

@@ -46,7 +46,23 @@ public:
 		Attribute		_endurance;
 	};
 
+	struct SummonData {
+
+		ESummonClass	_class;
+
+		float			_health;
+		float			_min_dmg;
+		float			_max_dmg;
+		float			_armor;
+
+		ESummonType		_summon_type;
+		EDamageType		_dmg_type;
+		ESpellID		_spell;
+	};
+
 	CharacterData(ECharacterClass character_class);
+
+	CharacterData(ESummonClass summon_class);
 
 protected:
 
@@ -54,17 +70,23 @@ protected:
 
 	PlayerAttributes	_player_attribute_data;
 
+	SummonData			_summon_data;
+
 private:
 
 	EnemyStats InitEnemyCharacterStats(ECharacterClass enemy_class);
 
 	PlayerAttributes InitPlayerCharacterAttributes(ECharacterClass player_class);
 
+	SummonData InitSummonData(ESummonClass summon_class);
+
 public:
 
 	inline const EnemyStats& GetEnemyData() const { return _enemy_data; }
 	
-	PlayerAttributes& GetPlayerAttributeData() { return _player_attribute_data; }
+	inline const PlayerAttributes& GetPlayerAttributeData() const { return _player_attribute_data; }
+
+	inline const SummonData& GetSummonData() const { return _summon_data; }
 };
 
 

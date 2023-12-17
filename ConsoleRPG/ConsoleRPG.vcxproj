@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Characters\SummonCharacter.cpp" />
     <ClCompile Include="Spells\ActiveSpell.cpp" />
     <ClCompile Include="Characters\Character.cpp" />
     <ClCompile Include="Characters\CharacterData.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Spells\SpellManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Characters\SummonCharacter.h" />
     <ClInclude Include="Spells\ActiveSpell.h" />
     <ClInclude Include="Characters\Character.h" />
     <ClInclude Include="Characters\CharacterData.h" />

@@ -2,8 +2,8 @@
 #include "../GameplayStatics.h"
 #include "../Inventory/ItemData.h"
 
-PlayerCharacter::PlayerCharacter(const CharacterData::PlayerAttributes& attributes)
-	: Character(attributes)
+PlayerCharacter::PlayerCharacter(const CharacterData& data)
+	: Character(data.GetPlayerAttributeData())
 {
 	InitExperienceForLevel();
 
@@ -25,6 +25,10 @@ PlayerCharacter::PlayerCharacter(const CharacterData::PlayerAttributes& attribut
 	AddItemToInventory(Item::GetItemByID(EItemID::AssNeedle));
 }
 
+PlayerCharacter::PlayerCharacter(const PlayerCharacter& other)
+	: Character(other)
+{}
+
 void PlayerCharacter::ReceiveExperience(const int experience) {
 	_experience += experience;
 	if (_experience >= _experience_next_level[_lvl - 1]) {
@@ -37,7 +41,7 @@ void PlayerCharacter::TakeTurn() {
 	
 	if (_bIsInCombat) {
 		GameplayStatics::RedrawGameScreen();
-		int input = GameplayStatics::DisplayCombatMenu();
+		int input = GameplayStatics::DisplayCombatMenu(this);
 		GameplayStatics::HandleCombatInput(this, input);
 	}
 }

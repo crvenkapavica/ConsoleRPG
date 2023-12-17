@@ -498,8 +498,7 @@ void MapGenerator::AddRandomMapEnemies() {
 				for (int k = 0; k < rnd_enemies; k++) { 
 					int rnd = rand() % 3 + 50;
 					auto character_class = static_cast<ECharacterClass>(rnd);
-					CharacterData data(character_class);
-					auto enemy = make_shared<EnemyCharacter>(data.GetEnemyData());
+					auto enemy = make_shared<EnemyCharacter>(CharacterData(character_class));
 					enemy->SetAlias('A' + k);
 					enemies_vector.push_back(move(enemy));
 					//enemies_vector.push_back(make_shared<EnemyCharacter>(data.GetEnemyData()));

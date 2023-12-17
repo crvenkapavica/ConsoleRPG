@@ -1,11 +1,10 @@
 #include "EnemyCharacter.h"
-#include "CharacterData.h"
 #include "../GameplayStatics.h"
 #include "../Spells/SpellManager.h"
 #include "../Combat/CombatManager.h"
 
-EnemyCharacter::EnemyCharacter(const CharacterData::EnemyStats& data) 
-	: Character(data)
+EnemyCharacter::EnemyCharacter(const CharacterData& data) 
+	: Character(data.GetEnemyData())
 	, _level(0)
 	, _count(0)
 {}

@@ -95,6 +95,7 @@ void SendAltEnter() {
 
 
 #include "Inventory/ItemData.h"
+#include "Characters/SummonCharacter.h"
 int main() {
 
 
@@ -103,14 +104,13 @@ int main() {
 
     vector<shared_ptr<PlayerCharacter>> player_characters;
 
-    CharacterData barbarian_data(ECharacterClass::BARBARIAN);
-    auto player_main = make_shared<PlayerCharacter>(barbarian_data.GetPlayerAttributeData());
-
-    CharacterData warlock_data(ECharacterClass::WARLOCK);
-    auto player_warlock = make_shared<PlayerCharacter>(warlock_data.GetPlayerAttributeData());
+    auto player_main = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::BARBARIAN));
+    auto player_warlock = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
     player_warlock->SetAlias('1');
 
     player_characters = { player_main, player_warlock };
+
+    auto summon = make_unique<SummonCharacter>(CharacterData(ESummonClass::ARCANE_ELEMENTAL));
 
     SpellManager& sm = SpellManager::GetInstance();
 
