@@ -155,6 +155,9 @@ enum class ESpellID {
 	VA_TEMP1,
 	VA_TEMP2,
 	VA_TEMP3,
+
+	//SUMMON
+	SUM_FIRE_ELE,
 	
 	// MELEE
 	MELEE,

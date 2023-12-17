@@ -159,6 +159,14 @@ public:
     virtual void Apply(Character* instigator, vector<weak_ptr<Character>>& targets) override;
 };
 
+//============================================================================== SUMMON=============================================================================================
+//==================================================================================================================================================================================
+class SummonFireElemental : public ActiveSpell {
+public:
+    SummonFireElemental() : ActiveSpell(ESpellID::SUM_FIRE_ELE) {}
+    virtual void Apply(Character* instigator, vector<weak_ptr<Character>>& targets) override;
+};
+
 
 
 

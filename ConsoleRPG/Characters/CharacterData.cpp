@@ -46,5 +46,13 @@ CharacterData::PlayerAttributes CharacterData::InitPlayerCharacterAttributes(ECh
 
 CharacterData::SummonData CharacterData::InitSummonData(ESummonClass summon_class) {
 
+	vector<SummonData> data {
+		{ ESummonClass::FIRE_ELEMENTAL, 250.f, 0.f, 0.f, 20.f, ESummonType::MAGIC, EDamageType::FIRE, ESpellID::FIREBALL }
+	};
+
+	for (const auto& d : data)
+		if (d._class == summon_class)
+			return d;
+
 	return SummonData();
 }

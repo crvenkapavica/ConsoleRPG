@@ -6,6 +6,7 @@
 class Character;
 class PlayerCharacter;
 class EnemyCharacter;
+class SummonCharacter;
 class SpellBook;
 class SpellManager;
 class CombatManager;
@@ -48,6 +49,7 @@ public:
 
 	static int DisplayCombatMenu(Character* character);
 	static void HandleCombatInput(PlayerCharacter* character, int input);
+	static void HandleCombatInput(SummonCharacter* character, int input);
 	
 	static void CombatMove();
 	static void EnemyCombatMove(Character* character, OUT map<int, EDirection>& direction_map);

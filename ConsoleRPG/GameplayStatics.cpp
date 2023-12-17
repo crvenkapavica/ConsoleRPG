@@ -2,6 +2,7 @@
 #include "Characters/Character.h"
 #include "Characters/PlayerCharacter.h"
 #include "Characters/EnemyCharacter.h"
+#include "Characters/SummonCharacter.h"
 #include "Spells/SpellData.h"
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
@@ -293,6 +294,18 @@ int GameplayStatics::DisplayCombatMenu(Character* character) {
 		v = { "MELEE ATTACK", "RANGED ATTACK", "CAST SPELL", "MOVE", "INFO", "END TURN" };
 		return InteractiveDisplay(v);
 	}
+	else if (dynamic_cast<SummonCharacter*>(character)) {
+		SummonCharacter* summon = static_cast<SummonCharacter*>(character);
+		switch (summon->GetClass()) {
+		case ESummonClass::FIRE_ELEMENTAL:
+		case ESummonClass::WATER_ELEMENTAL:
+		case ESummonClass::ARCANE_ELEMENTAL:
+			v = { "CAST SPELL", "MOVE", "END TURN" };
+			return InteractiveDisplay(v);
+		default:
+			break;
+		}
+	}
 }
 
 void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {
@@ -314,6 +327,22 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* character, int input) {
 		DisplayInfoMenu();
 		break;
 	case 5:
+		EndTurn(character);
+		break;
+	default:
+		break;
+	}
+}
+
+void GameplayStatics::HandleCombatInput(SummonCharacter* character, int input) {
+	switch (input) {
+	case 0:
+		DisplaySpellMenu();
+		break;
+	case 1:
+		//Move();
+		break;
+	case 2:
 		EndTurn(character);
 		break;
 	default:

@@ -31,6 +31,10 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	case ESpellID::VISCOUS_ACID:
 		return make_unique<ViscousAcid>();
 
+		//SUMMON
+	case ESpellID::SUM_FIRE_ELE:
+		return make_unique<SummonFireElemental>();
+
 
 		// MELEE
 	case ESpellID::MELEE:
@@ -401,6 +405,18 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
 
+
+
+
+
+
+//============================================================================== SUMMON =============================================================================================
+//==================================================================================================================================================================================
+
+
+void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+
+}
 
 
 

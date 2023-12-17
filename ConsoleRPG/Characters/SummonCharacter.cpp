@@ -11,7 +11,7 @@ SummonCharacter::SummonCharacter(const CharacterData& data)
 
 void SummonCharacter::TakeTurn() {
 
-	//GameplayStatics::RedrawGameScreen();
-	//int input = GameplayStatics::DisplayCombatMenu();
-	//GameplayStatics::HandleCombatInput(this, input);
+	GameplayStatics::RedrawGameScreen();
+	int input = GameplayStatics::DisplayCombatMenu(this);
+	GameplayStatics::HandleCombatInput(this, input);
 }
