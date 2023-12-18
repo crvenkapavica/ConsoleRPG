@@ -25,8 +25,9 @@ public:
 	// Summon
 	Character(const CharacterData::SummonData& data, int team, char alias);
 
-
 	Character(const Character& other);
+
+	Character(Character&& other);
 
 	Character& operator=(const Character& other) {
 		// "reset" all stats that effects might modify
@@ -44,7 +45,7 @@ public:
 		return *this;
 	}
 
-	~Character();
+	virtual ~Character();
 
 	virtual void TakeTurn() = 0;
 

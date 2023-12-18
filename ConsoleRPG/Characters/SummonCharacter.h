@@ -6,6 +6,8 @@ class SummonCharacter : public Character {
 public:
 	SummonCharacter(const CharacterData& data, int team);
 
+	~SummonCharacter();
+
 	virtual void TakeTurn() override;
 
 	inline const ESummonClass GetClass() const { return _class; }

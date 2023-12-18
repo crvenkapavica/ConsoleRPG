@@ -11,6 +11,14 @@ SummonCharacter::SummonCharacter(const CharacterData& data, int team)
 	, _spell(data.GetSummonData()._spell)
 {}
 
+SummonCharacter::~SummonCharacter()
+{
+	if (_team == 1) 
+		--PlayerCharacter::_n;
+	else
+		--EnemyCharacter::_n;
+}
+
 void SummonCharacter::TakeTurn() {
 
 	GameplayStatics::RedrawGameScreen();

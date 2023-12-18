@@ -13,16 +13,19 @@ public:
 
 	PlayerCharacter(const PlayerCharacter& other);
 
-	~PlayerCharacter() { --_n; }
+	PlayerCharacter(PlayerCharacter&& other) noexcept;
+
+	~PlayerCharacter();
 
 	PlayerCharacter& operator=(const PlayerCharacter& other) {
 		if (this != &other) {
 			Character::operator=(other);
 		}
+		//++_n;
 		return *this;
 	}
 
-	static int _n = 0;
+	static int _n;;
 
 public:
 

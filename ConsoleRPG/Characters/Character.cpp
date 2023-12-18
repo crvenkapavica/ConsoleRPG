@@ -72,9 +72,12 @@ Character::Character(const Character& other)
 	, _resistances(other._resistances)
 {}
 
-Character::~Character() 
-{
+Character::Character(Character&& other) {
+
 }
+
+Character::~Character() 
+{}
 
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;

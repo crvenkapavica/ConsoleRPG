@@ -55,6 +55,9 @@ public:
 
 	// Checks if the summons lifespan expired and destroys it accordingly
 	void CheckSummonLifespan();
+	
+	// Called at the end of combat to destroy all remaining summons
+	void DestroyAllSummons();
 
 	// Gets the turn table aliases for printing turn order
 	void DisplayTurnOrder();

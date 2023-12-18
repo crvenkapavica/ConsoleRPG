@@ -75,6 +75,8 @@ void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon, int du
 	_summons.push_back(make_pair(move(summon), make_pair(owner, duration)));
 	int turn = _turn_index + 1 > _turn_table.size() - 1 ? 0 : _turn_index + 1;
 	_turn_table.insert(_turn_table.begin() + turn, wptr_summon);
+
+				// mozda dodati summona v players ili enemies
 }
 
 void CombatManager::CheckSummonLifespan() {
@@ -84,8 +86,15 @@ void CombatManager::CheckSummonLifespan() {
 		if (!summon.second.second)
 			summon.first.reset();
 	}
-	(void)std::remove_if(_summons.begin(), _summons.end(), [](pair<shared_ptr<SummonCharacter>, pair<weak_ptr<Character>, int>> summon) { return summon.first; });
+	_summons.erase(std::remove_if(_summons.begin(), _summons.end(), 
+		[](pair<shared_ptr<SummonCharacter>, pair<weak_ptr<Character>, int>> summon) { return !summon.first; }),
+		_summons.end()
+	);
 	RemoveDeadCharacters();
+}
+
+void CombatManager::DestroyAllSummons() {
+	_summons.clear();
 }
 
 void CombatManager::DisplayTurnOrder() {
@@ -203,13 +212,13 @@ void CombatManager::HandleEffectStat(CombatEffect* effect, Character* target) {
 
 void CombatManager::GetCharactersBase() {
 	for (auto& character : _players) {
-		PlayerCharacter c = *dynamic_cast<PlayerCharacter*>(character.lock().get());
-		_players_base.push_back(c);
+		//PlayerCharacter c = *dynamic_cast<PlayerCharacter*>(character.lock().get());
+		_players_base.push_back(*dynamic_cast<PlayerCharacter*>(character.lock().get()));
+		//_players_base.push_back(c);
 	}
 
 	for (auto& character : _enemies) {
-		EnemyCharacter c = *dynamic_cast<EnemyCharacter*>(character.lock().get());
-		_enemies_base.push_back(c);
+		_enemies_base.push_back(*dynamic_cast<EnemyCharacter*>(character.lock().get()));
 	}
 }
 
@@ -368,7 +377,7 @@ void CombatManager::OnCombatBegin() {
 	GetCharactersBase();
 }
 void CombatManager::OnCombatEnd() {
-
+	DestroyAllSummons();
 }
 
 void CombatManager::OnTurnBegin() {

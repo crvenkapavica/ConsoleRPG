@@ -7,7 +7,8 @@ int PlayerCharacter::_n = 0;
 PlayerCharacter::PlayerCharacter(const CharacterData& data)
 	: Character(data.GetPlayerAttributeData(), '0' + _n++)
 {
-	++_n;
+	//SetAlias('0' + _n++);
+
 	InitExperienceForLevel();
 
 	_item_slots.resize(ITEM_SLOTS);
@@ -28,10 +29,21 @@ PlayerCharacter::PlayerCharacter(const CharacterData& data)
 	AddItemToInventory(Item::GetItemByID(EItemID::AssNeedle));
 }
 
-PlayerCharacter::PlayerCharacter(const PlayerCharacter& other)
+PlayerCharacter::PlayerCharacter(const PlayerCharacter& other) 
+	: Character(other) 
+{
+	//++_n;
+}
+
+PlayerCharacter::PlayerCharacter(PlayerCharacter&& other) noexcept
 	: Character(other)
 {
-	--_n;
+	++_n;
+}
+
+PlayerCharacter::~PlayerCharacter() 
+{ 
+	--_n; 
 }
 
 void PlayerCharacter::ReceiveExperience(const int experience) {
