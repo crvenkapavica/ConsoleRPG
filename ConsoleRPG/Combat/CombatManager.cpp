@@ -34,7 +34,7 @@ void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
 	BeginTurn(_turn_table[0].lock().get());
 
 	while (player.lock()->IsInCombat()) {
-		DestroyDeadCharacters();
+		KillFlaggedCharacters();
 		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); })))
 			GetTurnCharacter().lock()->TakeTurn();
 	}
@@ -163,8 +163,6 @@ void CombatManager::ApplyStat(CombatEffect* effect, Character* target, Character
 		OnMeleeReceivedEnd(target, effect->_instigator);
 	else if (spell_class == ESpellClass::RANGED)
 		OnRangedReceivedEnd(target, effect->_instigator);
-
-	character_stat._character->CheckDie();
 }
 
 void CombatManager::HandleCombatEffect(CombatEffect* effect, Character* target) {
@@ -280,8 +278,8 @@ void CombatManager::InstigatePassiveEffects(Character* instigator, vector<weak_p
 			passive->Apply();
 		}
 	}
-	for (const auto& target : targets)
-		target.lock()->CheckDie();
+	//for (auto& target : targets)
+	//	target.lock()->CheckDie();
 }
 
 void CombatManager::TriggerPassiveEffects(Character* character, Character* instigator, ECombatEvent on_event) {
@@ -292,13 +290,25 @@ void CombatManager::TriggerPassiveEffects(Character* character, Character* insti
 		}
 	}
 	instigator->CheckDie();
+
+	// ILI MOZDA
+
+
+	//FlagDeadCharacters();
 }
 
-void CombatManager::DestroyDeadCharacters() {
+void CombatManager::FlagDeadCharacters() {
+	for (auto& character : _turn_table)
+		character.lock()->CheckDie();
+	KillFlaggedCharacters();
+}
+
+void CombatManager::KillFlaggedCharacters() {
 	int idx; 
-	if ((idx = GetDeadIdx()) != -1) 
+	while ((idx = GetDeadIdx()) != -1) {
 		GameplayStatics::KillEnemy(idx);
-	RemoveDeadCharacters();
+		RemoveDeadCharacters();
+	}
 }
 
 int CombatManager::GetDeadIdx() {

@@ -70,8 +70,11 @@ public:
 
 	inline const int GetTurn() const { return _turn; }
 
+	// Flaggs all characters with HP < 0 with bIsAlive = false
+	void FlagDeadCharacters();
+
 	// Reset the pointer pointing to a dead character
-	void DestroyDeadCharacters();
+	void KillFlaggedCharacters();
 
 	// Get the index of the latest character marked as dead
 	int GetDeadIdx();

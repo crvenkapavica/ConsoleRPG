@@ -35,7 +35,7 @@ public:
 	virtual stringstream& GetTooltip() override;
 
 private:
-	float _value = 0.1f;	
+	float _value = 0.8f;	
 };
 
 class Thorns : public PassiveSpell {

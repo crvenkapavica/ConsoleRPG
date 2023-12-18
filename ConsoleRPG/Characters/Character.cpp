@@ -22,9 +22,9 @@ Character::Character(const CharacterData::EnemyStats& data, char alias)
 	_resistances = data._resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	//sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
+	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
 
-	sm.CreatePassiveSpell(this, data._spell1.first);
+	//sm.CreatePassiveSpell(this, data._spell1.first);
 }
 
 Character::Character(const CharacterData::PlayerAttributes& attributes, char alias)
@@ -238,9 +238,12 @@ void Character::EndTurn() {
 	GameplayStatics::EndTurn(this);
 }
 
-void Character::CheckDie() {
-	if (GetHealth().GetActual() <= 0.005f)
+bool Character::CheckDie() {
+	if (GetHealth().GetActual() <= 0.005f) {
 		_bIsAlive = false;
+		return true;
+	}
+	return false;
 }
 
 void Character::OnMagicReceivedBegin() {

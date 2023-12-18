@@ -7,8 +7,6 @@ int PlayerCharacter::_n = 0;
 PlayerCharacter::PlayerCharacter(const CharacterData& data)
 	: Character(data.GetPlayerAttributeData(), '0' + _n++)
 {
-	//SetAlias('0' + _n++);
-
 	InitExperienceForLevel();
 
 	_item_slots.resize(ITEM_SLOTS);
@@ -31,9 +29,7 @@ PlayerCharacter::PlayerCharacter(const CharacterData& data)
 
 PlayerCharacter::PlayerCharacter(const PlayerCharacter& other) 
 	: Character(other) 
-{
-	//++_n;
-}
+{}
 
 PlayerCharacter::PlayerCharacter(PlayerCharacter&& other) noexcept
 	: Character(other)

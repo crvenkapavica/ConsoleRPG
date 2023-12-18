@@ -356,8 +356,7 @@ void MapGenerator::ShowPosition() {
 
 	system("cls");
 
-	//int radius = static_cast<int>(_player_characters[0]->GetLighRadius().GetActual());
-	int radius = 3;
+	int radius = static_cast<int>(_player_characters[0]->GetLighRadius());
 
 	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
 	DrawMap(_player_x - radius + 1, _player_x + radius, _player_y - radius + 1, _player_y + radius);
@@ -443,11 +442,13 @@ void MapGenerator::Move(int dir) {
 		ClearCharacterGrid();
 		DrawGrid();
 
-		auto targets = GetEnemies(_player_x, _player_y);
+		auto enemies = GetEnemies(_player_x, _player_y);
 		GenerateCharacterGridPositions();
 		AddCharactersToGrid();
 
-		GameplayStatics::InitiateCombatMode(move(targets));
+		EnemyCharacter::_n = static_cast<int>(enemies.size());
+
+		GameplayStatics::InitiateCombatMode(move(enemies));
 	}
 
 	_map[_player_x][_player_y] = PLAYER;
@@ -501,6 +502,8 @@ void MapGenerator::AddRandomMapEnemies() {
 					enemies_vector.push_back(make_shared<EnemyCharacter>(CharacterData(character_class)));
 					enemies_map['A' + k] = enemies_vector[k].get();
 				}
+				// restart static instance counter
+				EnemyCharacter::_n = 0;
 				_enemy_map.push_back(move(enemies_vector));
 				_enemy_map_xy.push_back(make_pair(i, j));	
 				_enemy_name_map.push_back(enemies_map);
@@ -578,7 +581,7 @@ void MapGenerator::GenerateCharacterGridPositions() {
 		} while (_char_grid[first][second]._here);
 
 		_char_grid[first][second]._here = enemy.second;
-		_char_grid[first][second]._here->SetAlias(enemy.first);
+		//_char_grid[first][second]._here->SetAlias(enemy.first);
 		_char_map[enemy.first] = make_pair(first, second);
 	}
 

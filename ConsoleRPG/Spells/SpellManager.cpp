@@ -51,4 +51,6 @@ void SpellManager::CastSpell(int spell_idx, Character* instigator, vector<weak_p
 		cm.OnMeleeEnd(instigator, targets);
 	else if (spell->GetClass() == ESpellClass::RANGED)
 		cm.OnRangedEnd(instigator, targets);
+
+	cm.FlagDeadCharacters();
 }

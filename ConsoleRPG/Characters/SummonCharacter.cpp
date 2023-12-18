@@ -21,7 +21,17 @@ SummonCharacter::~SummonCharacter()
 
 void SummonCharacter::TakeTurn() {
 
-	GameplayStatics::RedrawGameScreen();
-	int input = GameplayStatics::DisplayCombatMenu(this);
-	GameplayStatics::HandleCombatInput(this, input);
+	// The Summon is Player Controlled
+	if (_team == 1) {
+		GameplayStatics::RedrawGameScreen();
+		int input = GameplayStatics::DisplayCombatMenu(this);
+		GameplayStatics::HandleCombatInput(this, input);
+	}
+	// The Summon is AI controlled
+	else { // The actual functionality should be programmed either inside this class or the EnemyCharacter class. Depending on how different the logic between summons and non-summons is.
+		GameplayStatics::RedrawGameScreen();
+		Sleep(3000);
+
+		EndTurn();
+	}
 }

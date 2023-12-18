@@ -2,10 +2,18 @@
 
 #include "Character.h"
 
+class SummonCharacter;
+
 class EnemyCharacter : public Character { 
 
 public:
 	EnemyCharacter(const CharacterData& data);
+
+	EnemyCharacter(const EnemyCharacter& other);
+
+	EnemyCharacter(EnemyCharacter&& other) noexcept;
+
+	~EnemyCharacter();
 
 	EnemyCharacter& operator=(const EnemyCharacter& other) {
 		if (this != &other) {
@@ -17,6 +25,8 @@ public:
 	static int _n;
 
 	virtual void TakeTurn() override;
+
+	friend class SummonCharacter;
 
 private:
 

@@ -181,7 +181,7 @@ public:
 	// EXTRA STATS OUT OF COMBAT
 	/////////////////////////////////////////
 	float _magic_find = 0.f;
-	int _light_radius = 0;
+	int _light_radius = 3;
 
 	int _n_cons_slots = 0;
 	int _n_spell_slots = 0;
@@ -215,7 +215,7 @@ protected:
 
 public:
 
-	void CheckDie();
+	bool CheckDie();
 
 	void EndTurn();
 

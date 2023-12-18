@@ -1,4 +1,5 @@
 #include "EnemyCharacter.h"
+#include "SummonCharacter.h"
 #include "../GameplayStatics.h"
 #include "../Spells/SpellManager.h"
 #include "../Combat/CombatManager.h"
@@ -11,16 +12,34 @@ EnemyCharacter::EnemyCharacter(const CharacterData& data)
 	, _count(0)
 {}
 
+EnemyCharacter::EnemyCharacter(const EnemyCharacter& other)
+	: Character(other)
+{}
+
+EnemyCharacter::EnemyCharacter(EnemyCharacter&& other) noexcept
+	: Character(other)
+	, _level(other._level)
+	, _count(other._count)
+{
+	//++_n;
+}
+
+EnemyCharacter::~EnemyCharacter()
+{
+	//--_n;
+}
+
 void EnemyCharacter::TakeTurn() {
 
 	Move();
 
-	/*if (_alias == 'A' && cm.GetTurn() == 0) {
+	CombatManager& cm = CombatManager::GetInstance();
+	if (_alias == 'A' && (cm.GetTurn() == 0 || cm.GetTurn() == 3 || cm.GetTurn() == 4 || cm.GetTurn() == 5)) {
 		CastSpell();
-	}*/
+	}
 
 	GameplayStatics::RedrawGameScreen();
-	Sleep(300);
+	Sleep(3000);
 
 	EndTurn();
 }
