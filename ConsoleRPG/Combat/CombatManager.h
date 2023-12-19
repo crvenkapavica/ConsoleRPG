@@ -11,30 +11,6 @@ class SpellManager;
 
 class CombatManager {
 
-private:
-
-	CombatManager() {}
-	CombatManager(const CombatManager&) = delete;
-	CombatManager& operator=(const CombatManager&) = delete;
-
-	vector<weak_ptr<Character>> _players;
-	vector<PlayerCharacter> _players_base;
-
-	vector<weak_ptr<Character>> _enemies;
-	vector<EnemyCharacter> _enemies_base;
-
-	vector<pair<shared_ptr<SummonCharacter>, pair<weak_ptr<Character>, int>>> _summons;
-
-	vector<pair<int, unique_ptr<CombatEffect>>> _combat_effects;
-
-	vector<weak_ptr<Character>>	_turn_table;
-
-	int _turn_index = 0;
-
-	int _turn = 0;
-
-	bool bDeadOnTurn = false;
-
 public:
 
 	static CombatManager& GetInstance();
@@ -151,4 +127,28 @@ private:
 	void OnCycleEnd();
 
 	//////////////////////
+
+private:
+
+	CombatManager() {}
+	CombatManager(const CombatManager&) = delete;
+	CombatManager& operator=(const CombatManager&) = delete;
+
+	vector<weak_ptr<Character>> _players;
+	vector<PlayerCharacter> _players_base;
+
+	vector<weak_ptr<Character>> _enemies;
+	vector<EnemyCharacter> _enemies_base;
+
+	vector<pair<shared_ptr<SummonCharacter>, pair<weak_ptr<Character>, int>>> _summons;
+
+	vector<pair<int, unique_ptr<CombatEffect>>> _combat_effects;
+
+	vector<weak_ptr<Character>>	_turn_table;
+
+	int _turn_index = 0;
+
+	int _turn = 0;
+
+	bool bDeadOnTurn = false;
 };
