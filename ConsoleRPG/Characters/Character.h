@@ -27,7 +27,7 @@ public:
 
 	Character(const Character& other);
 
-	Character(Character&& other);
+	Character(Character&& other) noexcept;
 
 	Character& operator=(const Character& other) {
 		// "reset" all stats that effects might modify

@@ -63,14 +63,19 @@ public:
 
 	void OnMagicBegin(Character* instigator, vector<weak_ptr<Character>> targets);
 	void OnMagicEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+
 	void OnMagicReceivedBegin(Character* instigator, Character* target);
 	void OnMagicReceivedEnd(Character* instigator, Character* target);
+
 	void OnMeleeBegin(Character* instigator, vector<weak_ptr<Character>> targets);
 	void OnMeleeEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+
 	void OnMeleeReceivedBegin(Character* instigator, Character* target);
 	void OnMeleeReceivedEnd(Character* instigator, Character* target);
+
 	void OnRangedBegin(Character* instigator, vector<weak_ptr<Character>> targets);
 	void OnRangedEnd(Character* instigator, vector<weak_ptr<Character>> targets);
+
 	void OnRangedReceivedBegin(Character* instigator, Character* target);
 	void OnRangedReceivedEnd(Character* instigator, Character* target);
 
@@ -116,11 +121,17 @@ private:
 	///////////////////////
 
 	void OnApplyEffect();
+
 	void OnCombatBegin();
+
 	void OnCombatEnd();
+
 	void OnTurnBegin();
+
 	void OnTurnEnd();
+
 	void OnCycleBegin();
+
 	void OnCycleEnd();
 
 	//////////////////////

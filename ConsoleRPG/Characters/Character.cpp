@@ -72,9 +72,8 @@ Character::Character(const Character& other)
 	, _resistances(other._resistances)
 {}
 
-Character::Character(Character&& other) {
-
-}
+Character::Character(Character&& other) noexcept 
+{}
 
 Character::~Character() 
 {}

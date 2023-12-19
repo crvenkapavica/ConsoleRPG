@@ -73,16 +73,26 @@ void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon, int du
 	weak_ptr<Character> wptr_summon = summon;
 	weak_ptr<Character> owner = _turn_table[_turn_index];
 	int turn = _turn_index + 1 > _turn_table.size() - 1 ? 0 : _turn_index + 1;
-	if (owner.lock()->GetTeam() == 1)
+	if (owner.lock()->GetTeam() == 1) {
 		_players.insert(std::find_if(_players.begin(), _players.end(),
 			[&owner](const weak_ptr<Character>& wptr) { return wptr.lock().get() == owner.lock().get(); }) + 1,
 			wptr_summon
 		);
-	else
+		//_players_base.insert(std::find_if(_players_base.begin(), _players_base.end(),
+		//	[&owner](const PlayerCharacter& character) { return &character == dynamic_cast<PlayerCharacter*>(owner.lock().get()); }) + 1,
+		//	*dynamic_cast<PlayerCharacter*>(wptr_summon.lock().get())
+		//);
+	}
+	else {
 		_enemies.insert(std::find_if(_enemies.begin(), _enemies.end(),
 			[&owner](const weak_ptr<Character>& wptr) { return wptr.lock().get() == owner.lock().get(); }) + 1,
 			wptr_summon
 		);
+		//_enemies_base.insert(std::find_if(_enemies_base.begin(), _enemies_base.end(),
+		//	[&owner](const EnemyCharacter& character) { return &character == dynamic_cast<EnemyCharacter*>(owner.lock().get()); }) + 1,
+		//	*wptr_summon.lock().get()
+		//);
+	}
 	_summons.push_back(make_pair(move(summon), make_pair(owner, duration)));
 	_turn_table.insert(_turn_table.begin() + turn, wptr_summon);
 }
@@ -229,9 +239,7 @@ void CombatManager::HandleEffectStat(CombatEffect* effect, Character* target) {
 
 void CombatManager::GetCharactersBase() {
 	for (auto& character : _players) {
-		//PlayerCharacter c = *dynamic_cast<PlayerCharacter*>(character.lock().get());
 		_players_base.push_back(*dynamic_cast<PlayerCharacter*>(character.lock().get()));
-		//_players_base.push_back(c);
 	}
 
 	for (auto& character : _enemies) {
@@ -241,28 +249,18 @@ void CombatManager::GetCharactersBase() {
 
 void CombatManager::ResetCharacterValues() {
 
-	RemoveExpiredSummons();
+	//RemoveExpiredSummons();
 
 	// Reset player characters for re-application of spells
-	int sum_cnt = 0;
 	for (int i = 0; i < _players.size(); i++) {
-		if (dynamic_cast<SummonCharacter*>(_players[i].lock().get())) {
-			++sum_cnt;
-			continue;
-		}
 		if (GetTurnCharacter().lock().get() == _players[i].lock().get())
-			*_players[i].lock().get() = _players_base[i -  sum_cnt];
+			*_players[i].lock().get() = _players_base[i];
 	}
 
 	// Reset enemy characters for re-application of spells
-	sum_cnt = 0;
 	for (int i = 0; i < _enemies.size(); i++) {
-		if (dynamic_cast<SummonCharacter*>(_enemies[i].lock().get())) {
-			++sum_cnt;
-			continue;
-		}
 		if (GetTurnCharacter().lock().get() == _enemies[i].lock().get())
-			*_enemies[i].lock().get() = _enemies_base[i - sum_cnt];
+			*_enemies[i].lock().get() = _enemies_base[i];
 	}
 }
 

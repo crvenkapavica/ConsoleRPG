@@ -35,7 +35,7 @@ void EnemyCharacter::TakeTurn() {
 
 	CombatManager& cm = CombatManager::GetInstance();
 	if (_alias == 'A' && (cm.GetTurn() == 0 || cm.GetTurn() == 3 || cm.GetTurn() == 4 || cm.GetTurn() == 5)) {
-		CastSpell();
+		//CastSpell();
 	}
 
 	GameplayStatics::RedrawGameScreen();
