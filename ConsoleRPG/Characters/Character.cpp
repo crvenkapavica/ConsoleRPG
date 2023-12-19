@@ -46,8 +46,8 @@ Character::Character(const CharacterData::PlayerAttributes& attributes, char ali
 	InitStats();
 }
 
-Character::Character(const CharacterData::SummonData& data, int team, char alias)
-	: _alias(alias)
+Character::Character(const CharacterData::SummonData& data, int team, std::function<char(void)> alias)
+	: _alias(alias())
 	, _team(team)
 {
 	_health = data._health;

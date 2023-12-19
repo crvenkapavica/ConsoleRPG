@@ -4,7 +4,7 @@
 
 class SummonCharacter : public Character {
 public:
-	SummonCharacter(const CharacterData& data, int team);
+	SummonCharacter(const CharacterData& data, int team, vector<weak_ptr<Character>>& v);
 
 	~SummonCharacter();
 

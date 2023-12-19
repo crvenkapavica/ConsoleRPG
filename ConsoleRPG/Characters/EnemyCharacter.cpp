@@ -21,12 +21,12 @@ EnemyCharacter::EnemyCharacter(EnemyCharacter&& other) noexcept
 	, _level(other._level)
 	, _count(other._count)
 {
-	//++_n;
+	++_n;
 }
 
 EnemyCharacter::~EnemyCharacter()
 {
-	//--_n;
+	--_n;
 }
 
 void EnemyCharacter::TakeTurn() {
@@ -39,7 +39,7 @@ void EnemyCharacter::TakeTurn() {
 	}
 
 	GameplayStatics::RedrawGameScreen();
-	Sleep(3000);
+	Sleep(300);
 
 	EndTurn();
 }

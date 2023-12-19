@@ -3,8 +3,14 @@
 #include "PlayerCharacter.h"
 #include "EnemyCharacter.h"
 
-SummonCharacter::SummonCharacter(const CharacterData& data, int team)
-    : Character(data.GetSummonData(), team, team == 1 ? '0' + PlayerCharacter::_n++ : 'A' + EnemyCharacter::_n++)
+SummonCharacter::SummonCharacter(const CharacterData& data, int team, vector<weak_ptr<Character>>& v)
+	: Character(data.GetSummonData(), team, [team, &v]() { 
+		char c = team == 1 ? '0' : 'A';
+		for (int i = 0; i < v.size(); i++)
+			if (team == 1) { if (v[i].lock()->GetAlias() != c + i) return static_cast<char>(c + i); }
+			else if (v[i].lock()->GetAlias() != c + i) { /*++EnemyCharacter::_n;*/ return static_cast<char>(c + i); };
+		return team == 1 ? static_cast<char>('0' + v.size()) : static_cast<char>('A' + v.size());
+		})
 	, _class(data.GetSummonData()._class)
 	, _summon_type(data.GetSummonData()._summon_type)
 	, _dmg_type(data.GetSummonData()._dmg_type)
@@ -30,7 +36,7 @@ void SummonCharacter::TakeTurn() {
 	// The Summon is AI controlled
 	else { // The actual functionality should be programmed either inside this class or the EnemyCharacter class. Depending on how different the logic between summons and non-summons is.
 		GameplayStatics::RedrawGameScreen();
-		Sleep(3000);
+		Sleep(300);
 
 		EndTurn();
 	}

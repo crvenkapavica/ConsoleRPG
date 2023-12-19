@@ -53,12 +53,6 @@ public:
 	// Add a summoned unit (from spell or item) to the combat and turn order
 	void AddSummonToCombat(shared_ptr<SummonCharacter> character, int duration);
 
-	// Checks if the summons lifespan expired and destroys it accordingly
-	void CheckSummonLifespan();
-	
-	// Called at the end of combat to destroy all remaining summons
-	void DestroyAllSummons();
-
 	// Gets the turn table aliases for printing turn order
 	void DisplayTurnOrder();
 
@@ -69,6 +63,10 @@ public:
 	inline char GetTurnAlias() const { return _turn_table[_turn_index].lock()->GetAlias(); }
 
 	inline const int GetTurn() const { return _turn; }
+
+	inline const vector<weak_ptr<Character>> GetPlayers() const { return _players; }
+
+	inline const vector<weak_ptr<Character>> GetEnemies() const { return _enemies; }
 
 	// Flaggs all characters with HP < 0 with bIsAlive = false
 	void FlagDeadCharacters();
@@ -131,6 +129,15 @@ private:
 
 	// Called when the character with the passive was being instigated on
 	void TriggerPassiveEffects(Character* character, Character* instigator, ECombatEvent on_event);
+
+	// Checks if the summons lifespan expired and destroys it accordingly
+	void CheckSummonLifespan();
+
+	// Removes dead summons from _players and _enemies vector
+	void RemoveExpiredSummons();
+
+	// Called at the end of combat to destroy all remaining summons
+	void DestroyAllSummons();
 
 	//=====  EVENTS ===== //
 	///////////////////////

@@ -23,7 +23,7 @@ public:
 	Character(const CharacterData::PlayerAttributes& attributes, char alias);
 
 	// Summon
-	Character(const CharacterData::SummonData& data, int team, char alias);
+	Character(const CharacterData::SummonData& data, int team, std::function<char(void)> alias);
 
 	Character(const Character& other);
 

@@ -72,11 +72,19 @@ void CombatManager::EndTurn(Character* character) {
 void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon, int duration) {
 	weak_ptr<Character> wptr_summon = summon;
 	weak_ptr<Character> owner = _turn_table[_turn_index];
-	_summons.push_back(make_pair(move(summon), make_pair(owner, duration)));
 	int turn = _turn_index + 1 > _turn_table.size() - 1 ? 0 : _turn_index + 1;
+	if (owner.lock()->GetTeam() == 1)
+		_players.insert(std::find_if(_players.begin(), _players.end(),
+			[&owner](const weak_ptr<Character>& wptr) { return wptr.lock().get() == owner.lock().get(); }) + 1,
+			wptr_summon
+		);
+	else
+		_enemies.insert(std::find_if(_enemies.begin(), _enemies.end(),
+			[&owner](const weak_ptr<Character>& wptr) { return wptr.lock().get() == owner.lock().get(); }) + 1,
+			wptr_summon
+		);
+	_summons.push_back(make_pair(move(summon), make_pair(owner, duration)));
 	_turn_table.insert(_turn_table.begin() + turn, wptr_summon);
-
-				// mozda dodati summona v players ili enemies
 }
 
 void CombatManager::CheckSummonLifespan() {
@@ -91,6 +99,17 @@ void CombatManager::CheckSummonLifespan() {
 		_summons.end()
 	);
 	RemoveDeadCharacters();
+}
+
+void CombatManager::RemoveExpiredSummons() {
+	_players.erase(std::remove_if(_players.begin(), _players.end(),
+		[](const weak_ptr<Character>& wptr) { return wptr.expired(); }),
+		_players.end()
+	);
+	_enemies.erase(std::remove_if(_enemies.begin(), _enemies.end(),
+		[](const weak_ptr<Character>& wptr) { return wptr.expired() && dynamic_cast<SummonCharacter*>(wptr.lock().get()); }),
+		_enemies.end()
+	);
 }
 
 void CombatManager::DestroyAllSummons() {
@@ -221,16 +240,29 @@ void CombatManager::GetCharactersBase() {
 }
 
 void CombatManager::ResetCharacterValues() {
+
+	RemoveExpiredSummons();
+
 	// Reset player characters for re-application of spells
+	int sum_cnt = 0;
 	for (int i = 0; i < _players.size(); i++) {
+		if (dynamic_cast<SummonCharacter*>(_players[i].lock().get())) {
+			++sum_cnt;
+			continue;
+		}
 		if (GetTurnCharacter().lock().get() == _players[i].lock().get())
-			*_players[i].lock().get() = _players_base[i];
+			*_players[i].lock().get() = _players_base[i -  sum_cnt];
 	}
 
 	// Reset enemy characters for re-application of spells
+	sum_cnt = 0;
 	for (int i = 0; i < _enemies.size(); i++) {
+		if (dynamic_cast<SummonCharacter*>(_enemies[i].lock().get())) {
+			++sum_cnt;
+			continue;
+		}
 		if (GetTurnCharacter().lock().get() == _enemies[i].lock().get())
-			*_enemies[i].lock().get() = _enemies_base[i];
+			*_enemies[i].lock().get() = _enemies_base[i - sum_cnt];
 	}
 }
 

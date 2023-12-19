@@ -51,23 +51,23 @@ void GameplayStatics::DisplayAllies() {
 
 	system("cls");
 	int idx = 0;
-	for (auto& character : _player_characters)
-		if (character->IsAlive()) {
-			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character->GetCharacterClass()) << " Level " << to_string(character->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character->GetAlias()) << ANSI_COLOR_RESET << ")";
-			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << character->GetHealth().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << character->GetArmor().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << character->GetAP().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << character->GetCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << character->GetCritDmg().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << character->GetSP().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCritDmg().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetArcaneRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetFireRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetLightningRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetColdRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetPoisonRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetNecroticRes() << endl;
+	for (const auto& character : _cm->GetPlayers())
+		if (!character.expired()) {
+			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character.lock()->GetCharacterClass()) << " Level " << to_string(character.lock()->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetHealth().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetArmor().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetAP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetSP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetSpellCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetSpellCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetArcaneRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetFireRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetLightningRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetColdRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetPoisonRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetNecroticRes() << endl;
 			//cout << ANSI_COLOR_CYAN_LIGHT << ""
 			++idx;
 		}
@@ -76,7 +76,7 @@ void GameplayStatics::DisplayAllies() {
 void GameplayStatics::DisplayEnemies() {
 	
 	int idx = 0;
-	for (auto& enemy : _enemies) {
+	for (const auto& enemy : _cm->GetEnemies()) {
 		if (!enemy.expired()) {
 			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(enemy.lock()->GetCharacterClass()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, enemy.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
 			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetHealth().GetActual();

@@ -418,7 +418,8 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 
 void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 	CombatManager& cm = CombatManager::GetInstance();
-	auto summon = make_shared<SummonCharacter>(CharacterData(ESummonClass::FIRE_ELEMENTAL), instigator->GetTeam());
+	vector<weak_ptr<Character>> v = instigator->GetTeam() == 1 ? GameplayStatics::GetPlayerCharacters() : GameplayStatics::GetEnemyCharacters();
+	auto summon = make_shared<SummonCharacter>(CharacterData(ESummonClass::FIRE_ELEMENTAL), instigator->GetTeam(), v);
 	int duration = 2; // REMOVE HARDCODE
 	cm.AddSummonToCombat(move(summon), duration);
 }
