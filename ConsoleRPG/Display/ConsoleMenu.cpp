@@ -1,6 +1,6 @@
 #include "ConsoleMenu.h"
 
-ConsoleMenu::ConsoleMenu(const vector<string>& options)
+ConsoleMenu::ConsoleMenu(const std::vector<string>& options)
     : _options(options) 
 {}
 

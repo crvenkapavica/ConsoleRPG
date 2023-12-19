@@ -13,13 +13,14 @@ struct CharacterStat {
 };
 
 struct Effect_Stat {
-	vector<CharacterStat> _ally_stat;
-	vector<CharacterStat> _enemy_stat;
 
 	Effect_Stat(vector<CharacterStat> ally_stat, vector<CharacterStat> enemy_stat)
 		: _ally_stat(move(ally_stat))
 		, _enemy_stat(move(enemy_stat))
 	{}
+
+	vector<CharacterStat> _ally_stat;
+	vector<CharacterStat> _enemy_stat;
 };
 
 struct EffectParams {
@@ -39,6 +40,15 @@ struct ApplyParams {
 
 struct CombatEffect {
 
+	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params, int duration)
+		: _instigator(instigator)
+		, _targets(targets)
+		, _spell(move(spell))
+		, _apply_params(apply_params)
+		, _effect_params(effect_params)
+		, _duration(duration)
+	{}
+
 	Character* _instigator;
 	std::vector<weak_ptr<Character>> _targets;
 	std::unique_ptr<ActiveSpell> _spell;
@@ -48,13 +58,4 @@ struct CombatEffect {
 
 	int i = 0;
 	int _turn_applied = -1;
-
-	CombatEffect(Character* instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params, int duration)
-		: _instigator(instigator)
-		, _targets(targets)
-		, _spell(move(spell))
-		, _apply_params(apply_params)
-		, _effect_params(effect_params)
-		, _duration(duration)
-	{}
 };

@@ -583,9 +583,6 @@ enum class EItemType2 {
 
 struct grid_node {
 
-	Character* _here;
-	Character* _neighbors[8];
-
 	grid_node()
 		: _here(nullptr)
 	{
@@ -593,15 +590,12 @@ struct grid_node {
 	}
 
 	//void Swap(int x1, int y1, int x2, int y2) // SWAP for possible future TACTICAL MODE
+
+	Character* _here;
+	Character* _neighbors[8];
 };
 
 struct path_node {
-
-	//corresponds to dX and dY directions
-	bool right;
-	bool left;
-	bool down;
-	bool up;
 
 	path_node() : right(0), left(0), up(0), down(0)
 	{}
@@ -625,5 +619,11 @@ struct path_node {
 		default: return false;
 		}
 	}
+
+	//corresponds to dX and dY directions
+	bool right;
+	bool left;
+	bool down;
+	bool up;
 };
 

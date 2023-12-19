@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../RPGTypes.h"
 #include "../Spells/Spell.h"
 #include "../Characters/Character.h"
@@ -10,12 +11,13 @@ public:
 
 	static unique_ptr<PassiveSpell> CreatePassiveSpell(ESpellID id);
 
+	// Apply the passive spell effect
 	virtual void Apply() = 0;
 
+	// Get the event on which the passive triggers
 	inline const ECombatEvent GetOnEvent() const { return _combat_event; }
 
 public:
-
 	Character* _instigator;
 	vector<weak_ptr<Character>> _targets;
 
@@ -23,9 +25,8 @@ protected:
 	ECombatEvent _combat_event;
 };
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class VampiricTouch : public PassiveSpell {
 public:
 	VampiricTouch() : PassiveSpell(ESpellID::VAMPIRIC_TOUCH) {}

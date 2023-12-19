@@ -581,7 +581,6 @@ void MapGenerator::GenerateCharacterGridPositions() {
 		} while (_char_grid[first][second]._here);
 
 		_char_grid[first][second]._here = enemy.second;
-		//_char_grid[first][second]._here->SetAlias(enemy.first);
 		_char_map[enemy.first] = make_pair(first, second);
 	}
 

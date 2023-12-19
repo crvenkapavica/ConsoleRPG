@@ -15,26 +15,28 @@ public:
 
     static unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
 
+    // Apply the effect of the spell
     virtual void Apply(Character* instigator, vector<weak_ptr<Character>>& targets) = 0;
 
     inline const EDamageType GetDamageType() const { return _damage_type; }
     inline const ESpellType GetSpellType() const { return _spell_type; }
 
 protected:
-
-    const EDamageType _damage_type;
-    const ESpellType _spell_type;
-
-protected:
     // Get random damage between spell min and max value at current level
     float GetRandEffectMinMax(Character* character);
+
     // Get random damage between spell min and max value for on aplly effect at current level
     float GetRandOnApplyMinMax(Character* character);
 
+    // Apply resistances, armor reduction, critial chance and other procs and return final damage
     float AdjustDamage(float damage, Character* character);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
     int AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, Character* character, const string& name);
+
+protected:
+    const EDamageType _damage_type;
+    const ESpellType _spell_type;
 };
 
 //============================================================================== MAGIC =============================================================================================

@@ -4,7 +4,6 @@
 #include "../Spells/EffectStructs.h"
 #include "../Characters/PlayerCharacter.h"
 
-
 class Character;
 class SummonCharacter;
 class SpellManager;
@@ -12,7 +11,6 @@ class SpellManager;
 class CombatManager {
 
 public:
-
 	static CombatManager& GetInstance();
 
 	// Set turns for each side and add them to the turn table
@@ -78,7 +76,6 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////////////
 private:
-
 	// Apply the value of the effect to the related targets' stat
 	void ApplyStat(CombatEffect* effect, Character* target, CharacterStat& character_stat, float& _total, bool isOnApply);
 
@@ -129,7 +126,6 @@ private:
 	//////////////////////
 
 private:
-
 	CombatManager() {}
 	CombatManager(const CombatManager&) = delete;
 	CombatManager& operator=(const CombatManager&) = delete;

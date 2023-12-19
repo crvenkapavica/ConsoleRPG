@@ -3,16 +3,8 @@
 #include "RPGTypes.h"
 
 class Resistances {
-private:
-	float	_arcane_res;
-	float	_fire_res;
-	float	_lightning_res;
-	float	_cold_res;
-	float	_poison_res;
-	float	_necrotic_res;
 
 public:
-
 	Resistances();
 	Resistances(float arcane, float fire, float lightning, float cold, float poison, float necrotic);
 
@@ -31,4 +23,12 @@ public:
 	inline void UpdateColdRes(const float value) { _cold_res += value; }
 	inline void UpdatePoisonRes(const float value) { _poison_res += value; }
 	inline void UpdateNecroticRes(const float value) { _necrotic_res += value; }
+
+private:
+	float	_arcane_res;
+	float	_fire_res;
+	float	_lightning_res;
+	float	_cold_res;
+	float	_poison_res;
+	float	_necrotic_res;
 };

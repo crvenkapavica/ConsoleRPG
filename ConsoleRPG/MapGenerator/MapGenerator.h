@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../RPGTypes.h"
 #include "../GameplayStatics.h" 
 
@@ -7,53 +8,56 @@ class PlayerCharacter;
 
 using namespace std;
 
-
 struct distance_node {
-
 	int x;
 	int y;
 	int distance;
 };
 
-
 class MapGenerator {
 
 public:
-	MapGenerator()
-	{}
+	MapGenerator() {}
+
+	void Initialize(vector<PlayerCharacter*> player_characters);
+
+	// Shows the current player position on the map with radius of light_radius
+	void ShowPosition();
+
+	// Shows the portion of the map the player discovered
+	void ShowMap();
+
+	// Handle keypress for direction of movement
+	void HandleMovement();
+
+	// DEBUG
+	/////////////////////////////////
+	void PrintDebugMap();
+
+	void PrintError();
+	/////////////////////////////////
+
+	void DisplayGrid();
+
+	void MoveCharacterOnGrid(Character* character, EDirection direction);
+
+	int GetEnemyIdx(char alias);
+
+	int GetPlayerIdx(char alias);
+
+	void KillEnemy(int idx);
+
+	void KillEnemy(Character* character);
+
+public:
+	Character* GetCharacterFromAlias(char target);
+
+	vector<string> GetCombatDirections(Character* character, OUT map<int, EDirection>& map);
+
+	vector<Character*> GetCharactersInRange(Character* character);
 
 private:
-
-	class vector<PlayerCharacter*> _player_characters;
-
-	char _map[MAX_X][MAX_Y];
-	path_node _nodes[MAX_X][MAX_Y];  // posle sa dynamic sizing trebam koristiti pointera node* i dinamicki alocirati memoriju
-	int _steps[MAX_X][MAX_Y] = { {0} };
-
-	vector<string> _error;
-
-	vector<pair<int, int>> _turn;
-
-	int _step_limit;
-
-	int _moves;
-	int _dir;
-
-	int _dX[4] = { 0, 0, 1, -1 };
-	int _dY[4] = { 1, -1, 0, 0 };
-
-	int _total_steps = 0;
-	int _width = 0;
-
-	char _axis;
-	int _rnd1;
-	int _rnd2;
-	int _rnd_both;
-	int _axis_sides;
-	
-
-private:
-
+	// BFS that generates map
 	void BFS(int x, int y, int step);
 
 	void InitBFS();
@@ -80,24 +84,86 @@ private:
 
 	void MakeDebugMessage(int steps, string func);
 
+	// Makes a random rectangle segment
 	void GetRandomRectangle(int x, int y);
-	
-	// MAP GENERATION ENDS
-	//-----------------------------------------------------------------
-
-	// MAP ITEMS, ENEMIES, POWERUPS
-	// ----------------------------------------------------------------
-private:
-
-	vector<EnemyCharacter*> _enemies;
-
-private:
 
 	void InitEnemies();
 
+	// Spawns enemies on the map and decides their power level
 	void AddRandomMapEnemies();
 
+	// PLAYER SPECIFIC
+	// -------------------------------------------------------------------
+
+	void GetPlayerStartPosition(int& x, int& y);
+
+	void InitPlayer(vector<PlayerCharacter*> player_characters);
+
+	void DisplayErrorMessage(const string& message);
+
+	// Used to display the discovered portion of the map
+	void ExtendMapBorders(int radius);
+
+	void DrawMap(int xs, int xe, int ys, int ye);
+
+	// Gets the color of a specific unit
+	const char* GetMapAnsi(char c);
+
+	// Calclate distance to each node
+	void BFS_Distance(int x, int y, int step);
+
+	void InitDistanceBFS(int x, int y, int step);
+
+	// Move after input
+	void Move(int dir);
+
+	vector<weak_ptr<EnemyCharacter>> GetEnemies(int x, int y);
+
+	// GRID SPECIFIC
+	// -------------------------------------------------------------------
+
+	void DrawGrid();
+
+	// Places each enemy on the [currently] random square on the play grid
+	void GenerateCharacterGridPositions();
+
+	// Adds characters to the play grid
+	void AddCharactersToGrid();
+
+	// Update internal char_grid's neighbours
+	void UpdateCharacterGrid();
+
+	void ClearCharacterGrid();
+
 private:
+	vector<EnemyCharacter*> _enemies;
+
+	class vector<PlayerCharacter*> _player_characters;
+
+	char _map[MAX_X][MAX_Y];
+	path_node _nodes[MAX_X][MAX_Y];  // TODO : use dynamic allocation later
+	int _steps[MAX_X][MAX_Y] = { {0} };
+
+	vector<string> _error;
+
+	vector<pair<int, int>> _turn;
+
+	int _step_limit;
+
+	int _moves;
+	int _dir;
+
+	int _dX[4] = { 0, 0, 1, -1 };
+	int _dY[4] = { 1, -1, 0, 0 };
+
+	int _total_steps = 0;
+	int _width = 0;
+
+	char _axis;
+	int _rnd1;
+	int _rnd2;
+	int _rnd_both;
+	int _axis_sides;
 
 	int _player_x;
 	int _player_y;
@@ -116,54 +182,7 @@ private:
 	vector<map<char, EnemyCharacter*>> _enemy_name_map; 
 
 	int _enemy_index;
-private:
 
-	// PLAYER SPECIFIC
-	// -------------------------------------------------------------------
-
-	void GetPlayerStartPosition(int& x, int& y);
-
-	void InitPlayer(vector<PlayerCharacter*> player_characters);
-
-	void DisplayErrorMessage(const string& message);
-
-	void ExtendMapBorders(int radius);
-
-	void DrawMap(int xs, int xe, int ys, int ye);
-
-	const char* GetMapAnsi(char c);
-
-	void BFS_Distance(int x, int y, int step);
-
-	void InitDistanceBFS(int x, int y, int step);
-
-	// Move after input
-	void Move(int dir);
-
-	vector<weak_ptr<EnemyCharacter>> GetEnemies(int x, int y);
-
-public:
-
-	void Initialize(vector<PlayerCharacter*> player_characters);
-
-	// Shows the current player position on the map with radius of light_radius
-	void ShowPosition();
-
-	// Shows the portion of the map the player discovered
-	void ShowMap();
-
-	// Handle keypress for direction of movement
-	void HandleMovement();
-
-
-	// DEBUG
-	/////////////////////////////////
-	void PrintDebugMap();
-
-	void PrintError();
-	/////////////////////////////////
-
-private:
 	// GRID SPECIFIC
 	// ------------------------------------------------------------------
 	char _grid[21][81];
@@ -180,36 +199,4 @@ private:
 
 	int _dX8[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
 	int _dY8[8] = {0, 1, 1, 1, 0, -1, -1, -1};
-
-private:
-
-	void DrawGrid();
-
-	void GenerateCharacterGridPositions();
-
-	void AddCharactersToGrid();
-
-	void UpdateCharacterGrid();
-
-	void ClearCharacterGrid();
-
-public:
-
-	Character* GetCharacterFromAlias(char target);
-
-	void DisplayGrid();
-
-	void MoveCharacterOnGrid(Character* character, EDirection direction);
-
-	vector<string> GetCombatDirections(Character* character, OUT map<int, EDirection>& map);
-
-	vector<Character*> GetCharactersInRange(Character* character);
-
-	int GetEnemyIdx(char alias);
-
-	int GetPlayerIdx(char alias);
-
-	void KillEnemy(int idx);
-
-	void KillEnemy(Character* character);
 };

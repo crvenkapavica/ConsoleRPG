@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../RPGTypes.h"
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"

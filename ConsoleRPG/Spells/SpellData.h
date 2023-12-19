@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../RPGTypes.h"
 
 struct SpellData {
@@ -11,10 +12,6 @@ struct SpellData {
 	int		_essence_cost; 
 	int		_stamina_cost;
 };
-
-
-
-
 
 struct ActiveConstData {
 	EDamageType _damage_type;

@@ -3,40 +3,50 @@
 #include <windows.h> 
 #include "../RPGTypes.h"
 
-using namespace std;
+using namespace std; // TODO - remove
 
 class ConsoleMenu {
-private:
-    vector<string> _options;
-    vector<string> _last_options;
-    int _index = 0;
-    int _up = 0;
-    int _right = 0;
-    bool _clear = true;
-    bool _back = false;
-
-private:
-    int Prompt();
-    void Display();
-    void ANSI_CURSOR_UP_N(const int n, const bool clear);
-    void ANSI_CURSOR_RIGHT_N(const int n);
 
 public:
-    ConsoleMenu(const vector<string>& options);
+    ConsoleMenu(const std::vector<string>& options);
     ConsoleMenu() {}
 
+    // Return the index of the selected item in the displayed menu(vector)
     int Select();
 
-    inline void SetOptions(const vector<string>& options) { _options = options; }
+    inline void SetOptions(const std::vector<string>& options) { _options = options; }
     inline void SetUp(const int up) { _up = up; }
     inline void SetRight(const int right) { _right = right; }
     void SetClear(const bool clear) { _clear = clear; }
-    inline bool GetBack() { 
+
+    inline bool GetBack() {
         bool b = _back;
         _back = false;
         return b;
     }
+
     void ANSI_CURSOR_DOWN_N(const int n);
+
     void Clear(int lines);
     void ClearRight(int lines);
+
+private:
+    int Prompt();
+
+    void Display();
+
+    void ANSI_CURSOR_UP_N(const int n, const bool clear);
+    void ANSI_CURSOR_RIGHT_N(const int n);
+
+private:
+    std::vector<string> _options;
+    std::vector<string> _last_options;
+
+    int _index = 0;
+    int _up = 0;
+    int _right = 0;
+
+    bool _clear = true;
+
+    bool _back = false;
 };

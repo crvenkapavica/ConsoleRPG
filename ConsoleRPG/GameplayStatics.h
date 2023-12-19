@@ -19,7 +19,6 @@ struct ApplyParams;
 class GameplayStatics {
 
 public:
-
 	static void Initialize(vector<shared_ptr<PlayerCharacter>> players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu);
 
 	static void DisplayAllies();
@@ -97,19 +96,6 @@ public:
 	static int GetRandInt(int a, int b);
 	static float GetRandFloat(float a, float b);
 
-private:
-	static weak_ptr<PlayerCharacter>	_player;
-	static vector<PlayerCharacter*>		_player_characters;
-	static vector<EnemyCharacter*>		_enemy_characters;
-	static SpellManager*				_sm;
-	static CombatManager*				_cm;
-	static MapGenerator*				_map_gen;
-	static ConsoleMenu*					_menu;
-
-	static vector<weak_ptr<EnemyCharacter>>		_enemies;
-	static vector<weak_ptr<PlayerCharacter>>	_players;
-	static stringstream							_combat_log;
-
 public:
 	static std::string GetEnumString(ESpellID _enum);
 	static std::string GetEnumString(ESpellType _enum);
@@ -124,4 +110,17 @@ public:
 
 private:
 	GameplayStatics() = delete;
+
+private:
+	static weak_ptr<PlayerCharacter>	_player;
+	static vector<PlayerCharacter*>		_player_characters;
+	static vector<EnemyCharacter*>		_enemy_characters;
+	static SpellManager* _sm;
+	static CombatManager* _cm;
+	static MapGenerator* _map_gen;
+	static ConsoleMenu* _menu;
+
+	static vector<weak_ptr<EnemyCharacter>>		_enemies;
+	static vector<weak_ptr<PlayerCharacter>>	_players;
+	static stringstream							_combat_log;
 };
