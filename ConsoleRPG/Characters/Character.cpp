@@ -70,6 +70,8 @@ Character::Character(const Character& other)
 	, _spell_crit_damage(other._spell_crit_damage)
 	, _player_attributes(other._player_attributes)
 	, _resistances(other._resistances)
+	, _alias(other._alias)
+	, _team(other._team)
 {}
 
 Character::Character(Character&& other) noexcept 

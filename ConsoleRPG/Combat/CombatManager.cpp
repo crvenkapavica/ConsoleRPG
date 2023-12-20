@@ -78,20 +78,12 @@ void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon, int du
 			[&owner](const weak_ptr<Character>& wptr) { return wptr.lock().get() == owner.lock().get(); }) + 1,
 			wptr_summon
 		);
-		//_players_base.insert(std::find_if(_players_base.begin(), _players_base.end(),
-		//	[&owner](const PlayerCharacter& character) { return &character == dynamic_cast<PlayerCharacter*>(owner.lock().get()); }) + 1,
-		//	*dynamic_cast<PlayerCharacter*>(wptr_summon.lock().get())
-		//);
 	}
 	else {
 		_enemies.insert(std::find_if(_enemies.begin(), _enemies.end(),
 			[&owner](const weak_ptr<Character>& wptr) { return wptr.lock().get() == owner.lock().get(); }) + 1,
 			wptr_summon
 		);
-		//_enemies_base.insert(std::find_if(_enemies_base.begin(), _enemies_base.end(),
-		//	[&owner](const EnemyCharacter& character) { return &character == dynamic_cast<EnemyCharacter*>(owner.lock().get()); }) + 1,
-		//	*wptr_summon.lock().get()
-		//);
 	}
 	_summons.push_back(make_pair(move(summon), make_pair(owner, duration)));
 	_turn_table.insert(_turn_table.begin() + turn, wptr_summon);
@@ -109,17 +101,6 @@ void CombatManager::CheckSummonLifespan() {
 		_summons.end()
 	);
 	RemoveDeadCharacters();
-}
-
-void CombatManager::RemoveExpiredSummons() {
-	_players.erase(std::remove_if(_players.begin(), _players.end(),
-		[](const weak_ptr<Character>& wptr) { return wptr.expired(); }),
-		_players.end()
-	);
-	_enemies.erase(std::remove_if(_enemies.begin(), _enemies.end(),
-		[](const weak_ptr<Character>& wptr) { return wptr.expired() && dynamic_cast<SummonCharacter*>(wptr.lock().get()); }),
-		_enemies.end()
-	);
 }
 
 void CombatManager::DestroyAllSummons() {
@@ -238,18 +219,15 @@ void CombatManager::HandleEffectStat(CombatEffect* effect, Character* target) {
 }
 
 void CombatManager::GetCharactersBase() {
-	for (auto& character : _players) {
-		_players_base.push_back(*dynamic_cast<PlayerCharacter*>(character.lock().get()));
-	}
 
-	for (auto& character : _enemies) {
+	for (auto& character : _players)
+		_players_base.push_back(*dynamic_cast<PlayerCharacter*>(character.lock().get()));
+
+	for (auto& character : _enemies)
 		_enemies_base.push_back(*dynamic_cast<EnemyCharacter*>(character.lock().get()));
-	}
 }
 
 void CombatManager::ResetCharacterValues() {
-
-	//RemoveExpiredSummons();
 
 	// Reset player characters for re-application of spells
 	for (int i = 0; i < _players.size(); i++) {

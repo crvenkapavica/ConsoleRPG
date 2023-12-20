@@ -111,9 +111,6 @@ private:
 	// Checks if the summons lifespan expired and destroys it accordingly
 	void CheckSummonLifespan();
 
-	// Removes dead summons from _players and _enemies vector
-	void RemoveExpiredSummons();
-
 	// Called at the end of combat to destroy all remaining summons
 	void DestroyAllSummons();
 
