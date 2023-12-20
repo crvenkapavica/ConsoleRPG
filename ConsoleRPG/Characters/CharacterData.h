@@ -4,9 +4,6 @@
 #include "../Resistances.h"
 
 struct CharacterData {
-
-	ECharacterClass	_class;
-
 	float _health;
 	float _essence;
 	float _stamina;
@@ -37,9 +34,6 @@ struct CharacterData {
 };
 
 struct PlayerAttributes {
-
-	ECharacterClass	_class;
-
 	Attribute		_strength;
 	Attribute		_agility;
 	Attribute		_intelligence;
@@ -51,8 +45,8 @@ struct PlayerAttributes {
 
 class CharDB {
 public:
-	static std::vector<CharacterData> _data;
-	static std::vector<PlayerAttributes> _attributes;
+	static std::unordered_map<ECharacterClass, CharacterData> _data;
+	static std::unordered_map<ECharacterClass, PlayerAttributes> _attributes;
 private:
 	CharDB() = delete;
 

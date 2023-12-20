@@ -11,21 +11,17 @@ SpellManager& SpellManager::GetInstance() {
 	return _instance;
 }
 
-//shared_ptr<SpellBook> SpellManager::CreateSpellBook(Character* spell_owner, ESpellBookID spellbook_id, int level) {
-//
-//	shared_ptr<SpellBook> spell = SpellBook::CreateSpellBook(spellbook_id, level);
-//	AddSpellToCharacter(spell_owner, spell);
-//
-//	return spell;
-//}
-
 void SpellManager::CreateActiveSpell(Character* spell_owner, ESpellID id) {
+
+	if (id == ESpellID::NONE) return;
 
 	unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(id);
 	spell_owner->AddActiveSpell(spell);
 }
 
 void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
+
+	if (id == ESpellID::NONE) return;
 
 	unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(id);
 	spell_owner->AddPassiveSpell(spell);

@@ -16,10 +16,10 @@ public:
 	Character() = delete;
 
 	// Enemy
-	Character(const CharacterData::EnemyStats& data, char alias);
+	Character(ECharacterClass enemy_class, char alias);
 
 	// Player
-	Character(const CharacterData::PlayerAttributes& attributes, char alias);
+	Character(ECharacterClass player_class, PlayerAttributes attributes, char alias);
 
 	// Summon
 	Character(const CharacterData::SummonData& data, int team, std::function<char(void)> alias);
@@ -102,7 +102,10 @@ protected:
 	Stat _spell_crit_chance;
 	Stat _spell_crit_damage;
 
-	CharacterData::PlayerAttributes	_player_attributes;
+	PlayerAttributes _player_attributes;
+
+	EDamageType	_damage_type;
+
 	Resistances	_resistances;
 
 	char _alias;

@@ -4,30 +4,40 @@
 #include "../Spells/PassiveSpell.h"
 #include "../Spells/ActiveSpell.h"
 
-Character::Character(const CharacterData::EnemyStats& data, char alias)
+Character::Character(ECharacterClass enemy_class, char alias)
 	: _alias(alias)
 	, _team(2)
 {
-	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_attack_power = data._attack_power;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-	_spell_power = data._spell_power;
-	_spell_crit_chance = data._spell_crit_chance;
-	_spell_crit_damage = data._spell_crit_damage;
-	_resistances = data._resistances;
+	_class = enemy_class;
+	_health = CharDB::_data[enemy_class]._health;
+	_essence = CharDB::_data[enemy_class]._essence;
+	_stamina = CharDB::_data[enemy_class]._stamina;
+	_armor = CharDB::_data[enemy_class]._armor;
+	_attack_power = CharDB::_data[enemy_class]._attack_power;
+	_crit_chance = CharDB::_data[enemy_class]._crit_chance;
+	_crit_damage = CharDB::_data[enemy_class]._crit_damage;
+	_spell_power = CharDB::_data[enemy_class]._spell_power;
+	_spell_crit_chance = CharDB::_data[enemy_class]._spell_crit_chance;
+	_spell_crit_damage = CharDB::_data[enemy_class]._spell_crit_damage;
+	_damage_type = CharDB::_data[enemy_class]._damage_type;
+	_resistances = CharDB::_data[enemy_class]._resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, data._spell1.first); // dodati data._spell1.second za level
+	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell1.first);
+	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell2.first);
+	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell3.first);
+	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell4.first);
 
-	//sm.CreatePassiveSpell(this, data._spell1.first);
+	sm.CreateActiveSpell(this, ESpellID::MELEE);
+	sm.CreateActiveSpell(this, ESpellID::RANGED);
+
+	sm.CreatePassiveSpell(this, CharDB::_data[enemy_class]._passive1);
+	sm.CreatePassiveSpell(this, CharDB::_data[enemy_class]._passive2);
+
+	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
 }
 
-Character::Character(const CharacterData::PlayerAttributes& attributes, char alias)
+Character::Character(ECharacterClass player_class, PlayerAttributes attributes, char alias)
 	: _player_attributes(attributes)
 	, _alias(alias)
 	, _team(1)
