@@ -4,6 +4,8 @@
 #include "../Resistances.h"
 
 struct CharacterData {
+	ECharacterClass _class;
+
 	float _health;
 	float _essence;
 	float _stamina;

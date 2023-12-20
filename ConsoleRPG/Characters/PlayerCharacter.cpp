@@ -1,11 +1,12 @@
 #include "PlayerCharacter.h"
 #include "../GameplayStatics.h"
 #include "../Inventory/ItemData.h"
+#include "../Characters/CharacterData.h"
 
 int PlayerCharacter::_n = 0;
 
-PlayerCharacter::PlayerCharacter(const CharacterData& data)
-	: Character(data.GetPlayerAttributeData(), '0' + _n++)
+PlayerCharacter::PlayerCharacter(ECharacterClass character_class)
+	: Character(CharDB::_data[character_class], CharDB::_attributes[character_class], '0' + _n++)
 {
 	InitExperienceForLevel();
 

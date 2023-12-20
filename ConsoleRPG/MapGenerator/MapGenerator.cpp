@@ -498,8 +498,7 @@ void MapGenerator::AddRandomMapEnemies() {
 
 				for (int k = 0; k < rnd_enemies; k++) { 
 					int rnd = rand() % 3 + 50;
-					auto character_class = static_cast<ECharacterClass>(rnd);
-					enemies_vector.push_back(make_shared<EnemyCharacter>(CharacterData(character_class)));
+					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
 					enemies_map['A' + k] = enemies_vector[k].get();
 				}
 				// restart static instance counter

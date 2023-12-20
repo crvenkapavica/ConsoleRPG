@@ -7,7 +7,7 @@ class SummonCharacter;
 class EnemyCharacter : public Character { 
 
 public:
-	EnemyCharacter(const CharacterData& data);
+	EnemyCharacter(ECharacterClass character_class);
 
 	EnemyCharacter(const EnemyCharacter& other);
 

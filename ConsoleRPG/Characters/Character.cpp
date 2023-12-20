@@ -4,66 +4,107 @@
 #include "../Spells/PassiveSpell.h"
 #include "../Spells/ActiveSpell.h"
 
-Character::Character(ECharacterClass enemy_class, char alias)
-	: _alias(alias)
-	, _team(2)
-{
-	_class = enemy_class;
-	_health = CharDB::_data[enemy_class]._health;
-	_essence = CharDB::_data[enemy_class]._essence;
-	_stamina = CharDB::_data[enemy_class]._stamina;
-	_armor = CharDB::_data[enemy_class]._armor;
-	_attack_power = CharDB::_data[enemy_class]._attack_power;
-	_crit_chance = CharDB::_data[enemy_class]._crit_chance;
-	_crit_damage = CharDB::_data[enemy_class]._crit_damage;
-	_spell_power = CharDB::_data[enemy_class]._spell_power;
-	_spell_crit_chance = CharDB::_data[enemy_class]._spell_crit_chance;
-	_spell_crit_damage = CharDB::_data[enemy_class]._spell_crit_damage;
-	_damage_type = CharDB::_data[enemy_class]._damage_type;
-	_resistances = CharDB::_data[enemy_class]._resistances;
-
-	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell1.first);
-	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell2.first);
-	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell3.first);
-	sm.CreateActiveSpell(this, CharDB::_data[enemy_class]._spell4.first);
-
-	sm.CreateActiveSpell(this, ESpellID::MELEE);
-	sm.CreateActiveSpell(this, ESpellID::RANGED);
-
-	sm.CreatePassiveSpell(this, CharDB::_data[enemy_class]._passive1);
-	sm.CreatePassiveSpell(this, CharDB::_data[enemy_class]._passive2);
-
-	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
-}
-
-Character::Character(ECharacterClass player_class, PlayerAttributes attributes, char alias)
+Character::Character(CharacterData data, PlayerAttributes attributes, char alias)
 	: _player_attributes(attributes)
 	, _alias(alias)
 	, _team(1)
 {
-	_class = attributes._class;
-	_crit_damage = 2.f;
-	_crit_chance = 0.07f;
-	_spell_crit_damage = 2.5f;
-	_spell_crit_chance = 0.07f;
+	_class = data._class;
+	_health = data._health;
+	_essence = data._essence;
+	_stamina = data._stamina;
+	_armor = data._armor;
+	_attack_power = data._attack_power;
+	_crit_chance = data._crit_chance;
+	_crit_damage = data._crit_damage;
+	_spell_power = data._spell_power;
+	_spell_crit_chance = data._spell_crit_chance;
+	_spell_crit_damage = data._spell_crit_damage;
+	_damage_type = data._damage_type;
+	_resistances = data._resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
+	sm.CreateActiveSpell(this, data._spell1.first);
+	sm.CreateActiveSpell(this, data._spell2.first);
+	sm.CreateActiveSpell(this, data._spell3.first);
+	sm.CreateActiveSpell(this, data._spell4.first);
+
 	sm.CreateActiveSpell(this, ESpellID::MELEE);
 	sm.CreateActiveSpell(this, ESpellID::RANGED);
 
+	sm.CreatePassiveSpell(this, data._passive1.first);
+	sm.CreatePassiveSpell(this, data._passive2.first);
+
+	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
+
+
+	// For player Characters
 	InitStatsPerAttribute();
 	InitStats();
 }
 
-Character::Character(const CharacterData::SummonData& data, int team, std::function<char(void)> alias)
+Character::Character(CharacterData data, char alias)
+	: _alias(alias)
+	, _team(2)
+{
+	_class = data._class;
+	_health = data._health;
+	_essence = data._essence;
+	_stamina = data._stamina;
+	_armor = data._armor;
+	_attack_power = data._attack_power;
+	_crit_chance = data._crit_chance;
+	_crit_damage = data._crit_damage;
+	_spell_power = data._spell_power;
+	_spell_crit_chance = data._spell_crit_chance;
+	_spell_crit_damage = data._spell_crit_damage;
+	_damage_type = data._damage_type;
+	_resistances = data._resistances;
+
+	SpellManager& sm = SpellManager::GetInstance();
+	sm.CreateActiveSpell(this, data._spell1.first);
+	sm.CreateActiveSpell(this, data._spell2.first);
+	sm.CreateActiveSpell(this, data._spell3.first);
+	sm.CreateActiveSpell(this, data._spell4.first);
+
+	sm.CreateActiveSpell(this, ESpellID::MELEE);
+	sm.CreateActiveSpell(this, ESpellID::RANGED);
+
+	sm.CreatePassiveSpell(this, data._passive1.first);
+	sm.CreatePassiveSpell(this, data._passive2.first);
+
+	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
+}
+
+Character::Character(CharacterData data, int team, std::function<char(void)> alias)
 	: _alias(alias())
 	, _team(team)
 {
+	_class = data._class;
 	_health = data._health;
-	_min_damage = data._min_dmg;
-	_max_damage = data._max_dmg;
+	_essence = data._essence;
+	_stamina = data._stamina;
 	_armor = data._armor;
+	_attack_power = data._attack_power;
+	_crit_chance = data._crit_chance;
+	_crit_damage = data._crit_damage;
+	_spell_power = data._spell_power;
+	_spell_crit_chance = data._spell_crit_chance;
+	_spell_crit_damage = data._spell_crit_damage;
+	_damage_type = data._damage_type;
+	_resistances = data._resistances;
+
+	SpellManager& sm = SpellManager::GetInstance();
+	sm.CreateActiveSpell(this, data._spell1.first);
+	sm.CreateActiveSpell(this, data._spell2.first);
+	sm.CreateActiveSpell(this, data._spell3.first);
+	sm.CreateActiveSpell(this, data._spell4.first);
+
+	sm.CreateActiveSpell(this, ESpellID::MELEE);
+	sm.CreateActiveSpell(this, ESpellID::RANGED);
+
+	sm.CreatePassiveSpell(this, data._passive1.first);
+	sm.CreatePassiveSpell(this, data._passive2.first);
 }
 
 Character::Character(const Character& other)
@@ -79,6 +120,7 @@ Character::Character(const Character& other)
 	, _spell_crit_chance(other._spell_crit_chance)
 	, _spell_crit_damage(other._spell_crit_damage)
 	, _player_attributes(other._player_attributes)
+	, _damage_type(other._damage_type)
 	, _resistances(other._resistances)
 	, _alias(other._alias)
 	, _team(other._team)

@@ -15,14 +15,14 @@ class Character {
 public:
 	Character() = delete;
 
-	// Enemy
-	Character(ECharacterClass enemy_class, char alias);
-
 	// Player
-	Character(ECharacterClass player_class, PlayerAttributes attributes, char alias);
+	Character(CharacterData data, PlayerAttributes attributes, char alias);
+
+	// Enemy
+	Character(CharacterData data, char alias);
 
 	// Summon
-	Character(const CharacterData::SummonData& data, int team, std::function<char(void)> alias);
+	Character(CharacterData data, int team, std::function<char(void)> alias);
 
 	Character(const Character& other);
 
@@ -86,36 +86,18 @@ public:
 		//void OnStatChanged();
 	};
 
-protected:
+public:
+	void UpdateAttribute(Attribute& attribute, int amount);
 
-	ECharacterClass	_class;
-	
-	Stat _health;
-	Stat _essence;
-	Stat _stamina;
+	void AddActiveSpell(unique_ptr<ActiveSpell>& spell);
+	void AddPassiveSpell(unique_ptr<PassiveSpell>& spell);
 
-	Stat _armor;
-	Stat _attack_power;
-	Stat _crit_chance;
-	Stat _crit_damage; 
-	Stat _spell_power;
-	Stat _spell_crit_chance;
-	Stat _spell_crit_damage;
+	inline vector<unique_ptr<ActiveSpell>>& GetActiveSpells() { return _active_spells; }
+	inline vector<unique_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
 
-	PlayerAttributes _player_attributes;
-
-	EDamageType	_damage_type;
-
-	Resistances	_resistances;
-
-	char _alias;
-	int _team;
-
-	int	 _lvl = 1;
-
-	bool _bIsInCombat = false;
-	bool _bIsAlive = true;
-	bool _bIsOnTurn = false;
+	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
+	void RemoveEffectById(ESpellID effect_id);
+	inline const vector<ESpellID>& GetEffectIds() { return _effect_ids; }
 
 public:
 	inline Stat& GetHealth() { return _health; }
@@ -130,18 +112,23 @@ public:
 	inline Stat& GetSpellCritDmg() { return _spell_crit_damage; }
 	inline ECharacterClass GetCharacterClass() { return _class; }
 
-public:
-	void UpdateAttribute(Attribute& attribute, int amount);
+	inline const ECharacterClass GetClass() const { return _class; }
+	inline const char GetAlias() const { return _alias; }
+	inline void SetAlias(char value) { _alias = value; }
+	inline const int GetLevel() const { return _lvl; }
+	inline const bool IsInCombat() const { return _bIsInCombat; }
+	inline const bool IsAlive() const { return _bIsAlive; }
+	inline const bool IsOnTurn() const { return _bIsOnTurn; }
+	inline const int GetTeam() const { return _team; }
+	inline void SetIsOnTurn(bool value) { _bIsOnTurn = value; }
+	inline void SetIsInCombat(bool in_combat) { _bIsInCombat = in_combat; }
+	inline const PlayerAttributes& GetPlayerAttributes() { return _player_attributes; }
+	inline Resistances& GetResistances() { return _resistances; }
 
-	void AddActiveSpell(unique_ptr<ActiveSpell>& spell);
-	void AddPassiveSpell(unique_ptr<PassiveSpell>& spell);
+	// Check if targets Health is below 0 and mark it as bIsAlive = false
+	bool CheckDie();
 
-	inline vector<unique_ptr<ActiveSpell>>& GetActiveSpells() { return _active_spells; }
-	inline vector<unique_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
-
-	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
-	void RemoveEffectById(ESpellID effect_id);
-	inline const vector<ESpellID>& GetEffectIds() { return _effect_ids; }
+	void EndTurn();
 
 public:
 	// EXTRA STATS COMBAT
@@ -188,6 +175,45 @@ public:
 	///////////////////////////////////////////
 
 protected:
+	// Apply stat change per attribute
+	void InitStats();
+
+	// Set stat change per attribute for each class
+	void InitStatsPerAttribute();
+
+	void InitStatsPerAttirbute_Barbarian();
+	void InitStatsPerAttribute_Warlock();
+
+protected:
+	ECharacterClass	_class;
+
+	Stat _health;
+	Stat _essence;
+	Stat _stamina;
+
+	Stat _armor;
+	Stat _attack_power;
+	Stat _crit_chance;
+	Stat _crit_damage;
+	Stat _spell_power;
+	Stat _spell_crit_chance;
+	Stat _spell_crit_damage;
+
+	PlayerAttributes _player_attributes;
+
+	EDamageType	_damage_type;
+
+	Resistances	_resistances;
+
+	char _alias;
+	int _team;
+
+	int	 _lvl = 1;
+
+	bool _bIsInCombat = false;
+	bool _bIsAlive = true;
+	bool _bIsOnTurn = false;
+
 	std::vector<unique_ptr<ActiveSpell>> _active_spells;
 	std::vector<unique_ptr<PassiveSpell>> _passive_spells;
 
@@ -197,35 +223,6 @@ protected:
 	using stat_pair = std::vector<pair<Stat*, float>>;
 	// Stat change per attribute
 	std::vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
-
-protected:
-
-	void InitStats();
-
-	// Set stat change per attribute for each class
-	void InitStatsPerAttribute();
-
-	void InitStatsPerAttirbute_Barbarian();
-	void InitStatsPerAttribute_Warlock();
-
-public:
-
-	// Check if targets Health is below 0 and mark it as bIsAlive = false
-	bool CheckDie();
-
-	void EndTurn();
-
-	inline const char GetAlias() const { return _alias; }
-	inline void SetAlias(char value) { _alias = value; }
-	inline const int GetLevel() const { return _lvl; }
-	inline const bool IsInCombat() const { return _bIsInCombat; }
-	inline const bool IsAlive() const { return _bIsAlive; }
-	inline const bool IsOnTurn() const { return _bIsOnTurn; }
-	inline const int GetTeam() const { return _team; }
-	inline void SetIsOnTurn(bool value) { _bIsOnTurn = value; }
-	inline void SetIsInCombat(bool in_combat) { _bIsInCombat = in_combat; }
-	inline const CharacterData::PlayerAttributes& GetPlayerAttributes() { return _player_attributes; }
-	inline Resistances& GetResistances() { return _resistances; }
 
 public:
 	void OnMagicReceivedBegin();

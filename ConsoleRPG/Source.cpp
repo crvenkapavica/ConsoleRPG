@@ -111,10 +111,10 @@ int main() {
     //4 -> -2
     //5 -> -5
 
-    auto player_main = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::BARBARIAN));
-    auto player_warlock = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
-    auto player_warlock1 = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
-    auto player_warlock2 = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
+    auto player_main = make_shared<PlayerCharacter>(ECharacterClass::BARBARIAN);
+    auto player_warlock = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
+    auto player_warlock1 = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
+    auto player_warlock2 = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
    // auto player_warlock3 = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
 
     player_characters = { player_main, player_warlock, player_warlock1, player_warlock2 };

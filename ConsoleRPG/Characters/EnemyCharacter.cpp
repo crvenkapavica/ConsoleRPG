@@ -3,11 +3,12 @@
 #include "../GameplayStatics.h"
 #include "../Spells/SpellManager.h"
 #include "../Combat/CombatManager.h"
+#include "../Characters/CharacterData.h"
 
 int EnemyCharacter::_n = 0;
 
-EnemyCharacter::EnemyCharacter(const CharacterData& data)
-	: Character(data.GetEnemyData(), 'A' + _n++)
+EnemyCharacter::EnemyCharacter(ECharacterClass character_class)
+	: Character(CharDB::_data[character_class], 'A' + _n++)
 	, _level(0)
 	, _count(0)
 {}

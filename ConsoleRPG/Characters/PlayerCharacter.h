@@ -9,7 +9,7 @@ class PlayerCharacter : public Character {
 
 public:
 
-	PlayerCharacter(const CharacterData& data);
+	PlayerCharacter(ECharacterClass character_class);
 
 	PlayerCharacter(const PlayerCharacter& other);
 
