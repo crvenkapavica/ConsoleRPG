@@ -297,9 +297,9 @@ int GameplayStatics::DisplayCombatMenu(Character* character) {
 	else if (dynamic_cast<SummonCharacter*>(character)) {
 		SummonCharacter* summon = static_cast<SummonCharacter*>(character);
 		switch (summon->GetClass()) {
-		case ESummonClass::FIRE_ELEMENTAL:
-		case ESummonClass::WATER_ELEMENTAL:
-		case ESummonClass::ARCANE_ELEMENTAL:
+		case ECharacterClass::FIRE_ELEMENTAL:
+		case ECharacterClass::WATER_ELEMENTAL:
+		case ECharacterClass::ARCANE_ELEMENTAL:
 			v = { "CAST SPELL", "MOVE", "END TURN" };
 			return InteractiveDisplay(v);
 		default:

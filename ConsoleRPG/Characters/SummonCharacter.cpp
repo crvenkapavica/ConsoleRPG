@@ -12,7 +12,6 @@ SummonCharacter::SummonCharacter(const CharacterData& data, int team, vector<wea
 		return team == 1 ? static_cast<char>('0' + v.size()) : static_cast<char>('A' + v.size());
 		})
 	, _class(data.GetSummonData()._class)
-	, _summon_type(data.GetSummonData()._summon_type)
 	, _dmg_type(data.GetSummonData()._dmg_type)
 	, _spell(data.GetSummonData()._spell)
 {}

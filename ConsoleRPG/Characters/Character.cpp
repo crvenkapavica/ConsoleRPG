@@ -74,11 +74,8 @@ Character::Character(const Character& other)
 	, _team(other._team)
 {}
 
-Character::Character(Character&& other) noexcept 
-{}
-
-Character::~Character() 
-{}
+Character::Character(Character&& other) noexcept {}
+Character::~Character() {}
 
 void Character::Stat::UpdateBase(const float value) {
 	_base += value;
@@ -136,7 +133,7 @@ void Character::InitStats() {
 				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._endurance + _i_end));
 }
 
-void Character::UpdateAttribute(Attribute& attribute, const int amount) {
+void Character::UpdateAttribute(Attribute& attribute, int amount) {
 
 	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx)
 		if (_stat_per_attribute[idx].first == &attribute) 

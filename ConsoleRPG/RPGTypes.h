@@ -225,9 +225,22 @@ enum class ESpellRarity {
 
 enum class ECharacterClass {
 	NONE,
+
+	// PLAYER
 	BARBARIAN,
 	WARLOCK,
 	MAGE,
+
+	// SUMMON
+	WATER_ELEMENTAL,
+	FIRE_ELEMENTAL,
+	ARCANE_ELEMENTAL,
+	CHAOS_GOLEM,
+	MAGMA_GOLEM,
+	NATURES_PROPHET,
+	DEATH_PROPHET,
+
+	// ENEMY
 	ENEMY_LVL1 = 50,
 	ENEMY_LVL2,
 	ENEMY_LVL3,
@@ -256,25 +269,6 @@ enum class ECharacterClass {
 	ENEMY_MAGE_LVL2,
 	ENEMY_WARLOCK_LVL1,
 	ENEMY_WARLOCK_LVL2
-};
-
-enum class ESummonClass {
-	WATER_ELEMENTAL,
-	FIRE_ELEMENTAL,
-	ARCANE_ELEMENTAL,
-
-	CHAOS_GOLEM,
-	MAGMA_GOLEM,
-
-	NATURES_PROPHET,
-	DEATH_PROPHET
-};
-
-enum class ESummonType {
-	MAGIC,
-	MELEE,
-	RANGED,
-	HEALER
 };
 
 enum class EDirection {

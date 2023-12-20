@@ -119,7 +119,7 @@ int main() {
 
     player_characters = { player_main, player_warlock, player_warlock1, player_warlock2 };
 
-    //auto summon = make_unique<SummonCharacter>(CharacterData(ESummonClass::ARCANE_ELEMENTAL));
+    //auto summon = make_unique<SummonCharacter>(CharacterData(ECharacterClass::ARCANE_ELEMENTAL));
 
     SpellManager& sm = SpellManager::GetInstance();
 

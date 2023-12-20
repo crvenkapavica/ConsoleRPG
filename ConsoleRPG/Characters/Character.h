@@ -13,7 +13,6 @@ class ActiveSpell;
 class Character {
 
 public:
-
 	Character() = delete;
 
 	// Enemy
@@ -28,6 +27,8 @@ public:
 	Character(const Character& other);
 
 	Character(Character&& other) noexcept;
+
+	virtual ~Character();
 
 	Character& operator=(const Character& other) {
 		// "reset" all stats that effects might modify
@@ -44,8 +45,6 @@ public:
 		_resistances = other._resistances;
 		return *this;
 	}
-
-	virtual ~Character();
 
 	virtual void TakeTurn() = 0;
 
@@ -106,17 +105,16 @@ protected:
 	CharacterData::PlayerAttributes	_player_attributes;
 	Resistances	_resistances;
 
-	char _alias = 'X';
+	char _alias;
+	int _team;
 
 	int	 _lvl = 1;
+
 	bool _bIsInCombat = false;
 	bool _bIsAlive = true;
 	bool _bIsOnTurn = false;
 
-	int _team = -1;
-
 public:
-	
 	inline Stat& GetHealth() { return _health; }
 	inline Stat& GetEssence() { return _essence; }
 	inline Stat& GetStamina() { return _stamina; }
@@ -130,8 +128,7 @@ public:
 	inline ECharacterClass GetCharacterClass() { return _class; }
 
 public:
-	
-	void UpdateAttribute(Attribute& attribute, const int amount);
+	void UpdateAttribute(Attribute& attribute, int amount);
 
 	void AddActiveSpell(unique_ptr<ActiveSpell>& spell);
 	void AddPassiveSpell(unique_ptr<PassiveSpell>& spell);
@@ -144,7 +141,6 @@ public:
 	inline const vector<ESpellID>& GetEffectIds() { return _effect_ids; }
 
 public:
-
 	// EXTRA STATS COMBAT
 	//////////////////////////////////////////
 	// item attributes
@@ -189,14 +185,10 @@ public:
 	///////////////////////////////////////////
 
 protected:
-
-	// Active spells
-	//vector<shared_ptr<SpellBook>> _spellbooks;
-
 	std::vector<unique_ptr<ActiveSpell>> _active_spells;
 	std::vector<unique_ptr<PassiveSpell>> _passive_spells;
 
-	// ID's of spell effects
+	// ID's (tags) of spell effects
 	std::vector<ESpellID> _effect_ids;
 
 	using stat_pair = std::vector<pair<Stat*, float>>;
@@ -207,7 +199,7 @@ protected:
 
 	void InitStats();
 
-	// Set stat gain / loss per attribute for each class
+	// Set stat change per attribute for each class
 	void InitStatsPerAttribute();
 
 	void InitStatsPerAttirbute_Barbarian();
@@ -215,6 +207,7 @@ protected:
 
 public:
 
+	// Check if targets Health is below 0 and mark it as bIsAlive = false
 	bool CheckDie();
 
 	void EndTurn();
