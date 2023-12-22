@@ -78,10 +78,10 @@
     <ClCompile Include="Spells\ActiveSpell.cpp">
       <Filter>Source Files\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory\Item.cpp">
+    <ClCompile Include="Items\Item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory\ItemData.cpp">
+    <ClCompile Include="Items\ItemData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Characters\SummonCharacter.cpp">
@@ -137,10 +137,10 @@
     <ClInclude Include="Characters\CharacterData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory\Item.h">
+    <ClInclude Include="Items\Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory\ItemData.h">
+    <ClInclude Include="Items\ItemData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Characters\SummonCharacter.h">

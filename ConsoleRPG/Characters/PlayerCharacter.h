@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Character.h"
-#include "../Inventory/Item.h"
+#include "../Items/Item.h"
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"
 

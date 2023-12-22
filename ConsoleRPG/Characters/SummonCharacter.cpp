@@ -4,22 +4,37 @@
 #include "EnemyCharacter.h"
 #include "CharacterData.h"
 
-SummonCharacter::SummonCharacter(ECharacterClass character_class, int team, vector<weak_ptr<Character>>& v)
-	: Character(CharDB::_data[character_class], team, [team, &v]() {
-		char c = team == 1 ? '0' : 'A';
-		for (int i = 0; i < v.size(); i++)
-			if (team == 1) { if (v[i].lock()->GetAlias() != c + i) return static_cast<char>(c + i); }
-			else if (v[i].lock()->GetAlias() != c + i) { /*++EnemyCharacter::_n;*/ return static_cast<char>(c + i); };
-		return team == 1 ? static_cast<char>('0' + v.size()) : static_cast<char>('A' + v.size());
-		})
+int SummonCharacter::_p_n = 0;
+int SummonCharacter::_e_n = 0;
+
+SummonCharacter::SummonCharacter(ECharacterClass character_class, int team)
+	: Character(CharDB::_data[character_class], team, [team]() { return team == 1 ? '0' + PlayerCharacter::_n + _p_n++ : 'A' + EnemyCharacter::_n + _e_n++; })
 {}
+
+SummonCharacter::SummonCharacter(const SummonCharacter& other)
+	: Character(other)
+{
+	//if (_team == 1)
+	//	++_p_n;
+	//else
+	//	++_e_n;
+}
+
+SummonCharacter::SummonCharacter(SummonCharacter&& other) noexcept
+	: Character(other)
+{
+	if (_team == 1)
+		++_p_n;
+	else
+		++_e_n;
+}
 
 SummonCharacter::~SummonCharacter()
 {
-	if (_team == 1) 
-		--PlayerCharacter::_n;
+	if (_team == 1)
+		--_p_n;
 	else
-		--EnemyCharacter::_n;
+		--_e_n;
 }
 
 void SummonCharacter::TakeTurn() {

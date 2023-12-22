@@ -4,9 +4,17 @@
 
 class SummonCharacter : public Character {
 public:
-	SummonCharacter(ECharacterClass character_class, int team, vector<weak_ptr<Character>>& v);
+	SummonCharacter(ECharacterClass character_class, int team);
+
+	SummonCharacter(const SummonCharacter& other);
+	
+	SummonCharacter(SummonCharacter&& other) noexcept;
 
 	~SummonCharacter();
 
 	virtual void TakeTurn() override;
+
+private:
+	static int _p_n;
+	static int _e_n;
 };

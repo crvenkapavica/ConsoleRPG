@@ -94,7 +94,7 @@ void SendAltEnter() {
 //}
 
 
-#include "Inventory/ItemData.h"
+#include "Items/ItemData.h"
 #include "Characters/SummonCharacter.h"
 int main() {
 

@@ -10,7 +10,7 @@
 #include "Resistances.h"
 #include "Spells/EffectStructs.h"
 #include "Spells/ActiveSpell.h"
-#include "Inventory/Item.h"
+#include "Items/Item.h"
 
 weak_ptr<PlayerCharacter> GameplayStatics::_player;
 vector<PlayerCharacter*> GameplayStatics::_player_characters;
@@ -71,6 +71,28 @@ void GameplayStatics::DisplayAllies() {
 			//cout << ANSI_COLOR_CYAN_LIGHT << ""
 			++idx;
 		}
+
+	idx = 0;
+	for (const auto& summon : _cm->GetSummons())
+		if (summon && summon->GetTeam() == 1) {
+			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(summon->GetCharacterClass()) << " Level " << to_string(summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, summon->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << summon->GetHealth().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << summon->GetArmor().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetAP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << summon->GetCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << summon->GetCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetSP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << summon->GetSpellCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << summon->GetSpellCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetArcaneRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetFireRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetLightningRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetColdRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetPoisonRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetNecroticRes() << endl;
+			//cout << ANSI_COLOR_CYAN_LIGHT << ""
+			++idx;
+		}
 }
 
 void GameplayStatics::DisplayEnemies() {
@@ -96,6 +118,28 @@ void GameplayStatics::DisplayEnemies() {
 			++idx;
 		}
 	}
+
+	idx = 0;
+	for (const auto& summon : _cm->GetSummons())
+		if (summon && summon->GetTeam() == 2) {
+			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(summon->GetCharacterClass()) << " Level " << to_string(summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, summon->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << summon->GetHealth().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << summon->GetArmor().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetAP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << summon->GetCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << summon->GetCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetSP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << summon->GetSpellCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << summon->GetSpellCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetArcaneRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetFireRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetLightningRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetColdRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetPoisonRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << summon->GetResistances().GetNecroticRes() << endl;
+			//cout << ANSI_COLOR_CYAN_LIGHT << ""
+			++idx;
+		}
 }
 
 int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool clear) {
@@ -559,7 +603,9 @@ void GameplayStatics::DisplayCombatLog() {
 
 	cout << ANSI_CURSOR_UP(50);
 	int e_size = static_cast<int>(count_if(_enemies.begin(), _enemies.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return !wptr.expired(); }));
-	_menu->ANSI_CURSOR_DOWN_N(static_cast<int>(_players.size() + e_size));
+	int s_size = static_cast<int>(_cm->GetSummons().size());
+	//s_size += static_cast<int>(count_if(_cm->GetSummons().begin(), _cm->GetSummons().end(), [](const shared_ptr<Character>& summon) { return summon.get(); }));
+	_menu->ANSI_CURSOR_DOWN_N(static_cast<int>(_players.size() + e_size + s_size));
 	cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
 	cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << endl << CURSOR_LOG_RIGHT;
 	cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << endl;
@@ -573,13 +619,9 @@ void GameplayStatics::DisplayCombatLog() {
 		cout << CURSOR_LOG_RIGHT << lines[i];
 	}
 
-	MoveCursorToCombatLog();
-}
-
-void GameplayStatics::MoveCursorToCombatLog() {
+	// Move Menu below grid
 	cout << ANSI_CURSOR_UP(50);
-	int e_size = static_cast<int>(count_if(_enemies.begin(), _enemies.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return !wptr.expired(); }));
-	_menu->ANSI_CURSOR_DOWN_N(21 + e_size + static_cast<int>(_players.size()));
+	_menu->ANSI_CURSOR_DOWN_N(21 + e_size + s_size + static_cast<int>(_players.size()));
 }
 
 void GameplayStatics::ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index) {

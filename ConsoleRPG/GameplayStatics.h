@@ -75,7 +75,6 @@ public:
 
 	static stringstream& GetCombatLogStream() { return _combat_log; }
 	static void DisplayCombatLog();
-	static void MoveCursorToCombatLog();
 	static void ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
 
 	static vector<weak_ptr<Character>> GetPlayerCharacters();

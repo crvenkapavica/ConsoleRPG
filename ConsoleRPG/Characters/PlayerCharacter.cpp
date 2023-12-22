@@ -1,6 +1,6 @@
 #include "PlayerCharacter.h"
 #include "../GameplayStatics.h"
-#include "../Inventory/ItemData.h"
+#include "../Items/ItemData.h"
 #include "../Characters/CharacterData.h"
 
 int PlayerCharacter::_n = 0;

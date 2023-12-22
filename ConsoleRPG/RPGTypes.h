@@ -41,7 +41,7 @@ class Character;
 #define CHAR_GRID_Y ((GRID_Y - 1) / 8)
 
 #define MAX_LVL 75
-#define NUM_PLYR_CLASSES 1
+#define NUM_PLAYER_CLASSES 1
 #define NUM_ENEMY_CLASSES 1
 
 #define ITEM_TYPES 6
@@ -591,8 +591,7 @@ struct grid_node {
 
 struct path_node {
 
-	path_node() : right(0), left(0), up(0), down(0)
-	{}
+	path_node() : right(0), left(0), up(0), down(0) {}
 
 	bool& operator[](const int& idx) {
 		switch (idx) {

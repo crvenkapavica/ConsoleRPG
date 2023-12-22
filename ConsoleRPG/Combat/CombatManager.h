@@ -3,9 +3,10 @@
 #include "../RPGTypes.h"
 #include "../Spells/EffectStructs.h"
 #include "../Characters/PlayerCharacter.h"
+#include "../Characters/EnemyCharacter.h"
+#include "../Characters/SummonCharacter.h"
 
 class Character;
-class SummonCharacter;
 class SpellManager;
 
 class CombatManager {
@@ -25,7 +26,7 @@ public:
 	void EndTurn(Character* character);
 	
 	// Add a summoned unit (from spell or item) to the combat and turn order
-	void AddSummonToCombat(shared_ptr<SummonCharacter> character, int duration);
+	void AddSummonToCombat(shared_ptr<SummonCharacter> character);
 
 	// Gets the turn table aliases for printing turn order
 	void DisplayTurnOrder();
@@ -41,6 +42,8 @@ public:
 	inline const vector<weak_ptr<Character>> GetPlayers() const { return _players; }
 
 	inline const vector<weak_ptr<Character>> GetEnemies() const { return _enemies; }
+
+	inline const vector<shared_ptr<Character>> GetSummons() const { return _summons; }
 
 	// Flaggs all characters with HP < 0 with bIsAlive = false
 	void FlagDeadCharacters();
@@ -108,12 +111,6 @@ private:
 	// Called when the character with the passive was being instigated on
 	void TriggerPassiveEffects(Character* character, Character* instigator, ECombatEvent on_event);
 
-	// Checks if the summons lifespan expired and destroys it accordingly
-	void CheckSummonLifespan();
-
-	// Called at the end of combat to destroy all remaining summons
-	void DestroyAllSummons();
-
 	//=====  EVENTS ===== //
 	///////////////////////
 
@@ -144,7 +141,8 @@ private:
 	vector<weak_ptr<Character>> _enemies;
 	vector<EnemyCharacter> _enemies_base;
 
-	vector<pair<shared_ptr<SummonCharacter>, pair<weak_ptr<Character>, int>>> _summons;
+	vector<shared_ptr<Character>> _summons;
+	vector<SummonCharacter> _summons_base;
 
 	vector<pair<int, unique_ptr<CombatEffect>>> _combat_effects;
 
@@ -154,5 +152,5 @@ private:
 
 	int _turn = 0;
 
-	bool bDeadOnTurn = false;
+	bool _bDeadOnTurn = false;
 };

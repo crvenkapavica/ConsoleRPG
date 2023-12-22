@@ -127,7 +127,8 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 		} while (any_of(targets.begin(), targets.end(), [&](const std::weak_ptr<Character>& wptr) { return enemies[rnd].expired() || enemies[rnd].lock().get() == wptr.lock().get(); }));
 		targets.push_back(enemies[rnd]);
 	}
-	sort(targets.begin(), targets.end(), [&](const std::weak_ptr<Character>& a, const std::weak_ptr<Character>& b) { 
+	sort(targets.begin(), targets.end(), 
+		[&](const std::weak_ptr<Character>& a, const std::weak_ptr<Character>& b) { 
 		if (a.lock() && b.lock())
 			if (a.lock()->GetAlias() < b.lock()->GetAlias()) return true;
 		return false;
@@ -415,13 +416,10 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 //============================================================================== SUMMON =============================================================================================
 //==================================================================================================================================================================================
 
-
 void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 	CombatManager& cm = CombatManager::GetInstance();
-	vector<weak_ptr<Character>> v = instigator->GetTeam() == 1 ? GameplayStatics::GetPlayerCharacters() : GameplayStatics::GetEnemyCharacters();
-	auto summon = make_shared<SummonCharacter>(ECharacterClass::FIRE_ELEMENTAL, instigator->GetTeam(), v);
-	int duration = 2; // REMOVE HARDCODE
-	cm.AddSummonToCombat(move(summon), duration);
+	auto summon = make_shared<SummonCharacter>(ECharacterClass::FIRE_ELEMENTAL, instigator->GetTeam());
+	cm.AddSummonToCombat(summon);
 }
 
 

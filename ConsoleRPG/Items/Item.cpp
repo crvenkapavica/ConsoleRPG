@@ -1,7 +1,7 @@
 #include "Item.h"
 #include "ItemData.h"
 #include "../GameplayStatics.h"
-#include "../Inventory/ItemData.h"
+#include "../Items/ItemData.h"
 #include "../Characters/Character.h"
 #include "../Characters/PlayerCharacter.h"
 
