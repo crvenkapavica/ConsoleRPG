@@ -19,7 +19,7 @@ struct ApplyParams;
 class GameplayStatics {
 
 public:
-	static void Initialize(vector<shared_ptr<PlayerCharacter>> players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu);
+	static void Initialize(const vector<shared_ptr<PlayerCharacter>>&& players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu);
 
 	static void DisplayAllies();
 	static void DisplayEnemies();
@@ -41,7 +41,7 @@ public:
 	//static void DisplaySomeSpellMenu();
 	static void DisplayPlayerStats();
 
-	static void InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemies);
+	static void InitiateCombatMode(const vector<weak_ptr<EnemyCharacter>>&& enemies);
 	static void ExitCombatMode();
 	static void ResetCombatVariables();
 
@@ -112,8 +112,7 @@ private:
 
 private:
 	static weak_ptr<PlayerCharacter>	_player;
-	static vector<PlayerCharacter*>		_player_characters;
-	static vector<EnemyCharacter*>		_enemy_characters;
+	static vector<shared_ptr<PlayerCharacter>>		_player_characters;
 	static SpellManager* _sm;
 	static CombatManager* _cm;
 	static MapGenerator* _map_gen;

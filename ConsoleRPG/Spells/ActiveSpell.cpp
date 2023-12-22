@@ -419,7 +419,9 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 	CombatManager& cm = CombatManager::GetInstance();
 	auto summon = make_shared<SummonCharacter>(ECharacterClass::FIRE_ELEMENTAL, instigator->GetTeam());
-	cm.AddSummonToCombat(summon);
+	auto& s = GameplayStatics::GetCombatLogStream();
+	s << "MAKE SHARED ENEMY = " << PlayerCharacter::_n << "   MAKE_SHARED SUMMON = " << SummonCharacter::_e_n << endl;
+	cm.AddSummonToCombat(move(summon));
 }
 
 

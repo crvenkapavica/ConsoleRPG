@@ -34,14 +34,10 @@ PlayerCharacter::PlayerCharacter(const PlayerCharacter& other)
 
 PlayerCharacter::PlayerCharacter(PlayerCharacter&& other) noexcept
 	: Character(other)
-{
-	++_n;
-}
+{}
 
 PlayerCharacter::~PlayerCharacter() 
-{ 
-	--_n; 
-}
+{}
 
 void PlayerCharacter::ReceiveExperience(const int experience) {
 	_experience += experience;

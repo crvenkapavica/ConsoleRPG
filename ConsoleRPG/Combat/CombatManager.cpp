@@ -25,6 +25,11 @@ void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vec
 
 	OnCombatBegin();
 	OnCycleBegin();
+
+	_players.reserve(4);
+	_players_base.reserve(4);
+	_summons.reserve(10);			// currently cannot overflow 10 summons altogether cause of alias. can potentially change.
+	_summons_base.reserve(10);
 }
 
 void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
@@ -67,9 +72,13 @@ void CombatManager::EndTurn(Character* character) {
 }
 
 void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon) {
+	auto& s = GameplayStatics::GetCombatLogStream();
 	weak_ptr<Character> wptr_summon = summon; 
+	s << "WPTR ENEMY = " << PlayerCharacter::_n << "   WPTR SUMMON = " << SummonCharacter::_e_n << endl;
 	_summons_base.push_back(*summon);
+	s << "BASE PUSH ENEMY = " << PlayerCharacter::_n << "   BASE PUSH SUMMON = " << SummonCharacter::_e_n << endl;
 	_summons.push_back(move(summon));
+	s << "SUMMONS PUSH ENEMY = " << PlayerCharacter::_n << "   SUMMONS PUSH SUMMON = " << SummonCharacter::_e_n << endl << endl;
 	_turn_table.insert(_turn_table.begin() + _turn_index + 1, wptr_summon);
 }
 

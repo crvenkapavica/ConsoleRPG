@@ -10,11 +10,19 @@ public:
 	
 	SummonCharacter(SummonCharacter&& other) noexcept;
 
+	//SummonCharacter& operator*() {
+	//	_team == 1 ? --_p_n : --_e_n;
+	//	return *this;
+	//}
+
 	~SummonCharacter();
 
 	virtual void TakeTurn() override;
 
-private:
+
 	static int _p_n;
 	static int _e_n;
+
+private:
+
 };

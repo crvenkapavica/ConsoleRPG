@@ -5,16 +5,15 @@
 #include "Characters/SummonCharacter.h"
 #include "Spells/SpellData.h"
 #include "Spells/SpellManager.h"
+#include "Spells/EffectStructs.h"
+#include "Spells/ActiveSpell.h"
 #include "Combat/CombatManager.h"
 #include "MapGenerator/MapGenerator.h"
 #include "Resistances.h"
-#include "Spells/EffectStructs.h"
-#include "Spells/ActiveSpell.h"
 #include "Items/Item.h"
 
 weak_ptr<PlayerCharacter> GameplayStatics::_player;
-vector<PlayerCharacter*> GameplayStatics::_player_characters;
-vector<EnemyCharacter*> GameplayStatics::_enemy_characters;
+vector<shared_ptr<PlayerCharacter>> GameplayStatics::_player_characters;
 SpellManager* GameplayStatics::_sm = nullptr;
 CombatManager* GameplayStatics::_cm = nullptr;
 MapGenerator* GameplayStatics::_map_gen = nullptr;
@@ -24,7 +23,7 @@ vector<weak_ptr<PlayerCharacter>> GameplayStatics::_players;
 stringstream GameplayStatics::_combat_log; 
 
 
-void GameplayStatics::Initialize(vector<shared_ptr<PlayerCharacter>> players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu) {
+void GameplayStatics::Initialize(const vector<shared_ptr<PlayerCharacter>>&& players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu) {
 
 	cout << fixed << setprecision(2);
 
@@ -33,15 +32,17 @@ void GameplayStatics::Initialize(vector<shared_ptr<PlayerCharacter>> players, Sp
 	for (auto& p : players)
 		_players.push_back(weak_ptr<PlayerCharacter>(p));
 
-	for (auto& p : players)
-		_player_characters.push_back(p.get());
+	_player_characters = players;
+
+	//for (auto& p : players)
+	//	_player_characters.push_back(p.get());
 
 	_sm = spell_manager;
 	_cm = combat_manager;
 	_map_gen = map_generator;
 	_menu = menu;
 
-	_map_gen->Initialize(_player_characters);
+	_map_gen->Initialize(_players);
 	//_map_gen->PrintDebugMap();
 
 	DisplayMapMenu();
@@ -267,14 +268,11 @@ void GameplayStatics::RedrawGameScreen() {
 }
 
 
-void GameplayStatics::InitiateCombatMode(vector<weak_ptr<EnemyCharacter>> enemies) {
+void GameplayStatics::InitiateCombatMode(const vector<weak_ptr<EnemyCharacter>>&& enemies) {
 
 	_player.lock()->SetIsInCombat(true);
 
 	_enemies = enemies;
-
-	for (auto& enemy : _enemies)
-		_enemy_characters.push_back(enemy.lock().get());
 
 	_cm->SetTurns(_players, _enemies);
 	_cm->StartCombat(_player);
@@ -317,8 +315,8 @@ void GameplayStatics::ExitCombatMode() {
 }
 
 void GameplayStatics::ResetCombatVariables() {
-	_enemy_characters.clear();
 	_enemies.clear();
+	PlayerCharacter::_n = _player_characters.size();
 	auto& s = GetCombatLogStream();
 	s.clear();
 	s.str("");
@@ -610,7 +608,7 @@ void GameplayStatics::DisplayCombatLog() {
 	cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << endl << CURSOR_LOG_RIGHT;
 	cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << endl;
 
-	const int max_lines = 19;
+	const int max_lines = 49;
 	vector<string> lines;
 	int start_index;
 	ExtractLinesFromStringstream(lines, max_lines, _combat_log, start_index);

@@ -19,7 +19,7 @@ class MapGenerator {
 public:
 	MapGenerator() {}
 
-	void Initialize(vector<PlayerCharacter*> player_characters);
+	void Initialize(const vector<weak_ptr<PlayerCharacter>>& player_characters);
 
 	// Shows the current player position on the map with radius of light_radius
 	void ShowPosition();
@@ -97,7 +97,7 @@ private:
 
 	void GetPlayerStartPosition(int& x, int& y);
 
-	void InitPlayer(vector<PlayerCharacter*> player_characters);
+	void InitPlayer(const vector<weak_ptr<PlayerCharacter>>& player_characters);
 
 	void DisplayErrorMessage(const string& message);
 
@@ -138,7 +138,7 @@ private:
 private:
 	vector<EnemyCharacter*> _enemies;
 
-	class vector<PlayerCharacter*> _player_characters;
+	class vector<weak_ptr<PlayerCharacter>> _player_characters;
 
 	char _map[MAX_X][MAX_Y];
 	path_node _nodes[MAX_X][MAX_Y];  // TODO : use dynamic allocation later

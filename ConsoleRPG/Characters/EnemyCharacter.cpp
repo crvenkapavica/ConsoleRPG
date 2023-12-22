@@ -21,14 +21,10 @@ EnemyCharacter::EnemyCharacter(EnemyCharacter&& other) noexcept
 	: Character(other)
 	, _level(other._level)
 	, _count(other._count)
-{
-	++_n;
-}
+{}
 
 EnemyCharacter::~EnemyCharacter()
-{
-	--_n;
-}
+{}
 
 void EnemyCharacter::TakeTurn() {
 

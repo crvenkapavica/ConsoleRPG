@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void MapGenerator::Initialize(vector<PlayerCharacter*> player_characters) {
+void MapGenerator::Initialize(const vector<weak_ptr<PlayerCharacter>>& player_characters) {
 
 	InitBFS();
 	InitPlayer(player_characters);
@@ -291,18 +291,18 @@ void MapGenerator::GetPlayerStartPosition(int& x, int& y) {
 	} while (_map[x][y] != PATH);
 }
 
-void MapGenerator::InitPlayer(vector<PlayerCharacter*> player_characters) {
+void MapGenerator::InitPlayer(const vector<weak_ptr<PlayerCharacter>>& player_characters) {
 
 	_player_characters = move(player_characters);
 	GetPlayerStartPosition(_player_x, _player_y);
 	
-	_border_x = _player_x - static_cast<int>(_player_characters[0]->GetLighRadius()) + 1;
+	_border_x = _player_x - static_cast<int>(_player_characters[0].lock()->GetLighRadius()) + 1;
 	if (_border_x < 2) _border_x = 2;
-	_border_x_end = _player_x + static_cast<int>(_player_characters[0]->GetLighRadius());
+	_border_x_end = _player_x + static_cast<int>(_player_characters[0].lock()->GetLighRadius());
 	if (_border_x_end > MAX_X - 2) _border_x_end = MAX_X - 2;
-	_border_y = _player_y - static_cast<int>(_player_characters[0]->GetLighRadius()) + 1;
+	_border_y = _player_y - static_cast<int>(_player_characters[0].lock()->GetLighRadius()) + 1;
 	if (_border_y < 2) _border_y = 2;
-	_border_y_end = _player_y + static_cast<int>(_player_characters[0]->GetLighRadius());
+	_border_y_end = _player_y + static_cast<int>(_player_characters[0].lock()->GetLighRadius());
 	if (_border_y_end > MAX_Y - 2) _border_y_end = MAX_Y - 2;
 	
 	_map[_player_x][_player_y] = PLAYER;
@@ -356,7 +356,7 @@ void MapGenerator::ShowPosition() {
 
 	system("cls");
 
-	int radius = static_cast<int>(_player_characters[0]->GetLighRadius());
+	int radius = static_cast<int>(_player_characters[0].lock()->GetLighRadius());
 
 	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
 	DrawMap(_player_x - radius + 1, _player_x + radius, _player_y - radius + 1, _player_y + radius);
@@ -410,7 +410,7 @@ void MapGenerator::HandleMovement() {
 
 void MapGenerator::Move(int dir) {
 
-	int radius = static_cast<int>(_player_characters[0]->GetLighRadius());
+	int radius = static_cast<int>(_player_characters[0].lock()->GetLighRadius());
 
 	_map[_player_x][_player_y] = PATH;
 
@@ -585,7 +585,7 @@ void MapGenerator::GenerateCharacterGridPositions() {
 
 	//add player characters
 	for (int i = 0; i < _player_characters.size(); i++) {
-		_char_grid[i][0]._here = _player_characters[i];
+		_char_grid[i][0]._here = _player_characters[i].lock().get();
 		_char_map['0' + i] = make_pair(i, 0);
 	}
 }
@@ -704,7 +704,7 @@ int MapGenerator::GetEnemyIdx(char alias) {
 int MapGenerator::GetPlayerIdx(char alias) {
 	auto character = GetCharacterFromAlias(alias);
 	for (int i = 0; i < _player_characters.size(); i++) {
-		if (character == _player_characters[i])
+		if (character == _player_characters[i].lock().get())
 			return i;
 	}
 	return -1;

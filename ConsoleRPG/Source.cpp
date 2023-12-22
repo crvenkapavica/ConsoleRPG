@@ -102,7 +102,7 @@ int main() {
     //Sleep(100);
     //SendAltEnter();
 
-    vector<shared_ptr<PlayerCharacter>> player_characters;
+    
 
 
     //0 -> 1
@@ -117,7 +117,7 @@ int main() {
     auto player_warlock2 = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
    // auto player_warlock3 = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
 
-    player_characters = { player_main, player_warlock, player_warlock1, player_warlock2 };
+    vector<shared_ptr<PlayerCharacter>> player_characters = { player_main, player_warlock, player_warlock1, player_warlock2 };
 
     //auto summon = make_unique<SummonCharacter>(CharacterData(ECharacterClass::ARCANE_ELEMENTAL));
 
@@ -142,7 +142,7 @@ int main() {
 	ConsoleMenu menu;
 	MapGenerator map_gen;
 
-	GameplayStatics::Initialize(player_characters, &sm, &cm, &map_gen, &menu);
+	GameplayStatics::Initialize(move(player_characters), &sm, &cm, &map_gen, &menu);
 }
 
 

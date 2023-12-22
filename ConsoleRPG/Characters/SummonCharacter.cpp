@@ -13,28 +13,15 @@ SummonCharacter::SummonCharacter(ECharacterClass character_class, int team)
 
 SummonCharacter::SummonCharacter(const SummonCharacter& other)
 	: Character(other)
-{
-	//if (_team == 1)
-	//	++_p_n;
-	//else
-	//	++_e_n;
-}
+{}
 
 SummonCharacter::SummonCharacter(SummonCharacter&& other) noexcept
 	: Character(other)
-{
-	if (_team == 1)
-		++_p_n;
-	else
-		++_e_n;
-}
+{}
 
 SummonCharacter::~SummonCharacter()
 {
-	if (_team == 1)
-		--_p_n;
-	else
-		--_e_n;
+	_p_n = _e_n = 0;
 }
 
 void SummonCharacter::TakeTurn() {
