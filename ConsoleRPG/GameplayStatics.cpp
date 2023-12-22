@@ -34,9 +34,6 @@ void GameplayStatics::Initialize(const vector<shared_ptr<PlayerCharacter>>&& pla
 
 	_player_characters = players;
 
-	//for (auto& p : players)
-	//	_player_characters.push_back(p.get());
-
 	_sm = spell_manager;
 	_cm = combat_manager;
 	_map_gen = map_generator;
@@ -316,7 +313,6 @@ void GameplayStatics::ExitCombatMode() {
 
 void GameplayStatics::ResetCombatVariables() {
 	_enemies.clear();
-	PlayerCharacter::_n = _player_characters.size();
 	auto& s = GetCombatLogStream();
 	s.clear();
 	s.str("");

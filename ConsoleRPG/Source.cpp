@@ -102,24 +102,14 @@ int main() {
     //Sleep(100);
     //SendAltEnter();
 
-    
+    auto dltr = [](PlayerCharacter* ptr) { PlayerCharacter::_n--; delete ptr; };
 
+    std::shared_ptr<PlayerCharacter> player_main(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
+    std::shared_ptr<PlayerCharacter> player_warlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
+    std::shared_ptr<PlayerCharacter> player_warlock2(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
+    std::shared_ptr<PlayerCharacter> player_warlock3(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
 
-    //0 -> 1
-    //2 -> 1
-    //3 -> 0
-    //4 -> -2
-    //5 -> -5
-
-    auto player_main = make_shared<PlayerCharacter>(ECharacterClass::BARBARIAN);
-    auto player_warlock = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
-    auto player_warlock1 = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
-    auto player_warlock2 = make_shared<PlayerCharacter>(ECharacterClass::WARLOCK);
-   // auto player_warlock3 = make_shared<PlayerCharacter>(CharacterData(ECharacterClass::WARLOCK));
-
-    vector<shared_ptr<PlayerCharacter>> player_characters = { player_main, player_warlock, player_warlock1, player_warlock2 };
-
-    //auto summon = make_unique<SummonCharacter>(CharacterData(ECharacterClass::ARCANE_ELEMENTAL));
+    vector<shared_ptr<PlayerCharacter>> player_characters = { player_main, player_warlock1, player_warlock2, player_warlock3 };
 
     SpellManager& sm = SpellManager::GetInstance();
 
@@ -128,12 +118,6 @@ int main() {
     sm.CreateActiveSpell(player_main.get(), ESpellID::EXPOSURE);
     sm.CreateActiveSpell(player_main.get(), ESpellID::MOLTEN_ARMOR);
     sm.CreateActiveSpell(player_main.get(), ESpellID::SUM_FIRE_ELE);
-	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::FIREBALL, 0);
-	//spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::STONESKIN, 0);
- //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::ARCANE_INFUSION, 0);
- //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::BLOOD_RAIN, 0);
- //   spell_manager.CreateSpellBook(player_main.get(), ESpellBookID::VISCOUS_ACID, 0);
- //   spell_manager.CreateSpellBook(player_warlock.get(), ESpellBookID::STONESKIN, 0);
 
     //pasive
     sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);

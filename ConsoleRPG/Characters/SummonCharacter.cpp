@@ -20,9 +20,7 @@ SummonCharacter::SummonCharacter(SummonCharacter&& other) noexcept
 {}
 
 SummonCharacter::~SummonCharacter()
-{
-	_p_n = _e_n = 0;
-}
+{}
 
 void SummonCharacter::TakeTurn() {
 
