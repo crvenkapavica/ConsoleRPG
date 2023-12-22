@@ -32,8 +32,8 @@ PlayerCharacter::PlayerCharacter(const PlayerCharacter& other)
 	: Character(other) 
 {}
 
-PlayerCharacter::PlayerCharacter(PlayerCharacter&& other) noexcept
-	: Character(other)
+PlayerCharacter::PlayerCharacter(PlayerCharacter&& player) noexcept
+	: Character(player)
 {}
 
 PlayerCharacter::~PlayerCharacter() 

@@ -11,7 +11,7 @@ public:
 
 	EnemyCharacter(const EnemyCharacter& other);
 
-	EnemyCharacter(EnemyCharacter&& other) noexcept;
+	EnemyCharacter(EnemyCharacter&& enemy) noexcept;
 
 	~EnemyCharacter();
 

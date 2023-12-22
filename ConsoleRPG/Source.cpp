@@ -106,10 +106,8 @@ int main() {
 
     std::shared_ptr<PlayerCharacter> player_main(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
     std::shared_ptr<PlayerCharacter> player_warlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
-    std::shared_ptr<PlayerCharacter> player_warlock2(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
-    std::shared_ptr<PlayerCharacter> player_warlock3(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
 
-    vector<shared_ptr<PlayerCharacter>> player_characters = { player_main, player_warlock1, player_warlock2, player_warlock3 };
+    vector<shared_ptr<PlayerCharacter>> player_characters = { player_main, player_warlock1 };
 
     SpellManager& sm = SpellManager::GetInstance();
 
@@ -126,7 +124,9 @@ int main() {
 	ConsoleMenu menu;
 	MapGenerator map_gen;
 
-	GameplayStatics::Initialize(move(player_characters), &sm, &cm, &map_gen, &menu);
+    // later we dont send none of these initializers to GS. 
+    // have to implement a starting routine and a game loop. at the starting routine we get the instances.
+	GameplayStatics::Initialize(move(player_characters), sm, cm, move(map_gen), menu);
 }
 
 

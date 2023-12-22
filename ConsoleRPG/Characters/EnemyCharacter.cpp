@@ -15,12 +15,14 @@ EnemyCharacter::EnemyCharacter(ECharacterClass character_class)
 
 EnemyCharacter::EnemyCharacter(const EnemyCharacter& other)
 	: Character(other)
+	, _level(0)
+	, _count(0)
 {}
 
-EnemyCharacter::EnemyCharacter(EnemyCharacter&& other) noexcept
-	: Character(other)
-	, _level(other._level)
-	, _count(other._count)
+EnemyCharacter::EnemyCharacter(EnemyCharacter&& enemy) noexcept
+	: Character(enemy)
+	, _level(enemy._level)
+	, _count(enemy._count)
 {}
 
 EnemyCharacter::~EnemyCharacter()

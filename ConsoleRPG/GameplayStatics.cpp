@@ -23,7 +23,7 @@ vector<weak_ptr<PlayerCharacter>> GameplayStatics::_players;
 stringstream GameplayStatics::_combat_log; 
 
 
-void GameplayStatics::Initialize(const vector<shared_ptr<PlayerCharacter>>&& players, SpellManager* spell_manager, CombatManager* combat_manager, MapGenerator* map_generator, ConsoleMenu* menu) {
+void GameplayStatics::Initialize(vector<shared_ptr<PlayerCharacter>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu) {
 
 	cout << fixed << setprecision(2);
 
@@ -32,12 +32,13 @@ void GameplayStatics::Initialize(const vector<shared_ptr<PlayerCharacter>>&& pla
 	for (auto& p : players)
 		_players.push_back(weak_ptr<PlayerCharacter>(p));
 
-	_player_characters = players;
+	_player_characters = players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
+								   // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
 
-	_sm = spell_manager;
-	_cm = combat_manager;
-	_map_gen = map_generator;
-	_menu = menu;
+	_sm = &spell_manager;
+	_cm = &combat_manager;
+	_map_gen = &map_generator;
+	_menu = &menu;
 
 	_map_gen->Initialize(_players);
 	//_map_gen->PrintDebugMap();

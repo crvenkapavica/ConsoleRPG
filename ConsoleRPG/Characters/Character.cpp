@@ -126,7 +126,14 @@ Character::Character(const Character& other)
 	, _team(other._team)
 {}
 
-Character::Character(Character&& other) noexcept {}
+Character::Character(Character&& character) noexcept
+	: _class(character.class)
+	, _player_attributes(character._player_attributes)
+	, _damage_type(character._damage_type)
+	, _alias(character._alias)
+	, _team(character._team)
+{}
+
 Character::~Character() {}
 
 void Character::Stat::UpdateBase(const float value) {

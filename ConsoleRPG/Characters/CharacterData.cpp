@@ -10,7 +10,7 @@ CharDB::CharacterDataConstructor::CharacterDataConstructor() {
 	_data[ECharacterClass::WARLOCK] = { ECharacterClass::WARLOCK,					0.f,	0.f,		0.f,		0.f,		0.f,		0.03f,		140.f,		0.f,	0.08f,		200.f,		EDamageType::PHYSICAL,		{0.f,	0.f,	0.f,	0.f,	0.f,	0.f},	{ESpellID::NONE, 0},				{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
 
 			// SUMMONS
-	_data[ECharacterClass::FIRE_ELEMENTAL] = { ECharacterClass::FIRE_ELEMENTAL,		300.f,	0.f,		0.f,		0.f,		0.f,		0.03f,		140.f,		0.f,	0.08f,		200.f,		EDamageType::PHYSICAL,		{0.f,	0.f,	0.f,	0.f,	0.f,	0.f},	{ESpellID::FIREBALL, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
+	_data[ECharacterClass::FIRE_ELEMENTAL] = { ECharacterClass::FIRE_ELEMENTAL,		300.f,	0.f,		0.f,		0.f,		0.f,		0.03f,		140.f,		0.f,	0.08f,		200.f,		EDamageType::FIRE,			{0.f,	0.f,	0.f,	0.f,	0.f,	0.f},	{ESpellID::FIREBALL, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
 
 			// ENEMIES
 	_data[ECharacterClass::ENEMY_LVL1] = { ECharacterClass::ENEMY_LVL1,				35.f,	20.f,		0.f,		25.f,		3.8f,		0.05f,		180.f,		10.f,	0.04f,		200.f,		EDamageType::PHYSICAL,		{0.f,	0.f,	0.f,	0.f,	0.f,	0.f},	{ESpellID::SUM_FIRE_ELE, 0},		{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };

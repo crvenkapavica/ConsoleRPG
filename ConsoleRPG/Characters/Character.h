@@ -26,7 +26,7 @@ public:
 
 	Character(const Character& other);
 
-	Character(Character&& other) noexcept;
+	Character(Character&& character) noexcept;
 
 	virtual ~Character();
 

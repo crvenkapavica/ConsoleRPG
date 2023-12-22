@@ -13,7 +13,7 @@ public:
 
 	PlayerCharacter(const PlayerCharacter& other);
 
-	PlayerCharacter(PlayerCharacter&& other) noexcept;
+	PlayerCharacter(PlayerCharacter&& player) noexcept;
 
 	~PlayerCharacter();
 
