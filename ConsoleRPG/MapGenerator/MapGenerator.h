@@ -41,7 +41,7 @@ public:
 
 	void MoveCharacterOnGrid(Character* character, EDirection direction);
 
-	void AddCharacterToCharGrid(Character* instigator, Character* summon);
+	bool AddCharacterToCharGrid(Character* instigator, Character* summon);
 
 	int GetEnemyIdx(char alias);
 
@@ -135,7 +135,7 @@ private:
 	// Update internal char_grid's neighbours
 	void UpdateCharGrid();
 
-	void ClearCharacterGrid();
+	void ClearCharGrid();
 
 private:
 	vector<EnemyCharacter*> _enemies;

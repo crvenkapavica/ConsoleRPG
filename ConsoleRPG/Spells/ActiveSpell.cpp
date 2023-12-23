@@ -417,12 +417,19 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 //==================================================================================================================================================================================
 
 void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
-	CombatManager& cm = CombatManager::GetInstance();
 	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(ECharacterClass::FIRE_ELEMENTAL, instigator->GetTeam()), dltr);
-	GameplayStatics::AddCharacterToCharGrid(instigator, summon.get()); // replace with direct map_gen call after making map_GEN singleton
+	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon.get())) { // replace with direct map_gen call after making map_GEN singleton
+		CombatManager& cm = CombatManager::GetInstance();
+		cm.AddSummonToCombat(move(summon));
+	}
+	else {
+		auto& s = GameplayStatics::GetCombatLogStream();
+		s << COLOR_ERROR << "Summon failed. No space." << ANSI_COLOR_RESET << "\n";
+	}
 
-	cm.AddSummonToCombat(move(summon));
+	// make a generic Summon spell that accepts ECharacterClass as parameter and we also need instigator for the team, and just return that
+	// no need to make a seperate class for each different summon. Unless they will act differently which should be encoded in the CharDB itself for now.
 }
 
 

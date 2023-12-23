@@ -439,7 +439,7 @@ void MapGenerator::Move(int dir) {
 
 	if (_map[_player_x][_player_y] == ENEMY) {
 
-		ClearCharacterGrid();
+		ClearCharGrid();
 		DrawGrid();
 
 		auto enemies = GetEnemies(_player_x, _player_y);
@@ -602,7 +602,7 @@ void MapGenerator::AddCharactersToGrid() {
 		}
 }
 
-void MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+bool MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summon) {
 
 	int x = _char_map.at(instigator->GetAlias()).first;
 	int y = _char_map.at(instigator->GetAlias()).second;
@@ -630,6 +630,8 @@ void MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summ
 	_grid[xx * 4 + 2][yy * 8 + 4] = summon->GetAlias();
 
 	UpdateCharGrid();
+
+	return bHasSpawned;
 }
 
 void MapGenerator::UpdateCharGrid() {
@@ -654,7 +656,7 @@ void MapGenerator::UpdateCharGrid() {
 			}
 }
 
-void MapGenerator::ClearCharacterGrid() {
+void MapGenerator::ClearCharGrid() {
 	for (int i = 0; i < CHAR_GRID_X; i++)
 		for (int j = 0; j < CHAR_GRID_Y; j++) {
 			_char_grid[i][j]._here = nullptr;
