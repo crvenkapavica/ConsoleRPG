@@ -133,7 +133,7 @@ private:
 	void AddCharactersToGrid();
 
 	// Update internal char_grid's neighbours
-	void UpdateCharacterGrid();
+	void UpdateCharGrid();
 
 	void ClearCharacterGrid();
 

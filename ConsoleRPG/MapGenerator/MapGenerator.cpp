@@ -603,9 +603,36 @@ void MapGenerator::AddCharactersToGrid() {
 }
 
 void MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+
+	int x = _char_map.at(instigator->GetAlias()).first;
+	int y = _char_map.at(instigator->GetAlias()).second;
+
+	int xx = 0, yy = 0;
+	bool bHasSpawned = false;
+	for (int i = 0; i < 8; i++) {
+		xx = x + _dX8[i];
+		yy = y + _dY8[i];
+
+		if (xx >= 0 && xx < CHAR_GRID_X && yy >= 0 && yy < CHAR_GRID_Y) {
+			if (!_char_grid[xx][yy]._here) {
+				_char_grid[xx][yy]._here = summon;
+				bHasSpawned = true;
+				break;
+			}
+		}
+	}
+	
+	if (bHasSpawned) {
+		_char_map[_char_grid[xx][yy]._here->GetAlias()].first = xx;
+		_char_map[_char_grid[xx][yy]._here->GetAlias()].second = yy;
+	}
+
+	_grid[xx * 4 + 2][yy * 8 + 4] = summon->GetAlias();
+
+	UpdateCharGrid();
 }
 
-void MapGenerator::UpdateCharacterGrid() {
+void MapGenerator::UpdateCharGrid() {
 
 	for (int i = 0; i < CHAR_GRID_X; ++i) 
 		for (int j = 0; j < CHAR_GRID_Y; ++j) 
@@ -615,7 +642,11 @@ void MapGenerator::UpdateCharacterGrid() {
 				int y = j + _dY8[k];
 
 				if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
-					_char_grid[i][j]._neighbors[k] = _char_grid[x][y]._here;
+
+					if (_char_grid[i][j]._neighbors[k] && !_char_grid[x][y]._here)
+						_char_grid[x][y]._here = _char_grid[i][j]._neighbors[k];
+
+					else _char_grid[i][j]._neighbors[k] = _char_grid[x][y]._here;
 				}
 				else {
 					_char_grid[i][j]._neighbors[k] = nullptr;
@@ -658,7 +689,7 @@ void MapGenerator::MoveCharacterOnGrid(Character* character, EDirection directio
 	_grid[x * 4 + 2][y * 8 + 4] = ' ';
 
 	// Update _char_grid
-	UpdateCharacterGrid();
+	UpdateCharGrid();
 }
 
 vector<string> MapGenerator::GetCombatDirections(Character* character, OUT map<int, EDirection>& map) {
@@ -693,8 +724,7 @@ vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
 }
 
 int MapGenerator::GetEnemyIdx(char alias) {
-	if (UPPER(alias) < 'A' || UPPER(alias) > 'Z') 
-		return -1;
+	if (UPPER(alias) < 'A' || UPPER(alias) > 'Z') return -1;
 	if (auto character = GetCharacterFromAlias(UPPER(alias))) {
 		for (int i = 0; i < _enemy_map.at(_enemy_index).size(); i++) {
 			if (character == _enemy_map.at(_enemy_index)[i].get())
@@ -714,12 +744,11 @@ int MapGenerator::GetPlayerIdx(char alias) {
 }
 
 void MapGenerator::KillEnemy(int idx) {
-
 	if (Character* character = _enemy_map.at(_enemy_index)[idx].get()) {
 		int x = _char_map.at(character->GetAlias()).first;
 		int y = _char_map.at(character->GetAlias()).second;
 		_char_grid[x][y]._here = nullptr;
-		UpdateCharacterGrid();	// to make it more efficient we can just update the killed characters neighbours' neighbours
+		UpdateCharGrid();	// to make it more efficient we can just update the killed characters neighbours' neighbours
 		_grid[x * 4 + 2][y * 8 + 4] = ' ';
 
 		_char_map.erase(character->GetAlias());
