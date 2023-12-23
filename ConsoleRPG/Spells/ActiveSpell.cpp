@@ -420,6 +420,8 @@ void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character
 	CombatManager& cm = CombatManager::GetInstance();
 	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(ECharacterClass::FIRE_ELEMENTAL, instigator->GetTeam()), dltr);
+	GameplayStatics::AddCharacterToCharGrid(instigator, summon.get()); // replace with direct map_gen call after making map_GEN singleton
+
 	cm.AddSummonToCombat(move(summon));
 }
 

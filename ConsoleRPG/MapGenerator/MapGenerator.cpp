@@ -602,6 +602,9 @@ void MapGenerator::AddCharactersToGrid() {
 		}
 }
 
+void MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+}
+
 void MapGenerator::UpdateCharacterGrid() {
 
 	for (int i = 0; i < CHAR_GRID_X; ++i) 

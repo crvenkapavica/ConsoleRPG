@@ -687,6 +687,20 @@ void GameplayStatics::EndTurn(Character* character) {
 	_cm->EndTurn(character);
 }
 
+
+//// REMOVE AFTER MAKING MAP_GEN A SINGLETON
+
+
+void GameplayStatics::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+	_map_gen->AddCharacterToCharGrid(instigator, summon);
+}
+
+
+
+////////////////////////////////////////////////
+
+
+
 string GameplayStatics::GetAliasColor(char alias) {
 	if (UPPER(alias) >= 'A' && UPPER(alias) <= 'Z') return COLOR_ENEMY;
 	else return COLOR_PLAYER;

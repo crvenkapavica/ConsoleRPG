@@ -127,7 +127,7 @@ Character::Character(const Character& other)
 {}
 
 Character::Character(Character&& character) noexcept
-	: _class(character.class)
+	: _class(character._class)
 	, _player_attributes(character._player_attributes)
 	, _damage_type(character._damage_type)
 	, _alias(character._alias)

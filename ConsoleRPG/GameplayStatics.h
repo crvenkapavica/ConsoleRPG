@@ -87,6 +87,8 @@ public:
 
 	static void EndTurn(Character* character);
 
+	static void AddCharacterToCharGrid(Character* instigator, Character* summon);
+
 	static string GetAliasColor(char alias);
 
 	static string string2(float f);

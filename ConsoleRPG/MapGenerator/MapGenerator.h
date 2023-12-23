@@ -41,6 +41,8 @@ public:
 
 	void MoveCharacterOnGrid(Character* character, EDirection direction);
 
+	void AddCharacterToCharGrid(Character* instigator, Character* summon);
+
 	int GetEnemyIdx(char alias);
 
 	int GetPlayerIdx(char alias);
