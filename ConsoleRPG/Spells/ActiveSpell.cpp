@@ -145,6 +145,21 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 	return r;
 }
 
+bool ActiveSpell::Summon(ECharacterClass character_class, Character* instigator) {
+	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
+	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, instigator->GetTeam()), dltr);
+
+	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon.get())) { // replace with direct map_gen call after making map_GEN singleton
+		CombatManager& cm = CombatManager::GetInstance();
+		cm.AddSummonToCombat(move(summon));
+		return true;
+	}
+
+	auto& s = GameplayStatics::GetCombatLogStream();
+	s << COLOR_ERROR << "Summon failed. No space." << ANSI_COLOR_RESET << "\n";
+	return false;
+}
+
 void Fireball::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
@@ -168,25 +183,22 @@ stringstream& Fireball::GetTooltip() {
 
 void Burning::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 
-	//ApplyParams apply_params;
+	int rand_targets = AddRandomTargets(2, targets, instigator, "BURNING");
 
-	//int rand_targets = AddRandomTargets(2, team2, t2_idx, "BURNING EFFECT");
-	//vector<CharacterStat> enemy_effect_stats;
-	//auto damage = [&](Character* character) { return -GetRandEffectMinMax(character); };
-	//for (int i = 0; i <= rand_targets; i++)
-	//	enemy_effect_stats.push_back(CharacterStat{ team2[t2_idx[i]].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, &team2[t2_idx[i]].lock()->GetHealth(), damage });
+	vector<CharacterStat> enemy_effect_stats;
+	for (int i = 0; i <= rand_targets; i++) {
+		auto stat = &targets[i].lock()->GetHealth().GetActual();
+		auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
+		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
+	}
 
-	//EffectParams effect_params;
-	//effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	//effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	//effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats), EStatValueAction::UPDATE_ACTUAL);
+	EffectParams effect_params;
+	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
+	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
+	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats));
 
-	//vector<weak_ptr<Character>> targets;
-	//for (int i = 0; i <= rand_targets; i++)
-	//	targets.push_back(team2[t2_idx[i]]);
-
-	//shared_ptr<Burning> effect = make_shared<Burning>(_ID);
-	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect);
+	unique_ptr<Burning> spell = make_unique<Burning>();
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), {}, effect_params);
 }
 
 stringstream& Burning::GetTooltip() {
@@ -202,7 +214,7 @@ stringstream& Burning::GetTooltip() {
 
 void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 	
-	int rand_targets = AddRandomTargets(2, targets, instigator, "MOLTEN ARMOR EFFECT");
+	int rand_targets = AddRandomTargets(2, targets, instigator, "MOLTEN ARMOR");
 
 	vector<CharacterStat> enemy_apply_stats;
 	for (int i = 0; i <= rand_targets; i++) {
@@ -417,19 +429,7 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 //==================================================================================================================================================================================
 
 void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
-	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
-	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(ECharacterClass::FIRE_ELEMENTAL, instigator->GetTeam()), dltr);
-	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon.get())) { // replace with direct map_gen call after making map_GEN singleton
-		CombatManager& cm = CombatManager::GetInstance();
-		cm.AddSummonToCombat(move(summon));
-	}
-	else {
-		auto& s = GameplayStatics::GetCombatLogStream();
-		s << COLOR_ERROR << "Summon failed. No space." << ANSI_COLOR_RESET << "\n";
-	}
-
-	// make a generic Summon spell that accepts ECharacterClass as parameter and we also need instigator for the team, and just return that
-	// no need to make a seperate class for each different summon. Unless they will act differently which should be encoded in the CharDB itself for now.
+	bool bhasSummoned = Summon(ECharacterClass::FIRE_ELEMENTAL, instigator);
 }
 
 

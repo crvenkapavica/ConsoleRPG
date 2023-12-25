@@ -51,9 +51,6 @@ public:
 	// Reset the pointer pointing to a dead character
 	void KillFlaggedCharacters();
 
-	// Get the index of the latest character marked as dead
-	int GetDeadIdx();
-
 	// Remove dead characters from the turn table
 	void RemoveDeadCharacters();
 
@@ -152,5 +149,5 @@ private:
 
 	int _turn = 0;
 
-	bool _bDeadOnTurn = false;
+	bool bNext = false;
 };

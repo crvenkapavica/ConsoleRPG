@@ -32,7 +32,7 @@ void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
 	BeginTurn(_turn_table[0].lock().get());
 
 	while (player.lock()->IsInCombat()) {
-		//KillFlaggedCharacters();
+		KillFlaggedCharacters();
 		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); })))
 			GetTurnCharacter().lock()->TakeTurn();
 	}
@@ -62,6 +62,9 @@ void CombatManager::EndTurn(Character* character) {
 		++_turn;
 		OnCycleBegin();
 	}
+
+	// tu bi moral promeniti _turn_indexa v preracunati turn index s obzirom na to ko je sve crkel na turnu
+	// i da se v take_turn zove begin turn
 
 	BeginTurn(_turn_table[_turn_index].lock().get());
 }
@@ -269,64 +272,44 @@ void CombatManager::TriggerPassiveEffects(Character* character, Character* insti
 
 void CombatManager::FlagDeadCharacters() {
 	for (auto& character : _turn_table)
-		character.lock()->CheckDie();
+		if (character.lock())
+			character.lock()->CheckDie();
 	KillFlaggedCharacters();
 }
 
 void CombatManager::KillFlaggedCharacters() {
-	int idx; 
-	while ((idx = GetDeadIdx()) != -1) {
-		GameplayStatics::KillEnemy(idx);
-		RemoveDeadCharacters();
-	}
-}
 
-int CombatManager::GetDeadIdx() {
+	bNext = false;
 
-	for (int i = 0; i < _enemies.size(); i++)
+	for (int i = 0; i < _enemies.size(); i++) 
 		if (!_enemies[i].expired() && !_enemies[i].lock()->IsAlive()) {
-			if (_enemies[i].lock() == GetTurnCharacter().lock())
-				_bDeadOnTurn = true;
-			return i;
+			GameplayStatics::KillEnemy(i);
 		}
+	
+	if (_turn_table[_turn_index].expired())
+		bNext = true;
 
-	return -1;
+	RemoveDeadCharacters();
 }
 
 void CombatManager::RemoveDeadCharacters() {
-	for (auto it = _turn_table.begin(); it != _turn_table.end();) {
-		if (it->expired()) {
-			it = _turn_table.erase(it);
-			if (_bDeadOnTurn) {
-				if (_turn_table.size() == _players.size()) {
-					_turn_index = 0;
-				}
-				else {
-					if (_turn_index >= _turn_table.size())
-						_turn_index = 0;
-					BeginTurn(_turn_table[_turn_index].lock().get());
+	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); }))
+		ExitCombatMode();
 
-					//int idx; 
-					//if ((idx = GetDeadIdx()) != -1) 
-					//	GameplayStatics::KillEnemy(idx);
-				}
-			}
-		}
+	for (auto it = _turn_table.begin(); it != _turn_table.end();) {
+		if (it->expired())
+			it = _turn_table.erase(it);
 		else ++it;
 	}
-	ExitCombatMode();
 }
 
 void CombatManager::ExitCombatMode() {
-	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
+	OnCombatEnd();
 
-		OnCombatEnd();
+	for (auto& c : _players)
+		c.lock()->SetIsInCombat(false);
 
-		for (auto& c : _players)
-			c.lock()->SetIsInCombat(false);
-
-		GameplayStatics::ExitCombatMode();
-	}
+	GameplayStatics::ExitCombatMode();
 }
 
 void CombatManager::ResetCombatVariables() {
@@ -344,7 +327,7 @@ void CombatManager::ResetCombatVariables() {
 
 void CombatManager::OnApplyEffect() {
 	auto& effect = _combat_effects.back().second;
-	if (effect->_apply_params->_struct_flags) {
+	if (effect->_apply_params) {
 		HandleCombatEffect(effect.get(), effect->_targets[0].lock().get());
 	}
 
@@ -367,7 +350,7 @@ void CombatManager::OnTurnBegin() {
 }
 
 void CombatManager::OnTurnEnd() {
-	_bDeadOnTurn = false;
+	//_bDeadOnTurn = false;
 
 	ApplyEffectsOnEvent(ECombatEvent::ON_TURN_END);
 }
@@ -431,3 +414,17 @@ void CombatManager::OnRangedReceivedEnd(Character* character, Character* instiga
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_RANGED_RECEIVED_END);
 }
 ///////
+
+
+
+
+			//if (_bDeadOnTurn) {
+			//	if (_turn_table.size() == _players.size()) {
+			//		_turn_index = 0;
+			//	}
+			//	else {
+			//		if (_turn_index >= _turn_table.size())
+			//			_turn_index = 0;
+			//		BeginTurn(_turn_table[_turn_index].lock().get());
+			//	}
+			//}

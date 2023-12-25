@@ -118,7 +118,7 @@ int main() {
     sm.CreateActiveSpell(player_main.get(), ESpellID::SUM_FIRE_ELE);
 
     //pasive
-    sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
+    //sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
 
     CombatManager& cm = CombatManager::GetInstance();
 	ConsoleMenu menu;

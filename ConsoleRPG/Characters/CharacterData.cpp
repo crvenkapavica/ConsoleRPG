@@ -14,7 +14,7 @@ CharDB::CharacterDataConstructor::CharacterDataConstructor() {
 
 			// ENEMIES
 	_data[ECharacterClass::ENEMY_LVL1] = { ECharacterClass::ENEMY_LVL1,				35.f,	20.f,		0.f,		25.f,		3.8f,		0.05f,		180.f,		10.f,	0.04f,		200.f,		EDamageType::PHYSICAL,		{0.f,	0.f,	0.f,	0.f,	0.f,	0.f},	{ESpellID::SUM_FIRE_ELE, 0},		{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
-	_data[ECharacterClass::ENEMY_LVL2] = { ECharacterClass::ENEMY_LVL2,				50.f,	30.f,		0.f,		40.f,		5.2f,		0.07f,		190.f,		10.f,	0.04f,		210.f,		EDamageType::PHYSICAL,		{7.f,	7.f,	7.f,	7.f,	7.f,	0.f},	{ESpellID::SUM_FIRE_ELE, 0},		{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
+	_data[ECharacterClass::ENEMY_LVL2] = { ECharacterClass::ENEMY_LVL2,				500.f,	30.f,		0.f,		40.f,		5.2f,		0.07f,		190.f,		10.f,	0.04f,		210.f,		EDamageType::PHYSICAL,		{7.f,	7.f,	7.f,	7.f,	7.f,	0.f},	{ESpellID::SUM_FIRE_ELE, 0},		{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
 	_data[ECharacterClass::ENEMY_LVL3] = { ECharacterClass::ENEMY_LVL3,				80.f,	50.f,		0.f,		55.f,		6.6f,		0.11f,		220.f,		10.f,	0.07f,		220.f,		EDamageType::PHYSICAL,		{10.f,	10.f,	10.f,	10.f,	10.f,	5.f},	{ESpellID::SUM_FIRE_ELE, 0},		{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{} };
 }
 CharDB::CharacterDataConstructor CharDB::_character_data_constructor;

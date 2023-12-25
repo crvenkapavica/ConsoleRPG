@@ -488,7 +488,7 @@ void MapGenerator::AddRandomMapEnemies() {
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
 			int percent = static_cast<int>(_total_steps * 0.2);
-			int rnd = rand() % _total_steps;
+			int rnd = rand() % _total_steps; // use mersenne twister here!
 			if (/*rnd <= percent && */_steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
@@ -535,7 +535,6 @@ Character* MapGenerator::GetCharacterFromAlias(char target) {
 }
 
 void MapGenerator::DisplayGrid() {
-
 	for (int i = 0; i < GRID_X; i++) {
 		for (int j = 0; j < GRID_Y; j++) {
 			if (j < 17) cout << ANSI_COLOR_GREEN; else cout << ANSI_COLOR_PASTELLE_BROWN;

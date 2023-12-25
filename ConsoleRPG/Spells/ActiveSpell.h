@@ -34,6 +34,8 @@ protected:
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
     int AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, Character* character, const string& name);
 
+    bool Summon(ECharacterClass character_class, Character* instigator);
+
 protected:
     const EDamageType _damage_type;
     const ESpellType _spell_type;
