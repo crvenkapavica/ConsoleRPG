@@ -132,6 +132,8 @@ private:
 	CombatManager(const CombatManager&) = delete;
 	CombatManager& operator=(const CombatManager&) = delete;
 
+	weak_ptr<Character> _player;
+
 	vector<weak_ptr<Character>> _players;
 	vector<PlayerCharacter> _players_base;
 

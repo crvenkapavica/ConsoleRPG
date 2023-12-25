@@ -29,13 +29,14 @@ void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vec
 
 void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
 
-	BeginTurn(_turn_table[0]);
+	_player = player;
 
 	// COMBAT LOOP
-	while (player.lock()->IsInCombat()) {
+	while (1) {
 		KillFlaggedCharacters();
-		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); })))
+		if (_player.lock()->IsInCombat())
 			BeginTurn(GetTurnCharacter());
+		else break;
 	}
 }
 
@@ -147,13 +148,6 @@ void CombatManager::ApplyStat(CombatEffect* effect, Character* target, Character
 
 void CombatManager::HandleCombatEffect(CombatEffect* effect, Character* target) {
 
-	//int struct_flags = effect->_apply_params ? effect->_apply_params->_struct_flags : 0;
-	//if (struct_flags & 1) HandleApplyStat(effect, target);
-	//effect->_turn_applied = _turn;
-
-	//struct_flags = effect->_effect_params ? effect->_effect_params->_struct_flags : 0;
-	//if (struct_flags & 1) HandleEffectStat(effect, target);
-
 	if (effect->_apply_params)
 		HandleApplyStat(effect, target);
 	effect->_turn_applied = _turn;
@@ -241,7 +235,8 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 		int idx = effect.second->i % static_cast<int>(effect.second->_targets.size());
 		if ((effect.second->_effect_params && effect.second->_effect_params->_on_event == on_event) || effect.second->_apply_params)
 			if (!effect.second->_targets[idx].expired()) {
-				if (effect.second->_targets[idx].lock()->GetAlias() == GetTurnAlias()) {
+				//if (effect.second->_targets[idx].lock()->GetAlias() == GetTurnAlias()) {
+				if (!_turn_table[_turn_index].expired() && (effect.second->_targets[idx].lock()->GetAlias() == _turn_table[_turn_index].lock()->GetAlias())) {
 					effect.second->i++;
 					HandleCombatEffect(effect.second.get(), effect.second->_targets[idx].lock().get());
 				}
@@ -284,19 +279,21 @@ void CombatManager::KillFlaggedCharacters() {
 	
 	RemoveDeadCharacters();
 
-	int after = static_cast<int>(_turn_table.size());
+	if (_player.lock()->IsInCombat()) {
+		if (_turn_index == static_cast<int>(_turn_table.size()))
+			_turn_index = 0;
 
-	if (_turn_index == after)
-		_turn_index = 0;
-	else while (_turn_table[_turn_index].expired())
-		_turn_index = ++_turn_index % _turn_table.size();
+		while (_turn_table[_turn_index].expired()) {
+			_turn_index = ++_turn_index % _turn_table.size();
+		}
+	}
 }
 
 void CombatManager::RemoveDeadCharacters() {
-	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); }))
+	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
 		ExitCombatMode();
-
-	for (auto it = _turn_table.begin(); it != _turn_table.end();) {
+	}
+	else for (auto it = _turn_table.begin(); it != _turn_table.end();) {
 		if (it->expired())
 			it = _turn_table.erase(it);
 		else ++it;
@@ -309,7 +306,7 @@ void CombatManager::ExitCombatMode() {
 	for (auto& c : _players)
 		c.lock()->SetIsInCombat(false);
 
-	GameplayStatics::ExitCombatMode();
+	_player.lock()->SetIsInCombat(false);
 }
 
 void CombatManager::ResetCombatVariables() {

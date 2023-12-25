@@ -308,10 +308,6 @@ void GameplayStatics::InitiateCombatMode(const vector<weak_ptr<EnemyCharacter>>&
 	//int x; cin >> x;
 }
 
-void GameplayStatics::ExitCombatMode() {
-	_player.lock()->SetIsInCombat(false);
-}
-
 void GameplayStatics::ResetCombatVariables() {
 	_enemies.clear();
 	auto& s = GetCombatLogStream();

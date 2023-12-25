@@ -42,7 +42,6 @@ public:
 	static void DisplayPlayerStats();
 
 	static void InitiateCombatMode(const vector<weak_ptr<EnemyCharacter>>&& enemies);
-	static void ExitCombatMode();
 	static void ResetCombatVariables();
 
 	static void GiveExperience(EnemyCharacter* enemy);
