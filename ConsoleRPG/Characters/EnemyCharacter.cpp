@@ -38,7 +38,7 @@ void EnemyCharacter::TakeTurn() {
 	}
 
 	GameplayStatics::RedrawGameScreen();
-	Sleep(3000);
+	Sleep(1200);
 
 	EndTurn();
 }

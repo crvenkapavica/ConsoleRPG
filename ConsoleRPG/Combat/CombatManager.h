@@ -22,7 +22,7 @@ public:
 	// Add the effect of the spell to the effect pool until it expires
 	void AddCombatEffect(unique_ptr<CombatEffect> effect);
 
-	void BeginTurn(Character* character);
+	void BeginTurn(weak_ptr<Character> character);
 	void EndTurn(Character* character);
 	
 	// Add a summoned unit (from spell or item) to the combat and turn order

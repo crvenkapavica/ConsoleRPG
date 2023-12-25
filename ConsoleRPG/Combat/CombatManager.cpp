@@ -29,12 +29,13 @@ void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vec
 
 void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
 
-	BeginTurn(_turn_table[0].lock().get());
+	BeginTurn(_turn_table[0]);
 
+	// COMBAT LOOP
 	while (player.lock()->IsInCombat()) {
 		KillFlaggedCharacters();
 		if (!(all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); })))
-			GetTurnCharacter().lock()->TakeTurn();
+			BeginTurn(GetTurnCharacter());
 	}
 }
 
@@ -44,9 +45,12 @@ void CombatManager::AddCombatEffect(unique_ptr<CombatEffect> effect) {
 	sort(_combat_effects.begin(), _combat_effects.end());
 }
 
-void CombatManager::BeginTurn(Character* character) {
-	character->SetIsOnTurn(true);
+void CombatManager::BeginTurn(weak_ptr<Character> character) {
+	character.lock()->SetIsOnTurn(true);
 	OnTurnBegin();
+
+	if (!character.expired())
+		character.lock()->TakeTurn();
 }
 
 void CombatManager::EndTurn(Character* character) {
@@ -62,11 +66,6 @@ void CombatManager::EndTurn(Character* character) {
 		++_turn;
 		OnCycleBegin();
 	}
-
-	// tu bi moral promeniti _turn_indexa v preracunati turn index s obzirom na to ko je sve crkel na turnu
-	// i da se v take_turn zove begin turn
-
-	BeginTurn(_turn_table[_turn_index].lock().get());
 }
 
 void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon) {
@@ -279,17 +278,18 @@ void CombatManager::FlagDeadCharacters() {
 
 void CombatManager::KillFlaggedCharacters() {
 
-	bNext = false;
-
 	for (int i = 0; i < _enemies.size(); i++) 
-		if (!_enemies[i].expired() && !_enemies[i].lock()->IsAlive()) {
+		if (!_enemies[i].expired() && !_enemies[i].lock()->IsAlive())
 			GameplayStatics::KillEnemy(i);
-		}
 	
-	if (_turn_table[_turn_index].expired())
-		bNext = true;
-
 	RemoveDeadCharacters();
+
+	int after = static_cast<int>(_turn_table.size());
+
+	if (_turn_index == after)
+		_turn_index = 0;
+	else while (_turn_table[_turn_index].expired())
+		_turn_index = ++_turn_index % _turn_table.size();
 }
 
 void CombatManager::RemoveDeadCharacters() {
