@@ -594,8 +594,8 @@ struct grid_node {
 
 	//void Swap(int x1, int y1, int x2, int y2) // SWAP for possible future TACTICAL MODE
 
-	Character* _here;
-	Character* _neighbors[8];
+	weak_ptr<Character> _here;
+	weak_ptr<Character> _neighbors[8];
 };
 
 struct path_node {

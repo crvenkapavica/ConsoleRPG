@@ -9,19 +9,19 @@ CombatManager& CombatManager::GetInstance() {
 	return _instance;
 }
 
-void CombatManager::SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vector<weak_ptr<EnemyCharacter>> characters_2) {
+void CombatManager::SetTurns(vector<weak_ptr<Character>> characters_1, vector<weak_ptr<Character>> characters_2) {
 	// in future adjust turn tables to be either randomized, or sorted based on a particular stat (level, power, etc..)
+
+	_players = characters_1;
+	_enemies = characters_2;
 
 	for (auto& character : characters_1) {
 		_turn_table.push_back(character);
-		_players.push_back(character);
 		character.lock()->SetIsInCombat(true);
 	}
 
-	for (auto& character : characters_2) {
+	for (auto& character : characters_2)
 		_turn_table.push_back(character); 
-		_enemies.push_back(character);
-	}
 
 	OnCombatBegin();
 	OnCycleBegin();
@@ -114,6 +114,12 @@ void CombatManager::DisplayTurnOrder() {
 void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply) {
 
 	float value;
+
+	if ((character_stat.GetDelta(effect->_instigator) * -1) > 2000)
+	{
+		int xxx = 10;
+	}
+
 	float delta = character_stat.GetDelta(effect->_instigator);
 
 	if (character_stat._stat_mod == EStatMod::ADDITIVE) {
@@ -122,7 +128,7 @@ void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, 
 	}
 	else value = delta;
 
-	if (character_stat._stat_type == EStatType::HEALTH && !GetTurnCharacter().expired())
+	if (character_stat._stat_type == EStatType::HEALTH)
 		value = GameplayStatics::ApplyDamage(GetTurnCharacter(), character_stat._character, delta, effect->_spell, isOnApply);
 
 	auto spell_class = effect->_spell->GetClass();
@@ -148,7 +154,8 @@ void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, 
 
 void CombatManager::HandleCombatEffect(CombatEffect* effect, weak_ptr<Character> target) {
 	
-	RPG_ASSERT(target.expired(), "HandleCombatEffect");
+	//RPG_ASSERT(target.expired(), "HandleCombatEffect");
+	if (target.expired()) return;
 
 	if (effect->_apply_params)
 		HandleApplyStat(effect, target);
@@ -249,8 +256,10 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 	}
 }
 
-void CombatManager::InstigatePassiveEffects(Character* instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
-	for (const auto& passive : instigator->GetPassiveSpells()) {
+void CombatManager::InstigatePassiveEffects(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
+	RPG_ASSERT(instigator.expired(), "InstigatePassiveEffects");
+
+	for (const auto& passive : instigator.lock().get()->GetPassiveSpells()) {
 		if (passive->GetOnEvent() == on_event) {
 			passive->_instigator = instigator;
 			passive->_targets = targets;
@@ -259,8 +268,9 @@ void CombatManager::InstigatePassiveEffects(Character* instigator, vector<weak_p
 	}
 }
 
-void CombatManager::TriggerPassiveEffects(weak_ptr<Character> character, Character* instigator, ECombatEvent on_event) {
-	RPG_ASSERT(character.expired(), "TriggerPassiveEffects");
+void CombatManager::TriggerPassiveEffects(weak_ptr<Character> character, weak_ptr<Character> instigator, ECombatEvent on_event) {
+	//RPG_ASSERT(character.expired(), "TriggerPassiveEffects");
+	if (character.expired()) return;
 
 	for (const auto& passive : character.lock()->GetPassiveSpells()) {
 		if (passive->GetOnEvent() == on_event) {
@@ -363,51 +373,51 @@ void CombatManager::OnCycleEnd() {
 
 
 // public
-void CombatManager::OnMagicBegin(Character* instigator, vector<weak_ptr<Character>> targets) {
+void CombatManager::OnMagicBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 	InstigatePassiveEffects(instigator, targets, ECombatEvent::ON_MAGIC_BEGIN);
 }
 
-void CombatManager::OnMagicEnd(Character* instigator, vector<weak_ptr<Character>> targets) {
+void CombatManager::OnMagicEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 	InstigatePassiveEffects(instigator, targets, ECombatEvent::ON_MAGIC_END);
 }
 
-void CombatManager::OnMagicReceivedBegin(weak_ptr<Character> character, Character* instigator) {
+void CombatManager::OnMagicReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator) {
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_MAGIC_RECEIVED_BEGIN);
 }
 
-void CombatManager::OnMagicReceivedEnd(weak_ptr<Character> character, Character* instigator) {
+void CombatManager::OnMagicReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator) {
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_MAGIC_RECEIVED_END);
 }
 
-void CombatManager::OnMeleeBegin(Character* instigator, vector<weak_ptr<Character>> targets) {
+void CombatManager::OnMeleeBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 	InstigatePassiveEffects(instigator, targets, ECombatEvent::ON_MELEE_BEGIN);
 }
 
-void CombatManager::OnMeleeEnd(Character* instigator, vector<weak_ptr<Character>> targets) {
+void CombatManager::OnMeleeEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 	InstigatePassiveEffects(instigator, targets, ECombatEvent::ON_MELEE_END);
 }
 
-void CombatManager::OnMeleeReceivedBegin(weak_ptr<Character> character, Character* instigator) {
+void CombatManager::OnMeleeReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator) {
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_MELEE_RECEIVED_BEGIN);
 }
 
-void CombatManager::OnMeleeReceivedEnd(weak_ptr<Character> character, Character* instigator) {
+void CombatManager::OnMeleeReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator) {
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_MELEE_RECEIVED_END);
 }
 
-void CombatManager::OnRangedBegin(Character* instigator, vector<weak_ptr<Character>> targets) {
+void CombatManager::OnRangedBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 	InstigatePassiveEffects(instigator, targets, ECombatEvent::ON_RANGED_BEGIN);
 }
 
-void CombatManager::OnRangedEnd(Character* instigator, vector<weak_ptr<Character>> targets) {
+void CombatManager::OnRangedEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 	InstigatePassiveEffects(instigator, targets, ECombatEvent::ON_RANGED_END);
 }
 
-void CombatManager::OnRangedReceivedBegin(weak_ptr<Character> character, Character* instigator) {
+void CombatManager::OnRangedReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator) {
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_RANGED_RECEIVED_BEGIN);
 }
 
-void CombatManager::OnRangedReceivedEnd(weak_ptr<Character> character, Character* instigator) {
+void CombatManager::OnRangedReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator) {
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_RANGED_RECEIVED_END);
 }
 ///////

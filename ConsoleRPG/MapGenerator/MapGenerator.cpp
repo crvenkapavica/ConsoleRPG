@@ -494,25 +494,26 @@ void MapGenerator::AddRandomMapEnemies() {
 
 				//int rnd_enemies = rand() % 4 + 2;
 				int rnd_enemies = 6;
-				vector<shared_ptr<EnemyCharacter>> enemies_vector;
-				map<char, EnemyCharacter*> enemies_map;
+				vector<shared_ptr<Character>> enemies_vector;
+				map<char, weak_ptr<Character>> enemies_map;
 
 				for (int k = 0; k < rnd_enemies; k++) { 
 					int rnd = rand() % 3 + 50;
 					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
-					enemies_map['A' + k] = enemies_vector[k].get();
+					enemies_map['A' + k] = enemies_vector[k];
 				}
-				// restart static instance counter
-				EnemyCharacter::_n = 0;
 				_enemy_map.push_back(move(enemies_vector));
 				_enemy_map_xy.push_back(make_pair(i, j));	
 				_enemy_name_map.push_back(enemies_map);
+
+				// restart static instance counter
+				EnemyCharacter::_n = 0;
 			}
 		}
 	}
 }
 
-vector<weak_ptr<EnemyCharacter>> MapGenerator::GetEnemies(int x, int y) {
+vector<weak_ptr<Character>> MapGenerator::GetEnemies(int x, int y) {
 
 	_enemy_index = 0;
 	for (auto& xy : _enemy_map_xy) {
@@ -521,9 +522,9 @@ vector<weak_ptr<EnemyCharacter>> MapGenerator::GetEnemies(int x, int y) {
 		++_enemy_index;
 	}
 
-	vector<weak_ptr<EnemyCharacter>> w_ptr;
+	vector<weak_ptr<Character>> w_ptr;
 	for (auto& enemy : _enemy_map.at(_enemy_index))
-		w_ptr.push_back(weak_ptr<EnemyCharacter>(enemy));
+		w_ptr.push_back(weak_ptr<Character>(enemy));
 
 	return w_ptr;
 }

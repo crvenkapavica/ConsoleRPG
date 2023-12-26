@@ -107,7 +107,7 @@ int main() {
     std::shared_ptr<PlayerCharacter> player_main(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
     std::shared_ptr<PlayerCharacter> player_warlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
 
-    vector<shared_ptr<PlayerCharacter>> player_characters = { player_main, player_warlock1 };
+    vector<shared_ptr<Character>> player_characters = { player_main, player_warlock1 };
 
     SpellManager& sm = SpellManager::GetInstance();
 

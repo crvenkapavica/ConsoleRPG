@@ -26,7 +26,7 @@ void VampiricTouch::Apply() {
 			float value = _value * target.lock()->GetHealth().GetMax();
 			target.lock()->GetHealth().GetActual() -= value;
 			target.lock()->AddEffectId(_ID);
-			_instigator->GetHealth().GetActual() += value;
+			_instigator.lock().get()->GetHealth().GetActual() += value;
 		}
 	}
 }
@@ -40,6 +40,6 @@ stringstream& VampiricTouch::GetTooltip() {
 
 void Thorns::Apply() {
 	if (_instigator)
-		_instigator->GetHealth().GetActual() -= _value;
+		_instigator.lock().get()->GetHealth().GetActual() -= _value;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

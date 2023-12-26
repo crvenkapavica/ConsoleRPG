@@ -119,7 +119,7 @@ private:
 	// Move after input
 	void Move(int dir);
 
-	vector<weak_ptr<EnemyCharacter>> GetEnemies(int x, int y);
+	vector<weak_ptr<Character>> GetEnemies(int x, int y);
 
 	// GRID SPECIFIC
 	// -------------------------------------------------------------------
@@ -179,9 +179,9 @@ private:
 
 	vector<distance_node> _distances_nodes;
 
-	vector<vector<shared_ptr<EnemyCharacter>>> _enemy_map; // this two vectors are aligned
+	vector<vector<shared_ptr<Character>>> _enemy_map; // this two vectors are aligned
 	vector<pair<int, int>> _enemy_map_xy; // this two vectors are aligned
-	vector<map<char, EnemyCharacter*>> _enemy_name_map; 
+	vector<map<char, weak_ptr<Character>>> _enemy_name_map; 
 
 	int _enemy_index;
 

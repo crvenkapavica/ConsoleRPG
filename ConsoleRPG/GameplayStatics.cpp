@@ -12,28 +12,28 @@
 #include "Resistances.h"
 #include "Items/Item.h"
 
-weak_ptr<PlayerCharacter> GameplayStatics::_player;
+weak_ptr<Character> GameplayStatics::_player;
 vector<shared_ptr<PlayerCharacter>> GameplayStatics::_player_characters;
 SpellManager* GameplayStatics::_sm = nullptr;
 CombatManager* GameplayStatics::_cm = nullptr;
 MapGenerator* GameplayStatics::_map_gen = nullptr;
 ConsoleMenu* GameplayStatics::_menu = nullptr;
-vector<weak_ptr<EnemyCharacter>> GameplayStatics::_enemies;
-vector<weak_ptr<PlayerCharacter>> GameplayStatics::_players;
+vector<weak_ptr<Character>> GameplayStatics::_enemies;
+vector<weak_ptr<Character>> GameplayStatics::_players;
 stringstream GameplayStatics::_combat_log; 
 
 
-void GameplayStatics::Initialize(vector<shared_ptr<PlayerCharacter>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu) {
+void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu) {
 
 	cout << fixed << setprecision(2);
 
-	_player = players[0];
-	_players.reserve(players.size());
-	for (auto& p : players)
-		_players.push_back(weak_ptr<PlayerCharacter>(p));
-
 	_player_characters = players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
-								   // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
+								  // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
+
+	_player = players[0];
+	_players.resize(players.size());
+	for (const auto& player : players)
+		_players.push_back(player);
 
 	_sm = &spell_manager;
 	_cm = &combat_manager;
@@ -266,7 +266,7 @@ void GameplayStatics::RedrawGameScreen() {
 }
 
 
-void GameplayStatics::InitiateCombatMode(const vector<weak_ptr<EnemyCharacter>>&& enemies) {
+void GameplayStatics::InitiateCombatMode(const vector<weak_ptr<Character>>&& enemies) {
 
 	_player.lock()->SetIsInCombat(true);
 
@@ -429,10 +429,12 @@ int GameplayStatics::GetEnemyIdx(char c) {
 	return ret;
 }
 
-int GameplayStatics::GetSpellIdx(ActiveSpell* spell, OUT Character*& character) {
-	character = _cm->GetTurnCharacter().lock().get();
-	for (int i = 0; i < character->GetActiveSpells().size(); i++) {
-		if (spell == character->GetActiveSpells()[i].get()) {
+int GameplayStatics::GetSpellIdx(ActiveSpell* spell, OUT weak_ptr<Character>& character) {
+	RPG_ASSERT(character.expired(), "GetSPellIdx");
+
+	character = _cm->GetTurnCharacter();
+	for (int i = 0; i < character.lock().get()->GetActiveSpells().size(); i++) {
+		if (spell == character.lock().get()->GetActiveSpells()[i].get()) {
 			return i;
 		}
 	}
@@ -521,13 +523,13 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		for (int i = 0; i < e_idx.size(); i++)
 			targets.push_back(_enemies[e_idx[i]]);
 
-	Character* character = nullptr;
+	weak_ptr<Character> character = nullptr;
 	int spell_idx = GetSpellIdx(spell, character);
 	_sm->CastSpell(spell_idx, character, targets);
 }
 
 void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
-	Character* character = nullptr;
+	weak_ptr<Character> character = nullptr;
 	int spell_idx = GetSpellIdx(spell, character);
 
 	vector<Character*> characters = _map_gen->GetCharactersInRange(_cm->GetTurnCharacter().lock().get());
@@ -630,22 +632,31 @@ void GameplayStatics::ExtractLinesFromStringstream(OUT vector<string>& lines, co
 	start_index = max(0, static_cast<int>(lines.size()) - max_lines);
 }
 
-vector<weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
-	vector<weak_ptr<Character>> v;
-	for (const auto& player : _players)
-		v.push_back(player);
-	return v;
+std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(Character* character) {
+	if (character->GetTeam() == 1) {
+		for (const auto& player : _players)
+			if (player.lock()->GetAlias() == character->GetAlias())
+				return player;
+	}
+	else {
+		for (const auto& enemy : _enemies)
+			if (enemy.lock()->GetAlias() == character->GetAlias())
+				return enemy;
+	}
 }
 
-vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
-	vector<weak_ptr<Character>> v;
-	for (const auto& enemy : _enemies)
-		v.push_back(enemy);
-	return v;
+std::vector<weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
+	return _players;
+}
+
+std::vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
+	return _enemies;
 }
 
 float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
-	RPG_ASSERT(instigator.expired(), "ApplyDamage");
+	//RPG_ASSERT(instigator.expired(), "ApplyDamage");
+
+	if (instigator.expired()) return 0.f;
 
 	damage = float2(damage);
 	float actual_damage;
