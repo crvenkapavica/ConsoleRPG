@@ -699,7 +699,7 @@ void GameplayStatics::EndTurn(Character* character) {
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
 
 
-bool GameplayStatics::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+bool GameplayStatics::AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon) {
 	return _map_gen->AddCharacterToCharGrid(instigator, summon);
 }
 

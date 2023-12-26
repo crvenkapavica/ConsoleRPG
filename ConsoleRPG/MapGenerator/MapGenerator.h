@@ -3,6 +3,7 @@
 #include "../RPGTypes.h"
 #include "../GameplayStatics.h" 
 
+class Character;
 class EnemyCharacter;
 class PlayerCharacter;
 
@@ -13,6 +14,50 @@ struct distance_node {
 	int y;
 	int distance;
 };
+
+struct grid_node {
+
+	grid_node()
+		: _here(nullptr)
+	{
+		for (int i = 0; i < 8; ++i) _neighbors[i] = nullptr;
+	}
+
+	weak_ptr<Character> _here;
+	weak_ptr<Character> _neighbors[8];
+};
+
+struct path_node {
+
+	path_node() : right(0), left(0), up(0), down(0) {}
+
+	bool& operator[](const int& idx) {
+		switch (idx) {
+		case 0: return right;
+		case 1: return left;
+		case 2: return down;
+		case 3: return up;
+		default: return right;
+		}
+	}
+
+	bool operator[](const int& idx) const {
+		switch (idx) {
+		case 0: return right == true;
+		case 1: return left == true;
+		case 2: return down == true;
+		case 3: return up == true;
+		default: return false;
+		}
+	}
+
+	//corresponds to dX and dY directions
+	bool right;
+	bool left;
+	bool down;
+	bool up;
+};
+
 
 class MapGenerator {
 
@@ -41,7 +86,7 @@ public:
 
 	void MoveCharacterOnGrid(Character* character, EDirection direction);
 
-	bool AddCharacterToCharGrid(Character* instigator, Character* summon);
+	bool AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon);
 
 	int GetEnemyIdx(char alias);
 
@@ -52,7 +97,7 @@ public:
 	void KillEnemy(Character* character);
 
 public:
-	Character* GetCharacterFromAlias(char target);
+	weak_ptr<Character> GetCharacterFromAlias(char target);
 
 	vector<string> GetCombatDirections(Character* character, OUT map<int, EDirection>& map);
 
@@ -99,7 +144,7 @@ private:
 
 	void GetPlayerStartPosition(int& x, int& y);
 
-	void InitPlayer(const vector<weak_ptr<PlayerCharacter>>& player_characters);
+	void InitPlayer(const vector<weak_ptr<Character>> player_characters);
 
 	void DisplayErrorMessage(const string& message);
 
@@ -188,7 +233,7 @@ private:
 	// GRID SPECIFIC
 	// ------------------------------------------------------------------
 	char _grid[21][81];
-	grid_node _char_grid[5][10];
+	grid_node _char_grid;
 	unordered_map<char, pair<int, int>> _char_map;
 
 	vector<pair<int, int>> _enemy_start_positions = {

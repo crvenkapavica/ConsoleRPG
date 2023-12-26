@@ -149,7 +149,7 @@ bool ActiveSpell::Summon(ECharacterClass character_class, Character* instigator)
 	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, instigator->GetTeam()), dltr);
 
-	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon.get())) { // replace with direct map_gen call after making map_GEN singleton
+	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton
 		CombatManager& cm = CombatManager::GetInstance();
 		cm.AddSummonToCombat(move(summon));
 		return true;

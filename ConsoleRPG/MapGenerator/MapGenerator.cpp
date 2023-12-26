@@ -291,9 +291,13 @@ void MapGenerator::GetPlayerStartPosition(int& x, int& y) {
 	} while (_map[x][y] != PATH);
 }
 
-void MapGenerator::InitPlayer(const vector<weak_ptr<PlayerCharacter>>& player_characters) {
+void MapGenerator::InitPlayer(const vector<weak_ptr<Character>> player_characters) {
 
-	_player_characters = move(player_characters);
+	//_player_characters = player_characters;
+
+	for (auto& player : player_characters)
+		_player_characters.push_back(weak_ptr<PlayerCharacter>(dynamic_cast<PlayerCharacter*>(player)));
+
 	GetPlayerStartPosition(_player_x, _player_y);
 	
 	_border_x = _player_x - static_cast<int>(_player_characters[0].lock()->GetLighRadius()) + 1;
@@ -529,7 +533,7 @@ vector<weak_ptr<Character>> MapGenerator::GetEnemies(int x, int y) {
 	return w_ptr;
 }
 
-Character* MapGenerator::GetCharacterFromAlias(char target) {
+weak_ptr<Character> MapGenerator::GetCharacterFromAlias(char target) {
 	if (_char_map.find(target) == _char_map.end()) return nullptr;
 	int x = _char_map.at(target).first;
 	int y = _char_map.at(target).second;
@@ -586,7 +590,7 @@ void MapGenerator::GenerateCharacterGridPositions() {
 
 	//add player characters
 	for (int i = 0; i < _player_characters.size(); i++) {
-		_char_grid[i][0]._here = _player_characters[i].lock().get();
+		_char_grid[i][0]._here = _player_characters[i];
 		_char_map['0' + i] = make_pair(i, 0);
 	}
 }
@@ -599,11 +603,11 @@ void MapGenerator::AddCharactersToGrid() {
 			int y = j * 8 + 4;
 
 			if (_char_grid[i][j]._here)
-				_grid[x][y] = _char_grid[i][j]._here->GetAlias();
+				_grid[x][y] = _char_grid[i][j]._here.lock()->GetAlias();
 		}
 }
 
-bool MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+bool MapGenerator::AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon) {
 
 	int x = _char_map.at(instigator->GetAlias()).first;
 	int y = _char_map.at(instigator->GetAlias()).second;
@@ -624,11 +628,11 @@ bool MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summ
 	}
 	
 	if (bHasSpawned) {
-		_char_map[_char_grid[xx][yy]._here->GetAlias()].first = xx;
-		_char_map[_char_grid[xx][yy]._here->GetAlias()].second = yy;
+		_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].first = xx;
+		_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].second = yy;
 	}
 
-	_grid[xx * 4 + 2][yy * 8 + 4] = summon->GetAlias();
+	_grid[xx * 4 + 2][yy * 8 + 4] = summon.lock()->GetAlias();
 
 	UpdateCharGrid();
 
@@ -677,14 +681,14 @@ void MapGenerator::MoveCharacterOnGrid(Character* character, EDirection directio
 
 	// Swap pointers and aliases from character source to character destination
 	_char_grid[xx][yy]._here = _char_grid[x][y]._here;
-	_char_grid[xx][yy]._here->SetAlias(_char_grid[x][y]._here->GetAlias());
+	_char_grid[xx][yy]._here.lock()->SetAlias(_char_grid[x][y]._here.lock()->GetAlias());
 	_char_grid[x][y]._here = nullptr;
 
 #pragma warning(push)
 #pragma warning(disable: 6011) // Suppressing warning C6011: dereferencing null pointer
 	// Update map with alias
-	_char_map[_char_grid[xx][yy]._here->GetAlias()].first = xx;
-	_char_map[_char_grid[xx][yy]._here->GetAlias()].second = yy;
+	_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].first = xx;
+	_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].second = yy;
 #pragma warning(pop)
 
 	// Move on the real grid
