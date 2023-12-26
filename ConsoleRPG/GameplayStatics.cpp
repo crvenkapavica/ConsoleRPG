@@ -644,7 +644,8 @@ vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
 	return v;
 }
 
-float GameplayStatics::ApplyDamage(Character* instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
+float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
+	RPG_ASSERT(instigator.expired(), "ApplyDamage");
 
 	damage = float2(damage);
 	float actual_damage;
@@ -656,7 +657,7 @@ float GameplayStatics::ApplyDamage(Character* instigator, Character* target, flo
 	// POGLEDATI ZAKAJ TU IMA IKAKSE VEZE BOOLEAN
 	//==============================================
 	auto& s = GetCombatLogStream();
-	const string C = GetAliasColor(instigator->GetAlias());
+	const string C = GetAliasColor(instigator.lock().get()->GetAlias());
 	const string CT = GetAliasColor(target->GetAlias());
 	if (isOnApply) s << CT << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
 	else s << C << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";

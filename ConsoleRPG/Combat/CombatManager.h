@@ -64,33 +64,33 @@ public:
 	void OnMagicBegin(Character* instigator, vector<weak_ptr<Character>> targets);
 	void OnMagicEnd(Character* instigator, vector<weak_ptr<Character>> targets);
 
-	void OnMagicReceivedBegin(Character* instigator, Character* target);
-	void OnMagicReceivedEnd(Character* instigator, Character* target);
+	void OnMagicReceivedBegin(weak_ptr<Character> character, Character* instigator);
+	void OnMagicReceivedEnd(weak_ptr<Character> character, Character* instigator);
 
 	void OnMeleeBegin(Character* instigator, vector<weak_ptr<Character>> targets);
 	void OnMeleeEnd(Character* instigator, vector<weak_ptr<Character>> targets);
 
-	void OnMeleeReceivedBegin(Character* instigator, Character* target);
-	void OnMeleeReceivedEnd(Character* instigator, Character* target);
+	void OnMeleeReceivedBegin(weak_ptr<Character> character, Character* instigator);
+	void OnMeleeReceivedEnd(weak_ptr<Character> character, Character* instigator);
 
 	void OnRangedBegin(Character* instigator, vector<weak_ptr<Character>> targets);
 	void OnRangedEnd(Character* instigator, vector<weak_ptr<Character>> targets);
 
-	void OnRangedReceivedBegin(Character* instigator, Character* target);
-	void OnRangedReceivedEnd(Character* instigator, Character* target);
+	void OnRangedReceivedBegin(weak_ptr<Character> character, Character* instigator);
+	void OnRangedReceivedEnd(weak_ptr<Character> character, Character* instigator);
 
 	//////////////////////////////////////////////////////////////////////////////////
 private:
 	// Apply the value of the effect to the related targets' stat
-	void ApplyStat(CombatEffect* effect, Character* target, CharacterStat& character_stat, float& _total, bool isOnApply);
+	void ApplyStat(CombatEffect* effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply);
 
-	void HandleCombatEffect(CombatEffect* effect, Character* target = nullptr);
+	void HandleCombatEffect(CombatEffect* effect, weak_ptr<Character> target);
 
 	// Calls Apply Stat for each character passed in the effect on effect application
-	void HandleApplyStat(CombatEffect* effect, Character* target);
+	void HandleApplyStat(CombatEffect* effect, weak_ptr<Character> target);
 
 	// Calls Apply Stat for each character passed in the effect with per tick value
-	void HandleEffectStat(CombatEffect* effect, Character* target);
+	void HandleEffectStat(CombatEffect* effect, weak_ptr<Character> target);
 
 	// Gets the characters' base for resetting values after each turn
 	void GetCharactersBase();
@@ -106,7 +106,7 @@ private:
 	void InstigatePassiveEffects(Character* instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event);
 
 	// Called when the character with the passive was being instigated on
-	void TriggerPassiveEffects(Character* character, Character* instigator, ECombatEvent on_event);
+	void TriggerPassiveEffects(weak_ptr<Character> character, Character* instigator, ECombatEvent on_event);
 
 	//=====  EVENTS ===== //
 	///////////////////////
