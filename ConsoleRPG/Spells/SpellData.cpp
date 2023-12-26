@@ -9,7 +9,7 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 	// MAGIC
 	_data[ESpellID::FIREBALL] = {
 //		app_min	   app_max	   val_min	   val_max	 duration   cd	   e_cost	s_cost
-		{ 5.2f,		6.6f,		0.f,		0.f,		2,		2,		15,		0 },
+		{ 115.2f,	116.6f,		0.f,		0.f,		2,		2,		15,		0 },
 		{ 6.2f,		8.2f,		0.f,		0.f,		2,		2,		20,		0 },
 		{ 7.5f,		11.2f,		0.f,		0.f,		2,		2,		30,		0 },
 		{ 11.5f,	15.8f,		0.f,		0.f,		2,		1,		45,		0 },

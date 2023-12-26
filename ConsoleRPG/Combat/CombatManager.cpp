@@ -231,14 +231,17 @@ void CombatManager::RemoveExpiredCombatEffects() {
 
 void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 
+	int index = 0;
 	for (auto& effect : _combat_effects) {
+		++index;
+		if (!_player.lock()->IsInCombat()) return;
 		int idx = effect.second->i % static_cast<int>(effect.second->_targets.size());
 		if ((effect.second->_effect_params && effect.second->_effect_params->_on_event == on_event) || effect.second->_apply_params)
 			if (!effect.second->_targets[idx].expired()) {
-				//if (effect.second->_targets[idx].lock()->GetAlias() == GetTurnAlias()) {
-				if (!_turn_table[_turn_index].expired() && (effect.second->_targets[idx].lock()->GetAlias() == _turn_table[_turn_index].lock()->GetAlias())) {
+				if (effect.second->_targets[idx].lock()->GetAlias() == GetTurnAlias()) {
 					effect.second->i++;
-					HandleCombatEffect(effect.second.get(), effect.second->_targets[idx].lock().get());
+					Character* chr = effect.second->_targets[idx].lock().get();
+					HandleCombatEffect(effect.second.get(), chr);
 				}
 			}
 			else effect.second->i++;
@@ -279,14 +282,11 @@ void CombatManager::KillFlaggedCharacters() {
 	
 	RemoveDeadCharacters();
 
-	if (_player.lock()->IsInCombat()) {
+	if (_player.lock()->IsInCombat())
 		if (_turn_index == static_cast<int>(_turn_table.size()))
 			_turn_index = 0;
-
-		while (_turn_table[_turn_index].expired()) {
+		else while (_turn_table[_turn_index].expired())
 			_turn_index = ++_turn_index % _turn_table.size();
-		}
-	}
 }
 
 void CombatManager::RemoveDeadCharacters() {
@@ -347,13 +347,10 @@ void CombatManager::OnTurnBegin() {
 }
 
 void CombatManager::OnTurnEnd() {
-	//_bDeadOnTurn = false;
-
 	ApplyEffectsOnEvent(ECombatEvent::ON_TURN_END);
 }
 
 void CombatManager::OnCycleBegin() {
-
 	ApplyEffectsOnEvent(ECombatEvent::ON_CYCLE_BEGIN);
 }
 
@@ -411,17 +408,3 @@ void CombatManager::OnRangedReceivedEnd(Character* character, Character* instiga
 	TriggerPassiveEffects(character, instigator, ECombatEvent::ON_RANGED_RECEIVED_END);
 }
 ///////
-
-
-
-
-			//if (_bDeadOnTurn) {
-			//	if (_turn_table.size() == _players.size()) {
-			//		_turn_index = 0;
-			//	}
-			//	else {
-			//		if (_turn_index >= _turn_table.size())
-			//			_turn_index = 0;
-			//		BeginTurn(_turn_table[_turn_index].lock().get());
-			//	}
-			//}

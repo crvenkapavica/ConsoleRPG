@@ -492,7 +492,8 @@ void MapGenerator::AddRandomMapEnemies() {
 			if (/*rnd <= percent && */_steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
-				int rnd_enemies = rand() % 4 + 2;
+				//int rnd_enemies = rand() % 4 + 2;
+				int rnd_enemies = 6;
 				vector<shared_ptr<EnemyCharacter>> enemies_vector;
 				map<char, EnemyCharacter*> enemies_map;
 

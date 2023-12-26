@@ -22,10 +22,12 @@ unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void VampiricTouch::Apply() {
 	for (auto& target : _targets) {
-		float value = _value * target.lock()->GetHealth().GetMax();
-		target.lock()->GetHealth().GetActual() -= value;
-		target.lock()->AddEffectId(_ID);
-		_instigator->GetHealth().GetActual() += value;
+		if (!target.expired()) {
+			float value = _value * target.lock()->GetHealth().GetMax();
+			target.lock()->GetHealth().GetActual() -= value;
+			target.lock()->AddEffectId(_ID);
+			_instigator->GetHealth().GetActual() += value;
+		}
 	}
 }
 
@@ -37,6 +39,7 @@ stringstream& VampiricTouch::GetTooltip() {
 }
 
 void Thorns::Apply() {
-	_instigator->GetHealth().GetActual() -= _value;
+	if (_instigator)
+		_instigator->GetHealth().GetActual() -= _value;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

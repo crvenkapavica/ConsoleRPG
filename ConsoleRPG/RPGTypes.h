@@ -123,6 +123,14 @@ class Character;
 
 #define UPPER(c) ((c) >= 'a' && (c) <= 'z' ? static_cast<char>((c) - 32) : (c))
 
+#define RPG_ASSERT(expr, msg) \
+    if (!(expr)) { \
+		system("cls"); \
+        std::cout << "Assertion failed: " << msg << "\n"; \
+        std::cout << "In file: " << __FILE__ << ", line: " << __LINE__ << "\n"; \
+        std::exit(EXIT_FAILURE); \
+    }
+
 enum class EStatType {
 	ANY,
 	HEALTH,
