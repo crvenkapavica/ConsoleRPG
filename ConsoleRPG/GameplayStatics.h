@@ -57,7 +57,7 @@ public:
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
 
-	static int GetSpellIdx(ActiveSpell* spell, OUT weak_ptr<Character>& character);
+	static int GetSpellIdx(ActiveSpell* spell, OUT shared_ptr<Character>& character);
 
 	static void DisplayMeleeMenu();
 	static void DisplayRangedMenu();
@@ -74,21 +74,22 @@ public:
 
 	static stringstream& GetCombatLogStream() { return _combat_log; }
 	static void DisplayCombatLog();
-	static void ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
+	static void ExtractLinesFromStringstream(OUT std::vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
 
 	static std::weak_ptr<Character> GetWeakCharacter(Character* character);
+	static std::shared_ptr<Character> GetSharedCharacter(Character* character);
 
 	static std::vector<weak_ptr<Character>> GetPlayerCharacters();
 	static std::vector<weak_ptr<Character>> GetEnemyCharacters();
 
 	static float ApplyDamage(std::weak_ptr<Character> instigator, Character* target, float damage, std::unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(Character* instigator, std::vector<weak_ptr<Character>>&targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
+	static void ApplyEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>>&targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
 
 	static void KillEnemy(int idx);
 
 	static void EndTurn(Character* character);
 
-	static bool AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon);
+	static bool AddCharacterToCharGrid(Character* instigator, std::weak_ptr<Character> summon);
 
 	static string GetAliasColor(char alias);
 

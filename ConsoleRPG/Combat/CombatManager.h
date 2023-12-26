@@ -15,9 +15,9 @@ public:
 	static CombatManager& GetInstance();
 
 	// Set turns for each side and add them to the turn table
-	void SetTurns(vector<weak_ptr<PlayerCharacter>> characters_1, vector<weak_ptr<EnemyCharacter>> characters_2);
+	void SetTurns(vector<weak_ptr<Character>> characters_1, vector<weak_ptr<Character>> characters_2);
 
-	void StartCombat(weak_ptr<PlayerCharacter> player);
+	void StartCombat(weak_ptr<Character> player);
 	
 	// Add the effect of the spell to the effect pool until it expires
 	void AddCombatEffect(unique_ptr<CombatEffect> effect);

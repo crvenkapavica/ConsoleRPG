@@ -16,13 +16,6 @@ struct distance_node {
 };
 
 struct grid_node {
-
-	grid_node()
-		: _here(nullptr)
-	{
-		for (int i = 0; i < 8; ++i) _neighbors[i] = nullptr;
-	}
-
 	weak_ptr<Character> _here;
 	weak_ptr<Character> _neighbors[8];
 };
@@ -64,7 +57,7 @@ class MapGenerator {
 public:
 	MapGenerator() {}
 
-	void Initialize(const vector<weak_ptr<PlayerCharacter>>& player_characters);
+	void Initialize(const vector<weak_ptr<Character>>& player_characters);
 
 	// Shows the current player position on the map with radius of light_radius
 	void ShowPosition();

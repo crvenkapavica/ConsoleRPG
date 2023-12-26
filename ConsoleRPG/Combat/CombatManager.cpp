@@ -27,7 +27,7 @@ void CombatManager::SetTurns(vector<weak_ptr<Character>> characters_1, vector<we
 	OnCycleBegin();
 }
 
-void CombatManager::StartCombat(weak_ptr<PlayerCharacter> player) {
+void CombatManager::StartCombat(weak_ptr<Character> player) {
 
 	_player = player;
 
@@ -114,13 +114,7 @@ void CombatManager::DisplayTurnOrder() {
 void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply) {
 
 	float value;
-
-	if ((character_stat.GetDelta(effect->_instigator) * -1) > 2000)
-	{
-		int xxx = 10;
-	}
-
-	float delta = character_stat.GetDelta(effect->_instigator);
+	float delta = character_stat.GetDelta(effect->_instigator.get());
 
 	if (character_stat._stat_mod == EStatMod::ADDITIVE) {
 		_total += delta;
@@ -183,11 +177,11 @@ void CombatManager::HandleEffectStat(CombatEffect* effect, weak_ptr<Character> t
 	auto& enemy_stats = effect->_effect_params->_effect_stat->_enemy_stat;
 
 	for (auto& stat : ally_stats)
-		if (stat._character == target.lock().get() || stat._character == effect->_instigator)
+		if (stat._character == target.lock().get() || stat._character == effect->_instigator.get())
 			ApplyStat(effect, target, stat, stat._total, 0);
 
 	for (auto& stat : enemy_stats)
-		if (stat._character == target.lock().get() || stat._character == effect->_instigator)
+		if (stat._character == target.lock().get() || stat._character == effect->_instigator.get())
 			ApplyStat(effect, target, stat, stat._total, 0);
 }
 

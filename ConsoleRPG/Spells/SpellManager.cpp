@@ -27,9 +27,9 @@ void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
 	spell_owner->AddPassiveSpell(spell);
 }
 
-void SpellManager::CastSpell(int spell_idx, weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
+void SpellManager::CastSpell(int spell_idx, shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
 
-	ActiveSpell* spell = instigator.lock().get()->GetActiveSpells()[spell_idx].get();
+	ActiveSpell* spell = instigator->GetActiveSpells()[spell_idx].get();
 	CombatManager& cm = CombatManager::GetInstance();
 
 	if (spell->GetClass() == ESpellClass::MAGIC)

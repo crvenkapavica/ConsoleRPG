@@ -13,7 +13,7 @@
 #include "Items/Item.h"
 
 weak_ptr<Character> GameplayStatics::_player;
-vector<shared_ptr<PlayerCharacter>> GameplayStatics::_player_characters;
+vector<shared_ptr<Character>> GameplayStatics::_player_characters;
 SpellManager* GameplayStatics::_sm = nullptr;
 CombatManager* GameplayStatics::_cm = nullptr;
 MapGenerator* GameplayStatics::_map_gen = nullptr;
@@ -217,7 +217,7 @@ PlayerCharacter* GameplayStatics::GetPlayer() {
 	v.push_back("<--BACK--<");
 	int input;
 	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
-	return _players[input].lock().get();
+	return dynamic_cast<PlayerCharacter*>(_players[input].lock().get());
 }
 
 void GameplayStatics::DisplayItemMenu() {
@@ -429,12 +429,12 @@ int GameplayStatics::GetEnemyIdx(char c) {
 	return ret;
 }
 
-int GameplayStatics::GetSpellIdx(ActiveSpell* spell, OUT weak_ptr<Character>& character) {
-	RPG_ASSERT(character.expired(), "GetSPellIdx");
+int GameplayStatics::GetSpellIdx(ActiveSpell* spell, OUT shared_ptr<Character>& character) {
+	RPG_ASSERT(!character, "GetSPellIdx");
 
-	character = _cm->GetTurnCharacter();
-	for (int i = 0; i < character.lock().get()->GetActiveSpells().size(); i++) {
-		if (spell == character.lock().get()->GetActiveSpells()[i].get()) {
+	character = _cm->GetTurnCharacter().lock();
+	for (int i = 0; i < character->GetActiveSpells().size(); i++) {
+		if (spell == character->GetActiveSpells()[i].get()) {
 			return i;
 		}
 	}
@@ -523,13 +523,13 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		for (int i = 0; i < e_idx.size(); i++)
 			targets.push_back(_enemies[e_idx[i]]);
 
-	weak_ptr<Character> character = nullptr;
+	shared_ptr<Character> character;
 	int spell_idx = GetSpellIdx(spell, character);
 	_sm->CastSpell(spell_idx, character, targets);
 }
 
 void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
-	weak_ptr<Character> character = nullptr;
+	shared_ptr<Character> character;
 	int spell_idx = GetSpellIdx(spell, character);
 
 	vector<Character*> characters = _map_gen->GetCharactersInRange(_cm->GetTurnCharacter().lock().get());
@@ -595,29 +595,28 @@ void GameplayStatics::HandleInfoInput(int input) {
 void GameplayStatics::DisplayCombatLog() {
 
 	cout << ANSI_CURSOR_UP(50);
-	int e_size = static_cast<int>(count_if(_enemies.begin(), _enemies.end(), [](const weak_ptr<EnemyCharacter>& wptr) { return !wptr.expired(); }));
+	int e_size = static_cast<int>(std::count_if(_enemies.begin(), _enemies.end(), [](const std::weak_ptr<Character>& wptr) { return !wptr.expired(); }));
 	int s_size = static_cast<int>(_cm->GetSummons().size());
-	//s_size += static_cast<int>(count_if(_cm->GetSummons().begin(), _cm->GetSummons().end(), [](const shared_ptr<Character>& summon) { return summon.get(); }));
 	_menu->ANSI_CURSOR_DOWN_N(static_cast<int>(_players.size() + e_size + s_size));
 	cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
-	cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << endl << CURSOR_LOG_RIGHT;
-	cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << endl;
+	cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << "\n" << CURSOR_LOG_RIGHT;
+	cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << "\n";
 
 	const int max_lines = 49;
-	vector<string> lines;
+	std::vector<string> lines;
 	int start_index;
 	ExtractLinesFromStringstream(lines, max_lines, _combat_log, start_index);
 
 	for (int i = start_index; i < lines.size(); i++) {
-		cout << CURSOR_LOG_RIGHT << lines[i];
+		std::cout << CURSOR_LOG_RIGHT << lines[i];
 	}
 
 	// Move Menu below grid
-	cout << ANSI_CURSOR_UP(50);
+	std::cout << ANSI_CURSOR_UP(50);
 	_menu->ANSI_CURSOR_DOWN_N(21 + e_size + s_size + static_cast<int>(_players.size()));
 }
 
-void GameplayStatics::ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index) {
+void GameplayStatics::ExtractLinesFromStringstream(OUT std::vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index) {
 	string content = ss.str();
 	if (content == "") ss << fixed << setprecision(2);
 	int start = 0;
@@ -642,6 +641,23 @@ std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(Character* character)
 		for (const auto& enemy : _enemies)
 			if (enemy.lock()->GetAlias() == character->GetAlias())
 				return enemy;
+	}
+}
+
+std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(Character* character) {
+	if (character->GetTeam() == 1) {
+		for (const auto& player : _players) {
+			auto shared = player.lock();
+			if (shared && shared->GetAlias() == character->GetAlias())
+				return shared;
+		}
+	}
+	else {
+		for (const auto& enemy : _enemies) {
+			auto shared = enemy.lock();
+			if (shared && shared->GetAlias() == character->GetAlias())
+				return shared;
+		}
 	}
 }
 
@@ -677,14 +693,14 @@ float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* ta
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
+void GameplayStatics::ApplyEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
 	
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
 
-	unique_ptr<CombatEffect> effect = make_unique<CombatEffect>(instigator, targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
-	_cm->AddCombatEffect(move(effect));
+	std::unique_ptr<CombatEffect> effect = std::make_unique<CombatEffect>(instigator, targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
+	_cm->AddCombatEffect(std::move(effect));
 }
 
 void GameplayStatics::KillEnemy(int idx) {
@@ -699,7 +715,7 @@ void GameplayStatics::EndTurn(Character* character) {
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
 
 
-bool GameplayStatics::AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon) {
+bool GameplayStatics::AddCharacterToCharGrid(Character* instigator, std::weak_ptr<Character> summon) {
 	return _map_gen->AddCharacterToCharGrid(instigator, summon);
 }
 

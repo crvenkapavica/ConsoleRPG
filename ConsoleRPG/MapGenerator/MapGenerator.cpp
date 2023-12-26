@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void MapGenerator::Initialize(const vector<weak_ptr<PlayerCharacter>>& player_characters) {
+void MapGenerator::Initialize(const vector<weak_ptr<Character>>& player_characters) {
 
 	InitBFS();
 	InitPlayer(player_characters);
@@ -293,10 +293,9 @@ void MapGenerator::GetPlayerStartPosition(int& x, int& y) {
 
 void MapGenerator::InitPlayer(const vector<weak_ptr<Character>> player_characters) {
 
-	//_player_characters = player_characters;
-
-	for (auto& player : player_characters)
-		_player_characters.push_back(weak_ptr<PlayerCharacter>(dynamic_cast<PlayerCharacter*>(player)));
+	for (auto& player : player_characters) {
+		_player_characters.push_back(std::static_pointer_cast<PlayerCharacter>(player.lock()));
+	}
 
 	GetPlayerStartPosition(_player_x, _player_y);
 	
