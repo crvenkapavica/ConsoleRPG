@@ -19,7 +19,7 @@ public:
 
 public:
 	weak_ptr<Character> _instigator;
-	vector<weak_ptr<Character>> _targets;
+	vector<shared_ptr<Character>> _targets;
 
 protected:
 	ECombatEvent _combat_event;

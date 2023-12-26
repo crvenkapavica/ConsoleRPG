@@ -13,13 +13,12 @@
 #include "Items/Item.h"
 
 weak_ptr<Character> GameplayStatics::_player;
-vector<shared_ptr<Character>> GameplayStatics::_player_characters;
 SpellManager* GameplayStatics::_sm = nullptr;
 CombatManager* GameplayStatics::_cm = nullptr;
 MapGenerator* GameplayStatics::_map_gen = nullptr;
 ConsoleMenu* GameplayStatics::_menu = nullptr;
-vector<weak_ptr<Character>> GameplayStatics::_enemies;
-vector<weak_ptr<Character>> GameplayStatics::_players;
+vector<shared_ptr<Character>> GameplayStatics::_players;
+vector<shared_ptr<Character>> GameplayStatics::_enemies;
 stringstream GameplayStatics::_combat_log; 
 
 
@@ -27,13 +26,8 @@ void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellM
 
 	cout << fixed << setprecision(2);
 
-	_player_characters = players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
-								  // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
-
 	_player = players[0];
-	_players.resize(players.size());
-	for (const auto& player : players)
-		_players.push_back(player);
+	_players = players;
 
 	_sm = &spell_manager;
 	_cm = &combat_manager;
@@ -51,22 +45,22 @@ void GameplayStatics::DisplayAllies() {
 	system("cls");
 	int idx = 0;
 	for (const auto& character : _cm->GetPlayers())
-		if (!character.expired()) {
-			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character.lock()->GetCharacterClass()) << " Level " << to_string(character.lock()->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
-			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetHealth().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetArmor().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetAP().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetCritDmg().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetSP().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetSpellCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetSpellCritDmg().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetArcaneRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetFireRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetLightningRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetColdRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetPoisonRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetResistances().GetNecroticRes() << endl;
+		if (character) {
+			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character->GetCharacterClass()) << " Level " << to_string(character->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << character->GetHealth().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << character->GetArmor().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << character->GetAP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << character->GetCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << character->GetCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << character->GetSP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << character->GetSpellCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetArcaneRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetFireRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetLightningRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetColdRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetPoisonRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << character->GetResistances().GetNecroticRes() << endl;
 			//cout << ANSI_COLOR_CYAN_LIGHT << ""
 			++idx;
 		}
@@ -98,22 +92,22 @@ void GameplayStatics::DisplayEnemies() {
 	
 	int idx = 0;
 	for (const auto& enemy : _cm->GetEnemies()) {
-		if (!enemy.expired()) {
-			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(enemy.lock()->GetCharacterClass()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, enemy.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
-			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetHealth().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetArmor().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetAP().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetCritDmg().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSP().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSpellCritChance().GetActual() * 100 << "%";
-			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetSpellCritDmg().GetActual();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetArcaneRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetFireRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetLightningRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetColdRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetPoisonRes();
-			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetResistances().GetNecroticRes() << endl;
+		if (enemy) {
+			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(enemy->GetCharacterClass()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, enemy->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetHealth().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetArmor().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetAP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " C%: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " CD: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SP: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetSP().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " SC%: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetSpellCritChance().GetActual() * 100 << "%";
+			cout << ANSI_COLOR_CYAN_LIGHT << " SCD: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetSpellCritDmg().GetActual();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RA: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetResistances().GetArcaneRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RF: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetResistances().GetFireRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RL: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetResistances().GetLightningRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RC: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetResistances().GetColdRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RP: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetResistances().GetPoisonRes();
+			cout << ANSI_COLOR_CYAN_LIGHT << " RN: " << ANSI_COLOR_VIVID_YELLOW << enemy->GetResistances().GetNecroticRes() << endl;
 			++idx;
 		}
 	}
@@ -213,11 +207,11 @@ void GameplayStatics::HandleMapInput(int input) {
 PlayerCharacter* GameplayStatics::GetPlayer() {
 	vector<string> v;
 	for (const auto& p : _players)
-		v.push_back(GameplayStatics::GetEnumString(p.lock()->GetCharacterClass()));
+		v.push_back(GameplayStatics::GetEnumString(p->GetCharacterClass()));
 	v.push_back("<--BACK--<");
 	int input;
 	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
-	return dynamic_cast<PlayerCharacter*>(_players[input].lock().get());
+	return dynamic_cast<PlayerCharacter*>(_players[input].get());
 }
 
 void GameplayStatics::DisplayItemMenu() {
@@ -266,7 +260,7 @@ void GameplayStatics::RedrawGameScreen() {
 }
 
 
-void GameplayStatics::InitiateCombatMode(const vector<weak_ptr<Character>>&& enemies) {
+void GameplayStatics::InitiateCombatMode(const vector<shared_ptr<Character>>& enemies) {
 
 	_player.lock()->SetIsInCombat(true);
 
@@ -515,7 +509,7 @@ void GameplayStatics::HandleTarget(ActiveSpell* spell) {
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
 	}
 	
-	vector<weak_ptr<Character>> targets;
+	vector<shared_ptr<Character>> targets;
 	if (e_idx.size() == 0)
 		for (int i = 0; i < p_idx.size(); i++)
 			targets.push_back(_players[p_idx[i]]);
@@ -543,7 +537,7 @@ void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
 	if ((input = InteractiveDisplay(alias)) == -1) return;
 
 	int enemy_idx = GetEnemyIdx(alias[input][0]);
-	vector<weak_ptr<Character>> targets = { _enemies[enemy_idx] };
+	vector<shared_ptr<Character>> targets = { _enemies[enemy_idx] };
 	_sm->CastSpell(spell_idx, character, targets);
 }
 
@@ -634,38 +628,35 @@ void GameplayStatics::ExtractLinesFromStringstream(OUT std::vector<string>& line
 std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(Character* character) {
 	if (character->GetTeam() == 1) {
 		for (const auto& player : _players)
-			if (player.lock()->GetAlias() == character->GetAlias())
-				return player;
+			if (player->GetAlias() == character->GetAlias())
+				return weak_ptr<Character>(player);
 	}
 	else {
 		for (const auto& enemy : _enemies)
-			if (enemy.lock()->GetAlias() == character->GetAlias())
-				return enemy;
+			if (enemy->GetAlias() == character->GetAlias())
+				return weak_ptr<Character>(enemy);
 	}
 }
 
 std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(Character* character) {
 	if (character->GetTeam() == 1) {
-		for (const auto& player : _players) {
-			auto shared = player.lock();
-			if (shared && shared->GetAlias() == character->GetAlias())
-				return shared;
-		}
+		for (const auto& player : _players)
+			if (player->GetAlias() == character->GetAlias())
+				return player;
+			
 	}
 	else {
-		for (const auto& enemy : _enemies) {
-			auto shared = enemy.lock();
-			if (shared && shared->GetAlias() == character->GetAlias())
-				return shared;
-		}
+		for (const auto& enemy : _enemies)
+			if (enemy->GetAlias() == character->GetAlias())
+				return enemy;
 	}
 }
 
-std::vector<weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
+std::vector<shared_ptr<Character>>& GameplayStatics::GetPlayerCharacters() {
 	return _players;
 }
 
-std::vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
+std::vector<shared_ptr<Character>>& GameplayStatics::GetEnemyCharacters() {
 	return _enemies;
 }
 
@@ -693,7 +684,7 @@ float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* ta
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
+void GameplayStatics::ApplyEffect(std::shared_ptr<Character> instigator, const std::vector<shared_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
 	
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
@@ -715,7 +706,7 @@ void GameplayStatics::EndTurn(Character* character) {
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
 
 
-bool GameplayStatics::AddCharacterToCharGrid(Character* instigator, std::weak_ptr<Character> summon) {
+bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon) {
 	return _map_gen->AddCharacterToCharGrid(instigator, summon);
 }
 

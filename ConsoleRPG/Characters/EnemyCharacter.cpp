@@ -58,8 +58,8 @@ void EnemyCharacter::CastSpell() {
 	vector<int> p_idx = { 0 };
 	vector<int> e_idx;
 
-	vector<weak_ptr<Character>> targets = { _players[p_idx[0]] };
+	vector<shared_ptr<Character>> targets = { _players[p_idx[0]] };
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
+	//sm.CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
 }
