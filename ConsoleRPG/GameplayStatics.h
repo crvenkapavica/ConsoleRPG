@@ -57,7 +57,7 @@ public:
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
 
-	static int GetSpellIdx(ActiveSpell* spell, OUT shared_ptr<Character>& character);
+	static int GetSpellIdx(ActiveSpell* spell, shared_ptr<Character>& character);
 
 	static void DisplayMeleeMenu();
 	static void DisplayRangedMenu();
@@ -83,7 +83,7 @@ public:
 	static std::vector<weak_ptr<Character>> GetEnemyCharacters();
 
 	static float ApplyDamage(std::weak_ptr<Character> instigator, Character* target, float damage, std::unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>>&targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
+	static void ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>&targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
 
 	static void KillEnemy(int idx);
 

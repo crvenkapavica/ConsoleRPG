@@ -218,11 +218,11 @@ void CombatManager::RemoveExpiredCombatEffects() {
 	// Clear expired effects
 	for (auto it = _combat_effects.begin(); it != _combat_effects.end();) {
 		if (it->first == _turn) {
-			if (it->second->_instigator->GetAlias() == GetTurnCharacter().lock()->GetAlias()) {
-				//for (auto& t : it->second->_targets) {
-				//	if (!t.expired())
-				//		t.lock()->RemoveEffectById(it->second->_spell->GetID());
-				//}
+			if (it->second->_instigator->GetAlias() == GetTurnAlias()) {
+				for (auto& t : it->second->_targets) {
+					if (!t.expired())
+						t.lock()->RemoveEffectById(it->second->_spell->GetID());
+				}
 				it = _combat_effects.erase(it);
 			}
 			else ++it;

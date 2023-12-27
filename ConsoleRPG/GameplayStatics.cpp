@@ -428,15 +428,14 @@ int GameplayStatics::GetEnemyIdx(char c) {
 	return ret;
 }
 
-int GameplayStatics::GetSpellIdx(ActiveSpell* spell, OUT shared_ptr<Character>& character) {
-	RPG_ASSERT(!character, "GetSPellIdx");
-
+int GameplayStatics::GetSpellIdx(ActiveSpell* spell, shared_ptr<Character>& character) {
 	character = _cm->GetTurnCharacter().lock();
 	for (int i = 0; i < character->GetActiveSpells().size(); i++) {
 		if (spell == character->GetActiveSpells()[i].get()) {
 			return i;
 		}
 	}
+	RPG_ASSERT(!character, "GetSpellIdx");
 	throw std::invalid_argument("Invalid Spell");
 }
 
@@ -693,13 +692,13 @@ float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* ta
 	return actual_damage;
 }
 
-void GameplayStatics::ApplyEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
+void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
 	
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
 
-	std::unique_ptr<CombatEffect> effect = std::make_unique<CombatEffect>(instigator, targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
+	std::unique_ptr<CombatEffect> effect = std::make_unique<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
 	_cm->AddCombatEffect(std::move(effect));
 }
 
