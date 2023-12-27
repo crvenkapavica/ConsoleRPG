@@ -103,10 +103,10 @@ private:
 	void ApplyEffectsOnEvent(ECombatEvent on_event);
 
 	// Called when the passive effect is being instigated, which means its the instigators turn
-	void InstigatePassiveEffects(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event);
+	void InstigatePassiveEffects(const weak_ptr<Character>& instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event);
 
 	// Called when the character with the passive was being instigated on
-	void TriggerPassiveEffects(weak_ptr<Character> character, weak_ptr<Character> instigator, ECombatEvent on_event);
+	void TriggerPassiveEffects(const weak_ptr<Character>& character, const weak_ptr<Character>& instigator, ECombatEvent on_event);
 
 	//=====  EVENTS ===== //
 	///////////////////////

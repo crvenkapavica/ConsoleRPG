@@ -89,7 +89,7 @@ public:
 
 	static void EndTurn(Character* character);
 
-	static bool AddCharacterToCharGrid(Character* instigator, std::weak_ptr<Character> summon);
+	static bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon);
 
 	static string GetAliasColor(char alias);
 

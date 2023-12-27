@@ -23,18 +23,18 @@ public:
 
 protected:
     // Get random damage between spell min and max value at current level
-    float GetRandEffectMinMax(Character* character);
+    float GetRandEffectMinMax(const shared_ptr<Character>& character);
 
     // Get random damage between spell min and max value for on aplly effect at current level
-    float GetRandOnApplyMinMax(Character* character);
+    float GetRandOnApplyMinMax(const shared_ptr<Character>& character);
 
     // Apply resistances, armor reduction, critial chance and other procs and return final damage
-    float AdjustDamage(float damage, Character* character);
+    float AdjustDamage(float damage, const shared_ptr<Character>& character);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
-    int AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, Character* character, const string& name);
+    int AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, const shared_ptr<Character>& character, const string& name);
 
-    bool Summon(ECharacterClass character_class, Character* instigator);
+    bool Summon(ECharacterClass character_class, const shared_ptr<Character>& instigator);
 
 protected:
     const EDamageType _damage_type;

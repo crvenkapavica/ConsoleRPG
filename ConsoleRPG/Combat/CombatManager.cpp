@@ -114,7 +114,7 @@ void CombatManager::DisplayTurnOrder() {
 void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply) {
 
 	float value;
-	float delta = character_stat.GetDelta(effect->_instigator.get());
+	float delta = character_stat.GetDelta(effect->_instigator);
 
 	if (character_stat._stat_mod == EStatMod::ADDITIVE) {
 		_total += delta;
@@ -250,8 +250,9 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 	}
 }
 
-void CombatManager::InstigatePassiveEffects(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
-	RPG_ASSERT(instigator.expired(), "InstigatePassiveEffects");
+void CombatManager::InstigatePassiveEffects(const weak_ptr<Character>& instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
+	//RPG_ASSERT(instigator.expired(), "InstigatePassiveEffects");
+	if (instigator.expired()) return;
 
 	for (const auto& passive : instigator.lock().get()->GetPassiveSpells()) {
 		if (passive->GetOnEvent() == on_event) {
@@ -262,9 +263,10 @@ void CombatManager::InstigatePassiveEffects(weak_ptr<Character> instigator, vect
 	}
 }
 
-void CombatManager::TriggerPassiveEffects(weak_ptr<Character> character, weak_ptr<Character> instigator, ECombatEvent on_event) {
+void CombatManager::TriggerPassiveEffects(const weak_ptr<Character>& character, const weak_ptr<Character>& instigator, ECombatEvent on_event) {
 	//RPG_ASSERT(character.expired(), "TriggerPassiveEffects");
 	if (character.expired()) return;
+	if (instigator.expired()) return;
 
 	for (const auto& passive : character.lock()->GetPassiveSpells()) {
 		if (passive->GetOnEvent() == on_event) {

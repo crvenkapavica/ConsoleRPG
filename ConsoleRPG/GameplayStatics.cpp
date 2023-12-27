@@ -31,7 +31,6 @@ void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellM
 								  // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
 
 	_player = players[0];
-	_players.resize(players.size());
 	for (const auto& player : players)
 		_players.push_back(player);
 
@@ -642,6 +641,7 @@ std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(Character* character)
 			if (enemy.lock()->GetAlias() == character->GetAlias())
 				return enemy;
 	}
+	return weak_ptr<Character>();
 }
 
 std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(Character* character) {
@@ -715,7 +715,7 @@ void GameplayStatics::EndTurn(Character* character) {
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
 
 
-bool GameplayStatics::AddCharacterToCharGrid(Character* instigator, std::weak_ptr<Character> summon) {
+bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon) {
 	return _map_gen->AddCharacterToCharGrid(instigator, summon);
 }
 

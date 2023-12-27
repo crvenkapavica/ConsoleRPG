@@ -79,7 +79,7 @@ public:
 
 	void MoveCharacterOnGrid(Character* character, EDirection direction);
 
-	bool AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon);
+	bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, weak_ptr<Character> summon);
 
 	int GetEnemyIdx(char alias);
 
@@ -226,7 +226,7 @@ private:
 	// GRID SPECIFIC
 	// ------------------------------------------------------------------
 	char _grid[21][81];
-	grid_node _char_grid;
+	grid_node _char_grid[5][10];
 	unordered_map<char, pair<int, int>> _char_map;
 
 	vector<pair<int, int>> _enemy_start_positions = {
