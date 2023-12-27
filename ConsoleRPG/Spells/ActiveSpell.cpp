@@ -198,7 +198,7 @@ void Burning::Apply(shared_ptr<Character> instigator, vector<shared_ptr<Characte
 	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats));
 
 	unique_ptr<Burning> spell = make_unique<Burning>();
-	GameplayStatics::ApplyEffect(instigator, targets, move(spell), {}, effect_params);
+	GameplayStatics::ApplyEffect(instigator, move(targets), move(spell), {}, effect_params);
 }
 
 stringstream& Burning::GetTooltip() {

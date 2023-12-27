@@ -30,7 +30,7 @@ EnemyCharacter::~EnemyCharacter()
 
 void EnemyCharacter::TakeTurn() {
 
-	Move();
+	//Move();
 
 	CombatManager& cm = CombatManager::GetInstance();
 	if (cm.GetTurn() == 0 || cm.GetTurn() == 1 || cm.GetTurn() == 2 || cm.GetTurn() == 3) {
