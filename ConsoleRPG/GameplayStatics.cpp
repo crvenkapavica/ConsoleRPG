@@ -698,7 +698,7 @@ void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& instigator, std::v
 	const string C = GetAliasColor(instigator->GetAlias());
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
 
-	std::unique_ptr<CombatEffect> effect = std::make_unique<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
+	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
 	_cm->AddCombatEffect(std::move(effect));
 }
 

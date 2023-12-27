@@ -40,8 +40,8 @@ void CombatManager::StartCombat(weak_ptr<Character> player) {
 	}
 }
 
-void CombatManager::AddCombatEffect(unique_ptr<CombatEffect> effect) {
-	_combat_effects.push_back(make_pair(_turn + effect->_duration, move(effect)));
+void CombatManager::AddCombatEffect(shared_ptr<CombatEffect> effect) {
+	_combat_effects.push_back(make_pair(_turn + effect->_duration, effect));
 	OnApplyEffect();
 	sort(_combat_effects.begin(), _combat_effects.end());
 }
@@ -111,7 +111,7 @@ void CombatManager::DisplayTurnOrder() {
 	cout << ANSI_COLOR_RESET;
 }
 
-void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply) {
+void CombatManager::ApplyStat(shared_ptr<CombatEffect> effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply) {
 
 	float value;
 	float delta = character_stat.GetDelta(effect->_instigator);
@@ -146,10 +146,9 @@ void CombatManager::ApplyStat(CombatEffect* effect, weak_ptr<Character> target, 
 	FlagDeadCharacters();
 }
 
-void CombatManager::HandleCombatEffect(CombatEffect* effect, weak_ptr<Character> target) {
+void CombatManager::HandleCombatEffect(shared_ptr<CombatEffect> effect, weak_ptr<Character> target) {
 	
 	//RPG_ASSERT(target.expired(), "HandleCombatEffect");
-	if (target.expired()) return;
 
 	if (effect->_apply_params)
 		HandleApplyStat(effect, target);
@@ -159,7 +158,7 @@ void CombatManager::HandleCombatEffect(CombatEffect* effect, weak_ptr<Character>
 		HandleEffectStat(effect, target);
 }
 
-void CombatManager::HandleApplyStat(CombatEffect* effect, weak_ptr<Character> target) {
+void CombatManager::HandleApplyStat(shared_ptr<CombatEffect> effect, weak_ptr<Character> target) {
 	auto& ally_stats = effect->_apply_params->_effect_stat->_ally_stat;
 	auto& enemy_stats = effect->_apply_params->_effect_stat->_enemy_stat;
 
@@ -172,7 +171,7 @@ void CombatManager::HandleApplyStat(CombatEffect* effect, weak_ptr<Character> ta
 			ApplyStat(effect, target, stat, stat._total, 1);
 }
 
-void CombatManager::HandleEffectStat(CombatEffect* effect, weak_ptr<Character> target) {
+void CombatManager::HandleEffectStat(shared_ptr<CombatEffect> effect, weak_ptr<Character> target) {
 	auto& ally_stats = effect->_effect_params->_effect_stat->_ally_stat;
 	auto& enemy_stats = effect->_effect_params->_effect_stat->_enemy_stat;
 
@@ -237,6 +236,7 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 
 	int index = 0;
 	for (auto& effect : _combat_effects) {
+		if (!effect.second) continue;
 		++index;
 		if (!_player.lock()->IsInCombat()) return;
 		int idx = effect.second->i % static_cast<int>(effect.second->_targets.size());
@@ -244,7 +244,7 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 			if (!effect.second->_targets[idx].expired()) {
 				if (effect.second->_targets[idx].lock()->GetAlias() == GetTurnCharacter().lock()->GetAlias()) {
 					effect.second->i++;
-					HandleCombatEffect(effect.second.get(), effect.second->_targets[idx]);
+					HandleCombatEffect(effect.second, effect.second->_targets[idx]);
 				}
 			}
 			else effect.second->i++;
@@ -335,13 +335,13 @@ void CombatManager::ResetCombatVariables() {
 void CombatManager::OnApplyEffect() {
 	auto& effect = _combat_effects.back().second;
 	if (effect->_apply_params) {
-		HandleCombatEffect(effect.get(), effect->_targets[0]);
+		HandleCombatEffect(effect, effect->_targets[0]);
 	}
 
-	//for (auto& e : effect->_targets) {
-	//	if (!e.expired())
-	//		e.lock()->AddEffectId(effect->_spell->GetID());
-	//}
+	for (auto& e : effect->_targets) {
+		if (!e.expired())
+			e.lock()->AddEffectId(effect->_spell->GetID());
+	}
 }
 
 void CombatManager::OnCombatBegin() {
