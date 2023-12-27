@@ -97,7 +97,7 @@ float ActiveSpell::AdjustDamage(float damage, const shared_ptr<Character>& chara
 	if (GetClass() == ESpellClass::MAGIC) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
 		if (rnd <= chance)
-			damage *= character->GetSpellCritDmg().GetActual();
+			damage *= character->GetSpellCritDmg().GetActual() / 100;
 	}
 	else if (GetClass() == ESpellClass::MELEE || GetClass() == ESpellClass::RANGED) {
 		float chance = character->GetCritChance().GetActual() * 100000; 
@@ -164,7 +164,7 @@ void Fireball::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
-	auto delta = [this](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [=](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -188,7 +188,7 @@ void Burning::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetHealth().GetActual();
-		auto delta = [&](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
+		auto delta = [=](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	}
 
@@ -230,7 +230,7 @@ void MoltenArmor::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Charac
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetArmor().GetActual();
-		auto delta = [&](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
+		auto delta = [=](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
 	}
 	EffectParams effect_params;
@@ -257,7 +257,7 @@ void Exposure::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character
 
 	vector<CharacterStat> enemy_apply_res;
 	auto stat = &targets[0].lock()->GetResistances().GetFireRes();
-	auto delta = [this](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [=](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::RESISTANCE, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -442,7 +442,7 @@ void Melee::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>&
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [this](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
+	auto delta = [=](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
