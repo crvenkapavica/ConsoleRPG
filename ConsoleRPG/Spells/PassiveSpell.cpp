@@ -5,7 +5,7 @@
 PassiveSpell::PassiveSpell(ESpellID id, int lvl)
 	: Spell(id, ESpellActivity::PASSIVE, SpellDB::_passive_const_map.at(id)._rarity, SpellDB::_passive_const_map.at(id)._class, SpellDB::_passive_const_map.at(id)._min_req_lvl, lvl)
 	, _combat_event(SpellDB::_passive_const_map.at(id)._combat_event)
-	, _instigator(weak_ptr<Character>())
+	, _instigator(nullptr)
 {}
 
 unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
@@ -22,11 +22,11 @@ unique_ptr<PassiveSpell> PassiveSpell::CreatePassiveSpell(ESpellID id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void VampiricTouch::Apply() {
 	for (auto& target : _targets) {
-		if (target) {
-			float value = _value * target->GetHealth().GetMax();
-			target->GetHealth().GetActual() -= value;
-			target->AddEffectId(_ID);
-			_instigator.lock()->GetHealth().GetActual() += value;
+		if (!target.expired()) {
+			float value = _value * target.lock()->GetHealth().GetMax();
+			target.lock()->GetHealth().GetActual() -= value;
+			target.lock()->AddEffectId(_ID);
+			_instigator.lock().get()->GetHealth().GetActual() += value;
 		}
 	}
 }
@@ -39,6 +39,7 @@ stringstream& VampiricTouch::GetTooltip() {
 }
 
 void Thorns::Apply() {
-	_instigator.lock()->GetHealth().GetActual() -= _value;
+	if (_instigator)
+		_instigator.lock().get()->GetHealth().GetActual() -= _value;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

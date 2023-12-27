@@ -57,7 +57,7 @@ class MapGenerator {
 public:
 	MapGenerator() {}
 
-	void Initialize(const vector<shared_ptr<Character>>& player_characters);
+	void Initialize(const vector<weak_ptr<Character>>& player_characters);
 
 	// Shows the current player position on the map with radius of light_radius
 	void ShowPosition();
@@ -79,7 +79,7 @@ public:
 
 	void MoveCharacterOnGrid(Character* character, EDirection direction);
 
-	bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, weak_ptr<Character> summon);
+	bool AddCharacterToCharGrid(Character* instigator, weak_ptr<Character> summon);
 
 	int GetEnemyIdx(char alias);
 
@@ -137,7 +137,7 @@ private:
 
 	void GetPlayerStartPosition(int& x, int& y);
 
-	void InitPlayer(const vector<shared_ptr<Character>>& player_characters);
+	void InitPlayer(const vector<weak_ptr<Character>> player_characters);
 
 	void DisplayErrorMessage(const string& message);
 
@@ -157,7 +157,7 @@ private:
 	// Move after input
 	void Move(int dir);
 
-	vector<shared_ptr<Character>>& GetEnemies(int x, int y);
+	vector<weak_ptr<Character>> GetEnemies(int x, int y);
 
 	// GRID SPECIFIC
 	// -------------------------------------------------------------------
@@ -226,7 +226,7 @@ private:
 	// GRID SPECIFIC
 	// ------------------------------------------------------------------
 	char _grid[21][81];
-	grid_node _char_grid[5][10];
+	grid_node _char_grid;
 	unordered_map<char, pair<int, int>> _char_map;
 
 	vector<pair<int, int>> _enemy_start_positions = {

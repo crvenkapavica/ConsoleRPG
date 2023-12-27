@@ -15,7 +15,7 @@ public:
 	static CombatManager& GetInstance();
 
 	// Set turns for each side and add them to the turn table
-	void SetTurns(vector<shared_ptr<Character>> characters_1, vector<shared_ptr<Character>> characters_2);
+	void SetTurns(vector<weak_ptr<Character>> characters_1, vector<weak_ptr<Character>> characters_2);
 
 	void StartCombat(weak_ptr<Character> player);
 	
@@ -39,9 +39,9 @@ public:
 
 	inline const int GetTurn() const { return _turn; }
 
-	inline const vector<shared_ptr<Character>> GetPlayers() const { return _players; }
+	inline const vector<weak_ptr<Character>> GetPlayers() const { return _players; }
 
-	inline const vector<shared_ptr<Character>> GetEnemies() const { return _enemies; }
+	inline const vector<weak_ptr<Character>> GetEnemies() const { return _enemies; }
 
 	inline const vector<shared_ptr<Character>> GetSummons() const { return _summons; }
 
@@ -61,36 +61,36 @@ public:
 	//===== PUBLIC EVENTS ===== //
 	//////////////////////////////////////////////////////////////////////////////////
 
-	void OnMagicBegin(const shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>>& targets);
-	void OnMagicEnd(const shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>>& targets);
+	void OnMagicBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnMagicEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
 
-	void OnMagicReceivedBegin(const shared_ptr<Character>& character, shared_ptr<Character> instigator);
-	void OnMagicReceivedEnd(const shared_ptr<Character>& character, shared_ptr<Character> instigator);
+	void OnMagicReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator);
+	void OnMagicReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator);
 
-	void OnMeleeBegin(const shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>>& targets);
-	void OnMeleeEnd(const shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>>& targets);
+	void OnMeleeBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnMeleeEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
 
-	void OnMeleeReceivedBegin(const shared_ptr<Character>& character, shared_ptr<Character> instigator);
-	void OnMeleeReceivedEnd(const shared_ptr<Character>& character, shared_ptr<Character> instigator);
+	void OnMeleeReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator);
+	void OnMeleeReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator);
 
-	void OnRangedBegin(const shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>>& targets);
-	void OnRangedEnd(const shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>>& targets);
+	void OnRangedBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnRangedEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
 
-	void OnRangedReceivedBegin(const shared_ptr<Character>& character, shared_ptr<Character> instigator);
-	void OnRangedReceivedEnd(const shared_ptr<Character>& character, shared_ptr<Character> instigator);
+	void OnRangedReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator);
+	void OnRangedReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator);
 
 	//////////////////////////////////////////////////////////////////////////////////
 private:
 	// Apply the value of the effect to the related targets' stat
-	void ApplyStat(CombatEffect* effect, const shared_ptr<Character>& target, CharacterStat& character_stat, float& _total, bool isOnApply);
+	void ApplyStat(CombatEffect* effect, weak_ptr<Character> target, CharacterStat& character_stat, float& _total, bool isOnApply);
 
-	void HandleCombatEffect(CombatEffect* effect, const shared_ptr<Character>& target);
+	void HandleCombatEffect(CombatEffect* effect, weak_ptr<Character> target);
 
 	// Calls Apply Stat for each character passed in the effect on effect application
-	void HandleApplyStat(CombatEffect* effect, const shared_ptr<Character>& target);
+	void HandleApplyStat(CombatEffect* effect, weak_ptr<Character> target);
 
 	// Calls Apply Stat for each character passed in the effect with per tick value
-	void HandleEffectStat(CombatEffect* effect, const shared_ptr<Character>& target);
+	void HandleEffectStat(CombatEffect* effect, weak_ptr<Character> target);
 
 	// Gets the characters' base for resetting values after each turn
 	void GetCharactersBase();
@@ -103,10 +103,10 @@ private:
 	void ApplyEffectsOnEvent(ECombatEvent on_event);
 
 	// Called when the passive effect is being instigated, which means its the instigators turn
-	void InstigatePassiveEffects(const std::shared_ptr<Character>& instigator, const std::vector<std::shared_ptr<Character>> targets, ECombatEvent on_event);
+	void InstigatePassiveEffects(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event);
 
 	// Called when the character with the passive was being instigated on
-	void TriggerPassiveEffects(const std::shared_ptr<Character>& character, const std::shared_ptr<Character>& instigator, ECombatEvent on_event);
+	void TriggerPassiveEffects(weak_ptr<Character> character, weak_ptr<Character> instigator, ECombatEvent on_event);
 
 	//=====  EVENTS ===== //
 	///////////////////////
@@ -134,10 +134,10 @@ private:
 
 	weak_ptr<Character> _player;
 
-	vector<shared_ptr<Character>> _players;
+	vector<weak_ptr<Character>> _players;
 	vector<PlayerCharacter> _players_base;
 
-	vector<shared_ptr<Character>> _enemies;
+	vector<weak_ptr<Character>> _enemies;
 	vector<EnemyCharacter> _enemies_base;
 
 	vector<shared_ptr<Character>> _summons;

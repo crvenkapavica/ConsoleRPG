@@ -30,8 +30,8 @@ public:
 
 private:
 
-	vector<shared_ptr<Character>> _players;
-	vector<shared_ptr<Character>> _enemies;
+	vector<weak_ptr<Character>> _players;
+	vector<weak_ptr<Character>> _enemies;
 
 	int _level;
 	int _count;

@@ -8,7 +8,7 @@ struct CharacterStat {
 	EStatType _stat_type;
 	EStatMod _stat_mod;
 	float* _stat;
-	std::function<float(const std::shared_ptr<Character>& character)> GetDelta;
+	std::function<float(Character* character)> GetDelta;
 	float _total = 0;
 };
 
@@ -40,7 +40,7 @@ struct ApplyParams {
 
 struct CombatEffect {
 
-	CombatEffect(std::shared_ptr<Character> instigator, const std::vector<shared_ptr<Character>>& targets, unique_ptr<ActiveSpell>& spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params, int duration)
+	CombatEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params, int duration)
 		: _instigator(instigator)
 		, _targets(targets)
 		, _spell(move(spell))
@@ -50,7 +50,7 @@ struct CombatEffect {
 	{}
 
 	std::shared_ptr<Character> _instigator;
-	std::vector<shared_ptr<Character>> _targets;
+	std::vector<weak_ptr<Character>> _targets;
 	std::unique_ptr<ActiveSpell> _spell;
 	std::optional<ApplyParams> _apply_params;
 	std::optional<EffectParams> _effect_params;
