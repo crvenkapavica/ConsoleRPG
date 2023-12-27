@@ -229,6 +229,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 		}
 		// if the turn is not the same we stop looking as the _combat_effects vector is sorted by turns
 		//else break;
+		else ++it;
 	}
 }
 
