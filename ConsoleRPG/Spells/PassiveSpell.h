@@ -18,7 +18,7 @@ public:
 	inline const ECombatEvent GetOnEvent() const { return _combat_event; }
 
 public:
-	Character* _instigator;
+	weak_ptr<Character> _instigator;
 	vector<weak_ptr<Character>> _targets;
 
 protected:

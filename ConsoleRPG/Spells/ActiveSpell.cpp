@@ -51,15 +51,15 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	}
 }
 
-float ActiveSpell::GetRandEffectMinMax(Character* character) {
+float ActiveSpell::GetRandEffectMinMax(const shared_ptr<Character>& character) {
 	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._effect_min, SpellDB::_data[_ID][_lvl]._effect_max), character);
 }
 
-float ActiveSpell::GetRandOnApplyMinMax(Character* character) {
+float ActiveSpell::GetRandOnApplyMinMax(const shared_ptr<Character>& character) {
 	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._apply_min, SpellDB::_data[_ID][_lvl]._apply_max), character);
 }
 
-float ActiveSpell::AdjustDamage(float damage, Character* character) {	
+float ActiveSpell::AdjustDamage(float damage, const shared_ptr<Character>& character) {
 	switch (_damage_type) {
 	case EDamageType::ARCANE:
 		damage += damage * character->_arcane_damage;
@@ -97,7 +97,7 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 	if (GetClass() == ESpellClass::MAGIC) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
 		if (rnd <= chance)
-			damage *= character->GetSpellCritDmg().GetActual();
+			damage *= character->GetSpellCritDmg().GetActual() / 100;
 	}
 	else if (GetClass() == ESpellClass::MELEE || GetClass() == ESpellClass::RANGED) {
 		float chance = character->GetCritChance().GetActual() * 100000; 
@@ -108,7 +108,7 @@ float ActiveSpell::AdjustDamage(float damage, Character* character) {
 	return damage;
 }
 
-int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, Character* character, const string& name) {
+int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, const shared_ptr<Character>& character, const string& name) {
 	vector<weak_ptr<Character>> enemies;
 	if (character->GetTeam() == 1)
 		enemies = GameplayStatics::GetEnemyCharacters();
@@ -145,11 +145,11 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, C
 	return r;
 }
 
-bool ActiveSpell::Summon(ECharacterClass character_class, Character* instigator) {
+bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Character>& instigator) {
 	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, instigator->GetTeam()), dltr);
 
-	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon.get())) { // replace with direct map_gen call after making map_GEN singleton
+	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton
 		CombatManager& cm = CombatManager::GetInstance();
 		cm.AddSummonToCombat(move(summon));
 		return true;
@@ -160,11 +160,11 @@ bool ActiveSpell::Summon(ECharacterClass character_class, Character* instigator)
 	return false;
 }
 
-void Fireball::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Fireball::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
-	auto delta = [this](Character* character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [&](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -181,14 +181,14 @@ stringstream& Fireball::GetTooltip() {
 	return _tooltip;
 }
 
-void Burning::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Burning::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	int rand_targets = AddRandomTargets(2, targets, instigator, "BURNING");
 
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetHealth().GetActual();
-		auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
+		auto delta = [&](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	}
 
@@ -212,7 +212,7 @@ stringstream& Burning::GetTooltip() {
 //============================================================================== MAGIC =============================================================================================
 //==================================================================================================================================================================================
 
-void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void MoltenArmor::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	
 	int rand_targets = AddRandomTargets(2, targets, instigator, "MOLTEN ARMOR");
 
@@ -220,7 +220,7 @@ void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>>& targ
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetArmor().GetActual();
 		auto const_delta = -GetRandOnApplyMinMax(instigator);
-		auto delta = [=](Character* character) { return const_delta; };
+		auto delta = [=](const shared_ptr<Character>& character) { return const_delta; };
 		enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	}
 	ApplyParams apply_params;
@@ -230,7 +230,7 @@ void MoltenArmor::Apply(Character* instigator, vector<weak_ptr<Character>>& targ
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetArmor().GetActual();
-		auto delta = [&](Character* character) { return -GetRandEffectMinMax(character); };
+		auto delta = [&](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
 	}
 	EffectParams effect_params;
@@ -253,11 +253,11 @@ stringstream& MoltenArmor::GetTooltip() {
 	return _tooltip;
 }
 
-void Exposure::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Exposure::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	vector<CharacterStat> enemy_apply_res;
 	auto stat = &targets[0].lock()->GetResistances().GetFireRes();
-	auto delta = [this](Character* character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [=](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::RESISTANCE, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -276,7 +276,7 @@ stringstream& Exposure::GetTooltip() {
 	return _tooltip;
 }
 
-void Stoneskin::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Stoneskin::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	//vector<CharacterStat> ally_apply_stats;
 	//ally_apply_stats.push_back(CharacterStat{ team1[t1_idx[0]], EStatType::ANY, EStatMod::ADDITIVE, &team1[t1_idx[0]]->GetArmor(), GetRandOnApplyMinMax() });
@@ -301,15 +301,15 @@ stringstream& Stoneskin::GetTooltip() {
 	return _tooltip;
 }
 
-void Disarm::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Disarm::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "SS_disarm" << endl;
 }
 
-void Bloodbath::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Bloodbath::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "SS_bloodath" << endl;
 }
 
-void ArcaneInfusion::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void ArcaneInfusion::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	//vector<CharacterStat> ally_apply_stats;
 	//ally_apply_stats.push_back(CharacterStat{ team1[t1_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team1[t1_idx[0]]->GetDmgMelee(), GetRandOnApplyMinMax() });
@@ -332,19 +332,19 @@ void ArcaneInfusion::Apply(Character* instigator, vector<weak_ptr<Character>>& t
 	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
-void AI_TEMP1::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void AI_TEMP1::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "AI_TEMP1" << endl;
 }
 
-void AI_TEMP2::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void AI_TEMP2::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "AI_TEMP2" << endl;
 }
 
-void AI_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void AI_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "AI_TEMP3" << endl;
 }
 
-void BloodRain::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void BloodRain::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	//float drain = GetRandEffectMinMax();
 
@@ -365,19 +365,19 @@ void BloodRain::Apply(Character* instigator, vector<weak_ptr<Character>>& target
 	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
-void BR_TEMP1::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void BR_TEMP1::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "BR_TEMP1 EFFECT" << endl;
 }
 
-void BR_TEMP2::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void BR_TEMP2::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "BR_TEMP2 ARMOR EFFECT" << endl;
 }
 
-void BR_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void BR_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
 
-void ViscousAcid::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void ViscousAcid::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	//vector<CharacterStat> enemy_apply_stats;
 	//enemy_apply_stats.push_back(CharacterStat{ team2[t2_idx[0]], EStatType::ANY, EStatMod::CONSTANT, &team2[t2_idx[0]]->GetArmor(), -GetRandOnApplyMinMax() });
@@ -408,15 +408,15 @@ stringstream& ViscousAcid::GetTooltip() {
 	return _tooltip;
 }
 
-void VA_TEMP1::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void VA_TEMP1::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "BR_TEMP1 EFFECT" << endl;
 }
 
-void VA_TEMP2::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void VA_TEMP2::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "BR_TEMP2 ARMOR EFFECT" << endl;
 }
 
-void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void VA_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	cout << "BR_TEMP3 EFFECT" << endl;
 }
 
@@ -428,7 +428,7 @@ void VA_TEMP3::Apply(Character* instigator, vector<weak_ptr<Character>>& targets
 //============================================================================== SUMMON =============================================================================================
 //==================================================================================================================================================================================
 
-void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void SummonFireElemental::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	bool bhasSummoned = Summon(ECharacterClass::FIRE_ELEMENTAL, instigator);
 }
 
@@ -438,11 +438,11 @@ void SummonFireElemental::Apply(Character* instigator, vector<weak_ptr<Character
 //============================================================================== MELEE =============================================================================================
 //==================================================================================================================================================================================
 
-void Melee::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Melee::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [this](Character* character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
+	auto delta = [&](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -459,6 +459,6 @@ void Melee::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
 //============================================================================== RANGED ============================================================================================
 //==================================================================================================================================================================================
 
-void Ranged::Apply(Character* instigator, vector<weak_ptr<Character>>& targets) {
+void Ranged::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 }

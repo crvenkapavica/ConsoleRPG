@@ -6,10 +6,9 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/CharacterData.h"
 
-
 using namespace std;
 
-void MapGenerator::Initialize(const vector<weak_ptr<PlayerCharacter>>& player_characters) {
+void MapGenerator::Initialize(const vector<weak_ptr<Character>>& player_characters) {
 
 	InitBFS();
 	InitPlayer(player_characters);
@@ -291,9 +290,12 @@ void MapGenerator::GetPlayerStartPosition(int& x, int& y) {
 	} while (_map[x][y] != PATH);
 }
 
-void MapGenerator::InitPlayer(const vector<weak_ptr<PlayerCharacter>>& player_characters) {
+void MapGenerator::InitPlayer(const vector<weak_ptr<Character>> player_characters) {
 
-	_player_characters = move(player_characters);
+	for (auto& player : player_characters) {
+		_player_characters.push_back(std::static_pointer_cast<PlayerCharacter>(player.lock()));
+	}
+
 	GetPlayerStartPosition(_player_x, _player_y);
 	
 	_border_x = _player_x - static_cast<int>(_player_characters[0].lock()->GetLighRadius()) + 1;
@@ -440,13 +442,11 @@ void MapGenerator::Move(int dir) {
 	if (_map[_player_x][_player_y] == ENEMY) {
 
 		ClearCharGrid();
-		DrawGrid();
+		DrawPlayGrid();
 
 		auto enemies = GetEnemies(_player_x, _player_y);
 		GenerateCharacterGridPositions();
 		AddCharactersToGrid();
-
-		EnemyCharacter::_n = static_cast<int>(enemies.size());
 
 		GameplayStatics::InitiateCombatMode(move(enemies));
 	}
@@ -494,25 +494,26 @@ void MapGenerator::AddRandomMapEnemies() {
 
 				//int rnd_enemies = rand() % 4 + 2;
 				int rnd_enemies = 6;
-				vector<shared_ptr<EnemyCharacter>> enemies_vector;
-				map<char, EnemyCharacter*> enemies_map;
+				vector<shared_ptr<Character>> enemies_vector;
+				map<char, weak_ptr<Character>> enemies_map;
 
 				for (int k = 0; k < rnd_enemies; k++) { 
 					int rnd = rand() % 3 + 50;
 					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
-					enemies_map['A' + k] = enemies_vector[k].get();
+					enemies_map['A' + k] = enemies_vector[k];
 				}
-				// restart static instance counter
-				EnemyCharacter::_n = 0;
 				_enemy_map.push_back(move(enemies_vector));
 				_enemy_map_xy.push_back(make_pair(i, j));	
 				_enemy_name_map.push_back(enemies_map);
+
+				// restart static instance counter
+				EnemyCharacter::_n = 0;
 			}
 		}
 	}
 }
 
-vector<weak_ptr<EnemyCharacter>> MapGenerator::GetEnemies(int x, int y) {
+vector<weak_ptr<Character>> MapGenerator::GetEnemies(int x, int y) {
 
 	_enemy_index = 0;
 	for (auto& xy : _enemy_map_xy) {
@@ -521,15 +522,15 @@ vector<weak_ptr<EnemyCharacter>> MapGenerator::GetEnemies(int x, int y) {
 		++_enemy_index;
 	}
 
-	vector<weak_ptr<EnemyCharacter>> w_ptr;
+	vector<weak_ptr<Character>> w_ptr;
 	for (auto& enemy : _enemy_map.at(_enemy_index))
-		w_ptr.push_back(weak_ptr<EnemyCharacter>(enemy));
+		w_ptr.push_back(weak_ptr<Character>(enemy));
 
 	return w_ptr;
 }
 
-Character* MapGenerator::GetCharacterFromAlias(char target) {
-	if (_char_map.find(target) == _char_map.end()) return nullptr;
+weak_ptr<Character> MapGenerator::GetCharacterFromAlias(char target) {
+	if (_char_map.find(target) == _char_map.end()) return weak_ptr<Character>();
 	int x = _char_map.at(target).first;
 	int y = _char_map.at(target).second;
 	return _char_grid[x][y]._here;
@@ -546,7 +547,7 @@ void MapGenerator::DisplayGrid() {
 	}
 }
 
-void MapGenerator::DrawGrid() {
+void MapGenerator::DrawPlayGrid() {
 
 	for (int i = 0; i < GRID_X; i++) {
 		for (int j = 0; j < GRID_Y; j++) {		
@@ -577,7 +578,7 @@ void MapGenerator::GenerateCharacterGridPositions() {
 			int rnd = rand() % 10;
 			first = _enemy_start_positions[rnd].first;
 			second = _enemy_start_positions[rnd].second;
-		} while (_char_grid[first][second]._here);
+		} while (_char_grid[first][second]._here.lock().get());
 
 		_char_grid[first][second]._here = enemy.second;
 		_char_map[enemy.first] = make_pair(first, second);
@@ -585,7 +586,7 @@ void MapGenerator::GenerateCharacterGridPositions() {
 
 	//add player characters
 	for (int i = 0; i < _player_characters.size(); i++) {
-		_char_grid[i][0]._here = _player_characters[i].lock().get();
+		_char_grid[i][0]._here = _player_characters[i];
 		_char_map['0' + i] = make_pair(i, 0);
 	}
 }
@@ -597,12 +598,12 @@ void MapGenerator::AddCharactersToGrid() {
 			int x = i * 4 + 2;
 			int y = j * 8 + 4;
 
-			if (_char_grid[i][j]._here)
-				_grid[x][y] = _char_grid[i][j]._here->GetAlias();
+			if (_char_grid[i][j]._here.lock().get())
+				_grid[x][y] = _char_grid[i][j]._here.lock()->GetAlias();
 		}
 }
 
-bool MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summon) {
+bool MapGenerator::AddCharacterToCharGrid(const shared_ptr<Character>& instigator, weak_ptr<Character> summon) {
 
 	int x = _char_map.at(instigator->GetAlias()).first;
 	int y = _char_map.at(instigator->GetAlias()).second;
@@ -614,7 +615,7 @@ bool MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summ
 		yy = y + _dY8[i];
 
 		if (xx >= 0 && xx < CHAR_GRID_X && yy >= 0 && yy < CHAR_GRID_Y) {
-			if (!_char_grid[xx][yy]._here) {
+			if (!_char_grid[xx][yy]._here.lock().get()) {
 				_char_grid[xx][yy]._here = summon;
 				bHasSpawned = true;
 				break;
@@ -623,11 +624,11 @@ bool MapGenerator::AddCharacterToCharGrid(Character* instigator, Character* summ
 	}
 	
 	if (bHasSpawned) {
-		_char_map[_char_grid[xx][yy]._here->GetAlias()].first = xx;
-		_char_map[_char_grid[xx][yy]._here->GetAlias()].second = yy;
+		_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].first = xx;
+		_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].second = yy;
 	}
 
-	_grid[xx * 4 + 2][yy * 8 + 4] = summon->GetAlias();
+	_grid[xx * 4 + 2][yy * 8 + 4] = summon.lock()->GetAlias();
 
 	UpdateCharGrid();
 
@@ -638,30 +639,29 @@ void MapGenerator::UpdateCharGrid() {
 
 	for (int i = 0; i < CHAR_GRID_X; ++i) 
 		for (int j = 0; j < CHAR_GRID_Y; ++j) 
-			for (int k = 0; k < 8; k++) {
+			for (int l = 0; l < 2; l++)
+				for (int k = 0; k < 8; k++) {
 				
-				int x = i + _dX8[k];
-				int y = j + _dY8[k];
+					int x = i + _dX8[k];
+					int y = j + _dY8[k];
 
-				if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
+					if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
 
-					if (_char_grid[i][j]._neighbors[k] && !_char_grid[x][y]._here)
-						_char_grid[x][y]._here = _char_grid[i][j]._neighbors[k];
+						if (l && _char_grid[i][j]._neighbors[k].lock() && !_char_grid[x][y]._here.lock())
+							_char_grid[x][y]._here = _char_grid[i][j]._neighbors[k];
 
-					else _char_grid[i][j]._neighbors[k] = _char_grid[x][y]._here;
+						else _char_grid[i][j]._neighbors[k] = _char_grid[x][y]._here;
+					}
+					else _char_grid[i][j]._neighbors[k] = weak_ptr<Character>();
 				}
-				else {
-					_char_grid[i][j]._neighbors[k] = nullptr;
-				}
-			}
 }
 
 void MapGenerator::ClearCharGrid() {
 	for (int i = 0; i < CHAR_GRID_X; i++)
 		for (int j = 0; j < CHAR_GRID_Y; j++) {
-			_char_grid[i][j]._here = nullptr;
+			_char_grid[i][j]._here = weak_ptr<Character>();
 			for (auto& a : _char_grid[i][j]._neighbors)
-				a = nullptr;
+				a = weak_ptr<Character>();
 		}
 }
 
@@ -676,14 +676,14 @@ void MapGenerator::MoveCharacterOnGrid(Character* character, EDirection directio
 
 	// Swap pointers and aliases from character source to character destination
 	_char_grid[xx][yy]._here = _char_grid[x][y]._here;
-	_char_grid[xx][yy]._here->SetAlias(_char_grid[x][y]._here->GetAlias());
-	_char_grid[x][y]._here = nullptr;
+	_char_grid[xx][yy]._here.lock()->SetAlias(_char_grid[x][y]._here.lock()->GetAlias());
+	_char_grid[x][y]._here = weak_ptr<Character>();
 
 #pragma warning(push)
 #pragma warning(disable: 6011) // Suppressing warning C6011: dereferencing null pointer
 	// Update map with alias
-	_char_map[_char_grid[xx][yy]._here->GetAlias()].first = xx;
-	_char_map[_char_grid[xx][yy]._here->GetAlias()].second = yy;
+	_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].first = xx;
+	_char_map[_char_grid[xx][yy]._here.lock()->GetAlias()].second = yy;
 #pragma warning(pop)
 
 	// Move on the real grid
@@ -705,7 +705,7 @@ vector<string> MapGenerator::GetCombatDirections(Character* character, OUT map<i
 		int xx = x + _dX8[i];
 		int yy = y + _dY8[i];
 		if (xx < 0 || xx >= CHAR_GRID_X || yy < 0 || yy >= CHAR_GRID_Y) continue;
-		if (_char_grid[xx][yy]._here) continue;
+		if (_char_grid[xx][yy]._here.lock().get()) continue;
 
 		v.push_back(directions[i]);
 		// Map values from InteractiveDisplay to real values
@@ -720,16 +720,16 @@ vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
 	int y = _char_map.at(character->GetAlias()).second;
 
 	for (const auto& c : _char_grid[x][y]._neighbors)
-		if (c) v.push_back(c);
+		if (c.lock().get()) v.push_back(c.lock().get());
 
 	return v;
 }
 
 int MapGenerator::GetEnemyIdx(char alias) {
 	if (UPPER(alias) < 'A' || UPPER(alias) > 'Z') return -1;
-	if (auto character = GetCharacterFromAlias(UPPER(alias))) {
+	if (auto character = GetCharacterFromAlias(UPPER(alias)).lock()) {
 		for (int i = 0; i < _enemy_map.at(_enemy_index).size(); i++) {
-			if (character == _enemy_map.at(_enemy_index)[i].get())
+			if (character == _enemy_map.at(_enemy_index)[i])
 				return i;
 		}
 	}
@@ -739,7 +739,7 @@ int MapGenerator::GetEnemyIdx(char alias) {
 int MapGenerator::GetPlayerIdx(char alias) {
 	auto character = GetCharacterFromAlias(alias);
 	for (int i = 0; i < _player_characters.size(); i++) {
-		if (character == _player_characters[i].lock().get())
+		if (std::static_pointer_cast<PlayerCharacter>(character.lock()) == _player_characters[i].lock())
 			return i;
 	}
 	return -1;
@@ -749,7 +749,7 @@ void MapGenerator::KillEnemy(int idx) {
 	if (Character* character = _enemy_map.at(_enemy_index)[idx].get()) {
 		int x = _char_map.at(character->GetAlias()).first;
 		int y = _char_map.at(character->GetAlias()).second;
-		_char_grid[x][y]._here = nullptr;
+		_char_grid[x][y]._here = weak_ptr<Character>();
 		UpdateCharGrid();	// to make it more efficient we can just update the killed characters neighbours' neighbours
 		_grid[x * 4 + 2][y * 8 + 4] = ' ';
 
@@ -762,7 +762,7 @@ void MapGenerator::KillEnemy(Character* character) {
 
 	int x = _char_map.at(character->GetAlias()).first;
 	int y = _char_map.at(character->GetAlias()).second;
-	_char_grid[x][y]._here = nullptr;
+	_char_grid[x][y]._here = weak_ptr<Character>();
 	_grid[x * 4 + 2][y * 8 + 4] = ' ';
 
 	_char_map.erase(character->GetAlias());

@@ -19,7 +19,7 @@ struct ApplyParams;
 class GameplayStatics {
 
 public:
-	static void Initialize(vector<shared_ptr<PlayerCharacter>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu);
+	static void Initialize(vector<shared_ptr<Character>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu);
 
 	static void DisplayAllies();
 	static void DisplayEnemies();
@@ -41,7 +41,7 @@ public:
 	//static void DisplaySomeSpellMenu();
 	static void DisplayPlayerStats();
 
-	static void InitiateCombatMode(const vector<weak_ptr<EnemyCharacter>>&& enemies);
+	static void InitiateCombatMode(vector<weak_ptr<Character>>&& enemies);
 	static void ResetCombatVariables();
 
 	static void GiveExperience(EnemyCharacter* enemy);
@@ -57,7 +57,7 @@ public:
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
 
-	static int GetSpellIdx(ActiveSpell* spell, OUT Character*& character);
+	static int GetSpellIdx(ActiveSpell* spell, shared_ptr<Character>& character);
 
 	static void DisplayMeleeMenu();
 	static void DisplayRangedMenu();
@@ -74,19 +74,22 @@ public:
 
 	static stringstream& GetCombatLogStream() { return _combat_log; }
 	static void DisplayCombatLog();
-	static void ExtractLinesFromStringstream(OUT vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
+	static void ExtractLinesFromStringstream(OUT std::vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
 
-	static vector<weak_ptr<Character>> GetPlayerCharacters();
-	static vector<weak_ptr<Character>> GetEnemyCharacters();
+	static std::weak_ptr<Character> GetWeakCharacter(Character* character);
+	static std::shared_ptr<Character> GetSharedCharacter(Character* character);
 
-	static float ApplyDamage(weak_ptr<Character> instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(Character* instigator, vector<weak_ptr<Character>>& targets, unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
+	static std::vector<weak_ptr<Character>> GetPlayerCharacters();
+	static std::vector<weak_ptr<Character>> GetEnemyCharacters();
+
+	static float ApplyDamage(std::weak_ptr<Character> instigator, Character* target, float damage, std::unique_ptr<ActiveSpell>& spell, bool isOnApply);
+	static void ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>&targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
 
 	static void KillEnemy(int idx);
 
 	static void EndTurn(Character* character);
 
-	static bool AddCharacterToCharGrid(Character* instigator, Character* summon);
+	static bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon);
 
 	static string GetAliasColor(char alias);
 
@@ -112,14 +115,14 @@ private:
 	GameplayStatics() = delete;
 
 private:
-	static weak_ptr<PlayerCharacter>	_player;
-	static vector<shared_ptr<PlayerCharacter>>		_player_characters;
-	static SpellManager* _sm;
-	static CombatManager* _cm;
-	static MapGenerator* _map_gen;
-	static ConsoleMenu* _menu;
+	static weak_ptr<Character>				_player;
+	static vector<shared_ptr<Character>>	_player_characters;
+	static SpellManager*	_sm;
+	static CombatManager*	_cm;
+	static MapGenerator*	_map_gen;
+	static ConsoleMenu*		_menu;
 
-	static vector<weak_ptr<EnemyCharacter>>		_enemies;
-	static vector<weak_ptr<PlayerCharacter>>	_players;
-	static stringstream							_combat_log;
+	static vector<weak_ptr<Character>>		_enemies;
+	static vector<weak_ptr<Character>>		_players;
+	static stringstream						_combat_log;
 };

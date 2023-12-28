@@ -24,7 +24,7 @@ public:
 	void CreatePassiveSpell(Character* spell_owner, ESpellID id);
 
 	// Cast the spell with spell_idx which corresponds to the owners spell vector index
-	void CastSpell(int spell_idx, Character* instigator, vector<weak_ptr<Character>> targets);
+	void CastSpell(int spell_idx, shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
 
 	//void UnequipSpell(ESpellBookID spell_id);
 
