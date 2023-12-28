@@ -31,7 +31,7 @@ void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellM
 								  // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
 
 	_player = players[0];
-	for (const auto& player : players)
+	for (const auto& player : _player_characters)
 		_players.push_back(player);
 
 	_sm = &spell_manager;

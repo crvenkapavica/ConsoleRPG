@@ -61,20 +61,20 @@ public:
 	//===== PUBLIC EVENTS ===== //
 	//////////////////////////////////////////////////////////////////////////////////
 
-	void OnMagicBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
-	void OnMagicEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnMagicBegin(shared_ptr<Character>& instigator, vector<weak_ptr<Character>> targets);
+	void OnMagicEnd(shared_ptr<Character>& instigator, vector<weak_ptr<Character>> targets);
 
 	void OnMagicReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator);
 	void OnMagicReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator);
 
-	void OnMeleeBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
-	void OnMeleeEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnMeleeBegin(shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnMeleeEnd(shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
 
 	void OnMeleeReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator);
 	void OnMeleeReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator);
 
-	void OnRangedBegin(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
-	void OnRangedEnd(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnRangedBegin(shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	void OnRangedEnd(shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
 
 	void OnRangedReceivedBegin(weak_ptr<Character> character, weak_ptr<Character> instigator);
 	void OnRangedReceivedEnd(weak_ptr<Character> character, weak_ptr<Character> instigator);
@@ -103,7 +103,7 @@ private:
 	void ApplyEffectsOnEvent(ECombatEvent on_event);
 
 	// Called when the passive effect is being instigated, which means its the instigators turn
-	void InstigatePassiveEffects(const weak_ptr<Character>& instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event);
+	void InstigatePassiveEffects(weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event);
 
 	// Called when the character with the passive was being instigated on
 	void TriggerPassiveEffects(const weak_ptr<Character>& character, const weak_ptr<Character>& instigator, ECombatEvent on_event);
