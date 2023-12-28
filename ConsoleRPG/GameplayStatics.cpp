@@ -265,7 +265,7 @@ void GameplayStatics::RedrawGameScreen() {
 }
 
 
-void GameplayStatics::InitiateCombatMode(const vector<weak_ptr<Character>>&& enemies) {
+void GameplayStatics::InitiateCombatMode(vector<weak_ptr<Character>>&& enemies) {
 
 	_player.lock()->SetIsInCombat(true);
 

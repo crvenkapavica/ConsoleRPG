@@ -41,7 +41,7 @@ public:
 	//static void DisplaySomeSpellMenu();
 	static void DisplayPlayerStats();
 
-	static void InitiateCombatMode(const vector<weak_ptr<Character>>&& enemies);
+	static void InitiateCombatMode(vector<weak_ptr<Character>>&& enemies);
 	static void ResetCombatVariables();
 
 	static void GiveExperience(EnemyCharacter* enemy);
