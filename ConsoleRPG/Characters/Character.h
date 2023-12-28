@@ -32,7 +32,7 @@ public:
 
 	Character& operator=(const Character& other) {
 		// "reset" all stats that effects might modify
-		_health.SetMax(other._health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
+		//_health.SetMax(other._health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
 		_essence = other._essence;
 		_stamina = other._stamina;
 		_armor = other._armor;
