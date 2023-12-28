@@ -251,8 +251,8 @@ void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
 	}
 }
 
-void CombatManager::InstigatePassiveEffects(const weak_ptr<Character>& instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
-	//RPG_ASSERT(instigator.expired(), "InstigatePassiveEffects");
+void CombatManager::InstigatePassiveEffects(const weak_ptr<Character> instigator, vector<weak_ptr<Character>> targets, ECombatEvent on_event) {
+	RPG_ASSERT(instigator.expired(), "InstigatePassiveEffects");
 	if (instigator.expired()) return;
 
 	for (const auto& passive : instigator.lock().get()->GetPassiveSpells()) {

@@ -658,6 +658,7 @@ std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(Character* charac
 				return shared;
 		}
 	}
+	return nullptr;
 }
 
 std::vector<weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {

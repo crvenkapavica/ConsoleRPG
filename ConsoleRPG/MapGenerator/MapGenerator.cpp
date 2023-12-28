@@ -6,7 +6,6 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/CharacterData.h"
 
-
 using namespace std;
 
 void MapGenerator::Initialize(const vector<weak_ptr<Character>>& player_characters) {
@@ -443,13 +442,11 @@ void MapGenerator::Move(int dir) {
 	if (_map[_player_x][_player_y] == ENEMY) {
 
 		ClearCharGrid();
-		DrawGrid();
+		DrawPlayGrid();
 
 		auto enemies = GetEnemies(_player_x, _player_y);
 		GenerateCharacterGridPositions();
 		AddCharactersToGrid();
-
-		EnemyCharacter::_n = static_cast<int>(enemies.size());
 
 		GameplayStatics::InitiateCombatMode(move(enemies));
 	}
@@ -550,7 +547,7 @@ void MapGenerator::DisplayGrid() {
 	}
 }
 
-void MapGenerator::DrawGrid() {
+void MapGenerator::DrawPlayGrid() {
 
 	for (int i = 0; i < GRID_X; i++) {
 		for (int j = 0; j < GRID_Y; j++) {		
@@ -642,22 +639,21 @@ void MapGenerator::UpdateCharGrid() {
 
 	for (int i = 0; i < CHAR_GRID_X; ++i) 
 		for (int j = 0; j < CHAR_GRID_Y; ++j) 
-			for (int k = 0; k < 8; k++) {
+			for (int l = 0; l < 2; l++)
+				for (int k = 0; k < 8; k++) {
 				
-				int x = i + _dX8[k];
-				int y = j + _dY8[k];
+					int x = i + _dX8[k];
+					int y = j + _dY8[k];
 
-				if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
+					if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
 
-					if (_char_grid[i][j]._neighbors[k].lock().get() && !_char_grid[x][y]._here.lock().get())
-						_char_grid[x][y]._here = _char_grid[i][j]._neighbors[k];
+						if (l && _char_grid[i][j]._neighbors[k].lock() && !_char_grid[x][y]._here.lock())
+							_char_grid[x][y]._here = _char_grid[i][j]._neighbors[k];
 
-					else _char_grid[i][j]._neighbors[k] = _char_grid[x][y]._here;
+						else _char_grid[i][j]._neighbors[k] = _char_grid[x][y]._here;
+					}
+					else _char_grid[i][j]._neighbors[k] = weak_ptr<Character>();
 				}
-				else {
-					_char_grid[i][j]._neighbors[k] = weak_ptr<Character>();
-				}
-			}
 }
 
 void MapGenerator::ClearCharGrid() {

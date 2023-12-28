@@ -164,7 +164,7 @@ void Fireball::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
-	auto delta = [=](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [&](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
@@ -188,7 +188,7 @@ void Burning::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetHealth().GetActual();
-		auto delta = [=](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
+		auto delta = [&](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	}
 
@@ -230,7 +230,7 @@ void MoltenArmor::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Charac
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
 		auto stat = &targets[i].lock()->GetArmor().GetActual();
-		auto delta = [=](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
+		auto delta = [&](const shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
 	}
 	EffectParams effect_params;
@@ -442,7 +442,7 @@ void Melee::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>&
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [=](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
+	auto delta = [&](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;

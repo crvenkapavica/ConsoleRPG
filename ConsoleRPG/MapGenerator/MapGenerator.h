@@ -7,8 +7,6 @@ class Character;
 class EnemyCharacter;
 class PlayerCharacter;
 
-using namespace std;
-
 struct distance_node {
 	int x;
 	int y;
@@ -16,8 +14,8 @@ struct distance_node {
 };
 
 struct grid_node {
-	weak_ptr<Character> _here;
-	weak_ptr<Character> _neighbors[8];
+	std::weak_ptr<Character> _here;
+	std::weak_ptr<Character> _neighbors[8];
 };
 
 struct path_node {
@@ -57,7 +55,7 @@ class MapGenerator {
 public:
 	MapGenerator() {}
 
-	void Initialize(const vector<weak_ptr<Character>>& player_characters);
+	void Initialize(const std::vector<std::weak_ptr<Character>>& player_characters);
 
 	// Shows the current player position on the map with radius of light_radius
 	void ShowPosition();
@@ -79,7 +77,7 @@ public:
 
 	void MoveCharacterOnGrid(Character* character, EDirection direction);
 
-	bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, weak_ptr<Character> summon);
+	bool AddCharacterToCharGrid(const std::shared_ptr<Character>& instigator, std::weak_ptr<Character> summon);
 
 	int GetEnemyIdx(char alias);
 
@@ -90,11 +88,11 @@ public:
 	void KillEnemy(Character* character);
 
 public:
-	weak_ptr<Character> GetCharacterFromAlias(char target);
+	std::weak_ptr<Character> GetCharacterFromAlias(char target);
 
-	vector<string> GetCombatDirections(Character* character, OUT map<int, EDirection>& map);
+	std::vector<string> GetCombatDirections(Character* character, OUT std::map<int, EDirection>& map);
 
-	vector<Character*> GetCharactersInRange(Character* character);
+	std::vector<Character*> GetCharactersInRange(Character* character);
 
 private:
 	// BFS that generates map
@@ -137,7 +135,7 @@ private:
 
 	void GetPlayerStartPosition(int& x, int& y);
 
-	void InitPlayer(const vector<weak_ptr<Character>> player_characters);
+	void InitPlayer(const std::vector<std::weak_ptr<Character>> player_characters);
 
 	void DisplayErrorMessage(const string& message);
 
@@ -157,12 +155,12 @@ private:
 	// Move after input
 	void Move(int dir);
 
-	vector<weak_ptr<Character>> GetEnemies(int x, int y);
+	std::vector<std::weak_ptr<Character>> GetEnemies(int x, int y);
 
 	// GRID SPECIFIC
 	// -------------------------------------------------------------------
 
-	void DrawGrid();
+	void DrawPlayGrid();
 
 	// Places each enemy on the [currently] random square on the play grid
 	void GenerateCharacterGridPositions();
@@ -176,17 +174,17 @@ private:
 	void ClearCharGrid();
 
 private:
-	vector<EnemyCharacter*> _enemies;
+	std::vector<EnemyCharacter*> _enemies;
 
-	class vector<weak_ptr<PlayerCharacter>> _player_characters;
+	class std::vector<std::weak_ptr<PlayerCharacter>> _player_characters;
 
 	char _map[MAX_X][MAX_Y];
 	path_node _nodes[MAX_X][MAX_Y];  // TODO : use dynamic allocation later
 	int _steps[MAX_X][MAX_Y] = { {0} };
 
-	vector<string> _error;
+	std::vector<string> _error;
 
-	vector<pair<int, int>> _turn;
+	std::vector<std::pair<int, int>> _turn;
 
 	int _step_limit;
 
@@ -215,11 +213,11 @@ private:
 
 	int _distance[MAX_X][MAX_Y] = { {0} };
 
-	vector<distance_node> _distances_nodes;
+	std::vector<distance_node> _distances_nodes;
 
-	vector<vector<shared_ptr<Character>>> _enemy_map; // this two vectors are aligned
-	vector<pair<int, int>> _enemy_map_xy; // this two vectors are aligned
-	vector<map<char, weak_ptr<Character>>> _enemy_name_map; 
+	std::vector<std::vector<std::shared_ptr<Character>>> _enemy_map; // this two vectors are aligned
+	std::vector<std::pair<int, int>> _enemy_map_xy; // this two vectors are aligned
+	std::vector<std::map<char, std::weak_ptr<Character>>> _enemy_name_map; 
 
 	int _enemy_index;
 
@@ -227,9 +225,9 @@ private:
 	// ------------------------------------------------------------------
 	char _grid[21][81];
 	grid_node _char_grid[5][10];
-	unordered_map<char, pair<int, int>> _char_map;
+	std::unordered_map<char, std::pair<int, int>> _char_map;
 
-	vector<pair<int, int>> _enemy_start_positions = {
+	std::vector<std::pair<int, int>> _enemy_start_positions = {
 		{0, 9}, {0, 8},
 		{1, 9}, {1, 8},
 		{2, 9}, {2, 8},
