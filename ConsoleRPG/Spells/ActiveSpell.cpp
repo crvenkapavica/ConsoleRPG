@@ -33,7 +33,11 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 	case ESpellID::VISCOUS_ACID:
 		return make_unique<ViscousAcid>();
 
-		//SUMMON
+		// MISC
+	case ESpellID::BLIND:
+		return make_unique<Blind>();
+
+		// SUMMON
 	case ESpellID::SUM_FIRE_ELE:
 		return make_unique<SummonFireElemental>();
 
@@ -47,7 +51,7 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 		return make_unique<Ranged>();
 
 	default:
-		return nullptr;
+		throw new std::invalid_argument("SpellID not found.");
 	}
 }
 
@@ -423,10 +427,19 @@ void VA_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character
 
 
 
+//==============================================================================  MISC  ============================================================================================
+//==================================================================================================================================================================================
+
+void Blind::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
+	
+	unique_ptr<Blind> spell = make_unique<Blind>();
+	GameplayStatics::ApplyEffect(instigator, targets, move(spell), {}, {});
+}
+
 
 
 //============================================================================== SUMMON =============================================================================================
-//==================================================================================================================================================================================
+//===================================================================================================================================================================================
 
 void SummonFireElemental::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 	bool bhasSummoned = Summon(ECharacterClass::FIRE_ELEMENTAL, instigator);

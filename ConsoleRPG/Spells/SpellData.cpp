@@ -79,6 +79,11 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 		{ 1.4f,		2.1f,		21.0f,		26.6f,		2,		4,		20,		0 }
 	};
 	//==============================================================================
+	// MISC
+	_data[ESpellID::BLIND] = { 
+		{ 0.f,		 0.f,		 0.f,		 0.f,		1,		4,		50,		10 } 
+	};
+	//==============================================================================
 	// MELEE
 	_data[ESpellID::MELEE] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 } };
 	//==============================================================================
@@ -100,11 +105,15 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
 	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
 
+	// MISC
+	_active_const_map[ESpellID::BLIND] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::EPIC, ESpellClass::MAGIC, 12 };		// maybe change the class to MISC
+
 	// SUMMON
 	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::MAGIC, 1 };
 
 	//MELEE
 	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
+
 	//RANGED
 	_active_const_map[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1 };
 };

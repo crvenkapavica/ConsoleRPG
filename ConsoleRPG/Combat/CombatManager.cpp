@@ -52,8 +52,12 @@ void CombatManager::BeginTurn(weak_ptr<Character> character) {
 		OnTurnBegin();
 	}
 
-	if (!character.expired())
-		character.lock()->TakeTurn();
+	if (!character.expired()) 
+		for (const auto& effect : character.lock()->GetEffectIds())
+			if (effect == ESpellID::BLIND)
+				return EndTurn(character.lock().get());
+
+	character.lock()->TakeTurn();
 }
 
 void CombatManager::EndTurn(Character* character) {
@@ -148,9 +152,8 @@ void CombatManager::ApplyStat(shared_ptr<CombatEffect> effect, weak_ptr<Characte
 	FlagDeadCharacters();
 }
 
-void CombatManager::HandleCombatEffect(shared_ptr<CombatEffect> effect, weak_ptr<Character> target) {
-	
-	//RPG_ASSERT(target.expired(), "HandleCombatEffect");
+void CombatManager::HandleCombatEffect(shared_ptr<CombatEffect> effect, weak_ptr<Character> target) {	
+	RPG_ASSERT(!target.expired(), "HandleCombatEffect");
 
 	if (effect->_apply_params)
 		HandleApplyStat(effect, target);
@@ -233,11 +236,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 }
 
 void CombatManager::ApplyEffectsOnEvent(ECombatEvent on_event) {
-
-	int index = 0;
 	for (auto& effect : _combat_effects) {
-		if (!effect.second) continue;
-		++index;
 		if (!_player.lock()->IsInCombat()) return;
 		int idx = effect.second->i % static_cast<int>(effect.second->_targets.size());
 		if ((effect.second->_effect_params && effect.second->_effect_params->_on_event == on_event) || effect.second->_apply_params)

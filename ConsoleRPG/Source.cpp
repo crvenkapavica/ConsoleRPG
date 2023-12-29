@@ -116,6 +116,7 @@ int main() {
     sm.CreateActiveSpell(player_main.get(), ESpellID::EXPOSURE);
     sm.CreateActiveSpell(player_main.get(), ESpellID::MOLTEN_ARMOR);
     sm.CreateActiveSpell(player_main.get(), ESpellID::SUM_FIRE_ELE);
+    sm.CreateActiveSpell(player_main.get(), ESpellID::BLIND);
 
     //pasive
     sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);

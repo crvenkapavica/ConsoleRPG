@@ -670,9 +670,7 @@ std::vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
 }
 
 float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
-	//RPG_ASSERT(instigator.expired(), "ApplyDamage");
-
-	if (instigator.expired()) return 0.f;
+	RPG_ASSERT(!instigator.expired(), "ApplyDamage");
 
 	damage = float2(damage);
 	float actual_damage;
@@ -694,9 +692,8 @@ float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* ta
 }
 
 void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
-	
-	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator->GetAlias());
+	auto& s = GetCombatLogStream();
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
 
 	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
@@ -764,8 +761,14 @@ std::string GameplayStatics::GetEnumString(ESpellID _enum) {
 		return "EXPOSURE";
 	case ESpellID::VISCOUS_ACID:
 		return "VISCOUS ACID";
+	case ESpellID::BLIND:
+		return "BLIND";
 	case ESpellID::SUM_FIRE_ELE:
 		return "SUMMON FIRE ELEMENTAL";
+	case ESpellID::MELEE:
+		return "MELEE ATTACK";
+	case ESpellID::RANGED:
+		return "RANGED ATTACK";
 	default:
 		return "DEFAULT";
 	}
