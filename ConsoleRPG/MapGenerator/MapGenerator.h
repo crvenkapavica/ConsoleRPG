@@ -178,9 +178,11 @@ private:
 
 	class std::vector<std::weak_ptr<PlayerCharacter>> _player_characters;
 
-	char _map[MAX_X][MAX_Y];
-	path_node _nodes[MAX_X][MAX_Y];  // TODO : use dynamic allocation later
-	int _steps[MAX_X][MAX_Y] = { {0} };
+	char** _map;
+
+	path_node** _nodes;
+
+	int** _steps;
 
 	std::vector<string> _error;
 

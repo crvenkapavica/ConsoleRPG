@@ -52,12 +52,13 @@ void CombatManager::BeginTurn(weak_ptr<Character> character) {
 		OnTurnBegin();
 	}
 
-	if (!character.expired()) 
+	if (!character.expired()) {
 		for (const auto& effect : character.lock()->GetEffectIds())
 			if (effect == ESpellID::BLIND)
 				return EndTurn(character.lock().get());
 
-	character.lock()->TakeTurn();
+		character.lock()->TakeTurn();
+	}
 }
 
 void CombatManager::EndTurn(Character* character) {
@@ -344,6 +345,7 @@ void CombatManager::OnCombatBegin() {
 	GetCharactersBase();
 }
 void CombatManager::OnCombatEnd() {
+	ResetCharacterValues();
 	ResetCombatVariables();
 	// reap rewards
 }

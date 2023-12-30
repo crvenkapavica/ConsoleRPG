@@ -10,6 +10,18 @@ using namespace std;
 
 void MapGenerator::Initialize(const vector<weak_ptr<Character>>& player_characters) {
 
+	_map = new char* [MAX_X];
+	for (int i = 0; i < MAX_X; i++)
+		_map[i] = new char[MAX_Y];
+
+	_nodes = new path_node* [MAX_X];
+	for (int i = 0; i < MAX_X; i++)
+		_nodes[i] = new path_node[MAX_Y];
+
+	_steps = new int* [MAX_X];
+	for (int i = 0; i < MAX_X; i++)
+		_steps[i] = new int[MAX_Y]();
+
 	InitBFS();
 	InitPlayer(player_characters);
 	InitDistanceBFS(_player_x, _player_y, 0);
