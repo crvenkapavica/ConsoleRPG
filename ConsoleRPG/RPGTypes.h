@@ -196,6 +196,8 @@ enum class ESpellClass {
 	MELEE,
 	RANGED,
 	MAGIC,
+	SUMMON,
+	MISC,
 	ITEM
 };
 

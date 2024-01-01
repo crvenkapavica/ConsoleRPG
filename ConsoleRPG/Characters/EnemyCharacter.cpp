@@ -30,12 +30,9 @@ EnemyCharacter::~EnemyCharacter()
 
 void EnemyCharacter::TakeTurn() {
 
-	//Move();
+	Move();
 
-	CombatManager& cm = CombatManager::GetInstance();
-	if (cm.GetTurn() == 0 || cm.GetTurn() == 1 || cm.GetTurn() == 2 || cm.GetTurn() == 3) {
-		//CastSpell();
-	}
+	//CastSpell();
 
 	GameplayStatics::RedrawGameScreen();
 	Sleep(1200);
@@ -60,6 +57,9 @@ void EnemyCharacter::CastSpell() {
 
 	vector<weak_ptr<Character>> targets = { _players[p_idx[0]] };
 
-	SpellManager& sm = SpellManager::GetInstance();
-	sm.CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
+	if (GetPassiveSpells().size() && GetPassiveSpells()[0]) {
+
+		SpellManager& sm = SpellManager::GetInstance();
+		sm.CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
+	}
 }

@@ -9,14 +9,14 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 	// MAGIC
 	_data[ESpellID::FIREBALL] = {
 //		app_min	   app_max	   val_min	   val_max	 duration   cd	   e_cost	s_cost
-		{ 115.2f,	116.6f,		0.f,		0.f,		2,		2,		15,		0 },
+		{ 5.2f,		6.6f,		0.f,		0.f,		2,		2,		15,		0 },
 		{ 6.2f,		8.2f,		0.f,		0.f,		2,		2,		20,		0 },
 		{ 7.5f,		11.2f,		0.f,		0.f,		2,		2,		30,		0 },
 		{ 11.5f,	15.8f,		0.f,		0.f,		2,		1,		45,		0 },
 		{ 16.3f,	21.9f,		0.f,		0.f,		2,		1,		65,		0 }
 	};
 	_data[ESpellID::BURNING] = {
-		{ 0.f,		0.f,		113.2f,		114.3f,		3,		2,		10,		0 },
+		{ 0.f,		0.f,		3.2f,		4.3f,		3,		2,		10,		0 },
 		{ 0.f,		0.f,		4.3f,		5.4f,		3,		2,		20,		0 },
 		{ 0.f,		0.f,		5.5f,		7.f,		3,		2,		30,		0 },
 		{ 0.f,		0.f,		7.2f,		9.1f,		4,		1,		45,		0 },
@@ -114,11 +114,11 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
 
 	// MISC
-	_active_const_map[ESpellID::BLIND] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::EPIC, ESpellClass::MAGIC, 12 };		// maybe change the class to MISC
+	_active_const_map[ESpellID::BLIND] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::EPIC, ESpellClass::MISC, 12 };		// maybe change the class to MISC
 
 	// SUMMON
-	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::MAGIC, 12 };
-	_active_const_map[ESpellID::SUM_FIRE_IMP] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::RARE, ESpellClass::MAGIC, 3 };
+	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::SUMMON, 12 };
+	_active_const_map[ESpellID::SUM_FIRE_IMP] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::RARE, ESpellClass::SUMMON, 3 };
 
 	//MELEE
 	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
