@@ -269,7 +269,7 @@ void MapGenerator::GetRandomRectangle(int x, int y) {
 				if (x + i > MAX_X || y + j > MAX_Y) break;
 				_map[x + i][y + j] = RECTANGLE;
 			}
-	}
+	} ''
 }
 
 void MapGenerator::PrintDebugMap() {
@@ -499,9 +499,9 @@ void MapGenerator::AddRandomMapEnemies() {
 
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
-			int percent = static_cast<int>(_total_steps * 0.2);
-			int rnd = rand() % _total_steps; // use mersenne twister here!
-			if (/*rnd <= percent && */_steps[i][j] > 0 && _map[i][j] != PLAYER) {
+			int percent = static_cast<int>(_total_steps * 0.15);
+			int rnd = GameplayStatics::GetRandInt(0, _total_steps);
+			if (rnd <= percent && _steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
 				//int rnd_enemies = rand() % 4 + 2;
@@ -511,7 +511,8 @@ void MapGenerator::AddRandomMapEnemies() {
 
 				for (int k = 0; k < rnd_enemies; k++) { 
 					int rnd = rand() % 3 + 50;
-					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
+					//enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
+					enemies_vector.push_back(make_shared<EnemyCharacter>(ECharacterClass::E_ARCHER);
 					enemies_map['A' + k] = enemies_vector[k];
 				}
 				_enemy_map.push_back(move(enemies_vector));
