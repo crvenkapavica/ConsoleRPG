@@ -40,7 +40,7 @@ void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellM
 	_menu = &menu;
 
 	_map_gen->Initialize(_players);
-	_map_gen->PrintDebugMap();
+	//_map_gen->PrintDebugMap();
 
 	DisplayMapMenu();
 }
@@ -835,22 +835,36 @@ std::string GameplayStatics::GetEnumString(EDamageType _enum) {
 
 std::string GameplayStatics::GetEnumString(ECharacterClass _enum) {
 
-	if (static_cast<int>(_enum) >= 50) {
-		int int_enum = static_cast<int>(_enum);
-		int_enum -= 49;
-		return "Enemy Level " + to_string(int_enum);
-	}
-	else {
-		switch (_enum) {
-		case ECharacterClass::BARBARIAN:
-			return "BARBARIAN";
-		case ECharacterClass::WARLOCK:
-			return "WARLOCK";
-			break;
-		default:
-			return "DEFAULT";
-			break;
-		}
+
+	switch (_enum) {
+	case ECharacterClass::BARBARIAN:
+		return "BARBARIAN";
+	case ECharacterClass::WARLOCK:
+		return "WARLOCK";
+		break;
+
+	case ECharacterClass::E_GHOUL:
+		return "GHOUL";
+		break;
+	case ECharacterClass::E_ARCHER:
+		return "ARCHER";
+		break;
+	case ECharacterClass::E_MAGE:
+		return "MAGE";
+		break;
+	case ECharacterClass::E_WARLOCK:
+		return "WARLOCK";
+		break;
+	case ECharacterClass::E_SWORDSMAN:
+		return "SWORDSMAN";
+		break;
+	case ECharacterClass::E_FIRE_IMP:
+		return "FIRE IMP";
+		break;
+
+	default:
+		return "DEFAULT CLASS";
+		break;
 	}
 }
 

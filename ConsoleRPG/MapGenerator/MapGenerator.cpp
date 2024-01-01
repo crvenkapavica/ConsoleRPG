@@ -497,11 +497,13 @@ void MapGenerator::InitEnemies() {
 
 void MapGenerator::AddRandomMapEnemies() {
 
+	const int MAP_LEVEL = 1;
+
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
 			int percent = static_cast<int>(_total_steps * 0.05);
 			int rnd = GameplayStatics::GetRandInt(0, _total_steps);
-			if (rnd <= percent && _steps[i][j] > 0 && _map[i][j] != PLAYER) {
+			if (/*rnd <= percent &&*/ _steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
 				//int rnd_enemies = rand() % 4 + 2;
@@ -510,7 +512,7 @@ void MapGenerator::AddRandomMapEnemies() {
 				map<char, weak_ptr<Character>> enemies_map;
 
 				for (int k = 0; k < rnd_enemies; k++) { 
-					int rnd = rand() % 3 + 50;
+					int rnd = rand() % 6 + 50;
 					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
 					enemies_map['A' + k] = enemies_vector[k];
 				}

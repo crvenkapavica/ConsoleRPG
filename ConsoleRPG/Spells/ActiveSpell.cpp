@@ -40,7 +40,8 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 		// SUMMON
 	case ESpellID::SUM_FIRE_ELE:
 		return make_unique<SummonFireElemental>();
-
+	case ESpellID::SUM_FIRE_IMP:
+		return make_unique<SummonFireImp>();
 
 		// MELEE
 	case ESpellID::MELEE:
@@ -445,7 +446,9 @@ void SummonFireElemental::Apply(shared_ptr<Character> instigator, vector<weak_pt
 	bool bhasSummoned = Summon(ECharacterClass::FIRE_ELEMENTAL, instigator);
 }
 
-
+void SummonFireImp::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
+	bool bHasSummoned = Summon(ECharacterClass::FIRE_IMP, instigator);
+}
 
 
 //============================================================================== MELEE =============================================================================================

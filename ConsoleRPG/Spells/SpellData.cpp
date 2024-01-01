@@ -83,6 +83,9 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 	_data[ESpellID::SUM_FIRE_ELE] = {
 		{ 0.f,		 0.f,		 0.f,		 0.f,		0,		4,		175,	0 }
 	};
+	_data[ESpellID::SUM_FIRE_IMP] = {
+		{ 0.f,		 0.f,		 0.f,		 0.f,		0,		3,		45,		0 }
+	};
 	//==============================================================================
 	// MISC
 	_data[ESpellID::BLIND] = { 
@@ -114,7 +117,8 @@ SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	_active_const_map[ESpellID::BLIND] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::EPIC, ESpellClass::MAGIC, 12 };		// maybe change the class to MISC
 
 	// SUMMON
-	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::MAGIC, 1 };
+	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::MAGIC, 12 };
+	_active_const_map[ESpellID::SUM_FIRE_IMP] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::RARE, ESpellClass::MAGIC, 3 };
 
 	//MELEE
 	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };

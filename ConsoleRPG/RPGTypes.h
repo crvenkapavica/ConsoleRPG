@@ -170,7 +170,8 @@ enum class ESpellID {
 
 	//SUMMON
 	SUM_FIRE_ELE,
-	
+	SUM_FIRE_IMP,
+
 	// MELEE
 	MELEE,
 	// RANGED
@@ -251,13 +252,15 @@ enum class ECharacterClass {
 	MAGMA_GOLEM,
 	NATURES_PROPHET,
 	DEATH_PROPHET,
+	FIRE_IMP,
 
 	// ENEMY
-	E_GHOUL,
+	E_GHOUL = 50,
 	E_ARCHER,
 	E_MAGE,
 	E_WARLOCK,
 	E_SWORDSMAN,
+	E_FIRE_IMP,
 
 	// BOSSES
 	B_LICH

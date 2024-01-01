@@ -186,6 +186,11 @@ public:
     virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
 };
 
+class SummonFireImp : public ActiveSpell {
+public:
+    SummonFireImp() : ActiveSpell(ESpellID::SUM_FIRE_IMP) {}
+    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
+};
 
 
 
