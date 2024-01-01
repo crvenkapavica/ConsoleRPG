@@ -67,8 +67,8 @@ Character::Character(CharacterData data, char alias)
 	sm.CreateActiveSpell(this, data._spell3.first);
 	sm.CreateActiveSpell(this, data._spell4.first);
 
-	sm.CreateActiveSpell(this, ESpellID::MELEE);
-	sm.CreateActiveSpell(this, ESpellID::RANGED);
+	//sm.CreateActiveSpell(this, ESpellID::MELEE);
+	//sm.CreateActiveSpell(this, ESpellID::RANGED);
 
 	sm.CreatePassiveSpell(this, data._passive1.first);
 	sm.CreatePassiveSpell(this, data._passive2.first);

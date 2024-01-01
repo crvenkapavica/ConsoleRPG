@@ -266,7 +266,7 @@ void MapGenerator::GetRandomRectangle(int x, int y) {
 
 		for (int i = 0; i < a; i++)
 			for (int j = 0; j < b; j++) {
-				if (x + i > MAX_X || y + j > MAX_Y) break;
+				if (x + i >= MAX_X - 1 || y + j >= MAX_Y - 1) break;
 				_map[x + i][y + j] = RECTANGLE;
 			}
 	}
@@ -499,9 +499,9 @@ void MapGenerator::AddRandomMapEnemies() {
 
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
-			int percent = static_cast<int>(_total_steps * 0.2);
-			int rnd = rand() % _total_steps; // use mersenne twister here!
-			if (/*rnd <= percent && */_steps[i][j] > 0 && _map[i][j] != PLAYER) {
+			int percent = static_cast<int>(_total_steps * 0.05);
+			int rnd = GameplayStatics::GetRandInt(0, _total_steps);
+			if (rnd <= percent && _steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
 				//int rnd_enemies = rand() % 4 + 2;
