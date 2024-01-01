@@ -140,7 +140,7 @@ void GameplayStatics::DisplayEnemies() {
 		}
 }
 
-int GameplayStatics::InteractiveDisplay(const vector<string>& options, int right, bool clear) {
+int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool clear) {
 	_menu->SetOptions(options);
 	_menu->SetUp(static_cast<int>(options.size()));
 	_menu->SetRight(right);
@@ -479,9 +479,7 @@ void GameplayStatics::DisplaySpellMenu() {
 	vector<ActiveSpell*> spells;
 	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
 		if (spell->GetClass() == ESpellClass::MAGIC) {
-			v.push_back(GetEnumString(spell->GetID()) + ANSI_COLOR_RESET + " [STAMINA: " + ANSI_COLOR_GREEN + to_string(SpellDB::_data[spell->GetID()][spell->GetLvl()]._stamina_cost)
-				+ ANSI_COLOR_RESET + "; ESSENCE: " + ANSI_COLOR_CYAN + to_string(SpellDB::_data[spell->GetID()][spell->GetLvl()]._essence_cost)
-				+ ANSI_COLOR_RESET + "; COOLDOWN: " + ANSI_COLOR_RED + to_string(SpellDB::_data[spell->GetID()][spell->GetLvl()]._cooldown) + ANSI_COLOR_RESET + "]");
+			v.push_back(GetEnumString(spell->GetID()));
 			spells.push_back(spell.get());
 		}
 	}
@@ -830,37 +828,29 @@ std::string GameplayStatics::GetEnumString(EDamageType _enum) {
 		return "COLD";
 	case EDamageType::POISON:
 		return "POISON";
-	case EDamageType::PURE:
-		return "PURE";
-	case EDamageType::PHYSICAL:
-		return "PHYSICAL";
 	default:
-		return "default damage type";
+		return "No type";
 	}
 }
 
 std::string GameplayStatics::GetEnumString(ECharacterClass _enum) {
 
-	switch (_enum) {
-	case ECharacterClass::BARBARIAN:
-		return "BARBARIAN";
-	case ECharacterClass::WARLOCK:
-		return "WARLOCK";
-		break;
-
-
-	case ECharacterClass::E_GHOUL:
-		return "GHOUL";
-		break;
-	case ECharacterClass::E_ARCHER:
-		return "ARCHER";
-		break;
-	case ECharacterClass::E_MAGE:
-		return "MAGE";
-		break;
-	default:
-		return "DEFAULT CHARACTER";
-		break;
+	if (static_cast<int>(_enum) >= 50) {
+		int int_enum = static_cast<int>(_enum);
+		int_enum -= 49;
+		return "Enemy Level " + to_string(int_enum);
+	}
+	else {
+		switch (_enum) {
+		case ECharacterClass::BARBARIAN:
+			return "BARBARIAN";
+		case ECharacterClass::WARLOCK:
+			return "WARLOCK";
+			break;
+		default:
+			return "DEFAULT";
+			break;
+		}
 	}
 }
 

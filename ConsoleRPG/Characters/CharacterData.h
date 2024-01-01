@@ -33,8 +33,6 @@ struct CharacterData {
 
 	std::pair<EItemSlot, EItemID> slot_mh;
 	std::pair<EItemSlot, EItemID> slot_oh;
-
-	int _power_lvl;
 };
 
 struct PlayerAttributes {

@@ -50,9 +50,3 @@ public:
 private:
 	float _value = 10.f;
 };
-
-class DamageTypeSocket : public PassiveSpell {
-public:
-	DamageTypeSocket() : PassiveSpell(ESpellID::DMG_TYPE) {}
-	virtual void Apply() override;
-}
