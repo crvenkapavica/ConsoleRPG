@@ -505,18 +505,21 @@ void MapGenerator::AddRandomMapEnemies() {
 				int power_lvl = GameplayStatics::GetRandInt(power_lvl_low, power_lvl_high);
 
 				int rnd_enemies = 0;
-				vector<int> power_lvls;
+				int total_power = 0;
+				vector<int> char_classes;
 
 				while (power_lvl) {
 					int rndc = rand() % 6 + 50;
 					if (power_lvl - CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl >= 0) {
 						++rnd_enemies;
-						power_lvls.push_back(rndc);
+						char_classes.push_back(rndc);
+						total_power += CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl;
 						power_lvl -= CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl;
 						if (rnd_enemies == 7) {
 							++rnd_enemies;
 							int t = power_lvl > 6 ? 6 : power_lvl;
-							power_lvls.push_back(50 + t - 1);
+							char_classes.push_back(50 + t - 1);
+							total_power += CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl;
 							power_lvl -= t;
 							break;
 						}
@@ -527,14 +530,13 @@ void MapGenerator::AddRandomMapEnemies() {
 				map<char, weak_ptr<Character>> enemies_map;
 
 				for (int k = 0; k < rnd_enemies; k++) { 
-					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(power_lvls[k])));
+					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(char_classes[k])));
 					enemies_map['A' + k] = enemies_vector[k];
 				}
 				_enemy_map.push_back(move(enemies_vector));
 				_enemy_map_xy.push_back(make_pair(i, j));	
 				_enemy_name_map.push_back(enemies_map);
-
-				//_power_lvls.push_back(power_lvls);
+				_power_lvls.push_back(total_power);
 				
 				// restart static instance counter
 				EnemyCharacter::_n = 0;
@@ -756,10 +758,7 @@ vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
 }
 
 const int MapGenerator::GetPowerLvl() const {
-	int power_lvl = 0;
-	for (const auto& power : _power_lvls[_enemy_index])
-		power_lvl += power - 49;
-	return power_lvl;
+	return _power_lvls[_enemy_index];
 }
 
 int MapGenerator::GetEnemyIdx(char alias) {
@@ -807,8 +806,4 @@ void MapGenerator::KillEnemy(Character* character) {
 	for (auto& enemy : _enemy_map.at(_enemy_index))
 		if (enemy.get() == character)
 			enemy.reset();
-}
-
-void MapGenerator::PrintDistance() {
-	cout << _distances[_enemy_index] << endl;
 }

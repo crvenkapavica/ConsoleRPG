@@ -193,10 +193,10 @@ void CombatManager::HandleEffectStat(shared_ptr<CombatEffect> effect, weak_ptr<C
 void CombatManager::GetCharactersBase() {
 
 	for (auto& character : _players)
-		_players_base.push_back(*dynamic_cast<PlayerCharacter*>(character.lock().get()));
+		_players_base.push_back(*static_cast<PlayerCharacter*>(character.lock().get()));
 
 	for (auto& character : _enemies)
-		_enemies_base.push_back(*dynamic_cast<EnemyCharacter*>(character.lock().get()));
+		_enemies_base.push_back(*static_cast<EnemyCharacter*>(character.lock().get()));
 }
 
 void CombatManager::ResetCharacterValues() {
@@ -297,13 +297,14 @@ void CombatManager::KillFlaggedCharacters() {
 }
 
 void CombatManager::RemoveDeadCharacters() {
-	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
-		ExitCombatMode();
-	}
-	else for (auto it = _turn_table.begin(); it != _turn_table.end();) {
+	for (auto it = _turn_table.begin(); it != _turn_table.end();) {
 		if (it->expired())
 			it = _turn_table.erase(it);
 		else ++it;
+	}
+
+	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
+		ExitCombatMode();
 	}
 }
 
@@ -345,8 +346,12 @@ void CombatManager::OnCombatBegin() {
 	GetCharactersBase();
 }
 void CombatManager::OnCombatEnd() {
-	ResetCharacterValues();
+	//Turn this on to not make characters heal at end of combat. But the function has to be changed so only player characters are reset. 
+	//Needs to be implemented after resurrection functionality
+	//ResetCharacterValues();  
+
 	ResetCombatVariables();
+
 	// reap rewards
 }
 

@@ -96,8 +96,6 @@ public:
 
 	const int GetPowerLvl() const;
 
-	void PrintDistance();
-
 private:
 	// BFS that generates map
 	void BFS(int x, int y, int step);
@@ -227,7 +225,7 @@ private:
 	std::vector<std::pair<int, int>> _enemy_map_xy;					 // this two vectors are aligned
 	std::vector<std::map<char, std::weak_ptr<Character>>> _enemy_name_map;
 
-	std::vector<std::vector<int>> _power_lvls;
+	std::vector<int> _power_lvls;
 
 	int _enemy_index;
 

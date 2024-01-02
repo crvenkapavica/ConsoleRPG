@@ -50,6 +50,7 @@ void GameplayStatics::DisplayAllies() {
 
 	system("cls");
 	int idx = 0;
+	cout << _map_gen->GetPowerLvl();
 	for (const auto& character : _cm->GetPlayers())
 		if (!character.expired()) {
 			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character.lock()->GetCharacterClass()) << " Level " << to_string(character.lock()->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
