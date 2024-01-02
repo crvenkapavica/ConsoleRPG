@@ -110,7 +110,6 @@ public:
 	inline Stat& GetSP() { return _spell_power; }
 	inline Stat& GetSpellCritChance() { return _spell_crit_chance; }
 	inline Stat& GetSpellCritDmg() { return _spell_crit_damage; }
-	inline ECharacterClass GetCharacterClass() { return _class; }
 
 	inline const ECharacterClass GetClass() const { return _class; }
 	inline const char GetAlias() const { return _alias; }

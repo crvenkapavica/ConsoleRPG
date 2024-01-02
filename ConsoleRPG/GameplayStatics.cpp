@@ -53,7 +53,7 @@ void GameplayStatics::DisplayAllies() {
 	cout << _map_gen->GetPowerLvl();
 	for (const auto& character : _cm->GetPlayers())
 		if (!character.expired()) {
-			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character.lock()->GetCharacterClass()) << " Level " << to_string(character.lock()->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(character.lock()->GetClass()) << " Level " << to_string(character.lock()->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, character.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
 			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetHealth().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetArmor().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << character.lock()->GetAP().GetActual();
@@ -75,7 +75,7 @@ void GameplayStatics::DisplayAllies() {
 	idx = 0;
 	for (const auto& summon : _cm->GetSummons())
 		if (summon && summon->GetTeam() == 1) {
-			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(summon->GetCharacterClass()) << " Level " << to_string(summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, summon->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(summon->GetClass()) << " Level " << to_string(summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << string(1, summon->GetAlias()) << ANSI_COLOR_RESET << ")";
 			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << summon->GetHealth().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << summon->GetArmor().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetAP().GetActual();
@@ -100,7 +100,7 @@ void GameplayStatics::DisplayEnemies() {
 	int idx = 0;
 	for (const auto& enemy : _cm->GetEnemies()) {
 		if (!enemy.expired()) {
-			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(enemy.lock()->GetCharacterClass()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, enemy.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(enemy.lock()->GetClass()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, enemy.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
 			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetHealth().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetArmor().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << enemy.lock()->GetAP().GetActual();
@@ -122,7 +122,7 @@ void GameplayStatics::DisplayEnemies() {
 	idx = 0;
 	for (const auto& summon : _cm->GetSummons())
 		if (summon && summon->GetTeam() == 2) {
-			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(summon->GetCharacterClass()) << " Level " << to_string(summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, summon->GetAlias()) << ANSI_COLOR_RESET << ")";
+			cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(summon->GetClass()) << " Level " << to_string(summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << string(1, summon->GetAlias()) << ANSI_COLOR_RESET << ")";
 			cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << summon->GetHealth().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " A: " << ANSI_COLOR_VIVID_YELLOW << summon->GetArmor().GetActual();
 			cout << ANSI_COLOR_CYAN_LIGHT << " AP: " << ANSI_COLOR_VIVID_YELLOW << summon->GetAP().GetActual();
@@ -214,7 +214,7 @@ void GameplayStatics::HandleMapInput(int input) {
 PlayerCharacter* GameplayStatics::GetPlayer() {
 	vector<string> v;
 	for (const auto& p : _players)
-		v.push_back(GameplayStatics::GetEnumString(p.lock()->GetCharacterClass()));
+		v.push_back(GameplayStatics::GetEnumString(p.lock()->GetClass()));
 	v.push_back("<--BACK--<");
 	int input;
 	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
@@ -712,16 +712,49 @@ void GameplayStatics::EndTurn(Character* character) {
 
 
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
-
-
 bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon) {
 	return _map_gen->AddCharacterToCharGrid(instigator, summon);
 }
 
-
-
 ////////////////////////////////////////////////
 
+void GameplayStatics::RollLoot() {
+	for (const auto& player : _player_characters) {
+		auto loot = move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 120));
+		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), move(loot));
+	}
+}
+
+void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vector<std::unique_ptr<Item>> loot) {
+	system("cls");
+	if (loot.size()) {
+		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << "'s loot!. (" << loot.size() << ")" << "\nChoose which items you want to keep.\n";
+		vector<string> v = { "--> ALL ITEMS <--" };
+		for (const auto& item : loot)
+			v.push_back(item->_item_info._name);
+
+		int input = InteractiveDisplay(v);
+		if (input == 0) {
+			if (character.lock()->GetInventorySpace() <= loot.size()) {
+				for (auto& item : loot)
+					character.lock()->AddItemToInventory(move(item));
+			}
+			else {
+				cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << character.lock()->GetInventorySpace() << ")\n";
+
+				// implement one by one item adding and an option to visit inventory to destroy items.
+			}
+		}
+		else {
+			// One by One
+		}
+
+	}
+	else {
+		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << " received no loot this time.\n";
+		cin.get();
+	}
+}
 
 
 string GameplayStatics::GetAliasColor(char alias) {

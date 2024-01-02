@@ -7,12 +7,11 @@
 
 std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType{
 	{EItemType::RELIC,		{ 45, 0.02 } },
-	{EItemType::WEAPON,		{ 28, 0.5 } },
-	{EItemType::JEWLERY,	{ 22, 0.7 } },
-	{EItemType::ARMOR,		{ 15, 0.15 } },
-	{EItemType::SCROLL,		{ 6, 0.28 } },
-	{EItemType::CONSUMABLE, { 2, 0.35 } }
-	//{EItemType::CONSUMABLE, 1}
+	{EItemType::WEAPON,		{ 28, 0.10 } },
+	{EItemType::JEWLERY,	{ 22, 0.15 } },
+	{EItemType::ARMOR,		{ 15, 0.25 } },
+	{EItemType::SCROLL,		{ 6, 0.35 } },
+	{EItemType::CONSUMABLE, { 2, 0.45 } }
 };
 
 std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
@@ -103,7 +102,7 @@ Item::Item(const ItemData& data)
 	_item_info._wpn_type = data._wpn_type;
 }
 
-std::vector<std::unique_ptr<Item>> Item::GenerateLoot(PlayerCharacter* player, int power_lvl) {
+std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
 	std::vector<unique_ptr<Item>> loot;
 	std::vector<pair<int, int>> type_limit = {
 		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
@@ -118,9 +117,9 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(PlayerCharacter* player, i
 			}
 
 			int rnd = GameplayStatics::GetRandInt(1, 1000);
-			int weight = DropTable_ItemType[i].second.first * player->GetLevel();
+			int weight = DropTable_ItemType[i].second.first * player.lock()->GetLevel();
 			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second.second * 1000) {
-				loot.push_back(Item::CreateItem(player->GetLevel(), player->GetMagicFind(), DropTable_ItemType[i].first));
+				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
 				type_limit[i].first++;
 				power_lvl -= weight;
 				break;

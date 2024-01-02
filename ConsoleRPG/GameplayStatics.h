@@ -91,6 +91,10 @@ public:
 
 	static bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon);
 
+	static void RollLoot();
+	
+	static void DisplayLoot(weak_ptr<PlayerCharacter> character, std::vector<std::unique_ptr<Item>> loot);
+
 	static string GetAliasColor(char alias);
 
 	static string string2(float f);

@@ -39,7 +39,7 @@ public:
 	Item(ItemInfo item_info);
 	Item(const ItemData& data);
 
-	static std::vector<std::unique_ptr<Item>> GenerateLoot(PlayerCharacter* player, int power_lvl);
+	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
 	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
 	static std::unique_ptr<Item> GetItemByID(EItemID id);
 

@@ -352,7 +352,7 @@ void CombatManager::OnCombatEnd() {
 
 	ResetCombatVariables();
 
-	// reap rewards
+	GameplayStatics::RollLoot();
 }
 
 void CombatManager::OnTurnBegin() {

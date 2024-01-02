@@ -94,6 +94,10 @@ bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
 	return false;
 }
 
+int PlayerCharacter::GetInventorySpace() {
+	return INV_SLOTS - static_cast<int>(_inventory.size());
+}
+
 void PlayerCharacter::InspectItem(Item* item) {
 
 }

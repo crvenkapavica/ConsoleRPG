@@ -50,6 +50,8 @@ public:
 	// Return true if the item was added, false otherwise
 	bool AddItemToInventory(unique_ptr<Item> item);
 
+	int GetInventorySpace();
+
 	// Displays all information about the item and its affixes
 	void InspectItem(Item* item);
 
