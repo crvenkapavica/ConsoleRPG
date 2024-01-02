@@ -11,16 +11,16 @@ using namespace std;
 void MapGenerator::Initialize(const vector<weak_ptr<Character>>& player_characters) {
 
 	_map = new char* [MAX_X];
-	for (int i = 0; i < MAX_X; i++)
-		_map[i] = new char[MAX_Y];
+	for (int i = 0; i < MAX_X; i++) _map[i] = new char[MAX_Y];
 
 	_nodes = new path_node* [MAX_X];
-	for (int i = 0; i < MAX_X; i++)
-		_nodes[i] = new path_node[MAX_Y];
+	for (int i = 0; i < MAX_X; i++) _nodes[i] = new path_node[MAX_Y];
 
 	_steps = new int* [MAX_X];
-	for (int i = 0; i < MAX_X; i++)
-		_steps[i] = new int[MAX_Y]();
+	for (int i = 0; i < MAX_X; i++) _steps[i] = new int[MAX_Y]();
+
+	_distance = new int* [MAX_X];
+	for (int i = 0; i < MAX_X; i++) _distance[i] = new int[MAX_Y]();
 
 	InitBFS();
 	InitPlayer(player_characters);
@@ -46,16 +46,8 @@ void MapGenerator::InitBFS() {
 
 void MapGenerator::BFS(int x, int y, int step) {
 
-	if (x > MAX_X - 2 || x <= 1 ||
-		y > MAX_Y - 2 || y <= 1) {
-
-		MakeDebugMessage(_total_steps, "out_of_bounds");
-		return;
-	}
-	if (_total_steps > _step_limit) {
-		MakeDebugMessage(_total_steps, "step_limit");
-		return;
-	}
+	if (x > MAX_X - 2 || x <= 1 || y > MAX_Y - 2 || y <= 1) return;
+	if (_total_steps > _step_limit) return;
 	if (_map[x][y] == PATH) return;
 
 	GetRandomRectangle(x, y);
@@ -195,7 +187,6 @@ int MapGenerator::GetDirection(int x, int y) {
 }
 
 int MapGenerator::GetReverseDirection() {
-
 	switch (_dir) {
 	case 0: return 1;
 	case 1: return 0;
@@ -506,19 +497,46 @@ void MapGenerator::AddRandomMapEnemies() {
 			if (/*rnd <= percent &&*/ _steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
-				//int rnd_enemies = rand() % 4 + 2;
-				int rnd_enemies = 6;
+				int power_lvl_low = (_distance[_player_x][_player_y] + 4) * MAP_LEVEL;
+				int power_lvl_high = power_lvl_low;
+				power_lvl_low -= static_cast<int>(power_lvl_low * 0.3);
+				power_lvl_high += static_cast<int>(power_lvl_high * 0.3);
+				//int power_lvl = GameplayStatics::GetRandInt(power_lvl_low, power_lvl_high);
+
+				int power_lvl = max(_distance[_player_x][_player_y], 2);
+
+				int rnd_enemies = 0;
+				vector<int> power_lvls;
+
+				while (1) {
+					if (rnd_enemies > 7) break;
+					if (power_lvl - CharDB::_data[static_cast<ECharacterClass>(50)]._power_lvl < 0) break;
+
+					int rndc = rand() % 6 + 50;
+					if (CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl <= power_lvl) {
+						++rnd_enemies;
+						power_lvls.push_back(rndc);
+						power_lvl -= CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl;
+						if (rnd_enemies == 7) {
+							++rnd_enemies;
+							int t = power_lvl > 6 ? 6 : power_lvl;
+							power_lvls.push_back(50 + t);
+							power_lvl -= t;
+						}
+					}
+				}
+
 				vector<shared_ptr<Character>> enemies_vector;
 				map<char, weak_ptr<Character>> enemies_map;
 
 				for (int k = 0; k < rnd_enemies; k++) { 
-					int rnd = rand() % 6 + 50;
-					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(rnd)));
+					enemies_vector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(power_lvls[k])));
 					enemies_map['A' + k] = enemies_vector[k];
 				}
 				_enemy_map.push_back(move(enemies_vector));
 				_enemy_map_xy.push_back(make_pair(i, j));	
 				_enemy_name_map.push_back(enemies_map);
+				_power_lvls.push_back(power_lvls);
 
 				// restart static instance counter
 				EnemyCharacter::_n = 0;
@@ -739,6 +757,13 @@ vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
 	return v;
 }
 
+const int MapGenerator::GetPowerLvl() const {
+	int power_lvl = 0;
+	for (const auto& power : _power_lvls[_enemy_index])
+		power_lvl += power;
+	return power_lvl;
+}
+
 int MapGenerator::GetEnemyIdx(char alias) {
 	if (UPPER(alias) < 'A' || UPPER(alias) > 'Z') return -1;
 	if (auto character = GetCharacterFromAlias(UPPER(alias)).lock()) {
@@ -784,4 +809,12 @@ void MapGenerator::KillEnemy(Character* character) {
 	for (auto& enemy : _enemy_map.at(_enemy_index))
 		if (enemy.get() == character)
 			enemy.reset();
+}
+
+void MapGenerator::PrintDistance() {
+	for (int i = 0; i < MAX_X; i++) {
+		for (int j = 0; j < MAX_Y; j++)
+			cout << _distance[i][j] << "  ";
+		cout << endl;
+	}
 }

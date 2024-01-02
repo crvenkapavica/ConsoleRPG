@@ -41,6 +41,7 @@ void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellM
 
 	_map_gen->Initialize(_players);
 	//_map_gen->PrintDebugMap();
+	_map_gen->PrintDistance();
 
 	DisplayMapMenu();
 }

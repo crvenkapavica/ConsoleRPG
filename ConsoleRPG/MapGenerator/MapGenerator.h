@@ -94,6 +94,14 @@ public:
 
 	std::vector<Character*> GetCharactersInRange(Character* character);
 
+	const int GetPowerLvl() const;
+
+	// testing
+	//--------------
+	void PrintDistance();
+
+	//-------------------
+
 private:
 	// BFS that generates map
 	void BFS(int x, int y, int step);
@@ -184,6 +192,8 @@ private:
 
 	int** _steps;
 
+	int** _distance;
+
 	std::vector<string> _error;
 
 	std::vector<std::pair<int, int>> _turn;
@@ -213,13 +223,13 @@ private:
 
 	string _error_message;
 
-	int _distance[MAX_X][MAX_Y] = { {0} };
-
 	std::vector<distance_node> _distances_nodes;
 
 	std::vector<std::vector<std::shared_ptr<Character>>> _enemy_map; // this two vectors are aligned
-	std::vector<std::pair<int, int>> _enemy_map_xy; // this two vectors are aligned
-	std::vector<std::map<char, std::weak_ptr<Character>>> _enemy_name_map; 
+	std::vector<std::pair<int, int>> _enemy_map_xy;					 // this two vectors are aligned
+	std::vector<std::map<char, std::weak_ptr<Character>>> _enemy_name_map;
+
+	std::vector<std::vector<int>> _power_lvls;
 
 	int _enemy_index;
 
