@@ -494,34 +494,31 @@ void MapGenerator::AddRandomMapEnemies() {
 		for (int j = 0; j < MAX_Y; j++) {
 			int percent = static_cast<int>(_total_steps * 0.05);
 			int rnd = GameplayStatics::GetRandInt(0, _total_steps);
-			if (/*rnd <= percent &&*/ _steps[i][j] > 0 && _map[i][j] != PLAYER) {
+
+			if (/*rnd <= percent && */_steps[i][j] > 0 && _map[i][j] != PLAYER) {
 				_map[i][j] = ENEMY;
 
-				int power_lvl_low = (_distance[_player_x][_player_y] + 4) * MAP_LEVEL;
+				int power_lvl_low = (_distance[i][j] + 2) * MAP_LEVEL;
 				int power_lvl_high = power_lvl_low;
 				power_lvl_low -= static_cast<int>(power_lvl_low * 0.3);
 				power_lvl_high += static_cast<int>(power_lvl_high * 0.3);
-				//int power_lvl = GameplayStatics::GetRandInt(power_lvl_low, power_lvl_high);
-
-				int power_lvl = max(_distance[_player_x][_player_y], 2);
+				int power_lvl = GameplayStatics::GetRandInt(power_lvl_low, power_lvl_high);
 
 				int rnd_enemies = 0;
 				vector<int> power_lvls;
 
-				while (1) {
-					if (rnd_enemies > 7) break;
-					if (power_lvl - CharDB::_data[static_cast<ECharacterClass>(50)]._power_lvl < 0) break;
-
+				while (power_lvl) {
 					int rndc = rand() % 6 + 50;
-					if (CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl <= power_lvl) {
+					if (power_lvl - CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl >= 0) {
 						++rnd_enemies;
 						power_lvls.push_back(rndc);
 						power_lvl -= CharDB::_data[static_cast<ECharacterClass>(rndc)]._power_lvl;
 						if (rnd_enemies == 7) {
 							++rnd_enemies;
 							int t = power_lvl > 6 ? 6 : power_lvl;
-							power_lvls.push_back(50 + t);
+							power_lvls.push_back(50 + t - 1);
 							power_lvl -= t;
+							break;
 						}
 					}
 				}
@@ -536,8 +533,9 @@ void MapGenerator::AddRandomMapEnemies() {
 				_enemy_map.push_back(move(enemies_vector));
 				_enemy_map_xy.push_back(make_pair(i, j));	
 				_enemy_name_map.push_back(enemies_map);
-				_power_lvls.push_back(power_lvls);
 
+				//_power_lvls.push_back(power_lvls);
+				
 				// restart static instance counter
 				EnemyCharacter::_n = 0;
 			}
@@ -760,7 +758,7 @@ vector<Character*> MapGenerator::GetCharactersInRange(Character* character) {
 const int MapGenerator::GetPowerLvl() const {
 	int power_lvl = 0;
 	for (const auto& power : _power_lvls[_enemy_index])
-		power_lvl += power;
+		power_lvl += power - 49;
 	return power_lvl;
 }
 
@@ -812,9 +810,5 @@ void MapGenerator::KillEnemy(Character* character) {
 }
 
 void MapGenerator::PrintDistance() {
-	for (int i = 0; i < MAX_X; i++) {
-		for (int j = 0; j < MAX_Y; j++)
-			cout << _distance[i][j] << "  ";
-		cout << endl;
-	}
+	cout << _distances[_enemy_index] << endl;
 }

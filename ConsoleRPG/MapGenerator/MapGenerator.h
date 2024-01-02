@@ -96,11 +96,7 @@ public:
 
 	const int GetPowerLvl() const;
 
-	// testing
-	//--------------
 	void PrintDistance();
-
-	//-------------------
 
 private:
 	// BFS that generates map
@@ -193,6 +189,8 @@ private:
 	int** _steps;
 
 	int** _distance;
+
+	std::vector<int> _distances;
 
 	std::vector<string> _error;
 
