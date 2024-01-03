@@ -32,7 +32,7 @@ void CombatManager::StartCombat(weak_ptr<Character> player) {
 	_player = player;
 
 	// COMBAT LOOP
-	while (1) {
+	while (_player.lock()->IsInCombat()) {
 		KillFlaggedCharacters();
 		if (_player.lock()->IsInCombat())
 			BeginTurn(GetTurnCharacter());

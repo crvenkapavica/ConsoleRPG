@@ -720,7 +720,7 @@ bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& instig
 
 void GameplayStatics::RollLoot() {
 	for (const auto& player : _player_characters) {
-		auto loot = move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 120));
+		auto loot = move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 160));
 		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), move(loot));
 	}
 }
@@ -732,27 +732,42 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 		vector<string> v = { "--> ALL ITEMS <--" };
 		for (const auto& item : loot)
 			v.push_back(item->_item_info._name);
+		v.push_back("<--BACK--<");
 
-		int input = InteractiveDisplay(v);
-		if (input == 0) {
-			if (character.lock()->GetInventorySpace() <= loot.size()) {
-				for (auto& item : loot)
-					character.lock()->AddItemToInventory(move(item));
+		int input;
+		int n_looted = 0;
+		while (v.size() > 2) {
+			input = InteractiveDisplay(v);
+			if (input == -1) break;
+			if (input == 0) { // add all items
+				if (character.lock()->GetInventorySpace() >= loot.size() - n_looted) {
+					for (auto& item : loot)
+						if (item) character.lock()->AddItemToInventory(move(item));
+					break;
+				}
+				else {
+					cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << character.lock()->GetInventorySpace() << ")\n";
+				}
 			}
-			else {
-				cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << character.lock()->GetInventorySpace() << ")\n";
+			else { // add selected item
+				if (character.lock()->GetInventorySpace() > 0) {
+					character.lock()->AddItemToInventory(move(loot[input - 1]));
+					++n_looted;
 
-				// implement one by one item adding and an option to visit inventory to destroy items.
+					v = { "--> ALL ITEMS <--" };
+					for (const auto& item : loot)
+						if (item) v.push_back(item->_item_info._name);
+					v.push_back("<--BACK--<");
+				}
+				else {
+					cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << character.lock()->GetInventorySpace() << ")\n";
+				}
 			}
 		}
-		else {
-			// One by One
-		}
-
 	}
 	else {
 		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << " received no loot this time.\n";
-		cin.get();
+		system("pause");
 	}
 }
 
