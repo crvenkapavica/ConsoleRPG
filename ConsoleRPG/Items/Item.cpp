@@ -141,7 +141,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 
 	int rnd = GameplayStatics::GetRandInt(1, 100000);
 	for (int i = 0; i < ITEM_RARITIES; i++) {
-		int chance = static_cast<int>(DropTable_ItemRarity[i].second + DropTable_ItemRarity[i].second * mf_bonus * 100000);
+		int chance = static_cast<int>((DropTable_ItemRarity[i].second + DropTable_ItemRarity[i].second * mf_bonus) * 100000);
 		if (rnd <= chance) {
 			item_rarity = DropTable_ItemRarity[i].first;
 			n_affixes = ITEM_RARITIES - 1 - i;
@@ -188,7 +188,6 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 		rnd = GameplayStatics::GetRandInt(0, 5);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
-		item_info._name = "ARMOR";
 		break;
 	case EItemType::JEWLERY:
 		rnd = GameplayStatics::GetRandInt(10, 12);
@@ -204,7 +203,6 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
 		item_info._wpn_type = static_cast<EWeaponType>(rnd);
 		CalcItemDamage(item_lvl, item_info._wpn_type, item_info._min_dmg, item_info._max_dmg);
-		item_info._name = "WEAPON";
 		break;
 	case EItemType::RELIC:
 		item_info._item_slot = EItemSlot::RELIC;

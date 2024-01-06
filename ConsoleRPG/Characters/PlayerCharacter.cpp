@@ -81,7 +81,7 @@ void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
 	CalcInvSlots();
 }
 
-bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
+bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {	
 
 	for (auto& inv_item : _inventory) {
 		if (!inv_item) {
@@ -90,12 +90,11 @@ bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
 			return true;
 		}
 	}
-	CalcInvSlots();
+
 	return false;
 }
 
 int PlayerCharacter::GetInventorySpace() {
-	//int size = static_cast<int>(count_if(_inventory.begin(), _inventory.end(), [&](const unique_ptr<Item>& uptr) { return uptr; }));
 	int size = 0;
 	for (const auto& item : _inventory) 
 		if (item) ++size;

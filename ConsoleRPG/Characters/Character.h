@@ -164,7 +164,7 @@ public:
 
 	// EXTRA STATS OUT OF COMBAT
 	/////////////////////////////////////////
-	float _magic_find = 0.f;
+	float _magic_find = 1.f;
 	int _light_radius = 3;
 
 	int _n_cons_slots = 0;
