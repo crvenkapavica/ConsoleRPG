@@ -102,8 +102,12 @@ class Character;
 #define COLOR_GODLIKE			ANSI_COLOR_FG_RGB(200,34,56)
 #define COLOR_UNIQUE			ANSI_COLOR_YELLOW 
 
-#define COLOR_BG				ANSI_COLOR_BG_RGB(230,204,147)
-//#define COLOR_BG				ANSI_COLOR_BG_RGB(191,174,125)
+
+#define COLOR_BG				ANSI_COLOR_BG_RGB(142,191,208) // light-blueish version 2 [ BETTER ]
+//#define COLOR_BG				ANSI_COLOR_BG_RGB(186, 206, 255) // light-blueish version 3 [ ALSO GOOD, a bit brighter than 2]
+//#define COLOR_BG				ANSI_COLOR_BG_RGB(221,221,218) // very light-blueish
+//#define COLOR_BG				ANSI_COLOR_BG_RGB(230,204,147) // yellowish
+
 
 #define COLOR_FG				ANSI_COLOR_FG_RGB(53,135,30)
 //#define COLOR_FG				ANSI_COLOR_FG_RGB(53,170,30)	// darker-green
