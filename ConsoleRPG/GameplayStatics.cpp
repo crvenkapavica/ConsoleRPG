@@ -142,11 +142,12 @@ void GameplayStatics::DisplayEnemies() {
 		}
 }
 
-int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool clear) {
+int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool bClear, const bool bIsItem) {
 	_menu->SetOptions(options);
 	_menu->SetUp(static_cast<int>(options.size()));
 	_menu->SetRight(right);
-	_menu->SetClear(clear);
+	_menu->SetClear(bClear);
+	_menu->SetIsItem(bIsItem);
 	return _menu->Select();
 }
 
@@ -738,7 +739,7 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 		int input;
 		int n_looted = 0;
 		while (v.size() > 2) {
-			input = InteractiveDisplay(v);
+			input = InteractiveDisplay(v, 0, true, true);
 			if (input == -1) break;
 			if (input == 0) { // add all items
 				if (character.lock()->GetInventorySpace() >= loot.size() - n_looted) {

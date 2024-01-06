@@ -17,11 +17,12 @@ public:
     inline void SetOptions(const std::vector<string>& options) { _options = options; }
     inline void SetUp(const int up) { _up = up; }
     inline void SetRight(const int right) { _right = right; }
-    void SetClear(const bool clear) { _clear = clear; }
+    inline void SetIsItem(const bool bIsItem) { _bIsItem = bIsItem; }
+    void SetClear(const bool clear) { _bClear = clear; }
 
     inline bool GetBack() {
-        bool b = _back;
-        _back = false;
+        bool b = _bBack;
+        _bBack = false;
         return b;
     }
 
@@ -46,7 +47,9 @@ private:
     int _up = 0;
     int _right = 0;
 
-    bool _clear = true;
+    bool _bClear = true;
 
-    bool _back = false;
+    bool _bBack = false;
+
+    bool _bIsItem = false;
 };

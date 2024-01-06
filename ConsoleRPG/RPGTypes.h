@@ -72,6 +72,7 @@ class Character;
 #define ANSI_BG_COLOR_CYAN      "\x1b[46m"
 #define ANSI_BG_COLOR_WHITE     "\x1b[47m"
 
+
 #define ANSI_COLOR_BLINK		"\x1b[5m"
 
 #define ANSI_COLOR_FG_RGB(r, g, b) "\x1b[38;2;" #r ";" #g ";" #b "m"
@@ -95,6 +96,20 @@ class Character;
 #define COLOR_VALUE				ANSI_COLOR_PASTELLE_BROWN
 #define COLOR_ERROR				ANSI_COLOR_RED
 #define COLOR_LOOT				ANSI_COLOR_GREEN
+
+#define COLOR_COMMON			ANSI_COLOR_FG_RGB(105,106,106)
+#define COLOR_RARE				ANSI_COLOR_FG_RGB(0,112,221)
+#define COLOR_EPIC				ANSI_COLOR_FG_RGB(163,53,238)
+#define COLOR_LEGENDARY			ANSI_COLOR_FG_RGB(255,128,0)
+#define COLOR_GODLIKE			ANSI_COLOR_RED
+
+#define COLOR_UNIQUE			ANSI_COLOR_YELLOW // change to gold
+
+
+#define COLOR_BG				ANSI_COLOR_BG_RGB(230,204,147)
+//#define COLOR_FG				ANSI_COLOR_FG_RGB(33,119,0)
+#define COLOR_FG				ANSI_COLOR_FG_RGB(53,170,30)
+
 
 #define CV	COLOR_VALUE
 #define CI  COLOR_INFO
