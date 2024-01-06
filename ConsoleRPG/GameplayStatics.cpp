@@ -206,6 +206,7 @@ void GameplayStatics::HandleMapInput(int input) {
 	//	DisplaySpellMenu(); // treba drugu funkciju -> funkciju koja pokazuje v = {ACTIVE, PASSIVE, ALL(instanced)};
 	case 5:
 		DisplayPlayerStats();
+		break;
 	default:
 		break;
 	}

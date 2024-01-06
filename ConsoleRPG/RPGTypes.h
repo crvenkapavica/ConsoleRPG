@@ -41,8 +41,10 @@ class Character;
 #define CHAR_GRID_Y ((GRID_Y - 1) / 8)
 
 #define MAX_LVL 75
+
 #define NUM_PLAYER_CLASSES 1
 #define NUM_ENEMY_CLASSES 1
+
 
 #define ITEM_TYPES 6
 #define ITEM_RARITIES 6

@@ -19,6 +19,7 @@ struct ActiveConstData {
 	ESpellRarity _rarity;
 	ESpellClass	_class;
 	int _min_req_lvl;
+	int _power_lvl;
 };
 
 struct PassiveConstData {
@@ -26,6 +27,7 @@ struct PassiveConstData {
 	ESpellRarity _rarity;
 	ESpellClass	_class;
 	int _min_req_lvl;
+	int _power_lvl;
 };
 
 class SpellDB {

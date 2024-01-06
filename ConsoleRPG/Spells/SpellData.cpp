@@ -93,43 +93,51 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 	};
 	//==============================================================================
 	// MELEE
-	_data[ESpellID::MELEE] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 } };
+
 	//==============================================================================
 	// RANGED
+
+
+	// BASIC
+	_data[ESpellID::MELEE] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 } };
 	_data[ESpellID::RANGED] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 10 } };
 }
 SpellDB::SpellDataConstructor SpellDB::_spell_data_constructor;
 
 SpellDB::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	// MAGIC
-	_active_const_map[ESpellID::FIREBALL] = { EDamageType::FIRE, ESpellType::DAMAGE, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
-	_active_const_map[ESpellID::BURNING] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
-	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
-	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
-	_active_const_map[ESpellID::STONESKIN] = { EDamageType::NONE, ESpellType::BUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1 };
-	_active_const_map[ESpellID::DISARM] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 7 };
-	_active_const_map[ESpellID::BLOODBATH] = { EDamageType::PURE, ESpellType::BUFF, ESpellRarity::EPIC, ESpellClass::MAGIC, 12 };
-	_active_const_map[ESpellID::ARCANE_INFUSION] = { EDamageType::ARCANE, ESpellType::BUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
-	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5 };
-	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3 };
+	_active_const_map[ESpellID::FIREBALL] = { EDamageType::FIRE, ESpellType::DAMAGE, ESpellRarity::BASIC, ESpellClass::MAGIC, 1, 2 };
+	_active_const_map[ESpellID::BURNING] = { EDamageType::FIRE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1, 5 };
+	_active_const_map[ESpellID::MOLTEN_ARMOR] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1, 3 };
+	_active_const_map[ESpellID::EXPOSURE] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3, 7 };
+	_active_const_map[ESpellID::STONESKIN] = { EDamageType::NONE, ESpellType::BUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 1, 1 };
+	_active_const_map[ESpellID::DISARM] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 7, 10 };
+	_active_const_map[ESpellID::BLOODBATH] = { EDamageType::PURE, ESpellType::BUFF, ESpellRarity::EPIC, ESpellClass::MAGIC, 12, 16 };
+	_active_const_map[ESpellID::ARCANE_INFUSION] = { EDamageType::ARCANE, ESpellType::BUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5, 9 };
+	_active_const_map[ESpellID::BLOOD_RAIN] = { EDamageType::NECROTIC, ESpellType::DEBUFF, ESpellRarity::ENHANCED, ESpellClass::MAGIC, 5, 14 };
+	_active_const_map[ESpellID::VISCOUS_ACID] = { EDamageType::POISON, ESpellType::DEBUFF, ESpellRarity::BASIC, ESpellClass::MAGIC, 3, 7 };
 
 	// MISC
-	_active_const_map[ESpellID::BLIND] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::EPIC, ESpellClass::MISC, 12 };		// maybe change the class to MISC
+	_active_const_map[ESpellID::BLIND] = { EDamageType::NONE, ESpellType::DEBUFF, ESpellRarity::EPIC, ESpellClass::MISC, 12, 16 };		// maybe change the class to MISC
 
 	// SUMMON
-	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::SUMMON, 12 };
-	_active_const_map[ESpellID::SUM_FIRE_IMP] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::RARE, ESpellClass::SUMMON, 3 };
+	_active_const_map[ESpellID::SUM_FIRE_ELE] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::GODLIKE, ESpellClass::SUMMON, 16, 35 };
+	_active_const_map[ESpellID::SUM_FIRE_IMP] = { EDamageType::FIRE, ESpellType::SUMMON, ESpellRarity::RARE, ESpellClass::SUMMON, 3, 10 };
 
 	//MELEE
-	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
+	
 
 	//RANGED
-	_active_const_map[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1 };
+
+
+	//BASIC
+	_active_const_map[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1, 0 };
+	_active_const_map[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1, 0 };
 };
 SpellDB::ActiveConstDataConstructor SpellDB::_active_const_data_constructor;
 
 SpellDB::PassiveConstDataConstructor::PassiveConstDataConstructor() {
-	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_MAGIC_END, ESpellRarity::EPIC, ESpellClass::MAGIC, 1 };
-	_passive_const_map[ESpellID::THORNS] = { ECombatEvent::ON_MELEE_RECEIVED_END, ESpellRarity::BASIC, ESpellClass::MELEE, 1 };
+	_passive_const_map[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_MAGIC_END, ESpellRarity::EPIC, ESpellClass::MAGIC, 1, 12 };
+	_passive_const_map[ESpellID::THORNS] = { ECombatEvent::ON_MELEE_RECEIVED_END, ESpellRarity::BASIC, ESpellClass::MELEE, 1, 3 };
 };
 SpellDB::PassiveConstDataConstructor SpellDB::_passive_const_data_constructor;

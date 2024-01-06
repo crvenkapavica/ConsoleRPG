@@ -14,7 +14,7 @@ struct ItemData {
 	int				_min_dmg;
 	int				_max_dmg;
 	int				_armor;
-	float			_value;
+	float			_amount;
 
 	//armor
 	int				_spell_slots;	//Hands = slots for spells
@@ -34,7 +34,7 @@ struct ItemData {
 	float			_block_val;		// shield amount % blocked
 
 	int				_drop_chnc;
-	bool			_bNoCombat;
+	bool			_bUsableMap;
 	bool			_bUsable;
 };
 

@@ -6,7 +6,6 @@
 
 using namespace std;
 
-class SpellBook;
 class PassiveSpell;
 class ActiveSpell;
 

@@ -4,6 +4,8 @@
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"
 #include "ItemData.h"
+#include "../Spells/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
 
 class Character;
 class PlayerCharacter;
@@ -22,7 +24,7 @@ public:
 		int				_n_affixes = 0;
 		float			_modifier = 0.f;
 
-		bool			_bNoCombat = false;
+		bool			_bUsableMap = false;
 		bool			_bUsable = false;
 
 		std::string		_name = "";
@@ -32,8 +34,10 @@ public:
 		EItemType		_item_type = EItemType::MISC;
 		EWeaponType		_wpn_type = EWeaponType::NONE;
 
-		//std::unique_ptr<ActiveSpell> _active_effect;
-		//std::unique_ptr<PassiveSpell> _passive_effect;
+		std::unique_ptr<ActiveSpell> _active_effect;
+		std::unique_ptr<PassiveSpell> _passive_effect1;
+		std::unique_ptr<PassiveSpell> _passive_effect2;
+		std::unique_ptr<PassiveSpell> _passive_effect3;
 	};
 
 	Item(ItemInfo item_info);
@@ -50,9 +54,11 @@ public:
 
 private:
 
-	static ItemInfo GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity);
+	static ItemInfo GenerateItemInfo(int&& item_lvl, EItemType item_type, EItemRarity item_rarity);
+	static int CalcItemLvl(int player_lvl, int n_affixes);
 	static void CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg);
 	static void CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor);
 	static void GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity);
+	static void GenerateRndScroll(ItemInfo& item_info, int item_lvl, EItemRarity item_rarity);
 	static void GenerateItemName(ItemInfo& item_info);
 };

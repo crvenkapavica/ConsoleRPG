@@ -4,6 +4,7 @@
 #include "../Items/ItemData.h"
 #include "../Characters/Character.h"
 #include "../Characters/PlayerCharacter.h"
+#include "../Spells/SpellData.h"
 
 std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType{
 	{EItemType::RELIC,		{ 45, 0.02 } },
@@ -15,12 +16,12 @@ std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType{
 };
 
 std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
-	{EItemRarity::UNIQUE, 0.005},
-	{EItemRarity::GODLIKE, 0.025},
-	{EItemRarity::LEGENDARY, 0.05},
-	{EItemRarity::EPIC, 0.12},
-	{EItemRarity::RARE, 0.25},
-	{EItemRarity::COMMON, 1}
+	{EItemRarity::UNIQUE,		0.005},
+	{EItemRarity::GODLIKE,		0.025},
+	{EItemRarity::LEGENDARY,	0.05},
+	{EItemRarity::EPIC,			0.12},
+	{EItemRarity::RARE,			0.25},
+	{EItemRarity::COMMON,		1}
 };
 
 //Consumable
@@ -88,12 +89,12 @@ Item::Item(const ItemData& data)
 	_item_info._min_dmg = data._min_dmg;
 	_item_info._max_dmg = data._max_dmg;
 	_item_info._armor = data._armor;
-	_item_info._amount = data._value; // check if correct
+	_item_info._amount = data._amount;
 	_item_info._n_affixes = 0;
 	
 	_item_info._modifier = 0.f; // this has to be done with switch, for each item / weapon type for a different modifier. maybe just keep this at 0 for starting items
 
-	_item_info._bNoCombat = data._bNoCombat;
+	_item_info._bUsableMap = data._bUsableMap;
 	_item_info._bUsable = data._bUsable;
 	_item_info._name = data._name;
 	_item_info._item_slot = data._slot;
@@ -148,13 +149,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 		}
 	}
 
-	int b_Ilvl = player_lvl * 8;
-	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
-	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
-	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
-	int item_lvl = GameplayStatics::GetRandInt(min_Ilvl, max_Ilvl - min_Ilvl);
-
-	ItemInfo item_info = GenerateItemInfo(item_lvl, item_type, item_rarity);
+	ItemInfo item_info = GenerateItemInfo(CalcItemLvl(player_lvl, n_affixes), item_type, item_rarity);
 
 	return make_unique<Item>(move(item_info));
 }
@@ -167,7 +162,7 @@ std::unique_ptr<Item> Item::GetItemByID(EItemID id) {
 	return nullptr;
 }
 
-Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRarity item_rarity) {
+Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItemRarity item_rarity) {
 	ItemInfo item_info;
 	item_info._lvl = item_lvl;
 	item_info._n_affixes = ITEM_RARITIES - 1 - static_cast<int>(item_rarity);
@@ -182,9 +177,9 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 	case EItemType::CONSUMABLE:
 		GenerateRndConsumable(item_info, item_rarity);
 		item_info._item_slot = EItemSlot::NONE;
-		item_info._bUsable = true;
 		break;
 	case EItemType::SCROLL:
+		GenerateRndScroll(item_info, item_lvl, item_rarity);
 		item_info._item_slot = EItemSlot::NONE;
 		item_info._bUsable = true;
 		break;
@@ -218,6 +213,14 @@ Item::ItemInfo Item::GenerateItemInfo(int item_lvl, EItemType item_type, EItemRa
 		GenerateItemName(item_info);
 
 	return item_info;
+}
+
+int Item::CalcItemLvl(int player_lvl, int n_affixes) {
+	int b_Ilvl = player_lvl * 8;
+	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
+	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
+	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
+	return GameplayStatics::GetRandInt(min_Ilvl, max_Ilvl - min_Ilvl);
 }
 
 void Item::CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg) {
@@ -285,9 +288,23 @@ void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
 			item_info._name = item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ";
 			item_info._name += item._name;
 			item_info._ID = item._ID;
-			item_info._amount = item._value * item_info._n_affixes;
+			item_info._amount = item._amount * item_info._n_affixes;
+			item_info._bUsable = true;
+
+			// for now only health and essence poitions cant be used out of combat
+			if (item._ID != EItemID::HPotion && item._ID != EItemID::EPotion)
+				item_info._bUsableMap = true;
 		}
 	}
+}
+
+void Item::GenerateRndScroll(ItemInfo& item_info, int item_lvl, EItemRarity item_rarity) {
+	const int NUM_SCROLLS = SpellDB::_data.size() - 2;  // later change to a DEFINE
+
+	while (1) {
+		int rnd = GameplayStatics::GetRandInt(0, NUM_SCROLLS);
+	}
+
 }
 
 void Item::GenerateItemName(ItemInfo& item_info) {

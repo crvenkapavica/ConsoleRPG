@@ -6,7 +6,6 @@
 
 class PlayerCharacter;
 class EnemyCharacter;
-class SpellBook;
 struct EffectParams;
 
 class ActiveSpell : public Spell {
