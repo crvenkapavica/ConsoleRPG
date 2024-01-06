@@ -190,12 +190,12 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 		CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
 		break;
 	case EItemType::JEWLERY:
-		rnd = GameplayStatics::GetRandInt(10, 12);
+		rnd = GameplayStatics::GetRandInt(6, 8);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		item_info._name = "JEWLERY";
 		break;
 	case EItemType::WEAPON:
-		rnd = GameplayStatics::GetRandInt(20, 21);
+		rnd = GameplayStatics::GetRandInt(9, 10);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		if (item_info._item_slot == EItemSlot::WPN_MAIN)
 			rnd = GameplayStatics::GetRandInt(0, static_cast<int>(EWeaponType::LAST));
@@ -320,13 +320,17 @@ void Item::GenerateRndScroll(ItemInfo& item_info, int item_lvl, EItemRarity item
 }
 
 void Item::GenerateItemName(ItemInfo& item_info) {
-	for (const auto& item : ItemDB::_data)
+	for (const auto& item : ItemDB::_data) {
+		//if (item._ID == EItemID::NovSph) {
+		//	int x = 10;
+		//}
 		if (item._item_type == item_info._item_type &&
 			item._slot == item_info._item_slot &&
 			item_info._lvl >= item._min_lvl && item_info._lvl <= item._max_lvl) {
 			item_info._ID = item._ID;
-			item_info._name = item._name;
+			item_info._name = (item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ") + item._name;
 		}
+	}
 }
 
 

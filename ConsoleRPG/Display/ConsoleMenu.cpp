@@ -47,25 +47,36 @@ void ConsoleMenu::Display() {
 
     for (int i = 0; i < _options.size(); i++) {
         if (_bIsItem) {
-            std::istringstream iss(_options[i]);
-            string rarity;
-            iss >> rarity;
-            
+            string rarity = "";
+            vector<string> v = { "empty", "Rare", "Epic", "Legendary", "GODLIKE", "UNIQUE"};
+            for (int j = 0; j < v.size(); j++)
+                if (_options[i].find(v[j]) != std::string::npos)
+                    rarity = v[j];
+
+            string s1 = "", s2 = "";
+            int offset;
+            if ((offset = _options[i].find(" --> ")) != std::string::npos) {
+                s1 = _options[i].substr(0, offset + 5);
+                s2 = _options[i].substr(offset + 5);
+            }
+
             string C;
-                 if (rarity == "Rare")      C = COLOR_RARE;
+                 if (rarity == "empty")     C = COLOR_FG;
+            else if (rarity == "Rare")      C = COLOR_RARE;
             else if (rarity == "Epic")      C = COLOR_EPIC;
             else if (rarity == "Legendary") C = COLOR_LEGENDARY;
             else if (rarity == "GODLIKE")   C = COLOR_GODLIKE;
             else if (rarity == "UNIQUE")    C = COLOR_UNIQUE;
             else                            C = COLOR_COMMON;
             
-            if (i == 0 || i == _options.size() - 1) C = COLOR_FG;
-
+            if ((i == 0 && _options[i] == "--> ALL ITEMS <--") || i == _options.size() - 1) C = COLOR_FG;
             if (i == _index) {
-                std::cout << C << COLOR_BG << _options[i] << ANSI_COLOR_RESET;
+                if (s1.size()) std::cout << COLOR_FG << COLOR_BG << s1 << C << s2 << ANSI_COLOR_RESET;
+                else std::cout << C << COLOR_BG << _options[i] << ANSI_COLOR_RESET;
             }
             else {
-                cout << C << _options[i];
+                if (s1.size()) std::cout << COLOR_FG << s1 << C << s2 << ANSI_COLOR_RESET;
+                else std::cout << C << _options[i];
             }
             cout << endl;
         }
@@ -91,9 +102,11 @@ int ConsoleMenu::Select() {
 }
 
 void ConsoleMenu::ANSI_CURSOR_UP_N(const int n, const bool clear) {
-    for (int i = 0; i < n; i++)
-        if (clear) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(35) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(35); // valjda se left more meknuti
-        else cout << ANSI_CURSOR_UP(1);
+    for (int i = 0; i < n; i++) {
+        if (_bIsItem) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(85) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(85);
+        else if (clear) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(35) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(35); // valjda se left more meknuti
+        if (!clear) cout << ANSI_CURSOR_UP(1);
+    }
 }
 
 void ConsoleMenu::ANSI_CURSOR_RIGHT_N(const int n) {

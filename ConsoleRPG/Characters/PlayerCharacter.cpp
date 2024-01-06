@@ -179,7 +179,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 		}
 			
 	v.push_back("<--BACK--<");
-	if ((input = GameplayStatics::InteractiveDisplay(v, 0, true, true)) == -1) return nullptr;
+	if ((input = GameplayStatics::InteractiveDisplay(v, 70, true, true)) == -1) return nullptr;
 
 	std::unique_ptr<Item> item;
 	// item is from inventory

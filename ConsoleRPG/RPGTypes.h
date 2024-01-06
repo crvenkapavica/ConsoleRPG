@@ -45,7 +45,6 @@ class Character;
 #define NUM_PLAYER_CLASSES 1
 #define NUM_ENEMY_CLASSES 1
 
-
 #define ITEM_TYPES 6
 #define ITEM_RARITIES 6
 #define ITEM_SLOTS 12
@@ -71,7 +70,6 @@ class Character;
 #define ANSI_BG_COLOR_MAGENTA   "\x1b[45m"
 #define ANSI_BG_COLOR_CYAN      "\x1b[46m"
 #define ANSI_BG_COLOR_WHITE     "\x1b[47m"
-
 
 #define ANSI_COLOR_BLINK		"\x1b[5m"
 
@@ -101,14 +99,16 @@ class Character;
 #define COLOR_RARE				ANSI_COLOR_FG_RGB(0,112,221)
 #define COLOR_EPIC				ANSI_COLOR_FG_RGB(163,53,238)
 #define COLOR_LEGENDARY			ANSI_COLOR_FG_RGB(255,128,0)
-#define COLOR_GODLIKE			ANSI_COLOR_RED
-
-#define COLOR_UNIQUE			ANSI_COLOR_YELLOW // change to gold
-
+#define COLOR_GODLIKE			ANSI_COLOR_FG_RGB(200,34,56)
+#define COLOR_UNIQUE			ANSI_COLOR_YELLOW 
 
 #define COLOR_BG				ANSI_COLOR_BG_RGB(230,204,147)
-//#define COLOR_FG				ANSI_COLOR_FG_RGB(33,119,0)
-#define COLOR_FG				ANSI_COLOR_FG_RGB(53,170,30)
+//#define COLOR_BG				ANSI_COLOR_BG_RGB(191,174,125)
+
+#define COLOR_FG				ANSI_COLOR_FG_RGB(53,135,30)
+//#define COLOR_FG				ANSI_COLOR_FG_RGB(53,170,30)	// darker-green
+//#define COLOR_FG				ANSI_COLOR_FG_RGB(33,119,0)		// lighter-green
+//#define COLOR_FG				ANSI_COLOR_FG_RGB(130,173,136)  // grayish-green
 
 
 #define CV	COLOR_VALUE
@@ -525,10 +525,10 @@ enum class EItemSlot {
 	BELT,
 	LEGS,
 	FEET,
-	NECK = 10,
+	NECK,
 	FINGER1,
 	FINGER2,
-	WPN_MAIN = 20,
+	WPN_MAIN,
 	WPN_OFF,
 	RELIC,
 
