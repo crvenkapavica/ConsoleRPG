@@ -34,10 +34,13 @@ public:
 		EItemType		_item_type = EItemType::MISC;
 		EWeaponType		_wpn_type = EWeaponType::NONE;
 
-		std::unique_ptr<ActiveSpell> _active_effect;
-		std::unique_ptr<PassiveSpell> _passive_effect1;
-		std::unique_ptr<PassiveSpell> _passive_effect2;
-		std::unique_ptr<PassiveSpell> _passive_effect3;
+		ESpellID		_scroll = ESpellID::NONE;
+
+
+		//std::unique_ptr<ActiveSpell> _active_effect;
+		//std::unique_ptr<PassiveSpell> _passive_effect1;
+		//std::unique_ptr<PassiveSpell> _passive_effect2;
+		//std::unique_ptr<PassiveSpell> _passive_effect3;
 	};
 
 	Item(ItemInfo item_info);

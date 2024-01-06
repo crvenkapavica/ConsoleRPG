@@ -95,45 +95,9 @@ public:
     virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
 };
 
-class AI_TEMP1 : public ActiveSpell {
-public:
-    AI_TEMP1() : ActiveSpell(ESpellID::AI_TEMP1) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class AI_TEMP2 : public ActiveSpell {
-public:
-    AI_TEMP2() : ActiveSpell(ESpellID::AI_TEMP2) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class AI_TEMP3 : public ActiveSpell {
-public:
-    AI_TEMP3() : ActiveSpell(ESpellID::AI_TEMP3) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
 class BloodRain : public ActiveSpell {
 public:
     BloodRain() : ActiveSpell(ESpellID::BLOOD_RAIN) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class BR_TEMP1 : public ActiveSpell {
-public:
-    BR_TEMP1() : ActiveSpell(ESpellID::BR_TEMP1) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class BR_TEMP2 : public ActiveSpell {
-public:
-    BR_TEMP2() : ActiveSpell(ESpellID::BR_TEMP2) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class BR_TEMP3 : public ActiveSpell {
-public:
-    BR_TEMP3() : ActiveSpell(ESpellID::BR_TEMP3) {}
     virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
 };
 
@@ -144,23 +108,6 @@ public:
     virtual stringstream& GetTooltip() override;
 };
 
-class VA_TEMP1 : public ActiveSpell {
-public:
-    VA_TEMP1() : ActiveSpell(ESpellID::VA_TEMP1) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class VA_TEMP2 : public ActiveSpell {
-public:
-    VA_TEMP2() : ActiveSpell(ESpellID::VA_TEMP2) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
-
-class VA_TEMP3 : public ActiveSpell {
-public:
-    VA_TEMP3() :ActiveSpell(ESpellID::VA_TEMP3) {}
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) override;
-};
 
 
 

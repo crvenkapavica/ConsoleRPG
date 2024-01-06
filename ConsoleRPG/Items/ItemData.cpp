@@ -9,7 +9,7 @@ ItemDB::ItemDataConstructor::ItemDataConstructor() {
 	_data.push_back({ EItemID::EPotion,			"Essence potion",				EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		0.15f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	400,	false,	   true });
 	_data.push_back({ EItemID::FortElixir,		"Elixir of Fortitude",			EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		0.20f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	600,	false,	   true });
 	_data.push_back({ EItemID::StrElixir,		"Elixir of Strength",			EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		5.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	800,	false,	   true });
-	_data.push_back({ EItemID::AgiElixir,		"Elixir of Agility",			EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		5.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	100,	false,	   true });
+	_data.push_back({ EItemID::AgiElixir,		"Elixir of Agility",			EItemType::CONSUMABLE,	EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		5.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	1000,	false,	   true });
 	//scrolls
 	_data.push_back({ EItemID::Scroll,			"Scroll",						EItemType::SCROLL,		EWeaponType::NONE,		EItemSlot::NONE,		ESpellID::NONE,		0,		0,		0,		0,		0,		0.f,	0,		0.f,	0,		0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	0.f,	1000,	false,	   true });
 	//armor Head

@@ -337,18 +337,6 @@ void ArcaneInfusion::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Cha
 	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
 }
 
-void AI_TEMP1::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "AI_TEMP1" << endl;
-}
-
-void AI_TEMP2::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "AI_TEMP2" << endl;
-}
-
-void AI_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "AI_TEMP3" << endl;
-}
-
 void BloodRain::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	//float drain = GetRandEffectMinMax();
@@ -368,18 +356,6 @@ void BloodRain::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Characte
 
 	//shared_ptr<BloodRainEffect> effect = make_shared<BloodRainEffect>(_ID, _spell, _damage_type, _spell_type, _idx);
 	//GameplayStatics::ApplyEffect(instigator, targets, effect_params, apply_params, effect, _idx);
-}
-
-void BR_TEMP1::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "BR_TEMP1 EFFECT" << endl;
-}
-
-void BR_TEMP2::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "BR_TEMP2 ARMOR EFFECT" << endl;
-}
-
-void BR_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "BR_TEMP3 EFFECT" << endl;
 }
 
 void ViscousAcid::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
@@ -413,17 +389,6 @@ stringstream& ViscousAcid::GetTooltip() {
 	return _tooltip;
 }
 
-void VA_TEMP1::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "BR_TEMP1 EFFECT" << endl;
-}
-
-void VA_TEMP2::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "BR_TEMP2 ARMOR EFFECT" << endl;
-}
-
-void VA_TEMP3::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
-	cout << "BR_TEMP3 EFFECT" << endl;
-}
 
 
 

@@ -177,6 +177,7 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 	case EItemType::CONSUMABLE:
 		GenerateRndConsumable(item_info, item_rarity);
 		item_info._item_slot = EItemSlot::NONE;
+		item_info._bUsable = true;
 		break;
 	case EItemType::SCROLL:
 		GenerateRndScroll(item_info, item_lvl, item_rarity);
@@ -184,13 +185,15 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 		item_info._bUsable = true;
 		break;
 	case EItemType::ARMOR:
-		rnd = GameplayStatics::GetRandInt(0, 6);
+		rnd = GameplayStatics::GetRandInt(0, 5);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
+		item_info._name = "ARMOR";
 		break;
 	case EItemType::JEWLERY:
 		rnd = GameplayStatics::GetRandInt(10, 12);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
+		item_info._name = "JEWLERY";
 		break;
 	case EItemType::WEAPON:
 		rnd = GameplayStatics::GetRandInt(20, 21);
@@ -201,9 +204,11 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
 		item_info._wpn_type = static_cast<EWeaponType>(rnd);
 		CalcItemDamage(item_lvl, item_info._wpn_type, item_info._min_dmg, item_info._max_dmg);
+		item_info._name = "WEAPON";
 		break;
 	case EItemType::RELIC:
 		item_info._item_slot = EItemSlot::RELIC;
+		item_info._name = "RELIC";
 		break;
 	default:
 		break;
@@ -284,16 +289,17 @@ void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
 void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
 	int rnd = GameplayStatics::GetRandInt(1, 1000);
 	for (const auto& item : ItemDB::_data) {
-		if (item._item_type == EItemType::CONSUMABLE && item._drop_chnc <= rnd) {
+		if (item._item_type == EItemType::CONSUMABLE && rnd <= item._drop_chnc) {
 			item_info._name = item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ";
 			item_info._name += item._name;
 			item_info._ID = item._ID;
 			item_info._amount = item._amount * item_info._n_affixes;
-			item_info._bUsable = true;
 
 			// for now only health and essence poitions cant be used out of combat
 			if (item._ID != EItemID::HPotion && item._ID != EItemID::EPotion)
 				item_info._bUsableMap = true;
+
+			break;
 		}
 	}
 }
@@ -302,7 +308,15 @@ void Item::GenerateRndScroll(ItemInfo& item_info, int item_lvl, EItemRarity item
 	const int NUM_SCROLLS = SpellDB::_data.size() - 2;  // later change to a DEFINE
 
 	while (1) {
-		int rnd = GameplayStatics::GetRandInt(0, NUM_SCROLLS);
+		int rnd = GameplayStatics::GetRandInt(1, NUM_SCROLLS);
+		auto scroll = SpellDB::_active_const_map[static_cast<ESpellID>(rnd)];
+
+		// here we need a good formula for converting item_lvl to power_lvl of SPELL
+		if (scroll._power_lvl <= 5 || item_lvl / 8 >= scroll._power_lvl) {
+			item_info._scroll = static_cast<ESpellID>(rnd);
+			item_info._name = (item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ") + "Scroll of " + GameplayStatics::GetEnumString(item_info._scroll);
+			break;
+		}
 	}
 
 }

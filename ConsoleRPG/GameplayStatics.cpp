@@ -721,7 +721,7 @@ bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& instig
 
 void GameplayStatics::RollLoot() {
 	for (const auto& player : _player_characters) {
-		auto loot = move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 160));
+		auto loot = move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 360));
 		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), move(loot));
 	}
 }
@@ -810,12 +810,24 @@ std::string GameplayStatics::GetEnumString(ESpellID _enum) {
 		return "MOLTEN ARMOR";
 	case ESpellID::EXPOSURE:
 		return "EXPOSURE";
+	case ESpellID::STONESKIN:
+		return "STONESKIN";
+	case ESpellID::DISARM:
+		return "DISARM";
+	case ESpellID::BLOODBATH:
+		return "BLOODBATH";
+	case ESpellID::ARCANE_INFUSION:
+		return "ARCANE INFUSION";
+	case ESpellID::BLOOD_RAIN:
+		return "BLOOD RAIN";
 	case ESpellID::VISCOUS_ACID:
 		return "VISCOUS ACID";
-	case ESpellID::BLIND:
-		return "BLIND";
 	case ESpellID::SUM_FIRE_ELE:
 		return "SUMMON FIRE ELEMENTAL";
+	case ESpellID::SUM_FIRE_IMP:
+		return "SUMMON FIRE IMP";
+	case ESpellID::BLIND:
+		return "BLIND";
 	case ESpellID::MELEE:
 		return "MELEE ATTACK";
 	case ESpellID::RANGED:
