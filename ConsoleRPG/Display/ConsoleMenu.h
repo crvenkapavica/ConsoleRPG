@@ -32,18 +32,21 @@ public:
 
     void Clear(int lines);
     void ClearRight(int lines);
+    void ClearItemInfo(int lines);
 
 private:
     int Prompt();
 
     void Display();
 
-    void ANSI_CURSOR_UP_N(const int n, const bool clear);
+    void ANSI_CURSOR_UP_N(int n, const bool clear);
     void ANSI_CURSOR_RIGHT_N(const int n);
 
     std::string GetColor(int i, string& s1, string& s2);
 
     void DisplayItemInfo(int i);
+
+    int _info_lines = 0;
 
 private:
     std::vector<std::string> _options;
