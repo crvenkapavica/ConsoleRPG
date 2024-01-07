@@ -1,4 +1,5 @@
 #include "ConsoleMenu.h"
+#include "../Items/Item.h"
 
 ConsoleMenu::ConsoleMenu(const std::vector<string>& options)
     : _options(options) 
@@ -47,32 +48,14 @@ void ConsoleMenu::Display() {
 
     for (int i = 0; i < _options.size(); i++) {
         if (_bIsItem) {
-            string rarity = "";
-            vector<string> v = { "empty", "Rare", "Epic", "Legendary", "GODLIKE", "UNIQUE"};
-            for (int j = 0; j < v.size(); j++)
-                if (_options[i].find(v[j]) != std::string::npos)
-                    rarity = v[j];
-
             string s1 = "", s2 = "";
-            int offset;
-            if ((offset = _options[i].find(" --> ")) != std::string::npos) {
-                s1 = _options[i].substr(0, offset + 5);
-                s2 = _options[i].substr(offset + 5);
-            }
-
-            string C;
-                 if (rarity == "empty")     C = COLOR_FG;
-            else if (rarity == "Rare")      C = COLOR_RARE;
-            else if (rarity == "Epic")      C = COLOR_EPIC;
-            else if (rarity == "Legendary") C = COLOR_LEGENDARY;
-            else if (rarity == "GODLIKE")   C = COLOR_GODLIKE;
-            else if (rarity == "UNIQUE")    C = COLOR_UNIQUE;
-            else                            C = COLOR_COMMON;
+            string C = GetColor(i, s1, s2);
             
             if ((i == 0 && _options[i] == "--> ALL ITEMS <--") || i == _options.size() - 1) C = COLOR_FG;
             if (i == _index) {
                 if (s1.size()) std::cout << COLOR_FG << COLOR_BG << s1 << C << s2 << ANSI_COLOR_RESET;
                 else std::cout << C << COLOR_BG << _options[i] << ANSI_COLOR_RESET;
+                DisplayItemInfo(i);
             }
             else {
                 if (s1.size()) std::cout << COLOR_FG << s1 << C << s2 << ANSI_COLOR_RESET;
@@ -126,4 +109,31 @@ void ConsoleMenu::Clear(int lines) {
 void ConsoleMenu::ClearRight(int lines) {
     for (int i = 0; i < lines; i++)
         cout << ANSI_CURSOR_UP(1) << CURSOR_LOG_RIGHT << ANSI_CLEAR_TO_END << CURSOR_LOG_LEFT;
+}
+
+std::string ConsoleMenu::GetColor(int i, string& s1, string& s2) {
+    string rarity = "";
+    vector<string> v = { "empty", "Rare", "Epic", "Legendary", "GODLIKE", "UNIQUE" };
+    for (int j = 0; j < v.size(); j++)
+        if (_options[i].find(v[j]) != std::string::npos)
+            rarity = v[j];
+
+    int offset;
+    if ((offset = static_cast<int>(_options[i].find("---> "))) != std::string::npos) {
+        s1 = _options[i].substr(0, offset + 5);
+        s2 = _options[i].substr(offset + 5);
+    }
+
+    string C;
+         if (rarity == "empty")     return COLOR_FG;
+    else if (rarity == "Rare")      return COLOR_RARE;
+    else if (rarity == "Epic")      return COLOR_EPIC;
+    else if (rarity == "Legendary") return COLOR_LEGENDARY;
+    else if (rarity == "GODLIKE")   return COLOR_GODLIKE;
+    else if (rarity == "UNIQUE")    return COLOR_UNIQUE;
+    else                            return COLOR_COMMON;
+}
+
+void ConsoleMenu::DisplayItemInfo(int i) {
+    //std::cout << ANSI_CURSOR_RIGHT(75) << _items[i]->_item_info._name;
 }

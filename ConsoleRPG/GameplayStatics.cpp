@@ -142,12 +142,12 @@ void GameplayStatics::DisplayEnemies() {
 		}
 }
 
-int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool bClear, const bool bIsItem) {
+int GameplayStatics::InteractiveDisplay(const vector<string>& options, const int right, const bool bClear, const std::vector<Item*> items) {
 	_menu->SetOptions(options);
 	_menu->SetUp(static_cast<int>(options.size()));
 	_menu->SetRight(right);
 	_menu->SetClear(bClear);
-	_menu->SetIsItem(bIsItem);
+	_menu->SetItems(items);
 	return _menu->Select();
 }
 
@@ -732,14 +732,17 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 	if (loot.size()) {
 		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << "'s loot!. (" << loot.size() << ")" << "\nChoose which items you want to keep.\n";
 		vector<string> v = { "--> ALL ITEMS <--" };
-		for (const auto& item : loot)
+		vector<Item*> items;
+		for (const auto& item : loot) {
 			v.push_back(item->_item_info._name);
+			items.push_back(item.get());
+		}
 		v.push_back("<--BACK--<");
 
 		int input;
 		int n_looted = 0;
 		while (v.size() > 2) {
-			input = InteractiveDisplay(v, 0, true, true);
+			input = InteractiveDisplay(v, 0, true, items);
 			if (input == -1) break;
 			if (input == 0) { // add all items
 				if (character.lock()->GetInventorySpace() >= loot.size() - n_looted) {

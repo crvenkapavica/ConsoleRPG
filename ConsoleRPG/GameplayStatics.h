@@ -28,7 +28,7 @@ public:
 	static void DisplayCombatMenuTitle();
 	static void DisplaySpellMenuTitle();
 
-	static int InteractiveDisplay(const vector<string>& options, const int right = 0, const bool bClear = true, const bool bIsItem = false);
+	static int InteractiveDisplay(const vector<string>& options, const int right = 0, const bool bClear = true, const std::vector<Item*> items = std::vector<Item*>());
 	static void ANSI_CURSOR_DOWN_N(int n);
 
 	static void DisplayMapMenu();

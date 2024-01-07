@@ -141,7 +141,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 
 	int rnd = GameplayStatics::GetRandInt(1, 100000);
 	for (int i = 0; i < ITEM_RARITIES; i++) {
-		int chance = static_cast<int>((DropTable_ItemRarity[i].second + DropTable_ItemRarity[i].second * mf_bonus) * 100000);
+		int chance = static_cast<int>(DropTable_ItemRarity[i].second * mf_bonus * 100000);
 		if (rnd <= chance) {
 			item_rarity = DropTable_ItemRarity[i].first;
 			n_affixes = ITEM_RARITIES - 1 - i;
