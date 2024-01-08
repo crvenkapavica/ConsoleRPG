@@ -151,16 +151,24 @@ void ConsoleMenu::DisplayItemInfo(int i) {
     if (i - off >= _items.size()) return;
     if (i - off < 0 || !_items[i - off]) return;
 
+    string s1, s2;
+    const string C = GetColor(i, s1, s2);
     string name = _items[i - off]->_item_info._name;
-    int offset = name.length() / 2;
-    offset = 70 - offset;
+    int offset = 70 - name.length();
+    offset -= (offset / 2);
 
     ANSI_CURSOR_UP_N(_options.size(), false); 
+    std::cout << C;
     std::cout << ANSI_CURSOR_RIGHT(60);
     std::cout << "------------------------------------------------------------\n";
-    std::cout << ANSI_CURSOR_RIGHT(60) << "+" << name << "\n";
+    std::cout << ANSI_CURSOR_RIGHT(60);
+    for (int i = 0; i < 70; i++)
+        if (i >= offset && name.length() >= i - offset) cout << name[i - offset];
+        else cout << ' ';
+    std::cout << endl;
     std::cout << ANSI_CURSOR_RIGHT(60);
     std::cout << "------------------------------------------------------------\n";
+    std::cout << ANSI_COLOR_RESET;
  
     if (_options.size() <= 3)
         ANSI_CURSOR_UP_N(3 - _options.size(), false);

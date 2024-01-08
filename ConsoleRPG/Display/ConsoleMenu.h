@@ -42,7 +42,7 @@ private:
     void ANSI_CURSOR_UP_N(int n, const bool clear);
     void ANSI_CURSOR_RIGHT_N(const int n);
 
-    std::string GetColor(int i, string& s1, string& s2);
+    std::string GetColor(int i, std::string& s1, std::string& s2);
 
     void DisplayItemInfo(int i);
 
