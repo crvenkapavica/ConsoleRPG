@@ -731,21 +731,24 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 	system("cls");
 	if (loot.size()) {
 		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << "'s loot!. (" << loot.size() << ")" << "\nChoose which items you want to keep.\n";
-		vector<string> v = { "--> ALL ITEMS <--" };
-		vector<Item*> items;
-		for (const auto& item : loot) {
-			v.push_back(item->_item_info._name);
-			items.push_back(item.get());
-		}
-		v.push_back("<--BACK--<");
 
 		int input;
-		int n_looted = 0;
-		while (v.size() > 2) {
+		vector<string> v;
+		vector<Item*> items;
+
+		while (loot.size()) {
+			v = { "--> ALL ITEMS <--" };
+			items.clear();
+			for (const auto& item : loot) {
+				v.push_back(item->_item_info._name);
+				items.push_back(item.get());
+			}
+			v.push_back("<--BACK--<");
+
 			input = InteractiveDisplay(v, 0, true, items);
 			if (input == -1) break;
 			if (input == 0) { // add all items
-				if (character.lock()->GetInventorySpace() >= loot.size() - n_looted) {
+				if (character.lock()->GetInventorySpace() >= loot.size()) {
 					for (auto& item : loot)
 						if (item) character.lock()->AddItemToInventory(move(item));
 					break;
@@ -757,11 +760,11 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 			else { // add selected item
 				if (character.lock()->GetInventorySpace() > 0) {
 					character.lock()->AddItemToInventory(move(loot[input - 1]));
-					++n_looted;
+					loot.erase(std::find(loot.begin(), loot.end(), nullptr));
 
 					v = { "--> ALL ITEMS <--" };
 					for (const auto& item : loot)
-						if (item) v.push_back(item->_item_info._name);
+						v.push_back(item->_item_info._name);
 					v.push_back("<--BACK--<");
 				}
 				else {
