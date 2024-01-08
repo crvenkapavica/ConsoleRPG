@@ -184,7 +184,6 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 		}
 	v.push_back("<--BACK--<");
 
-	system("cls");
 	if ((input = GameplayStatics::InteractiveDisplay(v, 70, true, items)) == -1) return nullptr;
 
 	std::unique_ptr<Item> item;

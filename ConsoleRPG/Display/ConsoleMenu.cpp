@@ -77,7 +77,7 @@ void ConsoleMenu::Display() {
             cout << endl;
         }
     }
-
+    
     if (_bIsItem)
         DisplayItemInfo(_index);
 }
@@ -88,9 +88,9 @@ int ConsoleMenu::Select() {
 
 void ConsoleMenu::ANSI_CURSOR_UP_N(int n, const bool clear) {
     for (int i = 0; i < n; i++) {
-        if (_bIsItem) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(120) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(120);
-        else if (clear) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(35) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(35); // valjda se left more meknuti
         if (!clear) cout << ANSI_CURSOR_UP(1);
+        else if (_bIsItem) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(120) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(120);
+        else if (clear) cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(35) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(35); // valjda se left more meknuti
     }
 }
 
@@ -119,12 +119,6 @@ void ConsoleMenu::ClearItemInfo(int lines) {
 }
 
 std::string ConsoleMenu::GetColor(int i, string& s1, string& s2) {
-    string rarity = "";
-    vector<string> v = { "empty", "Rare", "Epic", "Legendary", "GODLIKE", "UNIQUE" };
-    for (int j = 0; j < v.size(); j++)
-        if (_options[i].find(v[j]) != std::string::npos)
-            rarity = v[j];
-
     int offset;
     if ((offset = static_cast<int>(_options[i].find("---> "))) != std::string::npos) {
         s1 = _options[i].substr(0, offset + 5);
@@ -132,13 +126,24 @@ std::string ConsoleMenu::GetColor(int i, string& s1, string& s2) {
     }
 
     string C;
-         if (rarity == "empty")     return COLOR_FG;
-    else if (rarity == "Rare")      return COLOR_RARE;
-    else if (rarity == "Epic")      return COLOR_EPIC;
-    else if (rarity == "Legendary") return COLOR_LEGENDARY;
-    else if (rarity == "GODLIKE")   return COLOR_GODLIKE;
-    else if (rarity == "UNIQUE")    return COLOR_UNIQUE;
-    else                            return COLOR_COMMON;
+    if (_options[i] == "--> ALL ITEMS <--" || _options[i] == "<--BACK--<") return COLOR_FG;
+    int off = _options[0] == "--> ALL ITEMS <--" ? 1 : 0;
+    if (!_items[i - off]) return COLOR_FG;
+
+    switch (_items[i - off]->_item_info._item_rarity) {
+    case EItemRarity::COMMON:
+        return COLOR_COMMON;
+    case EItemRarity::EPIC:
+        return COLOR_EPIC;
+    case EItemRarity::LEGENDARY:
+        return COLOR_LEGENDARY;
+    case EItemRarity::GODLIKE:
+        return COLOR_GODLIKE;
+    case EItemRarity::UNIQUE:
+        return COLOR_UNIQUE;
+    default:
+        return COLOR_FG;
+    }
 }
 
 void ConsoleMenu::DisplayItemInfo(int i) {
@@ -150,14 +155,14 @@ void ConsoleMenu::DisplayItemInfo(int i) {
     int offset = name.length() / 2;
     offset = 70 - offset;
 
-    std::cout << ANSI_CURSOR_UP(60) << ANSI_CURSOR_DOWN(5) << ANSI_CURSOR_RIGHT(60);
+    ANSI_CURSOR_UP_N(_options.size(), false); 
+    std::cout << ANSI_CURSOR_RIGHT(60);
     std::cout << "------------------------------------------------------------\n";
     std::cout << ANSI_CURSOR_RIGHT(60) << "+" << name << "\n";
     std::cout << ANSI_CURSOR_RIGHT(60);
     std::cout << "------------------------------------------------------------\n";
-
-    std::cout << ANSI_CURSOR_UP(60);
-
-    int size = off ? 2 : -2;
-    ANSI_CURSOR_DOWN_N(_options.size() + size);
+ 
+    if (_options.size() <= 3)
+        ANSI_CURSOR_UP_N(3 - _options.size(), false);
+    else ANSI_CURSOR_DOWN_N(_options.size() - 3);
 }

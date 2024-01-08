@@ -28,6 +28,7 @@ class Character;
 
 #undef _stat
 #undef max
+#undef min
 #undef PURE
 
 #define START_X 8
