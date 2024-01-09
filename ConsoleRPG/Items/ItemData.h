@@ -17,10 +17,13 @@ struct ItemData {
 	float			_amount;
 
 	//armor
-	int				_spell_slots;	//Hands = slots for spells
-	float			_mag_dmg; 		//Legs = magic_damage
-	int				_cons_slots; 	//Belt = slots for consumables
-	float			_mag_res;		//Feet = magic_resistance
+	//Hands = slots for spells
+	//Belt = slots for consumables
+	int				_slots;
+
+	//Legs = magic_damage
+	//Feet = magic_resistance
+	float			_arm_mod;
 
 	//weapon
 	// Bow extra random magic damage

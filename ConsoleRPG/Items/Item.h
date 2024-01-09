@@ -24,11 +24,11 @@ public:
 		int				_n_affixes = 0;
 
 		int				_slots;
-		float			_armor_mod = 0.f;
+		float			_arm_mod = 0.f;
 		float			_wpn_mod = 0.f;
 
-		bool			_bUsableMap = false;
 		bool			_bUsable = false;
+		bool			_bUsableMap = false;
 
 		std::string		_name = "";
 
@@ -49,12 +49,22 @@ public:
 	};
 
 	Item(ItemInfo item_info);
+
+	// This will only be used for starting items [pre-determined]
+	// This will MAYBE be used for UNIQUEs [pre-determined]
 	Item(const ItemData& data);
 
+	// Calls CreateItem multiple times depending on power_lvl of slain monsters and random roll chance.
 	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
+	
+	// Creates RANDOM item from BASE items + prefixes(max 1 - passive spell), suffixes(max 1 - active spell) and affixes(all other stat modifiers).
 	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
-	static std::unique_ptr<Item> GetItemByID(EItemID id);
 
+	// Used exclusively for starting pre-determined items for each class and enemy.
+	// might be used later for unique items (which are also pre-determined).
+	static std::unique_ptr<Item> CreateItemByID(EItemID id);
+
+	// Use the consumable, scroll, or an active spell of an item.
 	void Use(Character* character);
 
 public:
@@ -63,17 +73,26 @@ public:
 private:
 	static ItemInfo GenerateItemInfo(int&& item_lvl, EItemType item_type, EItemRarity item_rarity);
 
+	// Gets the BASE item with base stats and its slot-dependent modifier and then rolls affixes on top of it depending on the rarity
 	static void GetBaseItem(ItemInfo& item_info);
 
+	// Calculates Ilvl depending on player_lvl and number of affixes(rarity)
 	static int CalcItemLvl(int player_lvl, int n_affixes);
 
+	// Further randoms the damage with Ilvl and rarity formula
 	static void CalcItemDamage(ItemInfo& item_info);
 
+	// Further randoms the armor with Ilvl and rarity formula
 	static void CalcItemArmor(ItemInfo& item_info);
 
+	// Generate a random consumable from a consumable pool (might be usable in map or not)
 	static void GenerateRndConsumable(ItemInfo& item_info);
-
+	
+	// Generate a random scroll of any castable Active Spell (+ maybe some exclusive SCROLL SPELLS)
 	static void GenerateRndScroll(ItemInfo& item_info);
 
+
+
+	// DEPRECATED FOR NOW - item name is generated in GetBaseItem
 	static void GenerateItemName(ItemInfo& item_info);
 };

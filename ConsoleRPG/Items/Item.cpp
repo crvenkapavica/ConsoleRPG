@@ -90,8 +90,9 @@ Item::Item(const ItemData& data)
 	_item_info._max_dmg = data._max_dmg;
 	_item_info._armor = data._armor;
 	_item_info._amount = data._amount;
-	_item_info._n_affixes = 0;
 	
+	_item_info._slots = data._slots;
+	_item_info._arm_mod = data._arm_mod;	// for each armor type different mod [TODO IMPLEMENT]
 	_item_info._wpn_mod = data._wpn_mod;	// each weapon type different mod, and different meaning, programmed in a [TODO FUNCTION]
 
 	_item_info._name = data._name;
@@ -152,7 +153,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 	return make_unique<Item>(move(item_info));
 }
 
-std::unique_ptr<Item> Item::GetItemByID(EItemID id) {
+std::unique_ptr<Item> Item::CreateItemByID(EItemID id) {
 	for (const auto& item : ItemDB::_data)
 		if (item._ID == id)
 			return make_unique<Item>(item);
@@ -185,12 +186,14 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 	case EItemType::ARMOR:
 		rnd = GameplayStatics::GetRandInt(0, 5);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
+		GetBaseItem(item_info);
 		CalcItemArmor(item_info);
 		break;
 	case EItemType::JEWLERY:
 		rnd = GameplayStatics::GetRandInt(6, 8);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
 		item_info._name = "JEWLERY";
+		//GetBaseItem(item_info); // TODO - IMPLEMENT
 		break;
 	case EItemType::WEAPON:
 		rnd = GameplayStatics::GetRandInt(9, 10);
@@ -200,18 +203,20 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 		else
 			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
 		item_info._wpn_type = static_cast<EWeaponType>(rnd);
+		GetBaseItem(item_info);
 		CalcItemDamage(item_info);
 		break;
 	case EItemType::RELIC:
 		item_info._item_slot = EItemSlot::RELIC;
 		item_info._name = "RELIC";
+		//GetBaseItem(item_info); // TODO - IMPLEMENT
 		break;
 	default:
 		break;
 	}
 
-	if (item_info._item_type != EItemType::CONSUMABLE && item_info._item_type != EItemType::SCROLL)
-		GenerateItemName(item_info);
+	//if (item_info._item_type != EItemType::CONSUMABLE && item_info._item_type != EItemType::SCROLL)
+	//	GenerateItemName(item_info);
 
 	return item_info;
 }
@@ -228,6 +233,9 @@ void Item::GetBaseItem(ItemInfo& item_info) {
 			item_info._min_dmg = item._min_dmg;
 			item_info._max_dmg = item._max_dmg;
 			item_info._armor = item._armor;
+			item_info._slots = item._slots;
+			item_info._arm_mod = item._arm_mod;
+			item_info._wpn_mod = item._wpn_mod;
 		}
 	}
 }
