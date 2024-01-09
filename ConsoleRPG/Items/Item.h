@@ -71,13 +71,19 @@ public:
 	ItemInfo _item_info;
 
 private:
-	static ItemInfo GenerateItemInfo(int&& item_lvl, EItemType item_type, EItemRarity item_rarity);
+	static ItemInfo GenerateItemInfo(int player_lvl, EItemType item_type, EItemRarity item_rarity);
+
+	// Calculates Ilvl depending on player_lvl and number of affixes(rarity)
+	static int CalcItemLvl(int player_lvl, int n_affixes);
+	
+	// Generates an item slot depending on the item type
+	static void GenerateItemSlot(ItemInfo& item_info);
 
 	// Gets the BASE item with base stats and its slot-dependent modifier and then rolls affixes on top of it depending on the rarity
 	static void GetBaseItem(ItemInfo& item_info);
 
-	// Calculates Ilvl depending on player_lvl and number of affixes(rarity)
-	static int CalcItemLvl(int player_lvl, int n_affixes);
+	// Rolls Affixes. Number increases with rarity. Also Changes names if active / pasive affix was rolled.
+	static void RollAffixes(ItemInfo& item_info);
 
 	// Further randoms the damage with Ilvl and rarity formula
 	static void CalcItemDamage(ItemInfo& item_info);
@@ -90,9 +96,4 @@ private:
 	
 	// Generate a random scroll of any castable Active Spell (+ maybe some exclusive SCROLL SPELLS)
 	static void GenerateRndScroll(ItemInfo& item_info);
-
-
-
-	// DEPRECATED FOR NOW - item name is generated in GetBaseItem
-	static void GenerateItemName(ItemInfo& item_info);
 };
