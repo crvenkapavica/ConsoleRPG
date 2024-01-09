@@ -153,23 +153,28 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
 	auto rarity = static_cast<EItemRarity>(input);
 
+	map<int, int> item_map;
+	int item_index = 0;
+	int n_inv = 0;
 	std::vector<Item*> items;
 	v.clear();
 	// treba auto sortirati da su svi v inventoriju po redu a na kraju nullptr
-	for (const auto& item : _inventory)
-		if (!item) {
+	for (int i = 0; i < _inventory.size(); i++)
+		if (!_inventory[i]) {
 			if (type == EItemType::MISC && rarity == EItemRarity::MISC) {
 				v.push_back("INVENTORY ---> (empty)");
 				items.push_back(nullptr);
+				++n_inv;
+				item_map[item_index++] = i;
 			}
 		}
-		else if ((item->_item_info._item_type == type || type == EItemType::MISC) && (item->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC)) {
-			v.push_back("INVENTORY ---> " + item->_item_info._name);
-			items.push_back(item.get());
+		else if ((_inventory[i]->_item_info._item_type == type || type == EItemType::MISC) && (_inventory[i]->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC)) {
+			v.push_back("INVENTORY ---> " + _inventory[i]->_item_info._name);
+			items.push_back(_inventory[i].get());
+			item_map[item_index++] = i;
+			++n_inv;
 		}
 
-	map<int, int> equip_map;
-	int equip_index = 0;
 	for (int i = 0; i < _item_slots.size(); i++)
 		if (((_item_slots[i] && (_item_slots[i]->_item_info._item_type == type || type == EItemType::MISC)) || type == EItemType::MISC)
 			&&
@@ -180,25 +185,23 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 			else s += "(empty)";
 			v.push_back(s);
 			items.push_back(_item_slots[i].get());
-			equip_map[equip_index++] = i;
+			item_map[item_index++] = i;
 		}
 	v.push_back("<--BACK--<");
 
 	if ((input = GameplayStatics::InteractiveDisplay(v, 70, true, items)) == -1) return nullptr;
 
-	std::unique_ptr<Item> item;
 	// item is from inventory
-	if (input < _n_inventory) {
-		item = move(_inventory[input]);
+	if (input < n_inv) {
+		return move(_inventory[item_map[input]]);
 	}
 	// item is equiped
 	else {
-		int start = static_cast<int>(v.size() - equip_map.size());
-		int index = input - start + 1;
-		item = move(_item_slots[equip_map[index]]);
 		bIsEquiped = true;
-	}	
-	return item;
+		return move(_item_slots[item_map[input]]);
+	}
+
+	return nullptr;
 }
 
 void PlayerCharacter::DisplayStats() {
