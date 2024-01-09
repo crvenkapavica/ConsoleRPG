@@ -38,14 +38,12 @@ public:
 		EWeaponType		_wpn_type = EWeaponType::NONE;
 
 		ESpellID		_active = ESpellID::NONE;
-		ESpellID		_passive1 = ESpellID::NONE;
-		ESpellID		_passive2 = ESpellID::NONE;
-		ESpellID		_passive3 = ESpellID::NONE;
-
-		//std::unique_ptr<ActiveSpell> _active_effect;
-		//std::unique_ptr<PassiveSpell> _passive_effect1;
-		//std::unique_ptr<PassiveSpell> _passive_effect2;
-		//std::unique_ptr<PassiveSpell> _passive_effect3;
+		ESpellID		_passive = ESpellID::NONE;
+		
+		EItemAffix		_affix1;
+		EItemAffix		_affix2;
+		EItemAffix		_affix3;
+		EItemAffix		_affix4;
 	};
 
 	Item(ItemInfo item_info);

@@ -168,8 +168,11 @@ Item::ItemInfo Item::GenerateItemInfo(int player_lvl, EItemType item_type, EItem
 	item_info._wpn_type = EWeaponType::NONE;
 
 	GenerateItemSlot(item_info);
-	GetBaseItem(item_info);
-	RollAffixes(item_info);
+
+	if (item_info._item_type != EItemType::CONSUMABLE && item_info._item_type != EItemType::SCROLL) {
+		GetBaseItem(item_info);
+		RollAffixes(item_info);
+	}
 
 	     if (item_info._item_type == EItemType::ARMOR)	CalcItemArmor(item_info); // TODO RENAME FUNCTIONS
 	else if (item_info._item_type == EItemType::WEAPON) CalcItemDamage(item_info);// TODO RENAME FUNCTIONS
@@ -245,6 +248,17 @@ void Item::GetBaseItem(ItemInfo& item_info) {
 }
 
 void Item::RollAffixes(ItemInfo& item_info) {
+	// rare = 1 affix [ 1 passive ]
+	// epic = 2 affix [ 1 passive ]
+	// legend = 3 affix [ 1 passive , 1 active]
+	// godlike = 4 affix [1 passive, 1 acitve + MUST BE passive / active]
+
+	// legend passive 1 out of 2
+	// passive 1 out of 5
+	
+	// active 1 out of 10
+
+
 
 }
 

@@ -581,7 +581,51 @@ enum class EItemType {
 	MISC
 };
 
-enum class EItemType2 {
-	MISC,
+enum class EItemAffix {
+	Active,
+	Passive,
 	
+	STR,
+	AGI,
+	INT,
+	VIT,
+	CON,
+	END,
+	ALL_ATTR,
+
+	To_Arcane,
+	To_Fire,
+	To_Ligthning,
+	To_Cold,
+	To_Poison,
+	To_Necrotic,
+	To_Physical,
+	To_Pure,
+	To_Elemental, // Fire, Light, Cold
+	To_Black, // Necrotic, Poison
+	//To_Divine, // Arcane, Holy
+
+	Arcane_dmg,
+	Fire_dmg,
+	Ligthning_dmg,
+	Cold_dmg,
+	Poison_dmg,
+	Necrotic_dmg,
+	Physical_dmg,
+	Pure_dmg,
+	Elemental_dmg, // Fire, Light, Cold
+	Black_dmg, // Necrotic, Poison
+	//Divine_dmg, // Arcane, Holy
+
+	Arcane_res,
+	Fire_res,
+	Ligthning_res,
+	Cold_res,
+	Poison_res,
+	Necrotic_res,
+	Physical_res,
+	Elemental_res, // Fire, Light, Cold
+	Black_res, // Necrotic, Poison
+	//Divine_res, // Arcane, Holy
+
 };
