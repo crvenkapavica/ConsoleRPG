@@ -175,19 +175,19 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 	int rnd;
 	switch (item_type) {
 	case EItemType::CONSUMABLE:
-		GenerateRndConsumable(item_info, item_rarity);
+		GenerateRndConsumable(item_info);
 		item_info._item_slot = EItemSlot::NONE;
 		item_info._bUsable = true;
 		break;
 	case EItemType::SCROLL:
-		GenerateRndScroll(item_info, item_lvl, item_rarity);
+		GenerateRndScroll(item_info);
 		item_info._item_slot = EItemSlot::NONE;
 		item_info._bUsable = true;
 		break;
 	case EItemType::ARMOR:
 		rnd = GameplayStatics::GetRandInt(0, 5);
 		item_info._item_slot = static_cast<EItemSlot>(rnd);
-		CalcItemArmor(item_lvl, item_info._item_slot, item_info._armor);
+		CalcItemArmor(item_info);
 		break;
 	case EItemType::JEWLERY:
 		rnd = GameplayStatics::GetRandInt(6, 8);
@@ -202,7 +202,7 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 		else
 			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
 		item_info._wpn_type = static_cast<EWeaponType>(rnd);
-		CalcItemDamage(item_lvl, item_info._wpn_type, item_info._min_dmg, item_info._max_dmg);
+		CalcItemDamage(item_info);
 		break;
 	case EItemType::RELIC:
 		item_info._item_slot = EItemSlot::RELIC;
@@ -218,6 +218,22 @@ Item::ItemInfo Item::GenerateItemInfo(int&& item_lvl, EItemType item_type, EItem
 	return item_info;
 }
 
+void Item::GetBaseItem(ItemInfo& item_info) {
+	for (const auto& item : ItemDB::_data) {
+		if (item._item_type == item_info._item_type &&
+			item._wpn_type == item_info._wpn_type &&
+			item._item_slot == item_info._item_slot &&
+			item._max_lvl >= item_info._lvl && item._min_lvl <= item_info._lvl) {
+			
+			item_info._ID = item._ID;
+			item_info._name = (item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ") + item._name;
+			item_info._min_dmg = item._min_dmg;
+			item_info._max_dmg = item._max_dmg;
+			item_info._armor = item._armor;
+		}
+	}
+}
+
 int Item::CalcItemLvl(int player_lvl, int n_affixes) {
 	int b_Ilvl = player_lvl * 8;
 	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
@@ -226,69 +242,59 @@ int Item::CalcItemLvl(int player_lvl, int n_affixes) {
 	return GameplayStatics::GetRandInt(min_Ilvl, max_Ilvl - min_Ilvl);
 }
 
-void Item::CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg) {
+void Item::CalcItemDamage(ItemInfo& item_info) {
 
-	switch (weapon_type) {
+	switch (item_info._wpn_type) {
 	case EWeaponType::AXE_1H:
 	case EWeaponType::MACE_1H:
 	case EWeaponType::SWORD_1H:
-		min_dmg = static_cast<int>(item_lvl * 1.5 - 0.15 * item_lvl); 
-		max_dmg = static_cast<int>(item_lvl * 1.5 + 0.15 * item_lvl); 
 		return;
 	case EWeaponType::DAGGER:
-		min_dmg = static_cast<int>(item_lvl * 1.2 - 0.12 * item_lvl); 
-		max_dmg = static_cast<int>(item_lvl * 1.2 + 0.12 * item_lvl); 
 		return;
 	case EWeaponType::AXE_2H:
 	case EWeaponType::MACE_2H:
 	case EWeaponType::SWORD_2H:
-		min_dmg = static_cast<int>(item_lvl * 2.8 - 0.28 * item_lvl); 
-		max_dmg = static_cast<int>(item_lvl * 2.8 + 0.28 * item_lvl); 
 		return;
 	case EWeaponType::BOW:
-		min_dmg = static_cast<int>(item_lvl * 2.2 - 0.22 * item_lvl); 
-		max_dmg = static_cast<int>(item_lvl * 2.2 + 0.22 * item_lvl); 
 		return;
 	case EWeaponType::STAFF:
-		min_dmg = static_cast<int>(item_lvl * 2.5 - 0.25 * item_lvl); 
-		max_dmg = static_cast<int>(item_lvl * 2.5 + 0.25 * item_lvl); 
 		return;
 	default:
 		return;
 	}
 }
 
-void Item::CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor) {
+void Item::CalcItemArmor(ItemInfo& item_info) {
 
-	switch (item_slot) {
+	switch (item_info._item_slot) {
 	case EItemSlot::HEAD:
-		armor = static_cast<int>(item_lvl * 0.3 + 50);
+		item_info._armor = static_cast<int>(item_info._lvl * 0.3 + 50);
 		return;
 	case EItemSlot::CHEST:
-		armor = static_cast<int>(item_lvl * 0.4 + 75);
+		item_info._armor = static_cast<int>(item_info._lvl * 0.4 + 75);
 		return;
 	case EItemSlot::HANDS:
-		armor = static_cast<int>(item_lvl * 0.2 + 18);
+		item_info._armor = static_cast<int>(item_info._lvl * 0.2 + 18);
 		return;
 	case EItemSlot::BELT:
-		armor = static_cast<int>(item_lvl * 0.15 + 8);
+		item_info._armor = static_cast<int>(item_info._lvl * 0.15 + 8);
 		return;
 	case EItemSlot::LEGS:
-		armor = static_cast<int>(item_lvl * 0.3 * 35);
+		item_info._armor = static_cast<int>(item_info._lvl * 0.3 * 35);
 		return;
 	case EItemSlot::FEET:
-		armor = static_cast<int>(item_lvl * 0.2 + 12);
+		item_info._armor = static_cast<int>(item_info._lvl * 0.2 + 12);
 		return;
 	default:
 		return;
 	}
 } 
 
-void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
+void Item::GenerateRndConsumable(ItemInfo& item_info) {
 	int rnd = GameplayStatics::GetRandInt(1, 1000);
 	for (const auto& item : ItemDB::_data) {
 		if (item._item_type == EItemType::CONSUMABLE && rnd <= item._drop_chnc) {
-			item_info._name = item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ";
+			item_info._name = item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ";
 			item_info._name += item._name;
 			item_info._ID = item._ID;
 			item_info._amount = item._amount * item_info._n_affixes;
@@ -302,41 +308,31 @@ void Item::GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity) {
 	}
 }
 
-void Item::GenerateRndScroll(ItemInfo& item_info, int item_lvl, EItemRarity item_rarity) {
+void Item::GenerateRndScroll(ItemInfo& item_info) {
 	const int NUM_SCROLLS = SpellDB::_data.size() - 2;  // later change to a DEFINE
-
 	while (1) {
 		int rnd = GameplayStatics::GetRandInt(1, NUM_SCROLLS);
 		auto scroll = SpellDB::_active_const_map[static_cast<ESpellID>(rnd)];
 
 		// here we need a good formula for converting item_lvl to power_lvl of SPELL
-		if (scroll._power_lvl <= 5 || item_lvl / 8 >= scroll._power_lvl) {
-			item_info._scroll = static_cast<ESpellID>(rnd);
-			item_info._name = (item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_rarity) + " ") + "Scroll of " + GameplayStatics::GetEnumString(item_info._scroll);
+		if (scroll._power_lvl <= 5 || item_info._lvl / 8 >= scroll._power_lvl) {
+			item_info._active = static_cast<ESpellID>(rnd);
+			item_info._name = (item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ") + "Scroll of " + GameplayStatics::GetEnumString(item_info._active);
 			break;
 		}
 	}
-
 }
 
 void Item::GenerateItemName(ItemInfo& item_info) {
 	for (const auto& item : ItemDB::_data) {
-		//if (item._ID == EItemID::NovSph) {
-		//	int x = 10;
-		//}
 		if (item._item_type == item_info._item_type &&
-			item._slot == item_info._item_slot &&
+			item._item_slot == item_info._item_slot &&
 			item_info._lvl >= item._min_lvl && item_info._lvl <= item._max_lvl) {
 			item_info._ID = item._ID;
 			item_info._name = (item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ") + item._name;
 		}
 	}
 }
-
-
-
-
-
 
 void Item::Use(Character* character) {
 	switch (_item_info._item_type) {

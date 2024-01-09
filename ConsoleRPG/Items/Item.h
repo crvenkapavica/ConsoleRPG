@@ -22,7 +22,10 @@ public:
 		float			_amount = 0.f;
 
 		int				_n_affixes = 0;
-		float			_modifier = 0.f;
+
+		int				_slots;
+		float			_armor_mod = 0.f;
+		float			_wpn_mod = 0.f;
 
 		bool			_bUsableMap = false;
 		bool			_bUsable = false;
@@ -34,8 +37,10 @@ public:
 		EItemType		_item_type = EItemType::MISC;
 		EWeaponType		_wpn_type = EWeaponType::NONE;
 
-		ESpellID		_scroll = ESpellID::NONE;
-
+		ESpellID		_active = ESpellID::NONE;
+		ESpellID		_passive1 = ESpellID::NONE;
+		ESpellID		_passive2 = ESpellID::NONE;
+		ESpellID		_passive3 = ESpellID::NONE;
 
 		//std::unique_ptr<ActiveSpell> _active_effect;
 		//std::unique_ptr<PassiveSpell> _passive_effect1;
@@ -51,17 +56,24 @@ public:
 	static std::unique_ptr<Item> GetItemByID(EItemID id);
 
 	void Use(Character* character);
-public:
 
+public:
 	ItemInfo _item_info;
 
 private:
-
 	static ItemInfo GenerateItemInfo(int&& item_lvl, EItemType item_type, EItemRarity item_rarity);
+
+	static void GetBaseItem(ItemInfo& item_info);
+
 	static int CalcItemLvl(int player_lvl, int n_affixes);
-	static void CalcItemDamage(int item_lvl, EWeaponType weapon_type, OUT int& min_dmg, OUT int& max_dmg);
-	static void CalcItemArmor(int item_lvl, EItemSlot item_slot, OUT int& armor);
-	static void GenerateRndConsumable(ItemInfo& item_info, EItemRarity item_rarity);
-	static void GenerateRndScroll(ItemInfo& item_info, int item_lvl, EItemRarity item_rarity);
+
+	static void CalcItemDamage(ItemInfo& item_info);
+
+	static void CalcItemArmor(ItemInfo& item_info);
+
+	static void GenerateRndConsumable(ItemInfo& item_info);
+
+	static void GenerateRndScroll(ItemInfo& item_info);
+
 	static void GenerateItemName(ItemInfo& item_info);
 };

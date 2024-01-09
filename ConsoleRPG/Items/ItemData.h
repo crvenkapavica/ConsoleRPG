@@ -7,7 +7,7 @@ struct ItemData {
 	std::string		_name;
 	EItemType		_item_type;
 	EWeaponType		_wpn_type;
-	EItemSlot		_slot;
+	EItemSlot		_item_slot;
 	ESpellID		_effect_id;
 	int				_min_lvl;
 	int				_max_lvl;
