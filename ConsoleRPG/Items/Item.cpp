@@ -92,12 +92,10 @@ Item::Item(const ItemData& data)
 	_item_info._amount = data._amount;
 	_item_info._n_affixes = 0;
 	
-	_item_info._modifier = 0.f; // this has to be done with switch, for each item / weapon type for a different modifier. maybe just keep this at 0 for starting items
+	_item_info._wpn_mod = data._wpn_mod;	// each weapon type different mod, and different meaning, programmed in a [TODO FUNCTION]
 
-	_item_info._bUsableMap = data._bUsableMap;
-	_item_info._bUsable = data._bUsable;
 	_item_info._name = data._name;
-	_item_info._item_slot = data._slot;
+	_item_info._item_slot = data._item_slot;
 	_item_info._item_rarity = EItemRarity::COMMON;
 	_item_info._item_type = data._item_type;
 	_item_info._wpn_type = data._wpn_type;
