@@ -582,6 +582,8 @@ enum class EItemType {
 };
 
 enum class EItemAffix {
+	NONE,
+
 	Active,
 	Passive,
 	
@@ -593,17 +595,17 @@ enum class EItemAffix {
 	END,
 	ALL_ATTR,
 
-	To_Arcane,
-	To_Fire,
-	To_Ligthning,
-	To_Cold,
-	To_Poison,
-	To_Necrotic,
-	To_Physical,
-	To_Pure,
-	To_Elemental, // Fire, Light, Cold
-	To_Black, // Necrotic, Poison
-	//To_Divine, // Arcane, Holy
+	//To_Arcane,
+	//To_Fire,
+	//To_Ligthning,
+	//To_Cold,
+	//To_Poison,
+	//To_Necrotic,
+	//To_Physical,
+	//To_Pure,
+	//To_Elemental, // Fire, Light, Cold
+	//To_Black, // Necrotic, Poison
+	////To_Divine, // Arcane, Holy
 
 	Arcane_dmg,
 	Fire_dmg,
@@ -629,3 +631,14 @@ enum class EItemAffix {
 	//Divine_res, // Arcane, Holy
 
 };
+
+// MAIN CATEGORY
+
+// ACTIVE
+// PASIVE
+// ATTRIBUTE
+// STAT
+// DMG
+// RES
+// TO_DMG
+// MISC (buff/debuff duration)

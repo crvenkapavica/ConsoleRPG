@@ -40,10 +40,10 @@ public:
 		ESpellID		_active = ESpellID::NONE;
 		ESpellID		_passive = ESpellID::NONE;
 		
-		EItemAffix		_affix1;
-		EItemAffix		_affix2;
-		EItemAffix		_affix3;
-		EItemAffix		_affix4;
+		EItemAffix		_affix1 = EItemAffix::NONE;
+		EItemAffix		_affix2 = EItemAffix::NONE;
+		EItemAffix		_affix3 = EItemAffix::NONE;
+		EItemAffix		_affix4 = EItemAffix::NONE;
 	};
 
 	Item(ItemInfo item_info);
@@ -55,7 +55,7 @@ public:
 	// Calls CreateItem multiple times depending on power_lvl of slain monsters and random roll chance.
 	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
 	
-	// Creates RANDOM item from BASE items + prefixes(max 1 - passive spell), suffixes(max 1 - active spell) and affixes(all other stat modifiers).
+	// Creates RANDOM item from BASE items + prefixes(max 1 - passive spell), suffixes(max 1 - active spell) and affixes(all other modifiers).
 	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
 
 	// Used exclusively for starting pre-determined items for each class and enemy.
