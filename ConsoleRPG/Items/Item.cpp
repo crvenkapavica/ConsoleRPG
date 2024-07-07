@@ -190,7 +190,7 @@ int Item::CalcItemLvl(int player_lvl, int n_affixes) {
 
 void Item::GenerateItemSlot(ItemInfo& item_info) {
 	int rnd;
-	switch (item_type) {
+	switch (item_info._item_type) {
 	case EItemType::CONSUMABLE:
 		GenerateRndConsumable(item_info);
 		item_info._item_slot = EItemSlot::NONE;
