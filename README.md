@@ -8,9 +8,10 @@ Item generator is inspired by Diablo I & Diablo II and is not yet completed.
 
 The game is intended to be endless, very difficult, and hardcore mode is assumed.
 
-</hr>
+<hr/>
 The current state of the game is for testing purposes only.  
 Several features have been disabled or hard-coded for testing purposes.  
+  
 
 Features to come:  
       <b> 5-TIER ITEM GENERATOR </b>  
@@ -35,7 +36,7 @@ Features to come:
 
 ...And much, much more.  
 
-</hr>
+<hr/>
 Development has been temporarily halted due to me working on a wine-tracking, selling & delivery system for my family business.  
 
 This is just the begining and this project is to be revisited soon and is expected to be completed by Q2 2026.  
