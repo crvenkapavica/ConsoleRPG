@@ -26,7 +26,7 @@ Features to come:
       <b> CHALLENGING AI </b>  
         • Deep behaviour tree-like decision making (this would also be affected by certain affixes, attributes, time, etc...)
         • State-context for predicting player decisions based on gameplay statistics  
-      <b> TALENTS, SPELLS, SPELLBOOKS, PASSIVES </b>
+      <b> TALENTS, SPELLS, SPELLBOOKS, PASSIVES </b>  
         • Dual-class talent trees  
         • Spell crafting (with goal of eventually reaching several thousands of combinations)  
         • Spellbook system where you have to pre-equip spells that can be only used with specific spellbooks 
