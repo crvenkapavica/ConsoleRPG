@@ -16,7 +16,7 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 <hr/>
 
 Features to come:  
-
+<html>
     <b> 5-TIER ITEM GENERATOR </b>  
         • Each weapon type has specific passive procs  
         • Each armor has specific character upgrades (like spell slots, passive slots, consumable slots, etc...)  
@@ -36,7 +36,7 @@ Features to come:
         • Spellbook system where you have to pre-equip spells that can be only used with specific spellbooks 
         • Hundreds of Active & Passive spells - core functionallity has been written, allowing for robust and creative passive abilities  
         • Class-specific passives & resources  
-
+</html>
 ...And much, much more.  
 
 <hr/>
