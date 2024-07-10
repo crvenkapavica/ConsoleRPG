@@ -9,7 +9,7 @@ Item generator is inspired by Diablo I & Diablo II and is not yet completed.
 The game is intended to be endless, very difficult, and hardcore mode is assumed.
 
 <hr/>
-The current state of the game is for testing purposes only.  
+The current state of the game is for testing purposes only.   
 Several features have been disabled or hard-coded for testing purposes.  
 <hr/>
 Features to come:  
