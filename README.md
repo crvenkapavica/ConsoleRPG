@@ -11,8 +11,7 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 <hr/>
 The current state of the game is for testing purposes only.  
 Several features have been disabled or hard-coded for testing purposes.  
-  
-
+<hr/>
 Features to come:  
       <b> 5-TIER ITEM GENERATOR </b>  
         • Each weapon type has specific passive procs  
