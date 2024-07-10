@@ -16,7 +16,7 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 <hr/>
 
 Features to come:  
-      <b> 5-TIER ITEM GENERATOR </b>  
+    <b> 5-TIER ITEM GENERATOR </b>  
         • Each weapon type has specific passive procs  
         • Each armor has specific character upgrades (like spell slots, passive slots, consumable slots, etc...)  
         • Item Levels go from 3 to 1000+ with intention of endless, yet ever-evolving gameplay (there are quite a few calculations to be done to achieve this)  
