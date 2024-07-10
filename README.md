@@ -17,25 +17,25 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 
 Features to come:  
 <html>
-    <b> 5-TIER ITEM GENERATOR </b>  
-        • Each weapon type has specific passive procs  
-        • Each armor has specific character upgrades (like spell slots, passive slots, consumable slots, etc...)  
-        • Item Levels go from 3 to 1000+ with intention of endless, yet ever-evolving gameplay (there are quite a few calculations to be done to achieve this)  
-        • Sockets
-        • Unique-only spells & passives  
-      <b> WORLD-MAP DESIGN & IMPROVED PROCEDURAL GENERATION </b>  
-        • Enemies grow in strength with time (like in Heroes of Might and Magic)  
-        • Bosses spawn on random high-tier segments which guard item chests or spells / spellbooks  
-        • NPC aggro range  
-      <b> CHALLENGING AI </b>  
-        • Deep behaviour tree-like decision making (this would also be affected by certain affixes, attributes, time, etc...)
-        • State-context for predicting player decisions based on gameplay statistics  
-      <b> TALENTS, SPELLS, SPELLBOOKS, PASSIVES </b>  
-        • Dual-class talent trees  
-        • Spell crafting (with goal of eventually reaching several thousands of combinations)  
-        • Spellbook system where you have to pre-equip spells that can be only used with specific spellbooks 
-        • Hundreds of Active & Passive spells - core functionallity has been written, allowing for robust and creative passive abilities  
-        • Class-specific passives & resources  
+&nbsp;&nbsp;&nbsp;&nbsp;•<b> 5-TIER ITEM GENERATOR </b><br/>
+    • Each weapon type has specific passive procs<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Each armor has specific character upgrades (like spell slots, passive slots, consumable slots, etc...)<br/>
+        • Item Levels go from 3 to 1000+ with intention of endless, yet ever-evolving gameplay (there are quite a few calculations to be done to achieve this)<br/>
+        • Sockets<br/>
+        • Unique-only spells & passives<br/>
+      <b> WORLD-MAP DESIGN & IMPROVED PROCEDURAL GENERATION </b><br/>
+        • Enemies grow in strength with time (like in Heroes of Might and Magic)<br/>
+        • Bosses spawn on random high-tier segments which guard item chests or spells / spellbooks<br/>
+        • NPC aggro range<br/>
+      <b> CHALLENGING AI </b><br/>  
+        • Deep behaviour tree-like decision making (this would also be affected by certain affixes, attributes, time, etc...)<br/>
+        • State-context for predicting player decisions based on gameplay statistics<br/>
+      <b> TALENTS, SPELLS, SPELLBOOKS, PASSIVES </b><br/>
+        • Dual-class talent trees<br/>
+        • Spell crafting (with goal of eventually reaching several thousands of combinations)<br/>
+        • Spellbook system where you have to pre-equip spells that can be only used with specific spellbooks<br/>
+        • Hundreds of Active & Passive spells - core functionallity has been written, allowing for robust and creative passive abilities<br/>
+        • Class-specific passives & resources<br/>
 </html>
 ...And much, much more.  
 
