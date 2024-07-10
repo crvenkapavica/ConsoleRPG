@@ -19,16 +19,13 @@ Features to come:
         • Item Levels go from 3 to 1000+ with intention of endless, yet ever-evolving gameplay (there are quite a few calculations to be done to achieve this)  
         • Sockets
         • Unique-only spells & passives  
-        
       <b> WORLD-MAP DESIGN & IMPROVED PROCEDURAL GENERATION </b>  
         • Enemies grow in strength with time (like in Heroes of Might and Magic)  
         • Bosses spawn on random high-tier segments which guard item chests or spells / spellbooks  
         • NPC aggro range  
-        
       <b> CHALLENGING AI </b>  
         • Deep behaviour tree-like decision making (this would also be affected by certain affixes, attributes, time, etc...)
         • State-context for predicting player decisions based on gameplay statistics  
-        
       <b> TALENTS, SPELLS, SPELLBOOKS, PASSIVES </b>
         • Dual-class talent trees  
         • Spell crafting (with goal of eventually reaching several thousands of combinations)  
