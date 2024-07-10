@@ -20,7 +20,7 @@ Features to come:
 &nbsp;&nbsp;&nbsp;&nbsp;•<b> 5-TIER ITEM GENERATOR </b><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Each weapon type has specific passive procs<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Each armor has specific character upgrades (like spell slots, passive slots, consumable slots, etc...)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Item Levels go from 3 to 1000+ with intention of endless, yet ever-evolving gameplay (there are quite a few calculations to be done to achieve this)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Item Levels go from 3 to 1000+ with intention of endless, yet ever-evolving gameplay<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Sockets<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Unique-only spells & passives<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<b> WORLD-MAP DESIGN & IMPROVED PROCEDURAL GENERATION </b><br/>
