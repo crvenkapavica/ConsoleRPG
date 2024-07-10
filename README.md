@@ -34,7 +34,7 @@ Features to come:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Dual-class talent trees<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Spell crafting (with goal of eventually reaching several thousands of combinations)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Spellbook system where you have to pre-equip spells that can be only used with specific spellbooks<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Hundreds of Active & Passive spells - core functionallity has been written, allowing for robust and creative passive abilities<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Hundreds of new spells - core functionallity has been written, allowing for robust and creative combat<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Class-specific passives & resources<br/>
 </html>
 ...And much, much more.  
