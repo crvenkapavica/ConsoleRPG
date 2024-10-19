@@ -1,4 +1,4 @@
-<h1>Non-Commercial Attribution License</h1>
+<b>Non-Commercial Attribution License</b>
 
 Copyright (c) [2024] [crvenkapavica]
 
