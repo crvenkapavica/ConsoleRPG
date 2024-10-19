@@ -6,7 +6,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 
 
-Attribution: The original author must be credited. Any distribution, modification, or fork of the Software must include an attribution that gives proper credit to the original author ([Your Name]), along with a link to the original repository.
+Attribution: The original author must be credited. Any distribution, modification, or fork of the Software must include an attribution that gives proper credit to the original author (crvenkapavica), along with a link to the original repository.
 
 
 
