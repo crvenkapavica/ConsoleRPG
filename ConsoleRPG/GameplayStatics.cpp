@@ -448,7 +448,7 @@ void GameplayStatics::DisplayMeleeMenu() {
 	vector<ActiveSpell*> spells;
 	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::MELEE) {
-			v.push_back(GetEnumString(spell->GetID()));
+			v.push_back(GetEnumString(spell->GetId()));
 			spells.push_back(spell.get());
 		}
 	v.push_back("<--BACK--<");
@@ -464,7 +464,7 @@ void GameplayStatics::DisplayRangedMenu() {
 	vector<ActiveSpell*> spells;
 	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::RANGED) {
-			v.push_back(GetEnumString(spell->GetID()));
+			v.push_back(GetEnumString(spell->GetId()));
 			spells.push_back(spell.get());
 		}
 	v.push_back("<--BACK--<");
@@ -483,7 +483,7 @@ void GameplayStatics::DisplaySpellMenu() {
 	vector<ActiveSpell*> spells;
 	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
 		if (spell->GetClass() == ESpellClass::MAGIC) {
-			v.push_back(GetEnumString(spell->GetID()));
+			v.push_back(GetEnumString(spell->GetId()));
 			spells.push_back(spell.get());
 		}
 	}
@@ -688,8 +688,8 @@ float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* ta
 	auto& s = GetCombatLogStream();
 	const string C = GetAliasColor(instigator.lock().get()->GetAlias());
 	const string CT = GetAliasColor(target->GetAlias());
-	if (isOnApply) s << CT << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
-	else s << C << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	if (isOnApply) s << CT << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	else s << C << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
 	//==============================================
 
 	return actual_damage;
@@ -698,9 +698,9 @@ float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* ta
 void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
 	const string C = GetAliasColor(instigator->GetAlias());
 	auto& s = GetCombatLogStream();
-	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
+	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << ".\n";
 
-	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetID()][spell->GetLvl()]._duration);
+	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetId()][spell->GetLvl()]._duration);
 	_cm->AddCombatEffect(std::move(effect));
 }
 

@@ -8,14 +8,14 @@
 class PlayerCharacter : public Character {
 
 public:
-
-	PlayerCharacter(ECharacterClass character_class);
+	
+	explicit PlayerCharacter(ECharacterClass character_class);
 
 	PlayerCharacter(const PlayerCharacter& other);
 
 	PlayerCharacter(PlayerCharacter&& player) noexcept;
 
-	~PlayerCharacter();
+	~PlayerCharacter() override;
 
 	PlayerCharacter& operator=(const PlayerCharacter& other) {
 		if (this != &other) {
@@ -31,7 +31,7 @@ public:
 
 	/// remove
 	inline float GetMagicFind() const { return _magic_find; }
-	inline int GetLighRadius() const { return _light_radius; }
+	inline int GetLightRadius() const { return _light_radius; }
 	////
 
 	void ReceiveExperience(const int experience);
@@ -50,19 +50,19 @@ public:
 	// Return true if the item was added, false otherwise
 	bool AddItemToInventory(unique_ptr<Item> item);
 
-	int GetInventorySpace();
+	[[nodiscard]] int GetInventorySpace() const;
 
 	// Displays all information about the item and its affixes
 	void InspectItem(Item* item);
 
 	void DestroyItem(unique_ptr<Item> item);
 	
-	Item* DisplayEquipedItems();
-	Item* DisplayInventory();
-	Item* DisplayConsumableSlots();
-	ActiveSpell* DisplayActiveSpellSlots();
-	PassiveSpell* DisplayPassiveSpellSlots();
-	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquiped);
+	[[nodiscard]] Item* DisplayEquippedItems() const;
+	[[nodiscard]] Item* DisplayInventory() const;
+	[[nodiscard]] Item* DisplayConsumableSlots() const;
+	[[nodiscard]] ActiveSpell* DisplayActiveSpellSlots() const;
+	[[nodiscard]] PassiveSpell* DisplayPassiveSpellSlots() const;
+	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);
 	void DisplayStats();
 
 public:

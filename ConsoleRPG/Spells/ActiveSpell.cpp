@@ -57,11 +57,11 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 }
 
 float ActiveSpell::GetRandEffectMinMax(const shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._effect_min, SpellDB::_data[_ID][_lvl]._effect_max), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_id][_lvl]._effect_min, SpellDB::_data[_id][_lvl]._effect_max), character);
 }
 
 float ActiveSpell::GetRandOnApplyMinMax(const shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_ID][_lvl]._apply_min, SpellDB::_data[_ID][_lvl]._apply_max), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_id][_lvl]._apply_min, SpellDB::_data[_id][_lvl]._apply_max), character);
 }
 
 float ActiveSpell::AdjustDamage(float damage, const shared_ptr<Character>& character) {
@@ -151,7 +151,7 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, c
 }
 
 bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Character>& instigator) {
-	auto dltr = [](SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
+	auto dltr = [](const SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, instigator->GetTeam()), dltr);
 
 	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton

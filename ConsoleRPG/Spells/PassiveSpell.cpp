@@ -25,7 +25,7 @@ void VampiricTouch::Apply() {
 		if (!target.expired()) {
 			float value = _value * target.lock()->GetHealth().GetMax();
 			target.lock()->GetHealth().GetActual() -= value;
-			target.lock()->AddEffectId(_ID);
+			target.lock()->AddEffectId(_id);
 			_instigator.lock().get()->GetHealth().GetActual() += value;
 		}
 	}

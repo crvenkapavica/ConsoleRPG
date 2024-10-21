@@ -36,8 +36,7 @@ PlayerCharacter::PlayerCharacter(PlayerCharacter&& player) noexcept
 	: Character(player)
 {}
 
-PlayerCharacter::~PlayerCharacter() 
-{}
+PlayerCharacter::~PlayerCharacter() = default;
 
 void PlayerCharacter::ReceiveExperience(const int experience) {
 	_experience += experience;
@@ -51,7 +50,7 @@ void PlayerCharacter::TakeTurn() {
 	
 	if (_bIsInCombat) {
 		GameplayStatics::RedrawGameScreen();
-		int input = GameplayStatics::DisplayCombatMenu(this);
+		const int input = GameplayStatics::DisplayCombatMenu(this);
 		GameplayStatics::HandleCombatInput(this, input);
 	}
 }
@@ -65,7 +64,7 @@ void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 	}
 
 	_item_slots[static_cast<int>(item->_item_info._item_slot)].swap(item);
-	if (item) AddItemToInventory(move(item));
+	if (item) AddItemToInventory(std::move(item));
 
 	SortInventory();
 	CalcPlayerItemSlots();
@@ -75,7 +74,7 @@ void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
 	if (!item || _n_inventory == INV_SLOTS) return;
 
-	AddItemToInventory(move(item));
+	AddItemToInventory(std::move(item));
 	CalcPlayerItemSlots();
 	CalcInvSlots();
 }
@@ -84,7 +83,7 @@ bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
 
 	for (auto& inv_item : _inventory) {
 		if (!inv_item) {
-			inv_item = move(item);
+			inv_item = std::move(item);
 			CalcInvSlots();
 			return true;
 		}
@@ -93,7 +92,7 @@ bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {
 	return false;
 }
 
-int PlayerCharacter::GetInventorySpace() {
+int PlayerCharacter::GetInventorySpace() const {
 	int size = 0;
 	for (const auto& item : _inventory) 
 		if (item) ++size;
@@ -112,46 +111,46 @@ void PlayerCharacter::DestroyItem(unique_ptr<Item> item) {
 	CalcInvSlots();
 }
 
-Item* PlayerCharacter::DisplayEquipedItems() {
+Item* PlayerCharacter::DisplayEquippedItems() const {
 	for (const auto& item : _item_slots) 
-		if (item) cout << GameplayStatics::GetEnumString(item->_item_info._item_slot) << " --> " << item->_item_info._name << endl;
+		if (item) cout << GameplayStatics::GetEnumString(item->_item_info._item_slot) << " --> " << item->_item_info._name << '\n';
 
 	return nullptr;
 }
 
-Item* PlayerCharacter::DisplayInventory() {
+Item* PlayerCharacter::DisplayInventory() const {
 	for (int i = 0; i < _inventory.size(); i++)
-		if (_inventory[i].get())
-			cout << i << ".) " << _inventory[i]->_item_info._name << "  " << GameplayStatics::GetEnumString(_inventory[i]->_item_info._item_slot) << endl;
+		if (_inventory[i])
+			cout << i << ".) " << _inventory[i]->_item_info._name << "  " << GameplayStatics::GetEnumString(_inventory[i]->_item_info._item_slot) << '\n';
 
-	cout << endl << "Press any key to go back.";
+	cout << '\n' << "Press any key to go back.";
 	cin.get();
 
 	return nullptr;
 }
 
-Item* PlayerCharacter::DisplayConsumableSlots() {
+Item* PlayerCharacter::DisplayConsumableSlots() const {
 	return nullptr;
 }
 
-ActiveSpell* PlayerCharacter::DisplayActiveSpellSlots() {
+ActiveSpell* PlayerCharacter::DisplayActiveSpellSlots() const {
 	return nullptr;
 }
 
-PassiveSpell* PlayerCharacter::DisplayPassiveSpellSlots() {
+PassiveSpell* PlayerCharacter::DisplayPassiveSpellSlots() const {
 	return nullptr;
 }
 
-std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
+std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 
-	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWLERY", "ARMOR", "SCROLLS", "CONSUMABLES", "<--BACK--<" };
+	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWELLERY", "ARMOR", "SCROLLS", "CONSUMABLES", "<--BACK--<" };
 	int input;
 	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
-	auto type = static_cast<EItemType>(ITEM_TYPES - input);
+	const auto type = static_cast<EItemType>(ITEM_TYPES - input);
 
 	v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE", "<--BACK--<" };
 	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
-	auto rarity = static_cast<EItemRarity>(input);
+	const auto rarity = static_cast<EItemRarity>(input);
 
 	map<int, int> item_map;
 	int item_index = 0;
@@ -159,10 +158,10 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 	std::vector<Item*> items;
 	v.clear();
 	// treba auto sortirati da su svi v inventoriju po redu a na kraju nullptr
-	for (int i = 0; i < _inventory.size(); i++)
+	for (std::size_t i = 0; i < _inventory.size(); i++)
 		if (!_inventory[i]) {
 			if (type == EItemType::MISC && rarity == EItemRarity::MISC) {
-				v.push_back("INVENTORY ---> (empty)");
+				v.emplace_back("INVENTORY ---> (empty)");
 				items.push_back(nullptr);
 				++n_inv;
 				item_map[item_index++] = i;
@@ -174,7 +173,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 			item_map[item_index++] = i;
 			++n_inv;
 		}
-
+	
 	for (int i = 0; i < _item_slots.size(); i++)
 		if (((_item_slots[i] && (_item_slots[i]->_item_info._item_type == type || type == EItemType::MISC)) || type == EItemType::MISC)
 			&&
@@ -187,18 +186,18 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquiped) {
 			items.push_back(_item_slots[i].get());
 			item_map[item_index++] = i;
 		}
-	v.push_back("<--BACK--<");
+	v.emplace_back("<--BACK--<");
 
 	if ((input = GameplayStatics::InteractiveDisplay(v, 70, true, items)) == -1) return nullptr;
 
 	// item is from inventory
 	if (input < n_inv) {
-		return move(_inventory[item_map[input]]);
+		return std::move(_inventory[item_map[input]]);
 	}
 	// item is equiped
 	else {
-		bIsEquiped = true;
-		return move(_item_slots[item_map[input]]);
+		bIsEquipped = true;
+		return std::move(_item_slots[item_map[input]]);
 	}
 
 	return nullptr;

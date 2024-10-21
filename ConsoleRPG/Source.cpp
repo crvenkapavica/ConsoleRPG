@@ -102,10 +102,10 @@ int main() {
     //Sleep(100);
     //SendAltEnter();
 
-    auto dltr = [](PlayerCharacter* ptr) { PlayerCharacter::_n--; delete ptr; };
+    auto dltr = [](const PlayerCharacter* ptr) { PlayerCharacter::_n--; delete ptr; };
 
-    std::shared_ptr<PlayerCharacter> player_main(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
-    std::shared_ptr<PlayerCharacter> player_warlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
+    const std::shared_ptr<PlayerCharacter> player_main(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
+    const std::shared_ptr<PlayerCharacter> player_warlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
 
     vector<shared_ptr<Character>> player_characters = { player_main, player_warlock1 };
 
@@ -127,7 +127,7 @@ int main() {
 
     // later we dont send none of these initializers to GS. 
     // have to implement a starting routine and a game loop. at the starting routine we get the instances.
-	GameplayStatics::Initialize(move(player_characters), sm, cm, move(map_gen), menu);
+	GameplayStatics::Initialize(std::move(player_characters), sm, cm, std::move(map_gen), menu);
 }
 
 

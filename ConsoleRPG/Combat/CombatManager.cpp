@@ -224,7 +224,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 			if (it->second->_instigator->GetAlias() == GetTurnAlias()) {
 				for (auto& t : it->second->_targets) {
 					if (!t.expired())
-						t.lock()->RemoveEffectById(it->second->_spell->GetID());
+						t.lock()->RemoveEffectById(it->second->_spell->GetId());
 				}
 				it = _combat_effects.erase(it);
 			}
@@ -338,7 +338,7 @@ void CombatManager::OnApplyEffect() {
 
 	for (auto& e : effect->_targets) {
 		if (!e.expired())
-			e.lock()->AddEffectId(effect->_spell->GetID());
+			e.lock()->AddEffectId(effect->_spell->GetId());
 	}
 }
 

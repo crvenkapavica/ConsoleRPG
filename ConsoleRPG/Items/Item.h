@@ -13,7 +13,7 @@ class PlayerCharacter;
 class Item {
 public:
 	struct ItemInfo {
-		EItemID			_ID = EItemID::NONE;
+		EItemID			_id = EItemID::NONE;
 		int				_lvl = 0;
 		int				_min_dmg = 0;
 		int				_max_dmg = 0;
@@ -30,7 +30,7 @@ public:
 		bool			_bUsable = false;
 		bool			_bUsableMap = false;
 
-		std::string		_name = "";
+		std::string		_name;
 
 		EItemSlot		_item_slot = EItemSlot::NONE;
 		EItemRarity		_item_rarity = EItemRarity::MISC;

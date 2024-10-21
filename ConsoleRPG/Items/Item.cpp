@@ -84,7 +84,7 @@ Item::Item(ItemInfo item_info)
 
 Item::Item(const ItemData& data)
 {
-	_item_info._ID = data._ID;
+	_item_info._id = data._ID;
 	_item_info._lvl = data._min_lvl;  // we will add only specific items for the start of the game so the ilvl min max will be the same
 	_item_info._min_dmg = data._min_dmg;
 	_item_info._max_dmg = data._max_dmg;
@@ -235,7 +235,7 @@ void Item::GetBaseItem(ItemInfo& item_info) {
 			item._item_slot == item_info._item_slot &&
 			item._max_lvl >= item_info._lvl && item._min_lvl <= item_info._lvl) {
 			
-			item_info._ID = item._ID;
+			item_info._id = item._ID;
 			item_info._name = (item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ") + item._name;
 			item_info._min_dmg = item._min_dmg;
 			item_info._max_dmg = item._max_dmg;
@@ -332,7 +332,7 @@ void Item::GenerateRndConsumable(ItemInfo& item_info) {
 		if (item._item_type == EItemType::CONSUMABLE && rnd <= item._drop_chnc) {
 			item_info._name = item_info._item_rarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info._item_rarity) + " ";
 			item_info._name += item._name;
-			item_info._ID = item._ID;
+			item_info._id = item._ID;
 			item_info._amount = item._amount * item_info._n_affixes;
 
 			// for now only health and essence poitions cant be used out of combat
@@ -362,7 +362,7 @@ void Item::GenerateRndScroll(ItemInfo& item_info) {
 void Item::Use(Character* character) {
 	switch (_item_info._item_type) {
 	case EItemType::CONSUMABLE:
-		switch (_item_info._ID) {
+		switch (_item_info._id) {
 		case EItemID::HPotion:
 			character->GetHealth().UpdateActual(_item_info._amount, character);
 		}
