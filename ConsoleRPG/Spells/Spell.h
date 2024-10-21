@@ -13,8 +13,7 @@ public:
     inline ESpellRarity GetRarity() const { return _rarity; }
     inline ESpellClass GetClass() const { return _class; }
     // Get minimum required level to use the spell
-    inline int GetMinReqLvl() const { return _min_req_lvl; }
-
+    inline int GetMinReqLvl() const { return _minReqLvl; }
     // Get Spell level
     inline int GetLvl() const { return _lvl; }
     // Get Spell Experience
@@ -30,10 +29,10 @@ protected:
     const ESpellActivity _activity;
     const ESpellRarity _rarity;
     const ESpellClass _class;
-    int _min_req_lvl;
+    int _minReqLvl;
 
     int _lvl = 0;
     int _experience = 0;
-
+    
     std::stringstream _tooltip;
 };

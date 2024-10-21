@@ -3,27 +3,27 @@
 #include "../RPGTypes.h"
 
 struct ItemData {
-	EItemID			_ID;
-	std::string		_name;
-	EItemType		_item_type;
-	EWeaponType		_wpn_type;
-	EItemSlot		_item_slot;
-	ESpellID		_effect_id;
-	int				_min_lvl;
-	int				_max_lvl;
-	int				_min_dmg;
-	int				_max_dmg;
-	int				_armor;
-	float			_amount;
+	EItemID			Id;
+	std::string		Name;
+	EItemType		ItemType;
+	EWeaponType		WeaponType;
+	EItemSlot		ItemSlot;
+	ESpellID		EffectId;
+	int				MinLvl;
+	int				MaxLvl;
+	int				MinDmg;
+	int				MaxDmg;
+	int				Armor;
+	float			Amount;
 
 	//armor
 	//Hands = slots for spells
 	//Belt = slots for consumables
-	int				_slots;
+	int				Slots;
 
 	//Legs = magic_damage
 	//Feet = magic_resistance
-	float			_arm_mod;
+	float			ArmorMod;
 
 	//weapon
 	// Bow extra random magic damage
@@ -35,19 +35,19 @@ struct ItemData {
 	// dagger bleed_chance  (if equipped while casting a spell, bleed damage is based on spell damage)
 	// Orb(offhand) spell_resistance decrease
 	// shield amount % blocked
-	float			_wpn_mod;
+	float			WeaponMod;
 
-	int				_drop_chnc;
+	int				DropChance;
 };
 
-class ItemDB {
+class ItemDb {
 public:
-	static std::vector<ItemData> _data;
-
+	ItemDb() = delete;
+	
+	static std::vector<ItemData> Data;
+	
 private:
-	ItemDB() = delete;
-
 	static struct ItemDataConstructor {
 		ItemDataConstructor();
-	} _item_data_constructor;
+	} _itemDataConstructor;
 };

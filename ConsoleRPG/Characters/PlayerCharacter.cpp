@@ -20,12 +20,12 @@ PlayerCharacter::PlayerCharacter(ECharacterClass character_class)
 	for (auto& item : items)
 		AddItemToInventory(move(item));*/
 
-	AddItemToInventory(Item::CreateItemByID(EItemID::HatchAxe));
-	AddItemToInventory(Item::CreateItemByID(EItemID::AssNeedle));
-	AddItemToInventory(Item::CreateItemByID(EItemID::HatchAxe));
-	AddItemToInventory(Item::CreateItemByID(EItemID::AssNeedle));
-	AddItemToInventory(Item::CreateItemByID(EItemID::HatchAxe));
-	AddItemToInventory(Item::CreateItemByID(EItemID::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
 }
 
 PlayerCharacter::PlayerCharacter(const PlayerCharacter& other) 
@@ -58,12 +58,12 @@ void PlayerCharacter::TakeTurn() {
 void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
 	if (!item || _n_inventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
-	if (item->_item_info._item_type == EItemType::WEAPON) {
-		if (item->_item_info._item_slot == EItemSlot::WPN_BOTH)
-			item->_item_info._item_slot = EItemSlot::WPN_MAIN;
+	if (item->ItemInfo.ItemType == EItemType::WEAPON) {
+		if (item->ItemInfo.ItemSlot == EItemSlot::WPN_BOTH)
+			item->ItemInfo.ItemSlot = EItemSlot::WPN_MAIN;
 	}
 
-	_item_slots[static_cast<int>(item->_item_info._item_slot)].swap(item);
+	_item_slots[static_cast<int>(item->ItemInfo.ItemSlot)].swap(item);
 	if (item) AddItemToInventory(std::move(item));
 
 	SortInventory();
@@ -113,7 +113,7 @@ void PlayerCharacter::DestroyItem(unique_ptr<Item> item) {
 
 Item* PlayerCharacter::DisplayEquippedItems() const {
 	for (const auto& item : _item_slots) 
-		if (item) cout << GameplayStatics::GetEnumString(item->_item_info._item_slot) << " --> " << item->_item_info._name << '\n';
+		if (item) cout << GameplayStatics::GetEnumString(item->ItemInfo.ItemSlot) << " --> " << item->ItemInfo.Name << '\n';
 
 	return nullptr;
 }
@@ -121,7 +121,7 @@ Item* PlayerCharacter::DisplayEquippedItems() const {
 Item* PlayerCharacter::DisplayInventory() const {
 	for (int i = 0; i < _inventory.size(); i++)
 		if (_inventory[i])
-			cout << i << ".) " << _inventory[i]->_item_info._name << "  " << GameplayStatics::GetEnumString(_inventory[i]->_item_info._item_slot) << '\n';
+			cout << i << ".) " << _inventory[i]->ItemInfo.Name << "  " << GameplayStatics::GetEnumString(_inventory[i]->ItemInfo.ItemSlot) << '\n';
 
 	cout << '\n' << "Press any key to go back.";
 	cin.get();
@@ -167,20 +167,20 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 				item_map[item_index++] = i;
 			}
 		}
-		else if ((_inventory[i]->_item_info._item_type == type || type == EItemType::MISC) && (_inventory[i]->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC)) {
-			v.push_back("INVENTORY ---> " + _inventory[i]->_item_info._name);
+		else if ((_inventory[i]->ItemInfo.ItemType == type || type == EItemType::MISC) && (_inventory[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) {
+			v.push_back("INVENTORY ---> " + _inventory[i]->ItemInfo.Name);
 			items.push_back(_inventory[i].get());
 			item_map[item_index++] = i;
 			++n_inv;
 		}
 	
 	for (int i = 0; i < _item_slots.size(); i++)
-		if (((_item_slots[i] && (_item_slots[i]->_item_info._item_type == type || type == EItemType::MISC)) || type == EItemType::MISC)
+		if (((_item_slots[i] && (_item_slots[i]->ItemInfo.ItemType == type || type == EItemType::MISC)) || type == EItemType::MISC)
 			&&
-			((_item_slots[i] && (_item_slots[i]->_item_info._item_rarity == rarity || rarity == EItemRarity::MISC)) || rarity == EItemRarity::MISC)) {
+			((_item_slots[i] && (_item_slots[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) || rarity == EItemRarity::MISC)) {
 			string s = GameplayStatics::GetEnumString(static_cast<EItemSlot>(i));
 			if (i <= 8 || i == 11) s += "\t  *---> "; if (i == 9) s += " *---> "; if (i == 10) s += "  *---> ";
-			if (_item_slots[i]) s += _item_slots[i]->_item_info._name;
+			if (_item_slots[i]) s += _item_slots[i]->ItemInfo.Name;
 			else s += "(empty)";
 			v.push_back(s);
 			items.push_back(_item_slots[i].get());
@@ -247,9 +247,9 @@ void PlayerCharacter::CalcPlayerItemSlots() {
 
 	for (const auto& item : _item_slots)
 		if (item) {
-			_min_damage += item->_item_info._min_dmg;
-			_max_damage += item->_item_info._max_dmg;
-			_armor.UpdateBase(static_cast<float>(item->_item_info._armor));   // check if base works fine in conjunction with max
+			_min_damage += item->ItemInfo.min_dmg;
+			_max_damage += item->ItemInfo.MaxDmg;
+			_armor.UpdateBase(static_cast<float>(item->ItemInfo.Armor));   // check if base works fine in conjunction with max
 		}
 
 	_avg_damage = _min_damage && _max_damage ? static_cast<int>((_min_damage + _max_damage) / 2) : 0;

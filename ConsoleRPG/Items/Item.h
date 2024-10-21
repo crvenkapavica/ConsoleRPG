@@ -13,44 +13,44 @@ class PlayerCharacter;
 class Item {
 public:
 	struct ItemInfo {
-		EItemID			_id = EItemID::NONE;
-		int				_lvl = 0;
-		int				_min_dmg = 0;
-		int				_max_dmg = 0;
-		int				_armor = 0;
+		EItemID			Id = EItemID::NONE;
+		int				Lvl = 0;
+		int				MinDmg = 0;
+		int				MaxDmg = 0;
+		int				Armor = 0;
 
-		float			_amount = 0.f;
+		float			Amount = 0.f;
 
-		int				_n_affixes = 0;
+		int				nAffixes = 0;
 
-		int				_slots;
-		float			_arm_mod = 0.f;
-		float			_wpn_mod = 0.f;
+		int				Slots;
+		float			ArmorMod = 0.f;
+		float			WeaponMod = 0.f;
 
-		bool			_bUsable = false;
-		bool			_bUsableMap = false;
+		bool			bUsable = false;
+		bool			bUsableMap = false;
 
-		std::string		_name;
+		std::string		Name;
 
-		EItemSlot		_item_slot = EItemSlot::NONE;
-		EItemRarity		_item_rarity = EItemRarity::MISC;
-		EItemType		_item_type = EItemType::MISC;
-		EWeaponType		_wpn_type = EWeaponType::NONE;
+		EItemSlot		ItemSlot = EItemSlot::NONE;
+		EItemRarity		ItemRarity = EItemRarity::MISC;
+		EItemType		ItemType = EItemType::MISC;
+		EWeaponType		WeaponType = EWeaponType::NONE;
 
-		ESpellID		_active = ESpellID::NONE;
-		ESpellID		_passive = ESpellID::NONE;
+		ESpellID		Active = ESpellID::NONE;
+		ESpellID		Passive = ESpellID::NONE;
 		
-		EItemAffix		_affix1 = EItemAffix::NONE;
-		EItemAffix		_affix2 = EItemAffix::NONE;
-		EItemAffix		_affix3 = EItemAffix::NONE;
-		EItemAffix		_affix4 = EItemAffix::NONE;
+		EItemAffix		Affix1 = EItemAffix::NONE;
+		EItemAffix		Affix2 = EItemAffix::NONE;
+		EItemAffix		Affix3 = EItemAffix::NONE;
+		EItemAffix		Affix4 = EItemAffix::NONE;
 	};
 
-	Item(ItemInfo item_info);
+	explicit Item(ItemInfo item_info);
 
 	// This will only be used for starting items [pre-determined]
-	// This will MAYBE be used for UNIQUEs [pre-determined]
-	Item(const ItemData& data);
+	// This will MAYBE be used for UNIQUE-s [pre-determined]
+	explicit Item(const ItemData& data);
 
 	// Calls CreateItem multiple times depending on power_lvl of slain monsters and random roll chance.
 	static std::vector<std::unique_ptr<Item>> GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl);
@@ -59,14 +59,14 @@ public:
 	static std::unique_ptr<Item> CreateItem(int player_lvl, float mf_bonus, EItemType item_type);
 
 	// Used exclusively for starting pre-determined items for each class and enemy.
-	// might be used later for unique items (which are also pre-determined).
-	static std::unique_ptr<Item> CreateItemByID(EItemID id);
+	// Might be used later for unique items (which are also pre-determined).
+	static std::unique_ptr<Item> CreateItemById(EItemID id);
 
 	// Use the consumable, scroll, or an active spell of an item.
 	void Use(Character* character);
 
 public:
-	ItemInfo _item_info;
+	ItemInfo ItemInfo;
 
 private:
 	static ItemInfo GenerateItemInfo(int player_lvl, EItemType item_type, EItemRarity item_rarity);

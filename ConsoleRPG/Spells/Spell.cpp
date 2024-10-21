@@ -5,6 +5,6 @@ Spell::Spell(ESpellID id, ESpellActivity activity, ESpellRarity rarity, ESpellCl
 	, _activity(activity)
 	, _rarity(rarity)
 	, _class(spell_class)
-	, _min_req_lvl(min_req_lvl)
+	, _minReqLvl(min_req_lvl)
 	, _lvl(lvl)
 {}

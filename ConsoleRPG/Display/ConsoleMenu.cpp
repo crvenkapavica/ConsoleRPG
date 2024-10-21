@@ -130,7 +130,7 @@ std::string ConsoleMenu::GetColor(int i, string& s1, string& s2) {
     int off = _options[0] == "--> ALL ITEMS <--" ? 1 : 0;
     if (!_items[i - off]) return COLOR_FG;
 
-    switch (_items[i - off]->_item_info._item_rarity) {
+    switch (_items[i - off]->ItemInfo.ItemRarity) {
     case EItemRarity::COMMON:
         return COLOR_COMMON;
     case EItemRarity::EPIC:
@@ -153,7 +153,7 @@ void ConsoleMenu::DisplayItemInfo(int i) {
 
     string s1, s2;
     const string C = GetColor(i, s1, s2);
-    string name = _items[i - off]->_item_info._name;
+    string name = _items[i - off]->ItemInfo.Name;
     int offset = 60 - name.length();
     offset /= 2;
 

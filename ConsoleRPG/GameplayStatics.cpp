@@ -740,7 +740,7 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 			v = { "--> ALL ITEMS <--" };
 			items.clear();
 			for (const auto& item : loot) {
-				v.push_back(item->_item_info._name);
+				v.push_back(item->ItemInfo.Name);
 				items.push_back(item.get());
 			}
 			v.push_back("<--BACK--<");
@@ -764,7 +764,7 @@ void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vect
 
 					v = { "--> ALL ITEMS <--" };
 					for (const auto& item : loot)
-						v.push_back(item->_item_info._name);
+						v.push_back(item->ItemInfo.Name);
 					v.push_back("<--BACK--<");
 				}
 				else {
