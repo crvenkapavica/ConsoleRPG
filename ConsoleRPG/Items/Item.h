@@ -1,10 +1,10 @@
 #pragma once
 
+#include "ItemData.h"
 #include "../RPGTypes.h"
 #include "../Spells/ActiveSpell.h"
-#include "../Spells/PassiveSpell.h"
-#include "ItemData.h"
 #include "../Spells/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
 #include "../Spells/PassiveSpell.h"
 
 class Character;

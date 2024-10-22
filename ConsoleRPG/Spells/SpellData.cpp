@@ -97,7 +97,6 @@ SpellDB::SpellDataConstructor::SpellDataConstructor() {
 	//==============================================================================
 	// RANGED
 
-
 	// BASIC
 	_data[ESpellID::MELEE] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 } };
 	_data[ESpellID::RANGED] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 10 } };

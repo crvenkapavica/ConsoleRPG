@@ -4,7 +4,7 @@
 
 class Spell {
 public:
-    Spell(ESpellID id, ESpellActivity activity, ESpellRarity rarity, ESpellClass spell_class, int min_req_lvl, int lvl);
+    Spell(const ESpellID id, const ESpellActivity activity, const ESpellRarity rarity, const ESpellClass spell_class, const int min_req_lvl, const int lvl);
 
     virtual ~Spell() = default;
 
@@ -23,6 +23,8 @@ public:
 
     // Get all information about the spell; values and functionality
     virtual std::stringstream& GetTooltip() { return _tooltip; }
+
+        
 
 protected:
     const ESpellID _id;

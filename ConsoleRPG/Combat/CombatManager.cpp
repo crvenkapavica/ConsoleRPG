@@ -27,7 +27,7 @@ void CombatManager::SetTurns(vector<weak_ptr<Character>> characters_1, vector<we
 	OnCycleBegin();
 }
 
-void CombatManager::StartCombat(weak_ptr<Character> player) {
+void CombatManager::StartCombat(const weak_ptr<Character>& player) {
 
 	_player = player;
 
@@ -40,13 +40,13 @@ void CombatManager::StartCombat(weak_ptr<Character> player) {
 	}
 }
 
-void CombatManager::AddCombatEffect(shared_ptr<CombatEffect> effect) {
-	_combat_effects.push_back(make_pair(_turn + effect->_duration, effect));
+void CombatManager::AddCombatEffect(const shared_ptr<CombatEffect>& effect) {
+	_combat_effects.emplace_back(_turn + effect->_duration, effect);
 	OnApplyEffect();
-	sort(_combat_effects.begin(), _combat_effects.end());
+	std::ranges::sort(_combat_effects);
 }
 
-void CombatManager::BeginTurn(weak_ptr<Character> character) {
+void CombatManager::BeginTurn(const weak_ptr<Character>& character) {
 	if (!character.lock()->IsOnTurn()) {
 		character.lock()->SetIsOnTurn(true);
 		OnTurnBegin();
@@ -77,9 +77,9 @@ void CombatManager::EndTurn(Character* character) {
 }
 
 void CombatManager::AddSummonToCombat(shared_ptr<SummonCharacter> summon) {
-	weak_ptr<Character> wptr_summon = summon; 
+	const weak_ptr<Character> wptr_summon = summon; 
 	_summons_base.push_back(*summon);
-	_summons.push_back(move(summon));
+	_summons.push_back(std::move(summon));
 	_turn_table.insert(_turn_table.begin() + _turn_index + 1, wptr_summon);
 }
 

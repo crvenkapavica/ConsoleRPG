@@ -1026,7 +1026,7 @@ std::string GameplayStatics::GetEnumString(EItemType _enum) {
 		return "Scroll";
 	case EItemType::ARMOR:
 		return "Armor";
-	case EItemType::JEWLERY:
+	case EItemType::JEWELLERY:
 		return "Jewlery";
 	case EItemType::WEAPON:
 		return "Weapon";

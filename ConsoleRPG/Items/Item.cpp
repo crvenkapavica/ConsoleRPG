@@ -6,22 +6,22 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Spells/SpellData.h"
 
-std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType{
+std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType {
 	{EItemType::RELIC,		{ 45, 0.02 } },
 	{EItemType::WEAPON,		{ 28, 0.10 } },
-	{EItemType::JEWLERY,	{ 22, 0.15 } },
+	{EItemType::JEWELLERY,	{ 22, 0.15 } },
 	{EItemType::ARMOR,		{ 15, 0.25 } },
-	{EItemType::SCROLL,		{ 6, 0.35 } },
-	{EItemType::CONSUMABLE, { 2, 0.45 } }
+	{EItemType::SCROLL,		{ 6,  0.35 } },
+	{EItemType::CONSUMABLE,	{ 2,  0.45 } }
 };
 
-std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
-	{EItemRarity::UNIQUE,		0.005},
-	{EItemRarity::GODLIKE,		0.025},
-	{EItemRarity::LEGENDARY,	0.05},
-	{EItemRarity::EPIC,			0.12},
-	{EItemRarity::RARE,			0.25},
-	{EItemRarity::COMMON,		1}
+std::vector<pair<EItemRarity, double>> DropTable_ItemRarity {
+	{EItemRarity::UNIQUE,		0.005	},
+	{EItemRarity::GODLIKE,		0.025	},
+	{EItemRarity::LEGENDARY,		0.05	},
+	{EItemRarity::EPIC,			0.12	},
+	{EItemRarity::RARE,			0.25	},
+	{EItemRarity::COMMON,		1		}
 };
 
 //Consumable
@@ -148,7 +148,7 @@ std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType
 
 	ItemInfo item_info = GenerateItemInfo(player_lvl, item_type, item_rarity);
 
-	return make_unique<Item>(move(item_info));
+	return make_unique<Item>(std::move(item_info));
 }
 
 std::unique_ptr<Item> Item::CreateItemById(EItemID id) {
@@ -205,7 +205,7 @@ void Item::GenerateItemSlot(ItemInfo& item_info) {
 		rnd = GameplayStatics::GetRandInt(0, 5);
 		item_info.ItemSlot = static_cast<EItemSlot>(rnd);
 		break;
-	case EItemType::JEWLERY:
+	case EItemType::JEWELLERY:
 		rnd = GameplayStatics::GetRandInt(6, 8);
 		item_info.ItemSlot = static_cast<EItemSlot>(rnd);
 		item_info.Name = "JEWLERY";

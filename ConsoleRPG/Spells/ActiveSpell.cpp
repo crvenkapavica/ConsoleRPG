@@ -120,16 +120,16 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, c
 	else
 		enemies = GameplayStatics::GetPlayerCharacters();
 
-	int expired = static_cast<int>(count_if(enemies.begin(), enemies.end(), [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
+	int expired = static_cast<int>(ranges::count_if(enemies, [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
 	int size = static_cast<int>(enemies.size()) - expired;
 	if (size == 1) return 0;
 	r = size == r ? r - 1 : r;
-	
+	 
 	for (int i = 0; i < r; i++) {
 		int rnd;
 		do {
 			rnd = rand() % enemies.size();
-		} while (any_of(targets.begin(), targets.end(), [&](const std::weak_ptr<Character>& wptr) { return enemies[rnd].expired() || enemies[rnd].lock().get() == wptr.lock().get(); }));
+		} while (ranges::any_of(targets, [&](const std::weak_ptr<Character>& wptr) { return enemies[rnd].expired() || enemies[rnd].lock().get() == wptr.lock().get(); }));
 		targets.push_back(enemies[rnd]);
 	}
 	sort(targets.begin(), targets.end(), 
@@ -156,7 +156,7 @@ bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Chara
 
 	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton
 		CombatManager& cm = CombatManager::GetInstance();
-		cm.AddSummonToCombat(move(summon));
+		cm.AddSummonToCombat(std::move(summon));
 		return true;
 	}
 
@@ -168,15 +168,15 @@ bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Chara
 void Fireball::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
 
 	vector<CharacterStat> enemy_apply_stats;
-	auto stat = &targets[0].lock().get()->GetHealth().GetActual();
+	const auto stat = &targets[0].lock()->GetHealth().GetActual();
 	auto delta = [&](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats));
+	apply_params._effect_stat = Effect_Stat({}, std::move(enemy_apply_stats));
 
 	unique_ptr<Fireball> spell = make_unique<Fireball>();
-	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, {});
+	GameplayStatics::ApplyEffect(instigator, targets, std::move(spell), apply_params, {});
 }
 
 stringstream& Fireball::GetTooltip() {

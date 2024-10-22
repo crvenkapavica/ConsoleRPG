@@ -1,6 +1,6 @@
 #include "Spell.h"
 
-Spell::Spell(ESpellID id, ESpellActivity activity, ESpellRarity rarity, ESpellClass spell_class, int min_req_lvl, int lvl)
+Spell::Spell(const ESpellID id, const ESpellActivity activity, const ESpellRarity rarity, const ESpellClass spell_class, const int min_req_lvl, const int lvl)
 	: _id(id)
 	, _activity(activity)
 	, _rarity(rarity)

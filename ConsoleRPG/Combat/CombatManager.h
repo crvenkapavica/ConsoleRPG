@@ -17,33 +17,33 @@ public:
 	// Set turns for each side and add them to the turn table
 	void SetTurns(vector<weak_ptr<Character>> characters_1, vector<weak_ptr<Character>> characters_2);
 
-	void StartCombat(weak_ptr<Character> player);
+	void StartCombat(const weak_ptr<Character>& player);
 	
 	// Add the effect of the spell to the effect pool until it expires
-	void AddCombatEffect(shared_ptr<CombatEffect> effect);
+	void AddCombatEffect(const shared_ptr<CombatEffect>& effect);
 
-	void BeginTurn(weak_ptr<Character> character);
+	void BeginTurn(const weak_ptr<Character>& character);
 	void EndTurn(Character* character);
 	
 	// Add a summoned unit (from spell or item) to the combat and turn order
-	void AddSummonToCombat(shared_ptr<SummonCharacter> character);
+	void AddSummonToCombat(shared_ptr<SummonCharacter> summon);
 
 	// Gets the turn table aliases for printing turn order
 	void DisplayTurnOrder();
 
 	// Gets the Character currently on turn
-	inline const weak_ptr<Character> GetTurnCharacter() const { return _turn_table[_turn_index]; }
+	inline weak_ptr<Character> GetTurnCharacter() const { return _turn_table[_turn_index]; }
 
 	// Gets the alias of the character currently on turn
 	inline char GetTurnAlias() const { return _turn_table[_turn_index].lock()->GetAlias(); }
 
-	inline const int GetTurn() const { return _turn; }
+	inline int GetTurn() const { return _turn; }
 
-	inline const vector<weak_ptr<Character>> GetPlayers() const { return _players; }
+	inline vector<weak_ptr<Character>> GetPlayers() const { return _players; }
 
-	inline const vector<weak_ptr<Character>> GetEnemies() const { return _enemies; }
+	inline vector<weak_ptr<Character>> GetEnemies() const { return _enemies; }
 
-	inline const vector<shared_ptr<Character>> GetSummons() const { return _summons; }
+	inline vector<shared_ptr<Character>> GetSummons() const { return _summons; }
 
 	// Flaggs all characters with HP < 0 with bIsAlive = false
 	void FlagDeadCharacters();
@@ -128,7 +128,7 @@ private:
 	//////////////////////
 
 private:
-	CombatManager() {}
+	CombatManager() = default;
 	CombatManager(const CombatManager&) = delete;
 	CombatManager& operator=(const CombatManager&) = delete;
 
@@ -151,5 +151,5 @@ private:
 
 	int _turn = 0;
 
-	bool bNext = false;
+	bool _bNext = false;
 };

@@ -522,7 +522,7 @@ enum class EItemID {
 	//relic
 };
 
-enum class EItemSlot {
+enum class EItemSlot : int8_t {
 	NONE = -1,
 	HEAD = 0,
 	CHEST,
@@ -541,27 +541,27 @@ enum class EItemSlot {
 	FINGER
 };
 
-enum class EWeaponType {
+enum class EWeaponType : int8_t {
 	NONE = -1,
 	BOW = 0,		// % extra random magic damage  f
 	FIRST_2H = BOW,
-	STAFF,			// spell_crit damage %   f
-	AXE_2H,			// armor penetration amount  f
-	MACE_2H,		// crit damage   f
-	SWORD_2H,		// double_strike chance  f
+	STAFF = 1,			// spell_crit damage %   f
+	AXE_2H = 2,			// armor penetration amount  f
+	MACE_2H = 3,		// crit damage   f
+	SWORD_2H = 4,		// double_strike chance  f
 	LAST_2H = SWORD_2H,
-	AXE_1H,			// armor penetration amount  f
+	AXE_1H = 5,			// armor penetration amount  f
 	FIRST_1H = AXE_1H,
-	MACE_1H,		// crit chance  f
-	SWORD_1H,		// double_strike chance  f
-	DAGGER,			// bleed chance (a bleed damage je isti?)  f
-	ORB,			// spell_crit_chance %
-	SHIELD,			// % amount to block  f
+	MACE_1H = 6,		// crit chance  f
+	SWORD_1H = 7,		// double_strike chance  f
+	DAGGER = 8,			// bleed chance (a bleed damage je isti?)  f
+	ORB = 9,			// spell_crit_chance %
+	SHIELD = 10,			// % amount to block  f
 	LAST_1H = SHIELD,
 	LAST = SHIELD
 };
 
-enum class EItemRarity {
+enum class EItemRarity : int8_t {
 	MISC,
 	COMMON,
 	RARE,
@@ -571,17 +571,17 @@ enum class EItemRarity {
 	UNIQUE
 };
 
-enum class EItemType {
+enum class EItemType : int8_t {
 	CONSUMABLE,
 	SCROLL,
 	ARMOR,
-	JEWLERY,
+	JEWELLERY,
 	WEAPON,
 	RELIC,
 	MISC
 };
 
-enum class EItemAffix {
+enum class EItemAffix : int8_t {
 	NONE,
 
 	Active,
