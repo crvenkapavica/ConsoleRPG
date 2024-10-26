@@ -7,46 +7,46 @@
 #include "../Spells/PassiveSpell.h"
 
 SpellManager& SpellManager::GetInstance() {
-	static SpellManager _instance;
-	return _instance;
+	static SpellManager Instance;
+	return Instance;
 }
 
-void SpellManager::CreateActiveSpell(Character* spell_owner, ESpellID id) {
+void SpellManager::CreateActiveSpell(Character* SpellOwner, const ESpellID Id) {
 
-	if (id == ESpellID::NONE) return;
+	if (Id == ESpellID::NONE) return;
 
-	unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(id);
-	spell_owner->AddActiveSpell(spell);
+	unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(Id);
+	SpellOwner->AddActiveSpell(spell);
 }
 
-void SpellManager::CreatePassiveSpell(Character* spell_owner, ESpellID id) {
+void SpellManager::CreatePassiveSpell(Character* SpellOwner, const ESpellID Id) {
 
-	if (id == ESpellID::NONE) return;
+	if (Id == ESpellID::NONE) return;
 
-	unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(id);
-	spell_owner->AddPassiveSpell(spell);
+	unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(Id);
+	SpellOwner->AddPassiveSpell(spell);
 }
 
-void SpellManager::CastSpell(int spell_idx, shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets) {
+void SpellManager::CastSpell(const int SpellIdx, const shared_ptr<Character>& Instigator, vector<weak_ptr<Character>> Targets) {
 
-	ActiveSpell* spell = instigator->GetActiveSpells()[spell_idx].get();
+	ActiveSpell* Spell = Instigator->GetActiveSpells()[SpellIdx].get();
 	CombatManager& cm = CombatManager::GetInstance();
 
-	if (spell->GetClass() == ESpellClass::MAGIC)
-		cm.OnMagicBegin(instigator, targets);
-	else if (spell->GetClass() == ESpellClass::MELEE)
-		cm.OnMeleeBegin(instigator, targets);
-	else if (spell->GetClass() == ESpellClass::RANGED)
-		cm.OnRangedBegin(instigator, targets);
+	if (Spell->GetClass() == ESpellClass::MAGIC)
+		cm.OnMagicBegin(Instigator, Targets);
+	else if (Spell->GetClass() == ESpellClass::MELEE)
+		cm.OnMeleeBegin(Instigator, Targets);
+	else if (Spell->GetClass() == ESpellClass::RANGED)
+		cm.OnRangedBegin(Instigator, Targets);
 
-	spell->Apply(instigator, targets);
+	Spell->Apply(Instigator, Targets);
 
-	if (spell->GetClass() == ESpellClass::MAGIC)
-		cm.OnMagicEnd(instigator, targets);
-	else if (spell->GetClass() == ESpellClass::MELEE)
-		cm.OnMeleeEnd(instigator, targets);
-	else if (spell->GetClass() == ESpellClass::RANGED)
-		cm.OnRangedEnd(instigator, targets);
+	if (Spell->GetClass() == ESpellClass::MAGIC)
+		cm.OnMagicEnd(Instigator, Targets);
+	else if (Spell->GetClass() == ESpellClass::MELEE)
+		cm.OnMeleeEnd(Instigator, Targets);
+	else if (Spell->GetClass() == ESpellClass::RANGED)
+		cm.OnRangedEnd(Instigator, Targets);
 
 	cm.FlagDeadCharacters();
 }

@@ -6,23 +6,26 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Spells/SpellData.h"
 
-std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType {
-	{EItemType::RELIC,		{ 45, 0.02 } },
-	{EItemType::WEAPON,		{ 28, 0.10 } },
-	{EItemType::JEWELLERY,	{ 22, 0.15 } },
-	{EItemType::ARMOR,		{ 15, 0.25 } },
-	{EItemType::SCROLL,		{ 6,  0.35 } },
-	{EItemType::CONSUMABLE,	{ 2,  0.45 } }
-};
+namespace
+{
+	std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType {
+		{EItemType::RELIC,		{ 45, 0.02 } },
+		{EItemType::WEAPON,		{ 28, 0.10 } },
+		{EItemType::JEWELLERY,	{ 22, 0.15 } },
+		{EItemType::ARMOR,		{ 15, 0.25 } },
+		{EItemType::SCROLL,		{ 6,  0.35 } },
+		{EItemType::CONSUMABLE,	{ 2,  0.45 } }
+	};
 
-std::vector<pair<EItemRarity, double>> DropTable_ItemRarity {
-	{EItemRarity::UNIQUE,		0.005	},
-	{EItemRarity::GODLIKE,		0.025	},
-	{EItemRarity::LEGENDARY,		0.05	},
-	{EItemRarity::EPIC,			0.12	},
-	{EItemRarity::RARE,			0.25	},
-	{EItemRarity::COMMON,		1		}
-};
+	std::vector<pair<EItemRarity, double>> DropTable_ItemRarity {
+		{EItemRarity::UNIQUE,		0.005	},
+		{EItemRarity::GODLIKE,		0.025	},
+		{EItemRarity::LEGENDARY,		0.05	},
+		{EItemRarity::EPIC,			0.12	},
+		{EItemRarity::RARE,			0.25	},
+		{EItemRarity::COMMON,		1		}
+	};
+}
 
 //Consumable
 //Health potion
@@ -40,15 +43,15 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity {
 
 
 //scroll
-// scroll of [ACTIVE_EFFECT] ( spell_level = player-lvl + rarity )
+// scroll of [ACTIVE_EFFECT] ( spell_level = player-Level + rarity )
 	// -> nema unique
 //string name, double drop_chance(koji ovisi o spell_rarity), item_ID
 
 //ARMOR
 // name = sufix + base + prefix
-// base = item_lvl_range
+// base = item_Level_range
 // rarity = n_affixes
-// string base_name, ilvl-drop-range (int, int), item_ID
+// string base_name, iLevel-drop-range (int, int), item_ID
 
 // Armor_Base = Chest_Armor / 8
 // Weapon_Base = Bow_Damage 10-20 % above 2H
@@ -78,176 +81,174 @@ std::vector<pair<EItemRarity, double>> DropTable_ItemRarity {
 //EFFECTS
 // critical damage or spell damage ignores armor / resistance ?? affix or fact?
 
-Item::Item(ItemInfo item_info)
-	: ItemInfo(std::move(item_info))
+Item::Item(ItemProperties& ItemInfo)
+	: ItemInfo(std::move(ItemInfo))
 {}
 
-Item::Item(const ItemData& data)
+Item::Item(const ItemData& Data)
 {
-	ItemInfo.Id = data.Id;
-	ItemInfo.Lvl = data.MinLvl;  // we will add only specific items for the start of the game so the ilvl min max will be the same
-	ItemInfo.MinDmg = data.MinDmg;
-	ItemInfo.MaxDmg = data.MaxDmg;
-	ItemInfo.Armor = data.Armor;
-	ItemInfo.Amount = data.Amount;
+	ItemInfo.Id = Data.Id;
+	ItemInfo.Level = Data.MinLevel;  // We will add only specific items for the start of the game so the iLevel min max will be the same
+	ItemInfo.MinDmg = Data.MinDmg;
+	ItemInfo.MaxDmg = Data.MaxDmg;
+	ItemInfo.Armor = Data.Armor;
+	ItemInfo.Amount = Data.Amount;
 	
-	ItemInfo.Slots = data.Slots;
-	ItemInfo.ArmorMod = data.ArmorMod;	// for each armor type different mod [TODO IMPLEMENT]
-	ItemInfo.WeaponMod = data.WeaponMod;	// each weapon type different mod, and different meaning, programmed in a [TODO FUNCTION]
+	ItemInfo.Slots = Data.Slots;
+	ItemInfo.ArmorMod = Data.ArmorMod;	// For each armor type different mod [TODO IMPLEMENT]
+	ItemInfo.WeaponMod = Data.WeaponMod;	// Each weapon type different mod, and different meaning, programmed in a [TODO FUNCTION]
 
-	ItemInfo.Name = data.Name;
-	ItemInfo.ItemSlot = data.ItemSlot;
+	ItemInfo.Name = Data.Name;
+	ItemInfo.ItemSlot = Data.ItemSlot;
 	ItemInfo.ItemRarity = EItemRarity::COMMON;
-	ItemInfo.ItemType = data.ItemType;
-	ItemInfo.WeaponType = data.WeaponType;
+	ItemInfo.ItemType = Data.ItemType;
+	ItemInfo.WeaponType = Data.WeaponType;
 }
 
-std::vector<std::unique_ptr<Item>> Item::GenerateLoot(weak_ptr<PlayerCharacter> player, int power_lvl) {
-	std::vector<unique_ptr<Item>> loot;
-	std::vector<pair<int, int>> type_limit = {
+std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const weak_ptr<PlayerCharacter>& Player, int PowerLevel) {
+	std::vector<unique_ptr<Item>> Loot;
+	std::vector<pair<int, int>> TypeLimit = {
 		{0, 1}, {0, 1}, {0, 1}, {0, 2}, {0, 3}, {0, 3}
 	};
 
-	while (power_lvl > 0) {
+	while (PowerLevel > 0) {
 		for (int i = 0; i < ITEM_TYPES; i++) {
-			while (type_limit[i].first == type_limit[i].second) {
+			while (TypeLimit[i].first == TypeLimit[i].second) {
 				++i;
 				// we should adjust the formulas so that this actually never happens
-				if (i == ITEM_TYPES) return loot;
+				if (i == ITEM_TYPES) return Loot;
 			}
 
-			int rnd = GameplayStatics::GetRandInt(1, 1000);
-			int weight = DropTable_ItemType[i].second.first * player.lock()->GetLevel();
-			if (power_lvl - weight >= 0 && rnd <= DropTable_ItemType[i].second.second * 1000) {
-				loot.push_back(Item::CreateItem(player.lock()->GetLevel(), player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
-				type_limit[i].first++;
-				power_lvl -= weight;
+			const int Rnd = GameplayStatics::GetRandInt(1, 1000);
+			if (const int Weight = DropTable_ItemType[i].second.first * Player.lock()->GetLevel(); PowerLevel - Weight >= 0 && Rnd <= DropTable_ItemType[i].second.second * 1000) {
+				Loot.push_back(Item::CreateItem(Player.lock()->GetLevel(), Player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
+				TypeLimit[i].first++;
+				PowerLevel -= Weight;
 				break;
 			}
-			else if (power_lvl - weight < 0) return loot;
+			else if (PowerLevel - Weight < 0) return Loot;
 
 			// no loot was rolled
-			if (i == ITEM_TYPES - 1) return loot;
+			if (i == ITEM_TYPES - 1) return Loot;
 		}
 	}
-	return loot;
+	return Loot;
 }
 
-std::unique_ptr<Item> Item::CreateItem(int player_lvl, float mf_bonus, EItemType item_type) {
+std::unique_ptr<Item> Item::CreateItem(const int PlayerLevel, const float MfBonus, const EItemType ItemType) {
 
-	EItemRarity item_rarity = EItemRarity::COMMON;
-	int rnd = GameplayStatics::GetRandInt(1, 100000);
+	auto ItemRarity = EItemRarity::COMMON;
+	const int Rnd = GameplayStatics::GetRandInt(1, 100000);
 
 	for (int i = 0; i < ITEM_RARITIES; i++) {
-		int chance = static_cast<int>(DropTable_ItemRarity[i].second * mf_bonus * 100000);
-		if (rnd <= chance) {
-			item_rarity = DropTable_ItemRarity[i].first;
+		if (const int Chance = static_cast<int>(DropTable_ItemRarity[i].second * MfBonus * 100000); Rnd <= Chance) {
+			ItemRarity = DropTable_ItemRarity[i].first;
 			break;
 		}
 	}
 
-	ItemInfo item_info = GenerateItemInfo(player_lvl, item_type, item_rarity);
+	ItemProperties ItemInfo = GenerateItemInfo(PlayerLevel, ItemType, ItemRarity);
 
-	return make_unique<Item>(std::move(item_info));
+	return make_unique<Item>(std::move(ItemInfo));
 }
 
-std::unique_ptr<Item> Item::CreateItemById(EItemID id) {
+std::unique_ptr<Item> Item::CreateItemById(const EItemId Id) {
 	for (const auto& item : ItemDb::Data)
-		if (item.Id == id)
+		if (item.Id == Id)
 			return make_unique<Item>(item);
 
 	return nullptr;
 }
 
-Item::ItemInfo Item::GenerateItemInfo(int player_lvl, EItemType item_type, EItemRarity item_rarity) {
-	ItemInfo item_info;
-	item_info.NAffixes = ITEM_RARITIES - 1 - static_cast<int>(item_rarity);
-	item_info.Lvl = CalcItemLvl(player_lvl, item_info.NAffixes);
-	item_info.ItemRarity = item_rarity;
-	item_info.ItemType = item_type;
-	item_info.WeaponType = EWeaponType::NONE;
+Item::ItemProperties Item::GenerateItemInfo(const int PlayerLevel, const EItemType ItemType, const EItemRarity ItemRarity) {
+	ItemProperties ItemInfo;
+	ItemInfo.nAffixes = ITEM_RARITIES - 1 - static_cast<int>(ItemRarity);
+	ItemInfo.Level = CalculateItemLevel(PlayerLevel, ItemInfo.nAffixes);
+	ItemInfo.ItemRarity = ItemRarity;
+	ItemInfo.ItemType = ItemType;
+	ItemInfo.WeaponType = EWeaponType::NONE;
 
-	GenerateItemSlot(item_info);
+	GenerateItemSlot(ItemInfo);
 
-	if (item_info.ItemType != EItemType::CONSUMABLE && item_info.ItemType != EItemType::SCROLL) {
-		GetBaseItem(item_info);
-		RollAffixes(item_info);
+	if (ItemInfo.ItemType != EItemType::CONSUMABLE && ItemInfo.ItemType != EItemType::SCROLL) {
+		GetBaseItem(ItemInfo);
+		RollAffixes(ItemInfo);
 	}
 
-	     if (item_info.ItemType == EItemType::ARMOR)	CalcItemArmor(item_info); // TODO RENAME FUNCTIONS
-	else if (item_info.ItemType == EItemType::WEAPON) CalcItemDamage(item_info);// TODO RENAME FUNCTIONS
+	     if (ItemInfo.ItemType == EItemType::ARMOR)	CalculateItemArmor(ItemInfo);	// TODO RENAME FUNCTIONS
+	else if (ItemInfo.ItemType == EItemType::WEAPON) CalculateItemDamage(ItemInfo);	// TODO RENAME FUNCTIONS
 
-	return item_info;
+	return ItemInfo;
 }
 
-int Item::CalcItemLvl(int player_lvl, int n_affixes) {
-	int b_Ilvl = player_lvl * 8;
-	b_Ilvl += static_cast<int>(n_affixes * 0.10 * b_Ilvl);
-	int min_Ilvl = static_cast<int>(b_Ilvl - b_Ilvl * 0.15 - 3);
-	int max_Ilvl = static_cast<int>(b_Ilvl + b_Ilvl * 0.15 + 3);
-	return GameplayStatics::GetRandInt(min_Ilvl, max_Ilvl - min_Ilvl);
+int Item::CalculateItemLevel(const int PlayerLevel, const int nAffixes) {
+	int ItemLevel = PlayerLevel * 8;
+	ItemLevel += static_cast<int>(nAffixes * 0.10 * ItemLevel);
+	const int MinItemLevel = static_cast<int>(ItemLevel - ItemLevel * 0.15 - 3);
+	const int MaxItemLevel = static_cast<int>(ItemLevel + ItemLevel * 0.15 + 3);
+	return GameplayStatics::GetRandInt(MinItemLevel, MaxItemLevel - MinItemLevel);
 }
 
-void Item::GenerateItemSlot(ItemInfo& item_info) {
-	int rnd;
-	switch (item_info.ItemType) {
+void Item::GenerateItemSlot(ItemProperties& ItemInfo) {
+	int Rnd;
+	switch (ItemInfo.ItemType) {
 	case EItemType::CONSUMABLE:
-		GenerateRndConsumable(item_info);
-		item_info.ItemSlot = EItemSlot::NONE;
-		item_info.bUsable = true;
+		GenerateRandomConsumable(ItemInfo);
+		ItemInfo.ItemSlot = EItemSlot::NONE;
+		ItemInfo.bUsable = true;
 		break;
 	case EItemType::SCROLL:
-		GenerateRndScroll(item_info);
-		item_info.ItemSlot = EItemSlot::NONE;
-		item_info.bUsable = true;
+		GenerateRandomScroll(ItemInfo);
+		ItemInfo.ItemSlot = EItemSlot::NONE;
+		ItemInfo.bUsable = true;
 		break;
 	case EItemType::ARMOR:
-		rnd = GameplayStatics::GetRandInt(0, 5);
-		item_info.ItemSlot = static_cast<EItemSlot>(rnd);
+		Rnd = GameplayStatics::GetRandInt(0, 5);
+		ItemInfo.ItemSlot = static_cast<EItemSlot>(Rnd);
 		break;
 	case EItemType::JEWELLERY:
-		rnd = GameplayStatics::GetRandInt(6, 8);
-		item_info.ItemSlot = static_cast<EItemSlot>(rnd);
-		item_info.Name = "JEWLERY";
+		Rnd = GameplayStatics::GetRandInt(6, 8);
+		ItemInfo.ItemSlot = static_cast<EItemSlot>(Rnd);
+		ItemInfo.Name = "JEWELLERY";
 		break;
 	case EItemType::WEAPON:
-		rnd = GameplayStatics::GetRandInt(9, 10);
-		item_info.ItemSlot = static_cast<EItemSlot>(rnd);
-		if (item_info.ItemSlot == EItemSlot::WPN_MAIN)
-			rnd = GameplayStatics::GetRandInt(0, static_cast<int>(EWeaponType::LAST));
+		Rnd = GameplayStatics::GetRandInt(9, 10);
+		ItemInfo.ItemSlot = static_cast<EItemSlot>(Rnd);
+		if (ItemInfo.ItemSlot == EItemSlot::WPN_MAIN)
+			Rnd = GameplayStatics::GetRandInt(0, static_cast<int>(EWeaponType::LAST));
 		else
-			rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
-		item_info.WeaponType = static_cast<EWeaponType>(rnd);
+			Rnd = GameplayStatics::GetRandInt(static_cast<int>(EWeaponType::LAST_1H) - static_cast<int>(EWeaponType::FIRST_1H) - 1, static_cast<int>(EWeaponType::FIRST_1H));
+		ItemInfo.WeaponType = static_cast<EWeaponType>(Rnd);
 		break;
 	case EItemType::RELIC:
-		item_info.ItemSlot = EItemSlot::RELIC;
-		item_info.Name = "RELIC";
+		ItemInfo.ItemSlot = EItemSlot::RELIC;
+		ItemInfo.Name = "RELIC";
 		break;
-	default:
+	case EItemType::MISC:
 		break;
 	}
 }
 
-void Item::GetBaseItem(ItemInfo& item_info) {
-	for (const auto& item : ItemDb::Data) {
-		if (item.ItemType == item_info.ItemType &&
-			item.WeaponType == item_info.WeaponType &&
-			item.ItemSlot == item_info.ItemSlot &&
-			item.MaxLvl >= item_info.Lvl && item.MinLvl <= item_info.Lvl) {
+void Item::GetBaseItem(ItemProperties& ItemInfo) {
+	for (const auto& BaseItem : ItemDb::Data) {
+		if (BaseItem.ItemType == ItemInfo.ItemType &&
+			BaseItem.WeaponType == ItemInfo.WeaponType &&
+			BaseItem.ItemSlot == ItemInfo.ItemSlot &&
+			BaseItem.MaxLevel >= ItemInfo.Level && BaseItem.MinLevel <= ItemInfo.Level) {
 			
-			item_info.Id = item.Id;
-			item_info.Name = (item_info.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info.ItemRarity) + " ") + item.Name;
-			item_info.min_dmg = item.MinDmg;
-			item_info.MaxDmg = item.MaxDmg;
-			item_info.Armor = item.Armor;
-			item_info.Slots = item.Slots;
-			item_info.ArmMod = item.ArmorMod;
-			item_info.WpnMod = item.WeaponMod;
+			ItemInfo.Id = BaseItem.Id;
+			ItemInfo.Name = (ItemInfo.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(ItemInfo.ItemRarity) + " ") + BaseItem.Name;
+			ItemInfo.MinDmg = BaseItem.MinDmg;
+			ItemInfo.MaxDmg = BaseItem.MaxDmg;
+			ItemInfo.Armor = BaseItem.Armor;
+			ItemInfo.Slots = BaseItem.Slots;
+			ItemInfo.ArmorMod = BaseItem.ArmorMod;
+			ItemInfo.WeaponMod = BaseItem.WeaponMod;
 		}
 	}
 }
 
-void Item::RollAffixes(ItemInfo& item_info) {
+void Item::RollAffixes(ItemProperties& ItemInfo) {
 	// rare = 1 affix [ 1 passive ]
 	// epic = 2 affix [ 1 passive ]
 	// legend = 3 affix [ 1 passive , 1 active]
@@ -262,109 +263,106 @@ void Item::RollAffixes(ItemInfo& item_info) {
 
 }
 
-void Item::CalcItemDamage(ItemInfo& item_info) {
+void Item::CalculateItemDamage(ItemProperties& ItemInfo) {
 
 	// VERY SUPERFICIAL PROTOTYPE
 	// HAVE TO TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	switch (item_info.WeaponType) {
+	switch (ItemInfo.WeaponType) {
 	case EWeaponType::AXE_1H:
 	case EWeaponType::MACE_1H:
 	case EWeaponType::SWORD_1H:
-		item_info.min_dmg = static_cast<int>(item_info.min_dmg - 0.15 * item_info.Lvl);
-		item_info.MaxDmg = static_cast<int>(item_info.MaxDmg + 0.15 * item_info.Lvl);
+		ItemInfo.MinDmg = static_cast<int>(ItemInfo.MinDmg - 0.15 * ItemInfo.Level);
+		ItemInfo.MaxDmg = static_cast<int>(ItemInfo.MaxDmg + 0.15 * ItemInfo.Level);
 		return;
 	case EWeaponType::DAGGER:
-		item_info.min_dmg = static_cast<int>(item_info.min_dmg - 0.12 * item_info.Lvl);
-		item_info.MaxDmg = static_cast<int>(item_info.MaxDmg + 0.12 * item_info.Lvl);
+		ItemInfo.MinDmg = static_cast<int>(ItemInfo.MinDmg - 0.12 * ItemInfo.Level);
+		ItemInfo.MaxDmg = static_cast<int>(ItemInfo.MaxDmg + 0.12 * ItemInfo.Level);
 		return;
 	case EWeaponType::AXE_2H:
 	case EWeaponType::MACE_2H:
 	case EWeaponType::SWORD_2H:
-		item_info.min_dmg = static_cast<int>(item_info.min_dmg - 0.28 * item_info.Lvl);
-		item_info.MaxDmg = static_cast<int>(item_info.MaxDmg + 0.28 * item_info.Lvl);
+		ItemInfo.MinDmg = static_cast<int>(ItemInfo.MinDmg - 0.28 * ItemInfo.Level);
+		ItemInfo.MaxDmg = static_cast<int>(ItemInfo.MaxDmg + 0.28 * ItemInfo.Level);
 		return;
 	case EWeaponType::BOW:
-		item_info.min_dmg = static_cast<int>(item_info.min_dmg  - 0.22 * item_info.Lvl);
-		item_info.MaxDmg = static_cast<int>(item_info.MaxDmg  + 0.22 * item_info.Lvl);
+		ItemInfo.MinDmg = static_cast<int>(ItemInfo.MinDmg  - 0.22 * ItemInfo.Level);
+		ItemInfo.MaxDmg = static_cast<int>(ItemInfo.MaxDmg  + 0.22 * ItemInfo.Level);
 		return;
 	case EWeaponType::STAFF:
-		item_info.min_dmg = static_cast<int>(item_info.min_dmg - 0.25 * item_info.Lvl);
-		item_info.MaxDmg = static_cast<int>(item_info.MaxDmg + 0.25 * item_info.Lvl);
-		return;
-	default:
+		ItemInfo.MinDmg = static_cast<int>(ItemInfo.MinDmg - 0.25 * ItemInfo.Level);
+		ItemInfo.MaxDmg = static_cast<int>(ItemInfo.MaxDmg + 0.25 * ItemInfo.Level);
 		return;
 	}
 }
 
-void Item::CalcItemArmor(ItemInfo& item_info) {
+void Item::CalculateItemArmor(ItemProperties& ItemInfo) {
 
 	// VERY SUPERFICIAL PROTOTYPE. HAVE TO TEST!!!!!!
 	//-----------------------------------------------
 
-	switch (item_info.ItemSlot) {
+	switch (ItemInfo.ItemSlot) {
 	case EItemSlot::HEAD:
-		item_info.Armor = static_cast<int>(item_info.Armor + 0.3 * item_info.Lvl);
+		ItemInfo.Armor = static_cast<int>(ItemInfo.Armor + 0.3 * ItemInfo.Level);
 		return;
 	case EItemSlot::CHEST:
-		item_info.Armor = static_cast<int>(item_info.Armor + 0.4 * item_info.Lvl);
+		ItemInfo.Armor = static_cast<int>(ItemInfo.Armor + 0.4 * ItemInfo.Level);
 		return;
 	case EItemSlot::HANDS:
-		item_info.Armor = static_cast<int>(item_info.Armor + 0.2 * item_info.Lvl);
+		ItemInfo.Armor = static_cast<int>(ItemInfo.Armor + 0.2 * ItemInfo.Level);
 		return;
 	case EItemSlot::BELT:
-		item_info.Armor = static_cast<int>(item_info.Armor + 0.15 * item_info.Lvl);
+		ItemInfo.Armor = static_cast<int>(ItemInfo.Armor + 0.15 * ItemInfo.Level);
 		return;
 	case EItemSlot::LEGS:
-		item_info.Armor = static_cast<int>(item_info.Armor + 0.3 * item_info.Lvl);
+		ItemInfo.Armor = static_cast<int>(ItemInfo.Armor + 0.3 * ItemInfo.Level);
 		return;
 	case EItemSlot::FEET:
-		item_info.Armor = static_cast<int>(item_info.Armor + 0.2 * item_info.Lvl);
+		ItemInfo.Armor = static_cast<int>(ItemInfo.Armor + 0.2 * ItemInfo.Level);
 		return;
 	default:
 		return;
 	}
 } 
 
-void Item::GenerateRndConsumable(ItemInfo& item_info) {
-	int rnd = GameplayStatics::GetRandInt(1, 1000);
-	for (const auto& item : ItemDb::Data) {
-		if (item.ItemType == EItemType::CONSUMABLE && rnd <= item.DropChance) {
-			item_info.Name = item_info.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info.ItemRarity) + " ";
-			item_info.Name += item.Name;
-			item_info.Id = item.Id;
-			item_info.Amount = item.Amount * item_info.NAffixes;
+void Item::GenerateRandomConsumable(ItemProperties& ItemInfo) {
+	const int RndInt = GameplayStatics::GetRandInt(1, 1000);
+	for (const auto& RndItem : ItemDb::Data) {
+		if (RndItem.ItemType == EItemType::CONSUMABLE && RndInt <= RndItem.DropChance) {
+			ItemInfo.Name = ItemInfo.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(ItemInfo.ItemRarity) + " ";
+			ItemInfo.Name += RndItem.Name;
+			ItemInfo.Id = RndItem.Id;
+			ItemInfo.Amount = RndItem.Amount * ItemInfo.nAffixes;
 
 			// for now only health and essence poitions cant be used out of combat
-			if (item.Id != EItemID::HPotion && item.Id != EItemID::EPotion)
-				item_info.bUsableMap = true;
+			if (RndItem.Id != EItemId::HPotion && RndItem.Id != EItemId::EPotion)
+				ItemInfo.bUsableMap = true;
 
 			break;
 		}
 	}
 }
 
-void Item::GenerateRndScroll(ItemInfo& item_info) {
-	const int NUM_SCROLLS = SpellDB::_data.size() - 2;  // later change to a DEFINE
-	while (1) {
-		int rnd = GameplayStatics::GetRandInt(1, NUM_SCROLLS);
-		auto scroll = SpellDB::_active_const_map[static_cast<ESpellID>(rnd)];
-
-		// here we need a good formula for converting item_lvl to power_lvl of SPELL
-		if (scroll._power_lvl <= 5 || item_info.Lvl / 8 >= scroll._power_lvl) {
-			item_info.Active = static_cast<ESpellID>(rnd);
-			item_info.Name = (item_info.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(item_info.ItemRarity) + " ") + "Scroll of " + GameplayStatics::GetEnumString(item_info.Active);
+void Item::GenerateRandomScroll(ItemProperties& ItemInfo) {
+	const int NUM_SCROLLS = SpellDb::Data.size() - 2;  // later change to a DEFINE
+	while (true) {
+		int Rnd = GameplayStatics::GetRandInt(1, NUM_SCROLLS);
+		
+		// Here we need a good formula for converting ItemLevel to PowerLevel of Spell
+		if (const auto Scroll = SpellDb::ActiveConstMap[static_cast<ESpellID>(Rnd)]; Scroll.PowerLevel <= 5 || ItemInfo.Level / 8 >= Scroll.PowerLevel) {
+			ItemInfo.Active = static_cast<ESpellID>(Rnd);
+			ItemInfo.Name = (ItemInfo.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(ItemInfo.ItemRarity) + " ") + "Scroll of " + GameplayStatics::GetEnumString(ItemInfo.Active);
 			break;
 		}
 	}
 }
 
-void Item::Use(Character* character) {
+void Item::Use(Character* Character) {
 	switch (ItemInfo.ItemType) {
 	case EItemType::CONSUMABLE:
 		switch (ItemInfo.Id) {
-		case EItemID::HPotion:
-			character->GetHealth().UpdateActual(ItemInfo.Amount, character);
+		case EItemId::HPotion:
+			Character->GetHealth().UpdateActual(ItemInfo.Amount, Character);
 		}
 		break;
 	}

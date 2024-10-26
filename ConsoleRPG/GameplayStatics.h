@@ -18,7 +18,7 @@ struct ApplyParams;
 class GameplayStatics {
 
 public:
-	static void Initialize(vector<shared_ptr<Character>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu);
+	static void Initialize(vector<shared_ptr<Character>>&& Players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& Menu);
 
 	static void DisplayAllies();
 	static void DisplayEnemies();

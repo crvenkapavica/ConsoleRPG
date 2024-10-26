@@ -320,7 +320,7 @@ enum EStructFlags {
 	EFFECT_STAT = 1,
 };
 
-enum class EItemID {
+enum class EItemId {
 	NONE,
 	//consumables
 	HPotion,

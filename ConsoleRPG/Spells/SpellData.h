@@ -3,49 +3,50 @@
 #include "../RPGTypes.h"
 
 struct SpellData {
-	float   _apply_min;
-	float   _apply_max;
-	float	_effect_min;
-	float	_effect_max;
-	int		_duration;
-	int		_cooldown;
-	int		_essence_cost; 
-	int		_stamina_cost;
+	float   ApplyMin;
+	float   ApplyMax;
+	float	EffectMin;
+	float	EffectMax;
+	int		Duration;
+	int		Cooldown;
+	int		EssenceCost; 
+	int		StaminaCost;
 };
 
 struct ActiveConstData {
-	EDamageType _damage_type;
-	ESpellType _spell_type;
-	ESpellRarity _rarity;
-	ESpellClass	_class;
-	int _min_req_lvl;
-	int _power_lvl;
+	EDamageType		DamageType;
+	ESpellType		SpellType;
+	ESpellRarity	Rarity;
+	ESpellClass		Class;
+	int				MinReqLevel;
+	int				PowerLevel;
 };
 
 struct PassiveConstData {
-	ECombatEvent _combat_event;
-	ESpellRarity _rarity;
-	ESpellClass	_class;
-	int _min_req_lvl;
-	int _power_lvl;
+	ECombatEvent	CombatEvent;
+	ESpellRarity	Rarity;
+	ESpellClass		Class;
+	int				MinReqLevel;
+	int				PowerLevel;
 };
 
-class SpellDB {
+class SpellDb {
 public:
-	static std::unordered_map<ESpellID, std::vector<SpellData>> _data;
-	static std::unordered_map<ESpellID, ActiveConstData> _active_const_map;
-	static std::unordered_map<ESpellID, PassiveConstData> _passive_const_map;
+	SpellDb() = delete;
+	
+	static std::unordered_map<ESpellID, std::vector<SpellData>> Data;
+	static std::unordered_map<ESpellID, ActiveConstData> ActiveConstMap;
+	static std::unordered_map<ESpellID, PassiveConstData> PassiveConstMap;
 
 private:
-	SpellDB() = delete;
 
 	static struct SpellDataConstructor {
 		SpellDataConstructor();
-	} _spell_data_constructor;
+	} SpellData;
 	static struct ActiveConstDataConstructor {
 		ActiveConstDataConstructor();
-	} _active_const_data_constructor;
+	} ActiveConstData;
 	static struct PassiveConstDataConstructor {
 		PassiveConstDataConstructor();
-	} _passive_const_data_constructor;
-};
+	} PassiveConstData;
+}

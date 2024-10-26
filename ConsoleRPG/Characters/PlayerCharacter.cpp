@@ -20,12 +20,12 @@ PlayerCharacter::PlayerCharacter(ECharacterClass character_class)
 	for (auto& item : items)
 		AddItemToInventory(move(item));*/
 
-	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
-	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
-	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
-	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
-	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
-	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemId::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemId::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemId::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
 }
 
 PlayerCharacter::PlayerCharacter(const PlayerCharacter& other) 

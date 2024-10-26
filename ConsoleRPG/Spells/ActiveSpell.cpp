@@ -8,9 +8,9 @@
 #include "../Combat/CombatManager.h"
 
 ActiveSpell::ActiveSpell(ESpellID id, int lvl)
-	: Spell(id, ESpellActivity::ACTIVE, SpellDB::_active_const_map.at(id)._rarity, SpellDB::_active_const_map.at(id)._class, SpellDB::_active_const_map.at(id)._min_req_lvl, lvl)
-	, _damage_type(SpellDB::_active_const_map.at(id)._damage_type)
-	, _spell_type(SpellDB::_active_const_map.at(id)._spell_type)
+	: Spell(id, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(id).Rarity, SpellDb::ActiveConstMap.at(id).Class, SpellDb::ActiveConstMap.at(id).MinReqLvl, lvl)
+	, _damage_type(SpellDb::ActiveConstMap.at(id).DamageType)
+	, _spell_type(SpellDb::ActiveConstMap.at(id).SpellType)
 {}
 
 unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
@@ -57,11 +57,11 @@ unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 }
 
 float ActiveSpell::GetRandEffectMinMax(const shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_id][_lvl]._effect_min, SpellDB::_data[_id][_lvl]._effect_max), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[_id][_lvl].EffectMin, SpellDb::Data[_id][_lvl].EffectMax), character);
 }
 
 float ActiveSpell::GetRandOnApplyMinMax(const shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDB::_data[_id][_lvl]._apply_min, SpellDB::_data[_id][_lvl]._apply_max), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[_id][_lvl].ApplyMin, SpellDb::Data[_id][_lvl].ApplyMax), character);
 }
 
 float ActiveSpell::AdjustDamage(float damage, const shared_ptr<Character>& character) {

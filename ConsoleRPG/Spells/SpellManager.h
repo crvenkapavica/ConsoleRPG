@@ -12,19 +12,19 @@ struct EffectParams;
 class SpellManager {
 
 public:
-	SpellManager() {}
+	SpellManager() = default;
 	SpellManager(const SpellManager&) = delete;
 	SpellManager& operator=(const SpellManager&) = delete;
 
 	static SpellManager& GetInstance();
 
 	// Create an active spell and add it to the owner
-	void CreateActiveSpell(Character* spell_owner, ESpellID id);
+	static void CreateActiveSpell(Character* SpellOwner, const ESpellID Id);
 	// Create a passive spell and add it to the owner
-	void CreatePassiveSpell(Character* spell_owner, ESpellID id);
+	static void CreatePassiveSpell(Character* SpellOwner, const ESpellID Id);
 
-	// Cast the spell with spell_idx which corresponds to the owners spell vector index
-	void CastSpell(int spell_idx, shared_ptr<Character> instigator, vector<weak_ptr<Character>> targets);
+	// Cast the spell with SpellIdx which corresponds to the owners spell vector index
+	static void CastSpell(const int SpellIdx, const shared_ptr<Character>& Instigator, vector<weak_ptr<Character>> Targets);
 
 	//void UnequipSpell(ESpellBookID spell_id);
 

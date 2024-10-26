@@ -23,21 +23,21 @@ vector<weak_ptr<Character>> GameplayStatics::_players;
 stringstream GameplayStatics::_combat_log; 
 
 
-void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& menu) {
+void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& Players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& Menu) {
 
 	cout << fixed << setprecision(2);
 
-	_player_characters = players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
+	_player_characters = Players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
 								  // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
 
-	_player = players[0];
+	_player = Players[0];
 	for (const auto& player : _player_characters)
 		_players.push_back(player);
 
 	_sm = &spell_manager;
 	_cm = &combat_manager;
 	_map_gen = &map_generator;
-	_menu = &menu;
+	_menu = &Menu;
 
 	_map_gen->Initialize(_players);
 	//_map_gen->PrintDebugMap();
@@ -700,7 +700,7 @@ void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& instigator, std::v
 	auto& s = GetCombatLogStream();
 	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << ".\n";
 
-	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDB::_data[spell->GetId()][spell->GetLvl()]._duration);
+	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDb::Data[spell->GetId()][spell->GetLvl()].Duration);
 	_cm->AddCombatEffect(std::move(effect));
 }
 

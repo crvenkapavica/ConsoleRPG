@@ -3,14 +3,14 @@
 #include "../RPGTypes.h"
 
 struct ItemData {
-	EItemID			Id;
+	EItemId			Id;
 	std::string		Name;
 	EItemType		ItemType;
 	EWeaponType		WeaponType;
 	EItemSlot		ItemSlot;
 	ESpellID		EffectId;
-	int				MinLvl;
-	int				MaxLvl;
+	int				MinLevel;
+	int				MaxLevel;
 	int				MinDmg;
 	int				MaxDmg;
 	int				Armor;
@@ -49,5 +49,5 @@ public:
 private:
 	static struct ItemDataConstructor {
 		ItemDataConstructor();
-	} _itemDataConstructor;
+	} ItemData;
 };

@@ -102,32 +102,32 @@ int main() {
     //Sleep(100);
     //SendAltEnter();
 
-    auto dltr = [](const PlayerCharacter* ptr) { PlayerCharacter::_n--; delete ptr; };
+    auto dltr = [](const PlayerCharacter* Ptr) { PlayerCharacter::_n--; delete Ptr; };
 
-    const std::shared_ptr<PlayerCharacter> player_main(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
-    const std::shared_ptr<PlayerCharacter> player_warlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
+    const std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
+    const std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
 
-    vector<shared_ptr<Character>> player_characters = { player_main, player_warlock1 };
+    vector<shared_ptr<Character>> PlayerCharacters = { PlayerMain, PlayerWarlock1 };
 
-    SpellManager& sm = SpellManager::GetInstance();
+    using sm = SpellManager;
 
-    sm.CreateActiveSpell(player_main.get(), ESpellID::FIREBALL);
-    sm.CreateActiveSpell(player_main.get(), ESpellID::BURNING);
-    sm.CreateActiveSpell(player_main.get(), ESpellID::EXPOSURE);
-    sm.CreateActiveSpell(player_main.get(), ESpellID::MOLTEN_ARMOR);
-    sm.CreateActiveSpell(player_main.get(), ESpellID::SUM_FIRE_ELE);
-    sm.CreateActiveSpell(player_main.get(), ESpellID::BLIND);
+    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
+    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
+    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
+    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::MOLTEN_ARMOR);
+    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
+    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);
 
     //pasive
-    sm.CreatePassiveSpell(player_main.get(), ESpellID::VAMPIRIC_TOUCH);
+    sm::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
 
-    CombatManager& cm = CombatManager::GetInstance();
-	ConsoleMenu menu;
-	MapGenerator map_gen;
+    CombatManager& CM = CombatManager::GetInstance();
+	ConsoleMenu Menu;
+	MapGenerator MapGen;
 
-    // later we dont send none of these initializers to GS. 
-    // have to implement a starting routine and a game loop. at the starting routine we get the instances.
-	GameplayStatics::Initialize(std::move(player_characters), sm, cm, std::move(map_gen), menu);
+    // Later we don't send none of these initializers to GS. 
+    // Have to implement a starting routine and a game loop. at the starting routine we get the instances.
+	GameplayStatics::Initialize(std::move(PlayerCharacters), sm, CM, std::move(MapGen), Menu);
 }
 
 
