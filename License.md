@@ -1,12 +1,12 @@
 <b>Non-Commercial Attribution License</b>
 
-Copyright (c) 2024 crvenkapavica
+Copyright (c) 2024 crvenkapavica (Filip Matjašec)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to fork, modify, and use the Software for non-commercial purposes, subject to the following conditions:
 
 
 
-<b>Attribution:</b> The original author must be credited. Any distribution, modification, or fork of the Software must include an attribution that gives proper credit to the original author (crvenkapavica), along with a link to the original repository.
+<b>Attribution:</b> The original author must be credited. Any distribution, modification, or fork of the Software must include an attribution that gives proper credit to the original author "<b>Filip 'crvenkapavica' Matjašec</b>", along with a link to the original repository.
 
 
 
