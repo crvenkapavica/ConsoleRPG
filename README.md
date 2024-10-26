@@ -1,4 +1,4 @@
-<h1>CARTAGRA</h1>
+<h1>CARTAGRA ©</h1>
 
 A grid turn-based RPG built in C++ as a console app.
 
@@ -42,11 +42,9 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 ...And much, much more.  
 
 <hr/>
-Development has been temporarily halted due to me working on a wine-tracking, selling & delivery system for my family business.  
 
-This is just the begining and this project is to be revisited soon and is expected to be completed by Q2 2026.  
-After that - feel free to fork the project, but you <b>can not use it commercially and have to credit the source.</b>  
-Project codename: <b> CARTAGRA <b/>
+You can fork the project, but you <b>can not use it commercially and have to credit the source.</b>  
+Project codename: <b>CARTAGRA ©<b/>
 
 There is a slight possibility that the project will be ported to Unreal Engine (with pristine graphics), if enough interest arises and my obligations allow for it.
   
