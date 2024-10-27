@@ -55,36 +55,36 @@ void PlayerCharacter::TakeTurn() {
 	}
 }
 
-void PlayerCharacter::EquipItem(unique_ptr<Item> item) {
-	if (!item || _n_inventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
+void PlayerCharacter::EquipItem(unique_ptr<Item>& Item) {
+	if (!Item || _n_inventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
-	if (item->ItemInfo.ItemType == EItemType::WEAPON) {
-		if (item->ItemInfo.ItemSlot == EItemSlot::WPN_BOTH)
-			item->ItemInfo.ItemSlot = EItemSlot::WPN_MAIN;
+	if (Item->ItemInfo.ItemType == EItemType::WEAPON) {
+		if (Item->ItemInfo.ItemSlot == EItemSlot::WPN_BOTH)
+			Item->ItemInfo.ItemSlot = EItemSlot::WPN_MAIN;
 	}
 
-	_item_slots[static_cast<int>(item->ItemInfo.ItemSlot)].swap(item);
-	if (item) AddItemToInventory(std::move(item));
+	_item_slots[static_cast<int>(Item->ItemInfo.ItemSlot)].swap(Item);
+	if (Item) AddItemToInventory(Item);
 
 	SortInventory();
-	CalcPlayerItemSlots();
-	CalcInvSlots();
+	CalculatePlayerItemSlots();
+	CalculateInventorySlots();
 }
 
-void PlayerCharacter::UnEquipItem(unique_ptr<Item> item) {
-	if (!item || _n_inventory == INV_SLOTS) return;
+void PlayerCharacter::UnEquipItem(unique_ptr<Item>& Item) {
+	if (!Item || _n_inventory == INV_SLOTS) return;
 
-	AddItemToInventory(std::move(item));
-	CalcPlayerItemSlots();
-	CalcInvSlots();
+	AddItemToInventory(Item);
+	CalculatePlayerItemSlots();
+	CalculateInventorySlots();
 }
 
-bool PlayerCharacter::AddItemToInventory(unique_ptr<Item> item) {	
+bool PlayerCharacter::AddItemToInventory(unique_ptr<Item>& Item) {	
 
-	for (auto& inv_item : _inventory) {
-		if (!inv_item) {
-			inv_item = std::move(item);
-			CalcInvSlots();
+	for (auto& InvItem : _inventory) {
+		if (!InvItem) {
+			InvItem = std::move(Item);
+			CalculateInventorySlots();
 			return true;
 		}
 	}
@@ -107,8 +107,8 @@ void PlayerCharacter::DestroyItem(unique_ptr<Item> item) {
 	item.reset();
 
 	SortInventory();
-	CalcPlayerItemSlots();
-	CalcInvSlots();
+	CalculatePlayerItemSlots();
+	CalculateInventorySlots();
 }
 
 void PlayerCharacter::DisplayEquippedItems() const {
@@ -129,7 +129,8 @@ Item* PlayerCharacter::DisplayInventory() const {
 
 const Item* PlayerCharacter::DisplayConsumableSlots(Item* item1) const {
 
-	Item* i = _inventory.at(0).get();
+	ItemData data;
+	Item* i = new Item(data);
 	return i;
 }
 
@@ -239,7 +240,7 @@ void PlayerCharacter::SortInventory() {
 	sort(_inventory.begin(), _inventory.end(), [&](const std::unique_ptr<Item>& first, const std::unique_ptr<Item>& second) { return first && !second; });
 }
 
-void PlayerCharacter::CalcPlayerItemSlots() {
+void PlayerCharacter::CalculatePlayerItemSlots() {
 	_health = _essence = _stamina = _armor = _attack_power = _crit_chance = _crit_damage = _spell_power = _spell_crit_chance = _spell_crit_damage = 0.f;
 	_i_str = _i_agi = _i_int = _i_vit = _i_con = _i_end = 0;
 	_min_damage = _max_damage = 0;
@@ -257,7 +258,7 @@ void PlayerCharacter::CalcPlayerItemSlots() {
 	InitStats();
 }
 
-void PlayerCharacter::CalcInvSlots() {
+void PlayerCharacter::CalculateInventorySlots() {
 	_n_inventory = 0;
 	for (const auto& item : _inventory)
 		if (item) ++_n_inventory;

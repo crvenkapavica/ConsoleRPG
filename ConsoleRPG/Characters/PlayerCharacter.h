@@ -42,13 +42,13 @@ public:
 	//// INVENTORY
 	///////////////////////////////////////////////////////////////////////////////////////////////
 public:
-	void EquipItem(unique_ptr<Item> item);
+	void EquipItem(unique_ptr<Item>& Item);
 
 	// Return immediately if inventory is full
-	void UnEquipItem(unique_ptr<Item> item);
+	void UnEquipItem(unique_ptr<Item>& Item);
 
 	// Return true if the item was added, false otherwise
-	bool AddItemToInventory(unique_ptr<Item> item);
+	bool AddItemToInventory(unique_ptr<Item>& Item);
 
 	[[nodiscard]] int GetInventorySpace() const;
 
@@ -89,7 +89,7 @@ protected:
 
 	void SortInventory();
 
-	void CalcPlayerItemSlots();
+	void CalculatePlayerItemSlots();
 
-	void CalcInvSlots();
+	void CalculateInventorySlots();
 };

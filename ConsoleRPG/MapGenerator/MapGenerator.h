@@ -7,55 +7,60 @@ class Character;
 class EnemyCharacter;
 class PlayerCharacter;
 
-struct distance_node {
-	int x;
-	int y;
-	int distance;
+struct DistanceNode {
+	int X;
+	int Y;
+	int Distance;
 };
 
-struct grid_node {
-	std::weak_ptr<Character> _here;
-	std::weak_ptr<Character> _neighbors[8];
+struct GridNode {
+	std::weak_ptr<Character> Here;
+	std::weak_ptr<Character> Neighbors[8];
 };
 
-struct path_node {
+struct PathNode {
 
-	path_node() : right(0), left(0), up(0), down(0) {}
+	PathNode()
+	: Right(false)
+	, Left(false)
+	, Down(false)
+	, Up(false)
+	{}
 
-	bool& operator[](const int& idx) {
-		switch (idx) {
-		case 0: return right;
-		case 1: return left;
-		case 2: return down;
-		case 3: return up;
-		default: return right;
+	bool& operator[](const int& Idx) {
+		switch (Idx) {
+		case 0: return Right;
+		case 1: return Left;
+		case 2: return Down;
+		case 3: return Up;
+		default: return Right;
 		}
 	}
 
-	bool operator[](const int& idx) const {
-		switch (idx) {
-		case 0: return right == true;
-		case 1: return left == true;
-		case 2: return down == true;
-		case 3: return up == true;
+	bool operator[](const int& Idx) const {
+		switch (Idx) {
+		case 0: return Right == true;
+		case 1: return Left == true;
+		case 2: return Down == true;
+		case 3: return Up == true;
 		default: return false;
 		}
 	}
 
-	//corresponds to dX and dY directions
-	bool right;
-	bool left;
-	bool down;
-	bool up;
+	// Corresponds to dX and dY directions
+	bool Right;
+	bool Left;
+	bool Down;
+	bool Up;
 };
 
 
 class MapGenerator {
 
 public:
-	MapGenerator() {}
+	MapGenerator() = delete;
 
-	void Initialize(const std::vector<std::weak_ptr<Character>>& player_characters);
+	void Initialize(const std::vector<std::weak_ptr<Character>>& PlayerCharacters);
 
 	// Shows the current player position on the map with radius of light_radius
 	void ShowPosition();
@@ -73,60 +78,60 @@ public:
 	void PrintError();
 	/////////////////////////////////
 
-	void DisplayGrid();
+	void DisplayGrid() const;
 
 	void MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction);
 
 	bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
-	int GetEnemyIdx(char alias);
+	int GetEnemyIdx(char Alias);
 
-	int GetPlayerIdx(char alias);
+	int GetPlayerIdx(char Alias);
 
-	void KillEnemy(int idx);
+	void KillEnemy(int Idx);
 
-	void KillEnemy(Character* character);
+	void KillEnemy(const Character* InCharacter);
 
 public:
-	std::weak_ptr<Character> GetCharacterFromAlias(char target);
+	std::weak_ptr<Character> GetCharacterFromAlias(char Target);
 
-	std::vector<string> GetCombatDirections(Character* character, OUT std::map<int, EDirection>& map);
+	std::vector<string> GetCombatDirections(const Character* InCharacter, OUT std::map<int, EDirection>& InMap) const;
 
 	std::vector<Character*> GetCharactersInRange(const Character* InCharacter);
 
 	// inline?
-	[[nodiscard]] inline int GetPowerLvl() const { return _power_lvls[_enemy_index]; }
+	[[nodiscard]] inline int GetPowerLvl() const { return PowerLevels[EnemyIndex]; }
 
 private:
 	// BFS that generates map
-	void BFS(int x, int y, int step);
+	void BFS(int X, int Y, int Step);
 
 	void InitBFS();
 
-	void InitilizeEmptyMap();
+	void InitializeEmptyMap() const;
 
-	int GetCurrentMoveWidth();
+	static int GetCurrentMoveWidth();
 
-	float GetMapDensity();
+	static float GetMapDensity();
 
 	int GetNumberOfMoves();
 
-	int GetDirection(int x, int y);
+	int GetDirection(int X, int Y);
 
-	int GetReverseDirection();
+	int GetReverseDirection() const;
 
-	int GetRandTurnDirection(OUT int& x, OUT int& y);
+	int GetRandomTurnDirection(OUT int& X, OUT int& Y) const;
 
-	int GetVisitedNodeDirection(const path_node& visited_node, int x, int y);
+	int GetVisitedNodeDirection(const PathNode& VisitedNode, int X, int Y);
 
-	void DisableAdjacent(int x, int y);
+	void DisableAdjacent(int X, int Y);
 
-	void DisableLocation(int x, int y);
+	void DisableLocation(int X, int Y) const;
 
-	void MakeDebugMessage(int steps, string func);
+	void MakeDebugMessage(int Steps, string Func);
 
 	// Makes a random rectangle segment
-	void GetRandomRectangle(int x, int y);
+	void GetRandomRectangle(int X, int Y) const;
 
 	void InitEnemies();
 
@@ -136,29 +141,29 @@ private:
 	// PLAYER SPECIFIC
 	// -------------------------------------------------------------------
 
-	void GetPlayerStartPosition(int& x, int& y);
+	void GetPlayerStartPosition(int& X, int& Y);
 
 	void InitPlayer(const std::vector<std::weak_ptr<Character>> player_characters);
 
-	void DisplayErrorMessage(const string& message);
+	static void DisplayErrorMessage(const string& Message);
 
 	// Used to display the discovered portion of the map
-	void ExtendMapBorders(int radius);
+	void ExtendMapBorders(int Radius);
 
-	void DrawMap(int xs, int xe, int ys, int ye);
+	void DrawMap(int Xs, int Xe, int Ys, int Ye);
 
 	// Gets the color of a specific unit
-	const char* GetMapAnsi(char c);
+	static const char* GetMapAnsi(char C);
 
-	// Calclate distance to each node
-	void BFS_Distance(int x, int y, int step);
+	// Calculate distance to each node
+	void BFS_Distance(int X, int Y, int Step);
 
-	void InitDistanceBFS(int x, int y, int step);
+	void InitDistanceBFS(int X, int Y, int Step);
 
 	// Move after input
-	void Move(int dir);
+	void Move(int MoveDir);
 
-	std::vector<std::weak_ptr<Character>> GetEnemies(int x, int y);
+	std::vector<std::weak_ptr<Character>> GetEnemies(int X, int Y);
 
 	// GRID SPECIFIC
 	// -------------------------------------------------------------------
@@ -177,66 +182,66 @@ private:
 	void ClearCharGrid();
 
 private:
-	std::vector<EnemyCharacter*> _enemies;
+	std::vector<EnemyCharacter*> Enemies;
 
-	class std::vector<std::weak_ptr<PlayerCharacter>> _player_characters;
+	class std::vector<std::weak_ptr<PlayerCharacter>> PlayerCharacters;
 
-	char** _map;
+	char** Map;
 
-	path_node** _nodes;
+	PathNode** Nodes;
 
-	int** _steps;
+	int** Steps;
 
-	int** _distance;
+	int** Distance;
 
-	std::vector<int> _distances;
+	std::vector<int> Distances;
 
-	std::vector<string> _error;
+	std::vector<string> Error;
 
-	std::vector<std::pair<int, int>> _turn;
+	std::vector<std::pair<int, int>> Turn;
 
-	int _step_limit;
+	int StepLimit;
 
-	int _moves;
-	int _dir;
+	int Moves;
+	int Dir;
 
-	int _dX[4] = { 0, 0, 1, -1 };
-	int _dY[4] = { 1, -1, 0, 0 };
+	int DX[4] = { 0, 0, 1, -1 };
+	int DY[4] = { 1, -1, 0, 0 };
 
-	int _total_steps = 0;
-	int _width = 0;
+	int TotalSteps = 0;
+	int Width = 0;
 
-	char _axis;
-	int _rnd1;
-	int _rnd2;
-	int _rnd_both;
-	int _axis_sides;
+	char Axis;
+	int Rnd1;
+	int Rnd2;
+	int RndBoth;
+	int AxisSides;
 
-	int _player_x;
-	int _player_y;
+	int PlayerX;
+	int PlayerY;
 
-	int _border_x = 0, _border_x_end = 0;
-	int _border_y = 0, _border_y_end = 0;
+	int BorderX = 0, BorderXEnd = 0;
+	int BorderY = 0, BorderYEnd = 0;
 
-	string _error_message;
+	string ErrorMessage;
 
-	std::vector<distance_node> _distances_nodes;
+	std::vector<DistanceNode> DistancesNodes;
 
-	std::vector<std::vector<std::shared_ptr<Character>>> _enemy_map; // this two vectors are aligned
-	std::vector<std::pair<int, int>> _enemy_map_xy;					 // this two vectors are aligned
-	std::vector<std::map<char, std::weak_ptr<Character>>> _enemy_name_map;
+	std::vector<std::vector<std::shared_ptr<Character>>> EnemyMap; // this two vectors are aligned
+	std::vector<std::pair<int, int>> EnemyMapXY;					 // this two vectors are aligned
+	std::vector<std::map<char, std::weak_ptr<Character>>> EnemyNameMap;
 
-	std::vector<int> _power_lvls;
+	std::vector<int> PowerLevels;
 
-	int _enemy_index;
+	int EnemyIndex;
 
 	// GRID SPECIFIC
 	// ------------------------------------------------------------------
-	char _grid[21][81];
-	grid_node _char_grid[5][10];
-	std::unordered_map<char, std::pair<int, int>> _char_map;
+	char Grid[21][81];
+	GridNode CharGrid[5][10];
+	std::unordered_map<char, std::pair<int, int>> CharMap;
 
-	std::vector<std::pair<int, int>> _enemy_start_positions = {
+	std::vector<std::pair<int, int>> EnemyStartPositions = {
 		{0, 9}, {0, 8},
 		{1, 9}, {1, 8},
 		{2, 9}, {2, 8},
@@ -244,6 +249,6 @@ private:
 		{4, 9}, {4, 8}
 	};
 
-	int _dX8[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
-	int _dY8[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+	int DX8[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+	int DY8[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 };

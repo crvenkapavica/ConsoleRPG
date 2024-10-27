@@ -13,40 +13,42 @@ class PlayerCharacter;
 class Item {
 public:
 	struct ItemProperties {
-		EItemId			Id = EItemId::NONE;
-		int				Level = 0;
-		int				MinDmg = 0;
-		int				MaxDmg = 0;
-		int				Armor = 0;
+		EItemId Id = EItemId::NONE;
+		int Level = 0;
+		int MinDmg = 0;
+		int MaxDmg = 0;
+		int Armor = 0;
 
-		float			Amount = 0.f;
+		float Amount = 0.f;
 
-		int				nAffixes = 0;
+		int nAffixes = 0;
 
-		int				Slots;
-		float			ArmorMod = 0.f;
-		float			WeaponMod = 0.f;
+		int Slots;
+		float ArmorMod = 0.f;
+		float WeaponMod = 0.f;
 
-		bool			bUsable = false;
-		bool			bUsableMap = false;
+		bool bUsable = false;
+		bool bUsableMap = false;
 
-		std::string		Name;
+		std::string Name;
 
-		EItemSlot		ItemSlot = EItemSlot::NONE;
-		EItemRarity		ItemRarity = EItemRarity::MISC;
-		EItemType		ItemType = EItemType::MISC;
-		EWeaponType		WeaponType = EWeaponType::NONE;
+		EItemSlot ItemSlot = EItemSlot::NONE;
+		EItemRarity ItemRarity = EItemRarity::MISC;
+		EItemType ItemType = EItemType::MISC;
+		EWeaponType WeaponType = EWeaponType::NONE;
 
-		ESpellID		Active = ESpellID::NONE;
-		ESpellID		Passive = ESpellID::NONE;
-		
-		EItemAffix		Affix1 = EItemAffix::NONE;
-		EItemAffix		Affix2 = EItemAffix::NONE;
-		EItemAffix		Affix3 = EItemAffix::NONE;
-		EItemAffix		Affix4 = EItemAffix::NONE;
+		ESpellID Active = ESpellID::NONE;
+		ESpellID Passive = ESpellID::NONE;
+
+		EItemAffix Affix1 = EItemAffix::NONE;
+		EItemAffix Affix2 = EItemAffix::NONE;
+		EItemAffix Affix3 = EItemAffix::NONE;
+		EItemAffix Affix4 = EItemAffix::NONE;
 	};
 
-	explicit Item(ItemProperties& ItemInfo);
+	explicit Item(const ItemProperties& ItemInfo);
+
+	explicit Item(ItemProperties&& ItemInfo);
 
 	// This will only be used for starting items [pre-determined]
 	// This will MAYBE be used for UNIQUE-s [pre-determined]
@@ -54,7 +56,7 @@ public:
 
 	// Calls CreateItem multiple times depending on power_Level of slain monsters and random roll chance.
 	static std::vector<std::unique_ptr<Item>> GenerateLoot(const weak_ptr<PlayerCharacter>& Player, const int PowerLevel);
-	
+
 	// Creates RANDOM item from BASE items + prefixes(max 1 - passive spell), suffixes(max 1 - active spell) and affixes(all other modifiers).
 	static std::unique_ptr<Item> CreateItem(const int PlayerLevel, const float MfBonus, const EItemType ItemType);
 
@@ -63,7 +65,7 @@ public:
 	static std::unique_ptr<Item> CreateItemById(const EItemId Id);
 
 	// Use the consumable, scroll, or an active spell of an item.
-	void Use(Character* Character);
+	void Use(Character* Character) const;
 
 public:
 	ItemProperties ItemInfo;
@@ -73,7 +75,7 @@ private:
 
 	// Calculates ILevel depending on player_Level and number of affixes(rarity)
 	static int CalculateItemLevel(const int PlayerLevel, const int nAffixes);
-	
+
 	// Generates an item slot depending on the item type
 	static void GenerateItemSlot(ItemProperties& ItemInfo);
 
@@ -91,7 +93,7 @@ private:
 
 	// Generate a random consumable from a consumable pool (might be usable in map or not)
 	static void GenerateRandomConsumable(ItemProperties& ItemInfo);
-	
+
 	// Generate a random scroll of any castable Active Spell (+ maybe some exclusive SCROLL SPELLS)
 	static void GenerateRandomScroll(ItemProperties& ItemInfo);
 };
