@@ -57,9 +57,9 @@ public:
 
 	void DestroyItem(unique_ptr<Item> item);
 	
-	[[nodiscard]] Item* DisplayEquippedItems() const;
+	void DisplayEquippedItems() const;
 	[[nodiscard]] Item* DisplayInventory() const;
-	[[nodiscard]] Item* DisplayConsumableSlots() const;
+	[[nodiscard]] const Item* DisplayConsumableSlots(Item* item1) const;
 	[[nodiscard]] ActiveSpell* DisplayActiveSpellSlots() const;
 	[[nodiscard]] PassiveSpell* DisplayPassiveSpellSlots() const;
 	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);

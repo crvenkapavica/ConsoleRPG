@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../RPGTypes.h"
 #include "../GameplayStatics.h" 
+#include "../RPGTypes.h"
 
 class Character;
 class EnemyCharacter;
@@ -75,9 +75,9 @@ public:
 
 	void DisplayGrid();
 
-	void MoveCharacterOnGrid(Character* character, EDirection direction);
+	void MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction);
 
-	bool AddCharacterToCharGrid(const std::shared_ptr<Character>& instigator, std::weak_ptr<Character> summon);
+	bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
 	int GetEnemyIdx(char alias);
 
@@ -92,9 +92,10 @@ public:
 
 	std::vector<string> GetCombatDirections(Character* character, OUT std::map<int, EDirection>& map);
 
-	std::vector<Character*> GetCharactersInRange(Character* character);
+	std::vector<Character*> GetCharactersInRange(const Character* InCharacter);
 
-	const int GetPowerLvl() const;
+	// inline?
+	[[nodiscard]] inline int GetPowerLvl() const { return _power_lvls[_enemy_index]; }
 
 private:
 	// BFS that generates map

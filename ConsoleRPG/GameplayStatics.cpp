@@ -1,4 +1,6 @@
 #include "GameplayStatics.h"
+
+#include <algorithm>
 #include "Characters/Character.h"
 #include "Characters/PlayerCharacter.h"
 #include "Characters/EnemyCharacter.h"
@@ -12,10 +14,8 @@
 #include "Resistances.h"
 #include "Items/Item.h"
 
-weak_ptr<Character> GameplayStatics::_player;
-vector<shared_ptr<Character>> GameplayStatics::_player_characters;
-SpellManager* GameplayStatics::_sm = nullptr;
-CombatManager* GameplayStatics::_cm = nullptr;
+weak_ptr<Character> GameplayStatics::Player;
+vector<shared_ptr<Character>> GameplayStatics::PlayerCharacters;
 MapGenerator* GameplayStatics::_map_gen = nullptr;
 ConsoleMenu* GameplayStatics::_menu = nullptr;
 vector<weak_ptr<Character>> GameplayStatics::_enemies;
@@ -23,15 +23,15 @@ vector<weak_ptr<Character>> GameplayStatics::_players;
 stringstream GameplayStatics::_combat_log; 
 
 
-void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& Players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& Menu) {
+void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& Players, MapGenerator&& map_generator, ConsoleMenu& Menu) {
 
 	cout << fixed << setprecision(2);
 
-	_player_characters = Players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
+	PlayerCharacters = Players;  // this is a vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
 								  // so it can be resurrected. if all player characters die in a combat, the player loses. Later we actually implement how to handle this.
 
-	_player = Players[0];
-	for (const auto& player : _player_characters)
+	Player = Players[0];
+	for (const auto& player : PlayerCharacters)
 		_players.push_back(player);
 
 	_sm = &spell_manager;
@@ -181,7 +181,7 @@ void GameplayStatics::DisplayMapMenu() {
 	DisplayMapMenuTitle();
 
 	// MAP LOOP
-	while (_player.lock()->IsAlive()) {
+	while (Player.lock()->IsAlive()) {
 		vector<string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS", "SPELLS", "STATS"};
 		int input = InteractiveDisplay(v);
 		HandleMapInput(input);
@@ -271,12 +271,12 @@ void GameplayStatics::RedrawGameScreen() {
 
 void GameplayStatics::InitiateCombatMode(vector<weak_ptr<Character>>&& enemies) {
 
-	_player.lock()->SetIsInCombat(true);
+	Player.lock()->SetIsInCombat(true);
 
 	_enemies = enemies;
 
-	_cm->SetTurns(_players, _enemies);
-	_cm->StartCombat(_player);
+	CombatManager::SetTurns(_players, _enemies);
+	_cm->StartCombat(Player);
 
 
 	//cout << "STR: " << _player.lock()->GetPlayerAttributes()._strength << "  BASE CRIT DMG: " << _player.lock()->GetCritDmg().GetBase() << "  ACTUAL CRIT DMG: " << _player.lock()->GetCritDmg().GetActual() << endl;
@@ -390,22 +390,22 @@ void GameplayStatics::HandleCombatInput(SummonCharacter* character, int input) {
 }
 
 void GameplayStatics::CombatMove() {
-	map<int, EDirection> direction_map;
-	vector<string> v = _map_gen->GetCombatDirections(_cm->GetTurnCharacter().lock().get(), direction_map);
-	v.push_back("<--BACK--<");
+	map<int, EDirection> DirectionMap;
+	vector<string> v = _map_gen->GetCombatDirections(CombatManager::GetTurnCharacter().lock().get(), DirectionMap);
+	v.emplace_back("<--BACK--<");
 
-	int input = InteractiveDisplay(v);
+	const int input = InteractiveDisplay(v);
 	if (input == -1) return;
 
-	_map_gen->MoveCharacterOnGrid(_cm->GetTurnCharacter().lock().get(), direction_map[input]);
+	_map_gen->MoveCharacterOnGrid(CombatManager::GetTurnCharacter().lock().get(), DirectionMap[input]);
 }
 
-void GameplayStatics::EnemyCombatMove(Character* character, OUT map<int, EDirection>& direction_map) {
-	vector<string> v = _map_gen->GetCombatDirections(character, direction_map);
+void GameplayStatics::EnemyCombatMove(Character* Enemy, OUT map<int, EDirection>& DirectionMap) {
+	vector<string> v = _map_gen->GetCombatDirections(Enemy, DirectionMap);
 }
 
-void GameplayStatics::MoveCharacterOnGrid(Character* character, EDirection direction) {
-	_map_gen->MoveCharacterOnGrid(character, direction);
+void GameplayStatics::MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction) {
+	_map_gen->MoveCharacterOnGrid(&InCharacter, Direction);
 }
 
 int GameplayStatics::GetPlayerIdx(char c) {
@@ -607,7 +607,7 @@ void GameplayStatics::DisplayCombatLog() {
 	const int max_lines = 49;
 	std::vector<string> lines;
 	int start_index;
-	ExtractLinesFromStringstream(lines, max_lines, _combat_log, start_index);
+	ExtractLinesFromStringStream(lines, max_lines, _combat_log, start_index);
 
 	for (int i = start_index; i < lines.size(); i++) {
 		std::cout << CURSOR_LOG_RIGHT << lines[i];
@@ -618,50 +618,47 @@ void GameplayStatics::DisplayCombatLog() {
 	_menu->ANSI_CURSOR_DOWN_N(21 + e_size + s_size + static_cast<int>(_players.size()));
 }
 
-void GameplayStatics::ExtractLinesFromStringstream(OUT std::vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index) {
-	string content = ss.str();
-	if (content == "") ss << fixed << setprecision(2);
+void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<string>& Lines, const int MaxLines, stringstream& Buffer, OUT int& StartIndex) {
+	const string content = Buffer.str();
+	if (content.empty()) Buffer << fixed << setprecision(2);
 	int start = 0;
 
 	for (int i = 0; i < content.size(); ++i) {
 		if (content[i] == '\n' || i == content.size() - 1) {
 			string line = content.substr(start, i - start + 1);
-			lines.push_back(line);
+			Lines.push_back(line);
 			start = i + 1;
 		}
 	}
-	start_index = max(0, static_cast<int>(lines.size()) - max_lines);
+	StartIndex = std::max(0, static_cast<int>(Lines.size()) - MaxLines);
 }
 
-std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(Character* character) {
-	if (character->GetTeam() == 1) {
+std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(const Character& InCharacter) {
+	if (InCharacter.GetTeam() == 1) {
 		for (const auto& player : _players)
-			if (player.lock()->GetAlias() == character->GetAlias())
+			if (player.lock()->GetAlias() == InCharacter.GetAlias())
 				return player;
 	}
 	else {
 		for (const auto& enemy : _enemies)
-			if (enemy.lock()->GetAlias() == character->GetAlias())
+			if (enemy.lock()->GetAlias() == InCharacter.GetAlias())
 				return enemy;
 	}
-	return weak_ptr<Character>();
+	return {};
 }
 
-std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(Character* character) {
-	if (character->GetTeam() == 1) {
-		for (const auto& player : _players) {
-			auto shared = player.lock();
-			if (shared && shared->GetAlias() == character->GetAlias())
-				return shared;
-		}
+std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(const Character& InCharacter) {
+	
+	if (InCharacter.GetTeam() == 1) {
+		for (const auto& player : _players)
+			if (auto sharedPlayer = player.lock();
+				sharedPlayer && sharedPlayer->GetAlias() == InCharacter.GetAlias()) return sharedPlayer;
 	}
-	else {
-		for (const auto& enemy : _enemies) {
-			auto shared = enemy.lock();
-			if (shared && shared->GetAlias() == character->GetAlias())
-				return shared;
-		}
-	}
+	else
+		for (const auto& enemy : _enemies)
+			if (auto sharedEnemy = enemy.lock();
+				sharedEnemy && sharedEnemy->GetAlias() == InCharacter.GetAlias()) return sharedEnemy;
+	
 	return nullptr;
 }
 
@@ -673,39 +670,40 @@ std::vector<weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
 	return _enemies;
 }
 
-float GameplayStatics::ApplyDamage(weak_ptr<Character> instigator, Character* target, float damage, unique_ptr<ActiveSpell>& spell, bool isOnApply) {
-	RPG_ASSERT(!instigator.expired(), "ApplyDamage");
+float GameplayStatics::ApplyDamage(const weak_ptr<Character>& Instigator, Character* Target, float Damage, const unique_ptr<ActiveSpell>& Spell, bool bIsOnApply) {
+	RPG_ASSERT(!Instigator.expired(), "ApplyDamage")
 
-	damage = float2(damage);
-	float actual_damage;
-	if (spell->GetDamageType() != EDamageType::PURE)
-		actual_damage = Resistances::CalculateDamage(damage, spell->GetDamageType(), target);
-	else actual_damage = damage;
-	float resisted = float2(damage - actual_damage);   // resisted / armor blocked - znaci change i u combat logu...ovisno o damage type..
+	Damage = Float2(Damage);
+	float ActualDamage;
+	if (Spell->GetDamageType() != EDamageType::PURE)
+		ActualDamage = Resistances::CalculateDamage(Damage, Spell->GetDamageType(), Target);
+	else ActualDamage = Damage;
+	const float Resisted = Float2(Damage - ActualDamage);   // resisted / armor blocked - znaci change i u combat logu...ovisno o damage type..
 
 	// POGLEDATI ZAKAJ TU IMA IKAKSE VEZE BOOLEAN
 	//==============================================
 	auto& s = GetCombatLogStream();
-	const string C = GetAliasColor(instigator.lock().get()->GetAlias());
-	const string CT = GetAliasColor(target->GetAlias());
-	if (isOnApply) s << CT << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
-	else s << C << target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << actual_damage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	const string C = GetAliasColor(Instigator.lock()->GetAlias());
+	const string CT = GetAliasColor(Target->GetAlias());
+	if (bIsOnApply) s << CT << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	else s << C << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
 	//==============================================
 
-	return actual_damage;
+	return ActualDamage;
 }
 
-void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>& targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params) {
-	const string C = GetAliasColor(instigator->GetAlias());
+void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& Instigator, std::vector<weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
+								  const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams) {
+	const string C = GetAliasColor(Instigator->GetAlias());
 	auto& s = GetCombatLogStream();
-	s << C << instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(spell->GetId()) << COLOR_COMBAT_LOG << ".\n";
+	s << C << Instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << ".\n";
 
-	std::shared_ptr<CombatEffect> effect = std::make_shared<CombatEffect>(move(instigator), targets, spell, apply_params, effect_params, SpellDb::Data[spell->GetId()][spell->GetLvl()].Duration);
-	_cm->AddCombatEffect(std::move(effect));
+	auto effect = std::make_shared<CombatEffect>(std::move(Instigator), Targets, Spell, ApplyParams, EffectParams, SpellDb::Data[Spell->GetId()][Spell->GetLvl()].Duration);
+	CombatManager->AddCombatEffect(std::move(effect));
 }
 
-void GameplayStatics::KillEnemy(int idx) {
-	_map_gen->KillEnemy(idx);
+void GameplayStatics::KillEnemy(int Idx) {
+	_map_gen->KillEnemy(Idx);
 }
 
 void GameplayStatics::EndTurn(Character* character) {
@@ -714,101 +712,99 @@ void GameplayStatics::EndTurn(Character* character) {
 
 
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
-bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon) {
-	return _map_gen->AddCharacterToCharGrid(instigator, summon);
+bool GameplayStatics::AddCharacterToCharGrid(const shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon) {
+	return _map_gen->AddCharacterToCharGrid(Instigator, Summon);
 }
 
 ////////////////////////////////////////////////
 
 void GameplayStatics::RollLoot() {
-	for (const auto& player : _player_characters) {
-		auto loot = move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 360));
-		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), move(loot));
+	for (const auto& player : PlayerCharacters) {
+		auto loot = std::move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 360));
+		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), std::move(loot));
 	}
 }
 
-void GameplayStatics::DisplayLoot(weak_ptr<PlayerCharacter> character, std::vector<std::unique_ptr<Item>> loot) {
+void GameplayStatics::DisplayLoot(const weak_ptr<PlayerCharacter>& Character, std::vector<std::unique_ptr<Item>> Loot) {
 	system("cls");
-	if (loot.size()) {
-		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << "'s loot!. (" << loot.size() << ")" << "\nChoose which items you want to keep.\n";
+	if (!Loot.empty()) {
+		cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
 
-		int input;
-		vector<string> v;
 		vector<Item*> items;
-
-		while (loot.size()) {
-			v = { "--> ALL ITEMS <--" };
+		vector<string> v = { "--> ALL ITEMS <--" };
+		
+		while (!Loot.empty()) {
 			items.clear();
-			for (const auto& item : loot) {
+			for (const auto& item : Loot) {
 				v.push_back(item->ItemInfo.Name);
 				items.push_back(item.get());
 			}
-			v.push_back("<--BACK--<");
+			v.emplace_back("<--BACK--<");
 
-			input = InteractiveDisplay(v, 0, true, items);
+			const int input = InteractiveDisplay(v, 0, true, items);
 			if (input == -1) break;
 			if (input == 0) { // add all items
-				if (character.lock()->GetInventorySpace() >= loot.size()) {
-					for (auto& item : loot)
-						if (item) character.lock()->AddItemToInventory(move(item));
+				if (Character.lock()->GetInventorySpace() >= Loot.size()) {
+					for (auto& item : Loot)
+						if (item) Character.lock()->AddItemToInventory(std::move(item));
 					break;
 				}
 				else {
-					cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << character.lock()->GetInventorySpace() << ")\n";
+					cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.lock()->GetInventorySpace() << ")\n";
 				}
 			}
 			else { // add selected item
-				if (character.lock()->GetInventorySpace() > 0) {
-					character.lock()->AddItemToInventory(move(loot[input - 1]));
-					loot.erase(std::find(loot.begin(), loot.end(), nullptr));
+				if (Character.lock()->GetInventorySpace() > 0) {
+					Character.lock()->AddItemToInventory(std::move(Loot[input - 1]));
+					Loot.erase(std::find(Loot.begin(), Loot.end(),nullptr));
 
 					v = { "--> ALL ITEMS <--" };
-					for (const auto& item : loot)
+					for (const auto& item : Loot)
 						v.push_back(item->ItemInfo.Name);
-					v.push_back("<--BACK--<");
+					v.emplace_back("<--BACK--<");
 				}
 				else {
-					cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << character.lock()->GetInventorySpace() << ")\n";
+					cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.lock()->GetInventorySpace() << ")\n";
 				}
 			}
 		}
 	}
 	else {
-		cout << COLOR_LOOT << GetEnumString(character.lock()->GetClass()) << " received no loot this time.\n";
+		cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << " received no loot this time.\n";
 		system("pause");
 	}
 }
 
 
-string GameplayStatics::GetAliasColor(char alias) {
-	if (UPPER(alias) >= 'A' && UPPER(alias) <= 'Z') return COLOR_ENEMY;
+string GameplayStatics::GetAliasColor(const char Alias) {
+	if (UPPER(Alias) >= 'A' && UPPER(Alias) <= 'Z') return COLOR_ENEMY;
 	else return COLOR_PLAYER;
 }
 
-string GameplayStatics::string2(float f) {
+string GameplayStatics::String2(const float F) {
 	std::stringstream ss;
-	ss << std::fixed << std::setprecision(2) << f;
+	ss << std::fixed << std::setprecision(2) << F;
 	return ss.str();
 }
 
-float GameplayStatics::float2(float f) {
-	return round(f * 100) / 100;
+float GameplayStatics::Float2(const float F) {
+	return round(F * 100) / 100;
 }
 
-int GameplayStatics::GetRandInt(int a, int b) {
+int GameplayStatics::GetRandInt(const int A, const int B) {
 	static std::mt19937 generator(std::random_device{}());
-	std::uniform_int_distribution<int> distribution(a, b);
+	std::uniform_int_distribution<int> distribution(A, B);
 	return distribution(generator);
 }
 
-float GameplayStatics::GetRandFloat(float a, float b) {
+float GameplayStatics::GetRandFloat(const float A, const float B) {
 	static std::mt19937 generator(std::random_device{}());
-	std::uniform_real_distribution<float> distribution(a, b);
-	return float2(distribution(generator));
+	std::uniform_real_distribution<float> distribution(A, B);
+	return Float2(distribution(generator));
 }
 
-std::string GameplayStatics::GetEnumString(ESpellID _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(const ESpellID Enum) {
+	switch (Enum) {
 	case ESpellID::FIREBALL:
 		return "FIREBALL";
 	case ESpellID::BURNING:
@@ -845,8 +841,8 @@ std::string GameplayStatics::GetEnumString(ESpellID _enum) {
 }
 
 
-std::string GameplayStatics::GetTypeString(int _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetTypeString(int Enum) {
+	switch (Enum) {
 	case 0:
 		return "NONE";
 	case 1:
@@ -858,8 +854,8 @@ std::string GameplayStatics::GetTypeString(int _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(ESpellType _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(ESpellType Enum) {
+	switch (Enum) {
 	case ESpellType::NONE:
 		return "NONE";
 	case ESpellType::BUFF:
@@ -873,8 +869,8 @@ std::string GameplayStatics::GetEnumString(ESpellType _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(ESpellActivity _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(ESpellActivity Enum) {
+	switch (Enum) {
 	case ESpellActivity::PASSIVE:
 		return "PASIVE";
 	case ESpellActivity::ACTIVE:
@@ -884,8 +880,8 @@ std::string GameplayStatics::GetEnumString(ESpellActivity _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EDamageType _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(EDamageType Enum) {
+	switch (Enum) {
 	case EDamageType::NONE:
 		return "NONE";
 	case EDamageType::ARCANE:
@@ -903,10 +899,10 @@ std::string GameplayStatics::GetEnumString(EDamageType _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(ECharacterClass _enum) {
+std::string GameplayStatics::GetEnumString(ECharacterClass Enum) {
 
 
-	switch (_enum) {
+	switch (Enum) {
 	case ECharacterClass::BARBARIAN:
 		return "BARBARIAN";
 	case ECharacterClass::WARLOCK:
@@ -938,8 +934,8 @@ std::string GameplayStatics::GetEnumString(ECharacterClass _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EItemSlot _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(EItemSlot Enum) {
+	switch (Enum) {
 	case EItemSlot::NONE:
 		return "None";
 	case EItemSlot::HEAD:
@@ -970,8 +966,8 @@ std::string GameplayStatics::GetEnumString(EItemSlot _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EWeaponType _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(EWeaponType Enum) {
+	switch (Enum) {
 	case EWeaponType::NONE:
 		return "None";
 	case EWeaponType::STAFF:
@@ -999,8 +995,8 @@ std::string GameplayStatics::GetEnumString(EWeaponType _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EItemRarity _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(EItemRarity Enum) {
+	switch (Enum) {
 	case EItemRarity::COMMON:
 		return "Common";
 	case EItemRarity::RARE:
@@ -1018,8 +1014,8 @@ std::string GameplayStatics::GetEnumString(EItemRarity _enum) {
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EItemType _enum) {
-	switch (_enum) {
+std::string GameplayStatics::GetEnumString(EItemType Enum) {
+	switch (Enum) {
 	case EItemType::CONSUMABLE:
 		return "Consumable";
 	case EItemType::SCROLL:

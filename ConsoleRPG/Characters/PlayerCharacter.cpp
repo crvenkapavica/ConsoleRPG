@@ -111,11 +111,9 @@ void PlayerCharacter::DestroyItem(unique_ptr<Item> item) {
 	CalcInvSlots();
 }
 
-Item* PlayerCharacter::DisplayEquippedItems() const {
+void PlayerCharacter::DisplayEquippedItems() const {
 	for (const auto& item : _item_slots) 
 		if (item) cout << GameplayStatics::GetEnumString(item->ItemInfo.ItemSlot) << " --> " << item->ItemInfo.Name << '\n';
-
-	return nullptr;
 }
 
 Item* PlayerCharacter::DisplayInventory() const {
@@ -129,8 +127,10 @@ Item* PlayerCharacter::DisplayInventory() const {
 	return nullptr;
 }
 
-Item* PlayerCharacter::DisplayConsumableSlots() const {
-	return nullptr;
+const Item* PlayerCharacter::DisplayConsumableSlots(Item* item1) const {
+
+	Item* i = _inventory.at(0).get();
+	return i;
 }
 
 ActiveSpell* PlayerCharacter::DisplayActiveSpellSlots() const {

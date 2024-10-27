@@ -110,14 +110,14 @@ public:
 	inline Stat& GetSpellCritChance() { return _spell_crit_chance; }
 	inline Stat& GetSpellCritDmg() { return _spell_crit_damage; }
 
-	inline const ECharacterClass GetClass() const { return _class; }
-	inline const char GetAlias() const { return _alias; }
+	inline ECharacterClass GetClass() const { return _class; }
+	inline char GetAlias() const { return _alias; }
 	inline void SetAlias(char value) { _alias = value; }
-	inline const int GetLevel() const { return _lvl; }
-	inline const bool IsInCombat() const { return _bIsInCombat; }
-	inline const bool IsAlive() const { return _bIsAlive; }
-	inline const bool IsOnTurn() const { return _bIsOnTurn; }
-	inline const int GetTeam() const { return _team; }
+	inline int GetLevel() const { return _lvl; }
+	inline bool IsInCombat() const { return _bIsInCombat; }
+	inline bool IsAlive() const { return _bIsAlive; }
+	inline bool IsOnTurn() const { return _bIsOnTurn; }
+	inline int GetTeam() const { return _team; }
 	inline void SetIsOnTurn(bool value) { _bIsOnTurn = value; }
 	inline void SetIsInCombat(bool in_combat) { _bIsInCombat = in_combat; }
 	inline const PlayerAttributes& GetPlayerAttributes() { return _player_attributes; }

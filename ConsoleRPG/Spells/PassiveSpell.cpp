@@ -33,7 +33,7 @@ void VampiricTouch::Apply() {
 
 stringstream& VampiricTouch::GetTooltip() {
 	if (_tooltip.str().empty()) {
-		_tooltip << CI << "Drains all afflicted targets for " << CV << GameplayStatics::float2(_value) << CI << " damage and transfers it to the caster.\n";
+		_tooltip << CI << "Drains all afflicted targets for " << CV << GameplayStatics::Float2(_value) << CI << " damage and transfers it to the caster.\n";
 	}
 	return _tooltip;
 }

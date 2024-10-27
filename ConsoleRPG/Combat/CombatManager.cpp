@@ -303,7 +303,7 @@ void CombatManager::RemoveDeadCharacters() {
 		else ++it;
 	}
 
-	if (all_of(_enemies.begin(), _enemies.end(), [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
+	if (ranges::all_of(_enemies, [](const weak_ptr<Character>& wp) { return wp.expired(); })) {
 		ExitCombatMode();
 	}
 }

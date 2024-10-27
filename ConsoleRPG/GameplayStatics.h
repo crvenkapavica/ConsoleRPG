@@ -18,7 +18,7 @@ struct ApplyParams;
 class GameplayStatics {
 
 public:
-	static void Initialize(vector<shared_ptr<Character>>&& Players, SpellManager& spell_manager, CombatManager& combat_manager, MapGenerator&& map_generator, ConsoleMenu& Menu);
+	static void Initialize(vector<shared_ptr<Character>>&& Players, MapGenerator&& map_generator, ConsoleMenu& Menu);
 
 	static void DisplayAllies();
 	static void DisplayEnemies();
@@ -50,9 +50,9 @@ public:
 	static void HandleCombatInput(SummonCharacter* character, int input);
 	
 	static void CombatMove();
-	static void EnemyCombatMove(Character* character, OUT map<int, EDirection>& direction_map);
-	static void MoveCharacterOnGrid(Character* character, EDirection direction);
-
+	static void EnemyCombatMove(Character* Enemy, OUT map<int, EDirection>& DirectionMap);
+	static void MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction);
+	 
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
 
@@ -73,55 +73,54 @@ public:
 
 	static stringstream& GetCombatLogStream() { return _combat_log; }
 	static void DisplayCombatLog();
-	static void ExtractLinesFromStringstream(OUT std::vector<string>& lines, const int max_lines, stringstream& ss, OUT int& start_index);
+	static void ExtractLinesFromStringStream(OUT std::vector<string>& Lines, const int MaxLines, stringstream& Buffer, OUT int& StartIndex);
 
-	static std::weak_ptr<Character> GetWeakCharacter(Character* character);
-	static std::shared_ptr<Character> GetSharedCharacter(Character* character);
+	static std::weak_ptr<Character> GetWeakCharacter(const Character& InCharacter);
+	static std::shared_ptr<Character> GetSharedCharacter(const Character& InCharacter);
 
 	static std::vector<weak_ptr<Character>> GetPlayerCharacters();
 	static std::vector<weak_ptr<Character>> GetEnemyCharacters();
 
-	static float ApplyDamage(std::weak_ptr<Character> instigator, Character* target, float damage, std::unique_ptr<ActiveSpell>& spell, bool isOnApply);
-	static void ApplyEffect(std::shared_ptr<Character>& instigator, std::vector<weak_ptr<Character>>&targets, std::unique_ptr<ActiveSpell> spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params);
+	static float ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, bool bIsOnApply);
+	static void ApplyEffect(std::shared_ptr<Character>& Instigator, std::vector<weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
+							const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams);
 
-	static void KillEnemy(int idx);
+	static void KillEnemy(int Idx);
 
 	static void EndTurn(Character* character);
 
-	static bool AddCharacterToCharGrid(const shared_ptr<Character>& instigator, std::weak_ptr<Character> summon);
+	static bool AddCharacterToCharGrid(const shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
 	static void RollLoot();
 	
-	static void DisplayLoot(weak_ptr<PlayerCharacter> character, std::vector<std::unique_ptr<Item>> loot);
+	static void DisplayLoot(const weak_ptr<PlayerCharacter>& Character, std::vector<std::unique_ptr<Item>> Loot);
 
-	static string GetAliasColor(char alias);
+	static string GetAliasColor(char Alias);
 
-	static string string2(float f);
-	static float float2(float f);
+	static string String2(float F);
+	static float Float2(float F);
 
-	static int GetRandInt(int a, int b);
-	static float GetRandFloat(float a, float b);
+	static int GetRandInt(int A, int B);
+	static float GetRandFloat(float A, float B);
 
 public:
-	static std::string GetEnumString(ESpellID _enum);
-	static std::string GetEnumString(ESpellType _enum);
-	static std::string GetEnumString(ESpellActivity _enum);
-	static std::string GetEnumString(EDamageType _enum);
-	static std::string GetTypeString(int _enum);
-	static std::string GetEnumString(ECharacterClass _enum);
-	static std::string GetEnumString(EItemSlot _enum);
-	static std::string GetEnumString(EWeaponType _enum);
-	static std::string GetEnumString(EItemRarity _enum);
-	static std::string GetEnumString(EItemType _enum);
+	static std::string GetEnumString(ESpellID Enum);
+	static std::string GetEnumString(ESpellType Enum);
+	static std::string GetEnumString(ESpellActivity Enum);
+	static std::string GetEnumString(EDamageType Enum);
+	static std::string GetTypeString(int Enum);
+	static std::string GetEnumString(ECharacterClass Enum);
+	static std::string GetEnumString(EItemSlot Enum);
+	static std::string GetEnumString(EWeaponType Enum);
+	static std::string GetEnumString(EItemRarity Enum);
+	static std::string GetEnumString(EItemType Enum);
 
 private:
 	GameplayStatics() = delete;
 
 private:
-	static weak_ptr<Character>				_player;
-	static vector<shared_ptr<Character>>	_player_characters;
-	static SpellManager*	_sm;
-	static CombatManager*	_cm;
+	static weak_ptr<Character>				Player;
+	static vector<shared_ptr<Character>>	PlayerCharacters;
 	static MapGenerator*	_map_gen;
 	static ConsoleMenu*		_menu;
 
