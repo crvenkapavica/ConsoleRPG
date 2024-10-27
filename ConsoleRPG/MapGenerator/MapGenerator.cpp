@@ -1,4 +1,6 @@
 #include "MapGenerator.h"
+
+#include <algorithm>
 #include "../Characters/Character.h"
 #include "../Characters/CharacterData.h"
 #include "../Characters/EnemyCharacter.h"
@@ -8,7 +10,7 @@
 
 using namespace std;
 
-void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& PlayerCharacters) {
+void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters) {
 
 	Map = new char* [MAX_X];
 	for (int i = 0; i < MAX_X; i++) Map[i] = new char[MAX_Y];
@@ -23,7 +25,7 @@ void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& Playe
 	for (int i = 0; i < MAX_X; i++) Distance[i] = new int[MAX_Y]();
 
 	InitBFS();
-	InitPlayer(PlayerCharacters);
+	InitPlayer(InPlayerCharacters);
 	InitDistanceBFS(PlayerX, PlayerY, 0);
 	InitEnemies();
 }
@@ -248,7 +250,7 @@ void MapGenerator::GetRandomRectangle(const int X, const int Y) const {
 	}
 }
 
-void MapGenerator::PrintDebugMap() {
+void MapGenerator::PrintDebugMap() const {
 
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
@@ -259,42 +261,40 @@ void MapGenerator::PrintDebugMap() {
 	cout << ANSI_COLOR_RESET << '\n';
 }
 
-void MapGenerator::PrintError() {
-	for (int i = 0; i < Error.size(); i++)
-		cout << Error[i] << '\n';
+void MapGenerator::PrintError() const {
+	for (const auto& e : Error)
+		std::cout << e << '\n';
 }
 
-void MapGenerator::MakeDebugMessage(int Steps, string Func) {
-
-	string s = to_string(Steps) + ":  ---" + Func;
+void MapGenerator::MakeDebugMessage(const int InSteps, const string& Func) {
+	const string s = to_string(InSteps) + ":  ---" + Func;
 	Error.push_back(s);
 }
 
 
-void MapGenerator::GetPlayerStartPosition(int& X, int& Y) {
+void MapGenerator::GetPlayerStartPosition(int& X, int& Y) const {
 	do {
 		X = rand() % MAX_X;
 		Y = rand() & MAX_Y;
 	} while (Map[X][Y] != PATH);
 }
 
-void MapGenerator::InitPlayer(const vector<weak_ptr<Character>> player_characters) {
+void MapGenerator::InitPlayer(const vector<weak_ptr<Character>>& InPlayerCharacters) {
 
-	for (auto& player : player_characters) {
-		PlayerCharacters.push_back(std::static_pointer_cast<PlayerCharacter>(player.lock()));
-	}
+	for (const auto& Player : InPlayerCharacters)
+		PlayerCharacters.push_back(std::static_pointer_cast<PlayerCharacter>(Player.lock()));
 
 	GetPlayerStartPosition(PlayerX, PlayerY);
 	
 	BorderX = PlayerX - static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius()) + 1;
-	if (BorderX < 2) BorderX = 2;
+	BorderX = std::max(BorderX, 2);
 	BorderXEnd = PlayerX + static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
-	if (BorderXEnd > MAX_X - 2) BorderXEnd = MAX_X - 2;
+	BorderXEnd = std::min(BorderXEnd, MAX_X - 2);
 	BorderY = PlayerY - static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius()) + 1;
-	if (BorderY < 2) BorderY = 2;
+	BorderY = std::max(BorderY, 2);
 	BorderYEnd = PlayerY + static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
-	if (BorderYEnd > MAX_Y - 2) BorderYEnd = MAX_Y - 2;
-	
+	BorderYEnd = std::min(BorderYEnd, MAX_Y - 2);
+
 	Map[PlayerX][PlayerY] = PLAYER;
 }
 
@@ -496,16 +496,16 @@ void MapGenerator::AddRandomMapEnemies() {
 				vector<int> CharClasses;
 
 				while (PowerLevel) {
-					if (int RandomClass = rand() % 6 + 50; PowerLevel - CharDB::_data[static_cast<ECharacterClass>(RandomClass)].PowerLevel >= 0) {
+					if (int RandomClass = rand() % 6 + 50; PowerLevel - CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel >= 0) {
 						++RandomEnemies;
 						CharClasses.push_back(RandomClass);
-						TotalPower += CharDB::_data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
-						PowerLevel -= CharDB::_data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
+						TotalPower += CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
+						PowerLevel -= CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
 						if (RandomEnemies == 7) {
 							++RandomEnemies;
 							const int TempPowerLevel = PowerLevel > 6 ? 6 : PowerLevel;
 							CharClasses.push_back(50 + TempPowerLevel - 1);
-							TotalPower += CharDB::_data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
+							TotalPower += CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
 							PowerLevel -= TempPowerLevel;
 							break;
 						}

@@ -60,7 +60,7 @@ class MapGenerator {
 public:
 	MapGenerator() = delete;
 
-	void Initialize(const std::vector<std::weak_ptr<Character>>& PlayerCharacters);
+	void Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters);
 
 	// Shows the current player position on the map with radius of light_radius
 	void ShowPosition();
@@ -73,9 +73,9 @@ public:
 
 	// DEBUG
 	/////////////////////////////////
-	void PrintDebugMap();
+	void PrintDebugMap() const;
 
-	void PrintError();
+	void PrintError() const;
 	/////////////////////////////////
 
 	void DisplayGrid() const;
@@ -128,7 +128,7 @@ private:
 
 	void DisableLocation(int X, int Y) const;
 
-	void MakeDebugMessage(int Steps, string Func);
+	void MakeDebugMessage(int InSteps, const string& Func);
 
 	// Makes a random rectangle segment
 	void GetRandomRectangle(int X, int Y) const;
@@ -141,9 +141,9 @@ private:
 	// PLAYER SPECIFIC
 	// -------------------------------------------------------------------
 
-	void GetPlayerStartPosition(int& X, int& Y);
+	void GetPlayerStartPosition(int& X, int& Y) const;
 
-	void InitPlayer(const std::vector<std::weak_ptr<Character>> player_characters);
+	void InitPlayer(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters);
 
 	static void DisplayErrorMessage(const string& Message);
 
@@ -212,9 +212,9 @@ private:
 	int Width = 0;
 
 	char Axis;
-	int Rnd1;
-	int Rnd2;
-	int RndBoth;
+	int Random1;
+	int Random2;
+	int RandomBoth;
 	int AxisSides;
 
 	int PlayerX;

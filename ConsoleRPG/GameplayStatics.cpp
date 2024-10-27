@@ -227,20 +227,23 @@ void GameplayStatics::DisplayItemMenu() {
 	PlayerCharacter* player;
 	if ((player = GetPlayer()) == nullptr) return;
 
-	bool bIsEquiped = false;
+	bool bIsEquipped = false;
 	unique_ptr<Item> item;
-	if (!(item = player->DisplayAllItems(bIsEquiped))) return;
+	if (!(item = player->DisplayAllItems(bIsEquipped))) return;
+
+
+	player->DestroyItem(make_unique<Item>(Item::ItemProperties()));
 	
 	vector<string> v;
 	int input;
-	if (bIsEquiped) {
+	if (bIsEquipped) {
 		v = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((input = InteractiveDisplay(v)) == -1) {
 			player->EquipItem(move(item));
 			return;
 		}
 		if (input == 0) player->UnEquipItem(move(item));
-		else player->DestroyItem(move(item));
+		else player->DestroyItem(&item);
 	}
 	else {
 		v = { "EQUIP", "DESTROY", "<--BACK--<" };

@@ -4,62 +4,62 @@
 #include "../Resistances.h"
 
 struct CharacterData {
-	ECharacterClass _class;
+	ECharacterClass CharacterClass;
 
-	float _health;
-	float _essence;
-	float _stamina;
-	float _armor;
+	float Health;
+	float Essence;
+	float Stamina;
+	float Armor;
 
-	float _attack_power;
-	float _crit_chance;
-	float _crit_damage;
+	float AttackPower;
+	float CritChance;
+	float CritDamage;
 
-	float _spell_power;
-	float _spell_crit_chance;
-	float _spell_crit_damage;
+	float SpellPower;
+	float SpellCritChance;
+	float SpellCritDamage;
 
-	EDamageType	_damage_type;
+	EDamageType	DamageType;
 
-	Resistances _resistances;
+	Resistances Resistances;
 
-	std::pair<ESpellID, int> _spell1;
-	std::pair<ESpellID, int> _spell2;
-	std::pair<ESpellID, int> _spell3;
-	std::pair<ESpellID, int> _spell4;
+	std::pair<ESpellID, int> Spell1;
+	std::pair<ESpellID, int> Spell2;
+	std::pair<ESpellID, int> Spell3;
+	std::pair<ESpellID, int> Spell4;
 
-	std::pair<ESpellID, int> _passive1;
-	std::pair<ESpellID, int> _passive2;
+	std::pair<ESpellID, int> Passive1;
+	std::pair<ESpellID, int> Passive2;
 
-	std::pair<EItemSlot, EItemId> slot_mh;
-	std::pair<EItemSlot, EItemId> slot_oh;
+	std::pair<EItemSlot, EItemId> SlotMainHand;
+	std::pair<EItemSlot, EItemId> SlotOffHand;
 
 	int PowerLevel;
 };
 
 struct PlayerAttributes {
-	Attribute		_strength;
-	Attribute		_agility;
-	Attribute		_intelligence;
+	Attribute		Strength;
+	Attribute		Agility;
+	Attribute		Intelligence;
 
-	Attribute		_vitality;
-	Attribute		_consciousness;
-	Attribute		_endurance;
+	Attribute		Vitality;
+	Attribute		Consciousness;
+	Attribute		Endurance;
 };
 
-class CharDB {
+class CharDb {
 public:
-	static std::unordered_map<ECharacterClass, CharacterData> _data;
-	static std::unordered_map<ECharacterClass, PlayerAttributes> _attributes;
+	CharDb() = delete;
+	static std::unordered_map<ECharacterClass, CharacterData> Data;
+	static std::unordered_map<ECharacterClass, PlayerAttributes> Attributes;
+	
 private:
-	CharDB() = delete;
-
 	static struct CharacterDataConstructor {
 		CharacterDataConstructor();
-	} _character_data_constructor;
+	} CharacterData;
 	static struct PlayerAttributesConstructor {
 		PlayerAttributesConstructor();
-	} _player_attributes_constructor;
+	} PlayerAttributes;
 };
 
 

@@ -8,7 +8,7 @@
 int EnemyCharacter::_n = 0;
 
 EnemyCharacter::EnemyCharacter(ECharacterClass character_class)
-	: Character(CharDB::_data[character_class], 'A' + _n++)
+	: Character(CharDb::Data[character_class], 'A' + _n++)
 	, _level(0)
 	, _count(0)
 {}

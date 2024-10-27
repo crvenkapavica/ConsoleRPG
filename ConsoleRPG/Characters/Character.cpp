@@ -10,30 +10,30 @@ Character::Character(CharacterData data, PlayerAttributes attributes, char alias
 	, _team(1)
 {
 	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_attack_power = data._attack_power;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-	_spell_power = data._spell_power;
-	_spell_crit_chance = data._spell_crit_chance;
-	_spell_crit_damage = data._spell_crit_damage;
-	_damage_type = data._damage_type;
-	_resistances = data._resistances;
+	_health = data.Health;
+	_essence = data.Essence;
+	_stamina = data.Stamina;
+	_armor = data.Armor;
+	_attack_power = data.AttackPower;
+	_crit_chance = data.CritChance;
+	_crit_damage = data.CritDamage;
+	_spell_power = data.SpellPower;
+	_spell_crit_chance = data.SpellCritChance;
+	_spell_crit_damage = data.SpellCritDamage;
+	_damage_type = data.DamageType;
+	_resistances = data.Resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, data._spell1.first);
-	sm.CreateActiveSpell(this, data._spell2.first);
-	sm.CreateActiveSpell(this, data._spell3.first);
-	sm.CreateActiveSpell(this, data._spell4.first);
+	sm.CreateActiveSpell(this, data.Spell1.first);
+	sm.CreateActiveSpell(this, data.Spell2.first);
+	sm.CreateActiveSpell(this, data.Spell3.first);
+	sm.CreateActiveSpell(this, data.Spell4.first);
 
 	sm.CreateActiveSpell(this, ESpellID::MELEE);
 	sm.CreateActiveSpell(this, ESpellID::RANGED);
 
-	sm.CreatePassiveSpell(this, data._passive1.first);
-	sm.CreatePassiveSpell(this, data._passive2.first);
+	sm.CreatePassiveSpell(this, data.Passive1.first);
+	sm.CreatePassiveSpell(this, data.Passive2.first);
 
 	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
 
@@ -48,30 +48,30 @@ Character::Character(CharacterData data, char alias)
 	, _team(2)
 {
 	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_attack_power = data._attack_power;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-	_spell_power = data._spell_power;
-	_spell_crit_chance = data._spell_crit_chance;
-	_spell_crit_damage = data._spell_crit_damage;
-	_damage_type = data._damage_type;
-	_resistances = data._resistances;
+	_health = data.Health;
+	_essence = data.Essence;
+	_stamina = data.Stamina;
+	_armor = data.Armor;
+	_attack_power = data.AttackPower;
+	_crit_chance = data.CritChance;
+	_crit_damage = data.CritDamage;
+	_spell_power = data.SpellPower;
+	_spell_crit_chance = data.SpellCritChance;
+	_spell_crit_damage = data.SpellCritDamage;
+	_damage_type = data.DamageType;
+	_resistances = data.Resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, data._spell1.first);
-	sm.CreateActiveSpell(this, data._spell2.first);
-	sm.CreateActiveSpell(this, data._spell3.first);
-	sm.CreateActiveSpell(this, data._spell4.first);
+	sm.CreateActiveSpell(this, data.Spell1.first);
+	sm.CreateActiveSpell(this, data.Spell2.first);
+	sm.CreateActiveSpell(this, data.Spell3.first);
+	sm.CreateActiveSpell(this, data.Spell4.first);
 
 	//sm.CreateActiveSpell(this, ESpellID::MELEE);
 	//sm.CreateActiveSpell(this, ESpellID::RANGED);
 
-	sm.CreatePassiveSpell(this, data._passive1.first);
-	sm.CreatePassiveSpell(this, data._passive2.first);
+	sm.CreatePassiveSpell(this, data.Passive1.first);
+	sm.CreatePassiveSpell(this, data.Passive2.first);
 
 	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
 }
@@ -81,30 +81,30 @@ Character::Character(CharacterData data, int team, std::function<char(void)> ali
 	, _team(team)
 {
 	_class = data._class;
-	_health = data._health;
-	_essence = data._essence;
-	_stamina = data._stamina;
-	_armor = data._armor;
-	_attack_power = data._attack_power;
-	_crit_chance = data._crit_chance;
-	_crit_damage = data._crit_damage;
-	_spell_power = data._spell_power;
-	_spell_crit_chance = data._spell_crit_chance;
-	_spell_crit_damage = data._spell_crit_damage;
-	_damage_type = data._damage_type;
-	_resistances = data._resistances;
+	_health = data.Health;
+	_essence = data.Essence;
+	_stamina = data.Stamina;
+	_armor = data.Armor;
+	_attack_power = data.AttackPower;
+	_crit_chance = data.CritChance;
+	_crit_damage = data.CritDamage;
+	_spell_power = data.SpellPower;
+	_spell_crit_chance = data.SpellCritChance;
+	_spell_crit_damage = data.SpellCritDamage;
+	_damage_type = data.DamageType;
+	_resistances = data.Resistances;
 
 	SpellManager& sm = SpellManager::GetInstance();
-	sm.CreateActiveSpell(this, data._spell1.first);
-	sm.CreateActiveSpell(this, data._spell2.first);
-	sm.CreateActiveSpell(this, data._spell3.first);
-	sm.CreateActiveSpell(this, data._spell4.first);
+	sm.CreateActiveSpell(this, data.Spell1.first);
+	sm.CreateActiveSpell(this, data.Spell2.first);
+	sm.CreateActiveSpell(this, data.Spell3.first);
+	sm.CreateActiveSpell(this, data.Spell4.first);
 
 	sm.CreateActiveSpell(this, ESpellID::MELEE);
 	sm.CreateActiveSpell(this, ESpellID::RANGED);
 
-	sm.CreatePassiveSpell(this, data._passive1.first);
-	sm.CreatePassiveSpell(this, data._passive2.first);
+	sm.CreatePassiveSpell(this, data.Passive1.first);
+	sm.CreatePassiveSpell(this, data.Passive2.first);
 }
 
 Character::Character(const Character& other)
@@ -172,24 +172,24 @@ void Character::Stat::UpdateMax(const float value) {
 void Character::InitStats() {
 
 	for (int idx = 0; idx < _stat_per_attribute.size(); ++idx)
-		if (_stat_per_attribute[idx].first == &_player_attributes._strength)
+		if (_stat_per_attribute[idx].first == &_player_attributes.Strength)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._strength + _i_str));
-		else if (_stat_per_attribute[idx].first == &_player_attributes._agility)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes.Strength + _i_str));
+		else if (_stat_per_attribute[idx].first == &_player_attributes.Agility)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._agility + _i_agi));
-		else if (_stat_per_attribute[idx].first == &_player_attributes._intelligence)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes.Agility + _i_agi));
+		else if (_stat_per_attribute[idx].first == &_player_attributes.Intelligence)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._intelligence + _i_int));
-		else if (_stat_per_attribute[idx].first == &_player_attributes._vitality)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes.Intelligence + _i_int));
+		else if (_stat_per_attribute[idx].first == &_player_attributes.Vitality)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._vitality + _i_vit));
-		else if (_stat_per_attribute[idx].first == &_player_attributes._consciousness)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes.Vitality + _i_vit));
+		else if (_stat_per_attribute[idx].first == &_player_attributes.Consciousness)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._consciousness + _i_con));
-		else if (_stat_per_attribute[idx].first == &_player_attributes._endurance)
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes.Consciousness + _i_con));
+		else if (_stat_per_attribute[idx].first == &_player_attributes.Endurance)
 			for (int i = 0; i < _stat_per_attribute[idx].second.size(); i++)
-				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes._endurance + _i_end));
+				_stat_per_attribute[idx].second[i].first->UpdateBase(_stat_per_attribute[idx].second[i].second * (_player_attributes.Endurance + _i_end));
 }
 
 void Character::UpdateAttribute(Attribute& attribute, int amount) {
@@ -237,58 +237,58 @@ void Character::InitStatsPerAttirbute_Barbarian() {
 
 	stat_vector.push_back(make_pair(&_crit_damage, 5.f));
 	stat_vector.push_back(make_pair(&_attack_power, 12.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Strength, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_armor, 20.f));
 	stat_vector.push_back(make_pair(&_crit_chance, 0.002f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Agility, stat_vector));
 
 	stat_vector.clear();
 	//stat_vector.push_back(make_pair(&_spell_crit_chance, 0.00125f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Intelligence, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_health, 10.f));
 	stat_vector.push_back(make_pair(&_stamina, 2.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Vitality, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_essence, 5.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Consciousness, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_stamina, 15.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Endurance, stat_vector));
 }
 
 void Character::InitStatsPerAttribute_Warlock() {
 	stat_pair stat_vector;
 
 	stat_vector.push_back(make_pair(&_crit_damage, 1.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._strength, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Strength, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_armor, 5.f));
 	stat_vector.push_back(make_pair(&_crit_chance, 0.002f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._agility, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Agility, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_spell_crit_chance, 0.005f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._intelligence, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Intelligence, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_health, 8.f));
 	stat_vector.push_back(make_pair(&_stamina, 3.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._vitality, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Vitality, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_essence, 15.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._consciousness, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Consciousness, stat_vector));
 
 	stat_vector.clear();
 	stat_vector.push_back(make_pair(&_stamina, 5.f));
-	_stat_per_attribute.push_back(make_pair(&_player_attributes._endurance, stat_vector));
+	_stat_per_attribute.push_back(make_pair(&_player_attributes.Endurance, stat_vector));
 }
 
 void Character::EndTurn() {

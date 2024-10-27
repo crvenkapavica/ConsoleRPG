@@ -11,9 +11,9 @@ public:
 	
 	explicit PlayerCharacter(ECharacterClass character_class);
 
-	PlayerCharacter(const PlayerCharacter& other);
+	PlayerCharacter(const PlayerCharacter& Other);
 
-	PlayerCharacter(PlayerCharacter&& player) noexcept;
+	PlayerCharacter(PlayerCharacter&& Player) noexcept;
 
 	~PlayerCharacter() override;
 
@@ -34,7 +34,7 @@ public:
 	inline int GetLightRadius() const { return _light_radius; }
 	////
 
-	void ReceiveExperience(const int experience);
+	void ReceiveExperience(const int Experience);
 
 	virtual void TakeTurn() override;
 
@@ -45,21 +45,21 @@ public:
 	void EquipItem(unique_ptr<Item>& Item);
 
 	// Return immediately if inventory is full
-	void UnEquipItem(unique_ptr<Item>& Item);
+	void UnEquipItem(unique_ptr<Item>&& InItem);
 
 	// Return true if the item was added, false otherwise
-	bool AddItemToInventory(unique_ptr<Item>& Item);
+	bool AddItemToInventory(unique_ptr<Item>&& Item);
 
 	[[nodiscard]] int GetInventorySpace() const;
 
 	// Displays all information about the item and its affixes
 	void InspectItem(Item* item);
 
-	void DestroyItem(unique_ptr<Item> item);
+	void DestroyItem(unique_ptr<Item>* Item);
 	
 	void DisplayEquippedItems() const;
 	[[nodiscard]] Item* DisplayInventory() const;
-	[[nodiscard]] const Item* DisplayConsumableSlots(Item* item1) const;
+	[[nodiscard]] const Item* DisplayConsumableSlots(Item* Item1) const;
 	[[nodiscard]] ActiveSpell* DisplayActiveSpellSlots() const;
 	[[nodiscard]] PassiveSpell* DisplayPassiveSpellSlots() const;
 	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);
@@ -75,12 +75,12 @@ public:
 
 protected:
 
-	int _n_inventory = 0;
+	int nInventory = 0;
 
-	int _unspent_attributes = 0;
-	int _experience = 0;
+	int UnspentAttributes = 0;
+	int Experience = 0;
 
-	int _experience_next_level[MAX_LVL] = { 0 };
+	int ExperienceNextLevel[MAX_LVL] = { 0 };
 
 protected:
 	void constexpr InitExperienceForLevel();
