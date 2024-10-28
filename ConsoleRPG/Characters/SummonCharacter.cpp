@@ -1,37 +1,34 @@
 #include "SummonCharacter.h"
-#include "../GameplayStatics.h"
-#include "PlayerCharacter.h"
-#include "EnemyCharacter.h"
 #include "CharacterData.h"
+#include "EnemyCharacter.h"
+#include "PlayerCharacter.h"
+#include "../GameplayStatics.h"
 
-int SummonCharacter::_p_n = 0;
-int SummonCharacter::_e_n = 0;
+int SummonCharacter::nPlayerSummons = 0;
+int SummonCharacter::nEnemySummons = 0;
 
-SummonCharacter::SummonCharacter(ECharacterClass character_class, int team)
-	: Character(CharDb::Data[character_class], team, [team]() { return team == 1 ? '0' + PlayerCharacter::N + _p_n++ : 'A' + EnemyCharacter::_n + _e_n++; })
+SummonCharacter::SummonCharacter(const ECharacterClass InCharacterClass, int InTeam)
+	: Character(CharDb::Data[InCharacterClass], InTeam, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
 {}
 
-SummonCharacter::SummonCharacter(const SummonCharacter& other)
-	: Character(other)
+SummonCharacter::SummonCharacter(const SummonCharacter& Other)
+	: Character(Other)
 {}
 
-SummonCharacter::SummonCharacter(SummonCharacter&& other) noexcept
-	: Character(other)
-{}
-
-SummonCharacter::~SummonCharacter()
+SummonCharacter::SummonCharacter(SummonCharacter&& Other) noexcept
+	: Character(std::move(Other))
 {}
 
 void SummonCharacter::TakeTurn() {
-
 	// The Summon is Player Controlled
 	if (Team == 1) {
 		GameplayStatics::RedrawGameScreen();
-		int input = GameplayStatics::DisplayCombatMenu(this);
-		GameplayStatics::HandleCombatInput(this, input);
+		const int Input = GameplayStatics::DisplayCombatMenu(this);
+		GameplayStatics::HandleCombatInput(this, Input);
 	}
 	// The Summon is AI controlled
-	else { // The actual functionality should be programmed either inside this class or the EnemyCharacter class. Depending on how different the logic between summons and non-summons is.
+	// The actual functionality should be programmed either inside this class or the EnemyCharacter class. Depending on how different the logic between summons and non-summons is.
+	else { 
 		GameplayStatics::RedrawGameScreen();
 		Sleep(300);
 

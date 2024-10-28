@@ -151,7 +151,7 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, c
 }
 
 bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Character>& instigator) {
-	auto dltr = [](const SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::_p_n-- : SummonCharacter::_e_n--; delete ptr; };
+	auto dltr = [](const SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::nPlayerSummons-- : SummonCharacter::nEnemySummons--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, instigator->GetTeam()), dltr);
 
 	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton

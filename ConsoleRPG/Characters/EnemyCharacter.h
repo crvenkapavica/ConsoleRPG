@@ -7,22 +7,18 @@ class SummonCharacter;
 class EnemyCharacter : public Character { 
 
 public:
-	EnemyCharacter(ECharacterClass character_class);
+	explicit EnemyCharacter(ECharacterClass InCharacterClass);
+	EnemyCharacter(EnemyCharacter&& Other) noexcept;
+	~EnemyCharacter() override = default;
 
-	EnemyCharacter(const EnemyCharacter& other);
-
-	EnemyCharacter(EnemyCharacter&& enemy) noexcept;
-
-	~EnemyCharacter();
-
-	EnemyCharacter& operator=(const EnemyCharacter& other) {
-		if (this != &other) {
-			Character::operator=(other);
+	EnemyCharacter& operator=(const EnemyCharacter& Other) {
+		if (this != &Other) {
+			Character::operator=(Other);
 		}
 		return *this;
 	}
 
-	static int _n;
+	static int nEnemyCharacters;
 
 	virtual void TakeTurn() override;
 
@@ -30,11 +26,8 @@ public:
 
 private:
 
-	vector<weak_ptr<Character>> _players;
-	vector<weak_ptr<Character>> _enemies;
-
-	int _level;
-	int _count;
+	std::vector<std::weak_ptr<Character>> Players;
+	std::vector<std::weak_ptr<Character>> Enemies;
 
 private:
 

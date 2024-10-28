@@ -43,7 +43,6 @@ struct ItemData {
 class ItemDb {
 public:
 	ItemDb() = delete;
-	
 	static std::vector<ItemData> Data;
 	
 private:

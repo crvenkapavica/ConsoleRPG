@@ -525,7 +525,7 @@ void MapGenerator::AddRandomMapEnemies() {
 				PowerLevels.push_back(TotalPower);
 				
 				// restart static instance counter
-				EnemyCharacter::_n = 0;
+				EnemyCharacter::nEnemyCharacters = 0;
 			}
 		}
 	}

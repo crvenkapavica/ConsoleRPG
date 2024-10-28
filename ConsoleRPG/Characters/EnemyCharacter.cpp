@@ -5,27 +5,18 @@
 #include "../Combat/CombatManager.h"
 #include "../Characters/CharacterData.h"
 
-int EnemyCharacter::_n = 0;
+int EnemyCharacter::nEnemyCharacters = 0;
 
-EnemyCharacter::EnemyCharacter(ECharacterClass character_class)
-	: Character(CharDb::Data[character_class], 'A' + _n++)
-	, _level(0)
-	, _count(0)
+EnemyCharacter::EnemyCharacter(const ECharacterClass InCharacterClass)
+	: Character(CharDb::Data[InCharacterClass], 'A' + nEnemyCharacters++)
+	, Level(0)
+	, Count(0)
 {}
 
-EnemyCharacter::EnemyCharacter(const EnemyCharacter& other)
-	: Character(other)
-	, _level(0)
-	, _count(0)
-{}
-
-EnemyCharacter::EnemyCharacter(EnemyCharacter&& enemy) noexcept
-	: Character(enemy)
-	, _level(enemy._level)
-	, _count(enemy._count)
-{}
-
-EnemyCharacter::~EnemyCharacter()
+EnemyCharacter::EnemyCharacter(EnemyCharacter&& Other) 
+	: Character(std::move(Other))
+	, Level(0)
+	, Count(0)
 {}
 
 void EnemyCharacter::TakeTurn() {
@@ -41,25 +32,25 @@ void EnemyCharacter::TakeTurn() {
 }
 
 void EnemyCharacter::Move() {
-	map<int, EDirection> direction_map;
-	GameplayStatics::EnemyCombatMove(this, direction_map);
-	if (direction_map.size()) {
-		int rnd = rand() % static_cast<int>(direction_map.size());
-		GameplayStatics::MoveCharacterOnGrid(this, direction_map[rnd]);
+	map<int, EDirection> DirectionMap;
+	GameplayStatics::EnemyCombatMove(this, DirectionMap);
+	if (!DirectionMap.empty()) {
+		const int Rnd = rand() % static_cast<int>(DirectionMap.size());
+		GameplayStatics::MoveCharacterOnGrid(static_pointer_cast<Character*>(this), DirectionMap[Rnd]);
+		
 	}
 }
 
 void EnemyCharacter::CastSpell() {
-	_players = GameplayStatics::GetPlayerCharacters();
-	_enemies = GameplayStatics::GetEnemyCharacters();
-	vector<int> p_idx = { 0 };
-	vector<int> e_idx;
+	Players = GameplayStatics::GetPlayerCharacters();
+	Enemies = GameplayStatics::GetEnemyCharacters();
+	const vector<int> p_idx = { 0 };
+	const vector<int> e_idx;
 
-	vector<weak_ptr<Character>> targets = { _players[p_idx[0]] };
+	const vector<weak_ptr<Character>> targets = { Players[p_idx[0]] };
 
-	if (GetPassiveSpells().size() && GetPassiveSpells()[0]) {
-
-		SpellManager& sm = SpellManager::GetInstance();
-		sm.CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
+	if (!GetPassiveSpells().empty() && GetPassiveSpells()[0]) {
+		
+		SpellManager::CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
 	}
 }

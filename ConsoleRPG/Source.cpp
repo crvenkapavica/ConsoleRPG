@@ -102,7 +102,7 @@ int main() {
     //Sleep(100);
     //SendAltEnter();
 
-    auto dltr = [](const PlayerCharacter* Ptr) { PlayerCharacter::N--; delete Ptr; };
+    auto dltr = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };
 
     const std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
     const std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);

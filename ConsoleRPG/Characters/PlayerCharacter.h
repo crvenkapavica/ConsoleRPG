@@ -8,12 +8,9 @@
 class PlayerCharacter : public Character {
 
 public:
-	explicit PlayerCharacter(const ECharacterClass CharacterClass);
-
+	explicit PlayerCharacter(const ECharacterClass InCharacterClass);
 	PlayerCharacter(const PlayerCharacter& Other);
-
 	PlayerCharacter(PlayerCharacter&& Player) noexcept;
-
 	~PlayerCharacter() override = default;
 
 	PlayerCharacter& operator=(const PlayerCharacter& Other) {
@@ -24,7 +21,7 @@ public:
 		return *this;
 	}
 
-	static int N;
+	static int nPlayerCharacters;
 
 public:
 	/// remove
@@ -40,10 +37,10 @@ public:
 	//// INVENTORY
 	///////////////////////////////////////////////////////////////////////////////////////////////
 public:
-	void EquipItem(const std::unique_ptr<Item>&& InItem);
+	void EquipItem(std::unique_ptr<Item>&& InItem);
 
 	// Return immediately if inventory is full
-	void UnEquipItem(const std::unique_ptr<Item>& InItem);
+	void UnEquipItem(std::unique_ptr<Item>& InItem);
 
 	// Return true if the item was added, false otherwise
 	bool AddItemToInventory(std::unique_ptr<Item>&& InItem);
@@ -56,8 +53,8 @@ public:
 	void DestroyItem(const std::unique_ptr<Item>&& InItem);
 	
 	void DisplayEquippedItems() const;
-	[[nodiscard]] Item* DisplayInventory() const;
-	[[nodiscard]] static const Item* DisplayConsumableSlots();
+	static void DisplayInventory();
+	static void DisplayConsumableSlots();
 	static void DisplayActiveSpellSlots();
 	static void DisplayPassiveSpellSlots();
 	std::unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);

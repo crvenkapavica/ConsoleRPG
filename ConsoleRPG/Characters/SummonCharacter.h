@@ -4,20 +4,13 @@
 
 class SummonCharacter : public Character {
 public:
-	SummonCharacter(ECharacterClass character_class, int team);
-
-	SummonCharacter(const SummonCharacter& other);
-	
-	SummonCharacter(SummonCharacter&& other) noexcept;
-
-	~SummonCharacter();
+	SummonCharacter(ECharacterClass InCharacterClass, int InTeam);
+	SummonCharacter(const SummonCharacter& Other);
+	SummonCharacter(SummonCharacter&& Other) noexcept;
+	~SummonCharacter() override = default;
 
 	virtual void TakeTurn() override;
-
-
-	static int _p_n;
-	static int _e_n;
-
-private:
-
+	
+	static int nPlayerSummons;
+	static int nEnemySummons;
 };

@@ -1,6 +1,7 @@
 #pragma once
-#include "../RPGTypes.h"
+
 #include "../GameplayStatics.h"
+#include "../RPGTypes.h"
 #include "../Spells/SpellData.h"
 
 class Character;
@@ -14,8 +15,12 @@ class SpellManager {
 public:
 	SpellManager() = default;
 	SpellManager(const SpellManager&) = delete;
+	SpellManager(SpellManager&&) = delete;
+	~SpellManager() = delete;
+	
 	SpellManager& operator=(const SpellManager&) = delete;
-
+	SpellManager& operator=(SpellManager&&) = delete;
+	
 	static SpellManager& GetInstance();
 
 	// Create an active spell and add it to the owner

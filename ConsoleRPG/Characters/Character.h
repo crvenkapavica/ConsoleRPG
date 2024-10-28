@@ -11,22 +11,10 @@ class Character {
 
 public:
 	Character() = delete;
-
-	// Player
-	Character(CharacterData Data, PlayerAttributes Attributes, char Alias);
-
-	// Enemy
-	Character(CharacterData Data, char Alias);
-
-	// Summon
-	Character(CharacterData Data, int Team, std::function<char(void)> Alias);
-
 	Character(const Character& Other);
-
 	Character(Character&& InCharacter) noexcept;
-
-	virtual ~Character();
-
+	virtual ~Character() = default;
+	
 	Character& operator=(const Character& Other) {
 		// "reset" all stats that effects might modify
 		Health.SetMax(Other.Health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
@@ -42,13 +30,19 @@ public:
 		CharacterResistances = Other.CharacterResistances;
 		return *this;
 	}
-
+	Character& operator=(Character&& Other) noexcept = default;
+	
+	// Player
+	Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, char InAlias);
+	// Enemy
+	Character(const CharacterData& InCharacterData, char InAlias);
+	// Summon
+	Character(const CharacterData& InCharacterData, int InTeam, const std::function<char(void)>& InAlias);
+	
 	virtual void TakeTurn() = 0;
 
 public:
-
 	class Stat {
-
 		float Base;
 		float Actual;
 		float Max;
@@ -73,7 +67,7 @@ public:
 		inline const float& GetMax() const { return Max; }
 
 		void UpdateBase(const float Value);
-		void UpdateActual(const float Value, Character* character);
+		void UpdateActual(const float Value, Character* InCharacter);
 		void UpdateMax(const float Value);
 
 		void SetActual(const float Value);
@@ -84,7 +78,7 @@ public:
 	};
 
 public:
-	void UpdateAttribute(attribute& Attribute, int Amount);
+	void UpdateAttribute(attribute& Attribute, int Amount) const;
 
 	void AddActiveSpell(std::unique_ptr<ActiveSpell>& Spell);
 	void AddPassiveSpell(std::unique_ptr<PassiveSpell>& Spell);
@@ -172,7 +166,7 @@ public:
 
 protected:
 	// Apply stat change per attribute
-	void InitStats();
+	void InitStats() const;
 
 	// Set stat change per attribute for each class
 	void InitStatsPerAttribute();
