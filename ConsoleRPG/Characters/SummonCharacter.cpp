@@ -8,7 +8,7 @@ int SummonCharacter::_p_n = 0;
 int SummonCharacter::_e_n = 0;
 
 SummonCharacter::SummonCharacter(ECharacterClass character_class, int team)
-	: Character(CharDb::Data[character_class], team, [team]() { return team == 1 ? '0' + PlayerCharacter::_n + _p_n++ : 'A' + EnemyCharacter::_n + _e_n++; })
+	: Character(CharDb::Data[character_class], team, [team]() { return team == 1 ? '0' + PlayerCharacter::N + _p_n++ : 'A' + EnemyCharacter::_n + _e_n++; })
 {}
 
 SummonCharacter::SummonCharacter(const SummonCharacter& other)
@@ -25,7 +25,7 @@ SummonCharacter::~SummonCharacter()
 void SummonCharacter::TakeTurn() {
 
 	// The Summon is Player Controlled
-	if (_team == 1) {
+	if (Team == 1) {
 		GameplayStatics::RedrawGameScreen();
 		int input = GameplayStatics::DisplayCombatMenu(this);
 		GameplayStatics::HandleCombatInput(this, input);

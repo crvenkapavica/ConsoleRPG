@@ -217,42 +217,39 @@ PlayerCharacter* GameplayStatics::GetPlayer() {
 	vector<string> v;
 	for (const auto& p : _players)
 		v.push_back(GameplayStatics::GetEnumString(p.lock()->GetClass()));
-	v.push_back("<--BACK--<");
+	v.emplace_back("<--BACK--<");
 	int input;
 	if ((input = InteractiveDisplay(v)) == -1) return nullptr;
 	return dynamic_cast<PlayerCharacter*>(_players[input].lock().get());
 }
 
 void GameplayStatics::DisplayItemMenu() {
-	PlayerCharacter* player;
-	if ((player = GetPlayer()) == nullptr) return;
+	PlayerCharacter* CurrentPlayer;
+	if ((CurrentPlayer = GetPlayer()) == nullptr) return;
 
 	bool bIsEquipped = false;
-	unique_ptr<Item> item;
-	if (!(item = player->DisplayAllItems(bIsEquipped))) return;
-
-
-	player->DestroyItem(make_unique<Item>(Item::ItemProperties()));
+	const auto& SelectedItem = CurrentPlayer->DisplayAllItems(bIsEquipped);
+	if (bIsEquipped) return;
 	
 	vector<string> v;
 	int input;
 	if (bIsEquipped) {
 		v = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((input = InteractiveDisplay(v)) == -1) {
-			player->EquipItem(move(item));
+			CurrentPlayer->EquipItem(std::move(SelectedItem));
 			return;
 		}
-		if (input == 0) player->UnEquipItem(move(item));
-		else player->DestroyItem(&item);
+		if (input == 0) CurrentPlayer->UnEquipItem(std::move(SelectedItem));
+		else CurrentPlayer->DestroyItem(std::move(SelectedItem));
 	}
 	else {
 		v = { "EQUIP", "DESTROY", "<--BACK--<" };
 		if ((input = InteractiveDisplay(v)) == -1) {
-			player->AddItemToInventory(move(item));
+			CurrentPlayer->AddItemToInventory(std::move(SelectedItem));
 			return;
 		}
-		if (input == 0) player->EquipItem(move(item));
-		else player->DestroyItem(move(item));
+		if (input == 0) CurrentPlayer->EquipItem(std::move(SelectedItem));
+		else CurrentPlayer->DestroyItem(std::move(SelectedItem));
 	}
 }
 

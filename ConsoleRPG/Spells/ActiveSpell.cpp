@@ -67,28 +67,28 @@ float ActiveSpell::GetRandOnApplyMinMax(const shared_ptr<Character>& character) 
 float ActiveSpell::AdjustDamage(float damage, const shared_ptr<Character>& character) {
 	switch (_damage_type) {
 	case EDamageType::ARCANE:
-		damage += damage * character->_arcane_damage;
+		damage += damage * character->ArcaneDamage;
 		break;
 	case EDamageType::FIRE:
-		damage += damage * character->_fire_damage;
+		damage += damage * character->FireDamage;
 		break;
 	case EDamageType::LIGHTNING:
-		damage += damage * character->_lightning_damage;
+		damage += damage * character->LightningDamage;
 		break;
 	case EDamageType::COLD:
-		damage += damage * character->_cold_damage;
+		damage += damage * character->ColdDamage;
 		break;
 	case EDamageType::POISON:
-		damage += damage * character->_poison_damage;
+		damage += damage * character->PoisonDamage;
 		break;
 	case EDamageType::NECROTIC:
-		damage += damage * character->_necrotic_damage;
+		damage += damage * character->NecroticDamage;
 		break;
 	case EDamageType::PHYSICAL:
-		damage += damage * character->_physical_damage;
+		damage += damage * character->PhysicalDamage;
 		damage += character->GetAP().GetActual();
 	case EDamageType::HEALING:
-		damage += damage * character->_healing;
+		damage += damage * character->Healing;
 		break;
 	default:
 		break;
@@ -423,7 +423,7 @@ void Melee::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>&
 
 	vector<CharacterStat> enemy_apply_stats;
 	auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [&](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->_min_damage, character->_max_damage)); };
+	auto delta = [&](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->MinDamage, character->MaxDamage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
 	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;

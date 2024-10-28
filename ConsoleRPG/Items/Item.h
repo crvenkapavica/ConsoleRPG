@@ -55,7 +55,7 @@ public:
 	explicit Item(const ItemData& Data);
 
 	// Calls CreateItem multiple times depending on power_Level of slain monsters and random roll chance.
-	static std::vector<std::unique_ptr<Item>> GenerateLoot(const weak_ptr<PlayerCharacter>& Player, const int PowerLevel);
+	static std::vector<std::unique_ptr<Item>> GenerateLoot(const std::weak_ptr<PlayerCharacter>& Player, const int PowerLevel);
 
 	// Creates RANDOM item from BASE items + prefixes(max 1 - passive spell), suffixes(max 1 - active spell) and affixes(all other modifiers).
 	static std::unique_ptr<Item> CreateItem(const int PlayerLevel, const float MfBonus, const EItemType ItemType);

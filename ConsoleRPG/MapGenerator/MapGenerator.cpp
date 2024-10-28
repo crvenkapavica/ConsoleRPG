@@ -752,7 +752,7 @@ int MapGenerator::GetEnemyIdx(const char Alias) {
 
 int MapGenerator::GetPlayerIdx(const char Alias) {
 	const auto Character = GetCharacterFromAlias(Alias);
-	for (int i = 0; i < PlayerCharacters.size(); i++)
+	for (int i = 0; i < static_cast<int>(PlayerCharacters.size()); i++)
 		if (std::static_pointer_cast<PlayerCharacter>(Character.lock()) == PlayerCharacters[i].lock()) return i;
 	
 	return -1;

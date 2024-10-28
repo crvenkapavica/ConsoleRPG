@@ -21,8 +21,8 @@
 #include <deque>
 #include <cctype>
 
-typedef int Attribute;
-typedef int Skill;
+typedef int attribute;
+typedef int skill;
 
 class Character;
 
@@ -149,7 +149,7 @@ class Character;
 #define RPG_ASSERT(expr, msg) \
     if (!(expr)) { \
 		system("cls"); \
-        std::cout << "Assertion failed: " << msg << "\n"; \
+        std::cout << "Assertion failed: " << (msg) << "\n"; \
         std::cout << "In file: " << __FILE__ << ", line: " << __LINE__ << "\n"; \
         std::exit(EXIT_FAILURE); \
     }

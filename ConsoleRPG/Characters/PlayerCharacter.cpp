@@ -3,15 +3,15 @@
 #include "../Items/ItemData.h"
 #include "../Characters/CharacterData.h"
 
-int PlayerCharacter::_n = 0;
+int PlayerCharacter::N = 0;
 
-PlayerCharacter::PlayerCharacter(ECharacterClass character_class)
-	: Character(CharDb::Data[character_class], CharDb::Attributes[character_class], '0' + _n++)
+PlayerCharacter::PlayerCharacter(const ECharacterClass CharacterClass)
+	: Character(CharDb::Data[CharacterClass], CharDb::Attributes[CharacterClass], '0' + static_cast<char>(N++))
 {
 	InitExperienceForLevel();
 
-	_item_slots.resize(ITEM_SLOTS);
-	_inventory.resize(INV_SLOTS);
+	ItemSlots.resize(ITEM_SLOTS);
+	Inventory.resize(INV_SLOTS);
 
 	//unique_ptr<Item> item = Item::CreateItem(_lvl, _magic_find, EItemType::WEAPON);
 	//AddItemToInventory(item);
@@ -33,131 +33,116 @@ PlayerCharacter::PlayerCharacter(const PlayerCharacter& Other)
 {}
 
 PlayerCharacter::PlayerCharacter(PlayerCharacter&& Player) noexcept
-	: Character(Player)
+	: Character(std::move(Player))
 {}
 
-PlayerCharacter::~PlayerCharacter() = default;
-
-void PlayerCharacter::ReceiveExperience(const int Experience) {
-	Experience += Experience;
-	if (Experience >= ExperienceNextLevel[_lvl - 1]) {
-		Experience -= ExperienceNextLevel[_lvl - 1];
+void PlayerCharacter::ReceiveExperience(const int InExperience) {
+	Experience += InExperience;
+	if (Experience >= ExperienceNextLevel[Level - 1]) {
+		Experience -= ExperienceNextLevel[Level - 1];
 		LevelUp();
 	}
 }
 
 void PlayerCharacter::TakeTurn() {
 	
-	if (_bIsInCombat) {
+	if (bIsInCombat) {
 		GameplayStatics::RedrawGameScreen();
 		const int input = GameplayStatics::DisplayCombatMenu(this);
 		GameplayStatics::HandleCombatInput(this, input);
 	}
 }
 
-void PlayerCharacter::EquipItem(unique_ptr<Item>& Item) {
-	if (!Item || nInventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
+void PlayerCharacter::EquipItem(const unique_ptr<Item>&& InItem) {
+	if (!InItem || nInventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
-	if (Item->ItemInfo.ItemType == EItemType::WEAPON) {
-		if (Item->ItemInfo.ItemSlot == EItemSlot::WPN_BOTH)
-			Item->ItemInfo.ItemSlot = EItemSlot::WPN_MAIN;
+	if (InItem->ItemInfo.ItemType == EItemType::WEAPON) {
+		if (InItem->ItemInfo.ItemSlot == EItemSlot::WPN_BOTH)
+			InItem->ItemInfo.ItemSlot = EItemSlot::WPN_MAIN;
 	}
 
-	_item_slots[static_cast<int>(Item->ItemInfo.ItemSlot)].swap(Item);
-	if (Item) AddItemToInventory(std::move(Item));
+	ItemSlots[static_cast<int>(InItem->ItemInfo.ItemSlot)].swap(InItem);
+	if (InItem) AddItemToInventory(std::move(InItem));
 
 	SortInventory();
 	CalculatePlayerItemSlots();
 	CalculateInventorySlots();
 }
 
-void PlayerCharacter::UnEquipItem(unique_ptr<Item>&& InItem) {
+void PlayerCharacter::UnEquipItem(const unique_ptr<Item>& InItem) {
+	InItem.reset();
 	if (!InItem || nInventory == INV_SLOTS) return;
-
 	AddItemToInventory(std::move(InItem));
 	CalculatePlayerItemSlots();
 	CalculateInventorySlots();
 }
 
-bool PlayerCharacter::AddItemToInventory(unique_ptr<Item>&& Item) {	
-
-	for (auto& InvItem : _inventory) {
+bool PlayerCharacter::AddItemToInventory(unique_ptr<Item>&& InItem) {
+	for (auto& InvItem : Inventory) {
 		if (!InvItem) {
-			InvItem = std::move(Item);
+			InvItem = std::move(InItem);
 			CalculateInventorySlots();
 			return true;
 		}
 	}
-
 	return false;
 }
 
 int PlayerCharacter::GetInventorySpace() const {
 	int size = 0;
-	for (const auto& item : _inventory) 
+	for (const auto& item : Inventory) 
 		if (item) ++size;
 	return INV_SLOTS - size;
 }
 
-void PlayerCharacter::InspectItem(Item* item) {
-
+void PlayerCharacter::InspectItem(std::unique_ptr<Item> Item)
+{
 }
 
-void PlayerCharacter::DestroyItem(unique_ptr<Item>* Item) {
-	Item.reset();
-
-	SortInventory();
+void PlayerCharacter::DestroyItem(const std::unique_ptr<Item>&& InItem) {
 	CalculatePlayerItemSlots();
+	SortInventory();
 	CalculateInventorySlots();
 }
 
 void PlayerCharacter::DisplayEquippedItems() const {
-	for (const auto& item : _item_slots) 
+	for (const auto& item : ItemSlots) 
 		if (item) cout << GameplayStatics::GetEnumString(item->ItemInfo.ItemSlot) << " --> " << item->ItemInfo.Name << '\n';
 }
 
-Item* PlayerCharacter::DisplayInventory() const {
-	for (int i = 0; i < _inventory.size(); i++)
-		if (_inventory[i])
-			cout << i << ".) " << _inventory[i]->ItemInfo.Name << "  " << GameplayStatics::GetEnumString(_inventory[i]->ItemInfo.ItemSlot) << '\n';
-
-	cout << '\n' << "Press any key to go back.";
-	cin.get();
-
+Item* PlayerCharacter::DisplayInventory() const 222312321312
+const Item* PlayerCharacter::DisplayConsumableSlots() {
 	return nullptr;
 }
 
-const Item* PlayerCharacter::DisplayConsumableSlots(Item* Item1) const {
-	return nullptr;
+void PlayerCharacter::DisplayActiveSpellSlots()
+{
 }
 
-ActiveSpell* PlayerCharacter::DisplayActiveSpellSlots() const {
-	return nullptr;
-}
-
-PassiveSpell* PlayerCharacter::DisplayPassiveSpellSlots() const {
-	return nullptr;
+void PlayerCharacter::DisplayPassiveSpellSlots()
+{
 }
 
 std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 
 	vector<string> v = { "ALL ITEMS", "RELICS", "WEAPONS", "JEWELLERY", "ARMOR", "SCROLLS", "CONSUMABLES", "<--BACK--<" };
-	int input;
-	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
-	const auto type = static_cast<EItemType>(ITEM_TYPES - input);
+	int Input;
+	if ((Input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+	const auto type = static_cast<EItemType>(ITEM_TYPES - Input);
 
 	v = { "ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE", "<--BACK--<" };
-	if ((input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
-	const auto rarity = static_cast<EItemRarity>(input);
+	if ((Input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+	const auto rarity = static_cast<EItemRarity>(Input);
 
 	map<int, int> ItemMap;
 	int ItemIndex = 0;
 	int nInv = 0;
 	std::vector<Item*> items;
 	v.clear();
+	
 	// treba auto sortirati da su svi v inventoriju po redu a na kraju nullptr
-	for (std::size_t i = 0; i < _inventory.size(); i++)
-		if (!_inventory[i]) {
+	for (int i = 0; i < static_cast<int>(Inventory.size()); i++)
+		if (!Inventory[i]) {
 			if (type == EItemType::MISC && rarity == EItemRarity::MISC) {
 				v.emplace_back("INVENTORY ---> (empty)");
 				items.push_back(nullptr);
@@ -165,49 +150,48 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 				ItemMap[ItemIndex++] = i;
 			}
 		}
-		else if ((_inventory[i]->ItemInfo.ItemType == type || type == EItemType::MISC) && (_inventory[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) {
-			v.push_back("INVENTORY ---> " + _inventory[i]->ItemInfo.Name);
-			items.push_back(_inventory[i].get());
+		else if ((Inventory[i]->ItemInfo.ItemType == type || type == EItemType::MISC) && (Inventory[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) {
+			v.push_back("INVENTORY ---> " + Inventory[i]->ItemInfo.Name);
+			items.push_back(Inventory[i].get());
 			ItemMap[ItemIndex++] = i;
 			++nInv;
 		}
 	
-	for (int i = 0; i < _item_slots.size(); i++)
-		if (((_item_slots[i] && (_item_slots[i]->ItemInfo.ItemType == type || type == EItemType::MISC)) || type == EItemType::MISC)
-			&&
-			((_item_slots[i] && (_item_slots[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) || rarity == EItemRarity::MISC)) {
+	for (int i = 0; i < static_cast<int>(ItemSlots.size()); i++)
+		if (((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemType == type || type == EItemType::MISC)) || type == EItemType::MISC)
+			&& ((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) || rarity == EItemRarity::MISC)) {
 			string s = GameplayStatics::GetEnumString(static_cast<EItemSlot>(i));
 			if (i <= 8 || i == 11) s += "\t  *---> "; if (i == 9) s += " *---> "; if (i == 10) s += "  *---> ";
-			if (_item_slots[i]) s += _item_slots[i]->ItemInfo.Name;
+			if (ItemSlots[i]) s += ItemSlots[i]->ItemInfo.Name;
 			else s += "(empty)";
 			v.push_back(s);
-			items.push_back(_item_slots[i].get());
+			items.push_back(ItemSlots[i].get());
 			ItemMap[ItemIndex++] = i;
 		}
 	v.emplace_back("<--BACK--<");
 
-	if ((input = GameplayStatics::InteractiveDisplay(v, 70, true, items)) == -1) return nullptr;
+	if ((Input = GameplayStatics::InteractiveDisplay(v, 70, true, items)) == -1) return nullptr;
 
 	// item is from inventory
-	if (input < nInv) {
-		return std::move(_inventory[ItemMap[input]]);
+	if (Input < nInv) {
+		return std::move(Inventory[ItemMap[Input]]);
 	}
 	// item is equipped
 	else {
 		bIsEquipped = true;
-		return std::move(_item_slots[ItemMap[input]]);
+		return std::move(ItemSlots[ItemMap[Input]]);
 	}
 
 	return nullptr;
 }
 
-void PlayerCharacter::DisplayStats() {
+void PlayerCharacter::DisplayStats() const {
 	system("cls");
 	cout << "========     STATS    ============" << '\n';
 	cout << "==================================" << '\n';
-	cout << "STR: " << _player_attributes.Strength + _i_str << "\nAGI: " << _player_attributes.Agility + _i_agi << "\nINT: " << _player_attributes.Intelligence + _i_int << '\n';
-	cout << "VIT: " << _player_attributes.Vitality + _i_vit << "\nCON: " << _player_attributes.Consciousness + _i_con << "\nEND: " << _player_attributes.Endurance + _i_end << '\n';
-	cout << "MinDmg: " << _min_damage << "\nMaxDmg: " << _max_damage << "\nAvgDmg: " << _avg_damage << '\n';
+	cout << "STR: " << CharacterAttributes.Strength + Item_Strength << "\nAGI: " << CharacterAttributes.Agility + Item_Agility << "\nINT: " << CharacterAttributes.Intelligence + Item_Intelligence << '\n';
+	cout << "VIT: " << CharacterAttributes.Vitality + Item_Vitality << "\nCON: " << CharacterAttributes.Consciousness + Item_Consciousness << "\nEND: " << CharacterAttributes.Endurance + Item_Endurance << '\n';
+	cout << "MinDmg: " << MinDamage << "\nMaxDmg: " << MaxDamage << "\nAvgDmg: " << AvgDamage << '\n';
 	
 	cout << '\n' << "Press any key to go back.\n";
 	auto input = _getch();
@@ -228,36 +212,35 @@ void constexpr PlayerCharacter::InitExperienceForLevel() {
 }
 
 void PlayerCharacter::LevelUp() {
-	++_lvl;
+	++Level;
 	// print you have leveled up!
-	UnspentAttributes += 2;
+	nUnspentAttributes += 2;
 }
 
 void PlayerCharacter::SortInventory() {
-	ranges::sort(_inventory, [&](const std::unique_ptr<Item>& First, const std::unique_ptr<Item>& Second) { return First && !Second; });
+	ranges::sort(Inventory, [&](const std::unique_ptr<Item>& First, const std::unique_ptr<Item>& Second) { return First && !Second; });
 }
 
 void PlayerCharacter::CalculatePlayerItemSlots() {
-	_health = _essence = _stamina = _armor = _attack_power = _crit_chance = _crit_damage = _spell_power = _spell_crit_chance = _spell_crit_damage = 0.f;
-	_i_str = _i_agi = _i_int = _i_vit = _i_con = _i_end = 0;
-	_min_damage = _max_damage = 0;
+	Health = Essence = Stamina = Armor = AttackPower = CritChance = CritDamage = SpellPower = SpellCritChance = SpellCritDamage = 0.f;
+	Item_Strength = Item_Agility = Item_Intelligence = Item_Vitality = Item_Consciousness = Item_Endurance = 0;
+	MinDamage = MaxDamage = 0;
 
 
-	for (const auto& item : _item_slots)
-		if (item) {
-			_min_damage += item->ItemInfo.MinDmg;
-			_max_damage += item->ItemInfo.MaxDmg;
-			_armor.UpdateBase(static_cast<float>(item->ItemInfo.Armor));   // check if base works fine in conjunction with max
+	for (const auto& SlottedItem : ItemSlots)
+		if (SlottedItem) {
+			MinDamage += SlottedItem->ItemInfo.MinDmg;
+			MaxDamage += SlottedItem->ItemInfo.MaxDmg;
+			Armor.UpdateBase(static_cast<float>(SlottedItem->ItemInfo.Armor));   // check if base works fine in conjunction with max
 		}
 
-	_avg_damage = _min_damage && _max_damage ? static_cast<int>((_min_damage + _max_damage) / 2) : 0;
+	AvgDamage = MinDamage && MaxDamage ? static_cast<int>((MinDamage + MaxDamage) / 2) : 0;
 
 	InitStats();
 }
 
 void PlayerCharacter::CalculateInventorySlots() {
 	nInventory = 0;
-	for (const auto& item : _inventory)
-		if (item) ++nInventory;
-		else break;
+	for (const auto& InventoryItem : Inventory)
+		if (InventoryItem) ++nInventory; else break;
 }

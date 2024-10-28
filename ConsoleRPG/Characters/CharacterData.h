@@ -38,13 +38,13 @@ struct CharacterData {
 };
 
 struct PlayerAttributes {
-	Attribute		Strength;
-	Attribute		Agility;
-	Attribute		Intelligence;
+	attribute		Strength;
+	attribute		Agility;
+	attribute		Intelligence;
 
-	Attribute		Vitality;
-	Attribute		Consciousness;
-	Attribute		Endurance;
+	attribute		Vitality;
+	attribute		Consciousness;
+	attribute		Endurance;
 };
 
 class CharDb {

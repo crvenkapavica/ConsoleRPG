@@ -1,10 +1,8 @@
 #pragma once
 
 #include "CharacterData.h"
-#include "../RPGTypes.h"
 #include "../Resistances.h"
-
-using namespace std;
+#include "../RPGTypes.h"
 
 class PassiveSpell;
 class ActiveSpell;
@@ -15,33 +13,33 @@ public:
 	Character() = delete;
 
 	// Player
-	Character(CharacterData data, PlayerAttributes attributes, char alias);
+	Character(CharacterData Data, PlayerAttributes Attributes, char Alias);
 
 	// Enemy
-	Character(CharacterData data, char alias);
+	Character(CharacterData Data, char Alias);
 
 	// Summon
-	Character(CharacterData data, int team, std::function<char(void)> alias);
+	Character(CharacterData Data, int Team, std::function<char(void)> Alias);
 
-	Character(const Character& other);
+	Character(const Character& Other);
 
-	Character(Character&& character) noexcept;
+	Character(Character&& InCharacter) noexcept;
 
 	virtual ~Character();
 
-	Character& operator=(const Character& other) {
+	Character& operator=(const Character& Other) {
 		// "reset" all stats that effects might modify
-		_health.SetMax(other._health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
-		_essence = other._essence;
-		_stamina = other._stamina;
-		_armor = other._armor;
-		_attack_power = other._attack_power;
-		_crit_chance = other._crit_chance;
-		_crit_damage = other._crit_damage;
-		_spell_power = other._spell_power;
-		_spell_crit_chance = other._spell_crit_chance;
-		_spell_crit_damage = other._spell_crit_damage;
-		_resistances = other._resistances;
+		Health.SetMax(Other.Health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
+		Essence = Other.Essence;
+		Stamina = Other.Stamina;
+		Armor = Other.Armor;
+		AttackPower = Other.AttackPower;
+		CritChance = Other.CritChance;
+		CritDamage = Other.CritDamage;
+		SpellPower = Other.SpellPower;
+		SpellCritChance = Other.SpellCritChance;
+		SpellCritDamage = Other.SpellCritDamage;
+		CharacterResistances = Other.CharacterResistances;
 		return *this;
 	}
 
@@ -51,77 +49,77 @@ public:
 
 	class Stat {
 
-		float _base;
-		float _actual;
-		float _max;
+		float Base;
+		float Actual;
+		float Max;
 
 	public:
 		Stat()
-			: _base(0.f)
-			, _actual(0.f)
-			, _max(0.f)
+			: Base(0.f)
+			, Actual(0.f)
+			, Max(0.f)
 		{}
 
-		const float& operator=(const float& value) {
-			_base = value;
-			_actual = value;
-			_max = value;
+		const float& operator=(const float& Value) {
+			Base = Value;
+			Actual = Value;
+			Max = Value;
 
-			return _base;	// zakaj base ? prouciti
+			return Base;	// zakaj base ? prouciti
 		}
 
-		inline const float& GetBase() const { return _base; }
-		inline float& GetActual() { return _actual; }
-		inline const float& GetMax() const { return _max; }
+		inline const float& GetBase() const { return Base; }
+		inline float& GetActual() { return Actual; }
+		inline const float& GetMax() const { return Max; }
 
-		void UpdateBase(const float value);
-		void UpdateActual(const float value, Character* character);
-		void UpdateMax(const float value);
+		void UpdateBase(const float Value);
+		void UpdateActual(const float Value, Character* character);
+		void UpdateMax(const float Value);
 
-		void SetActual(const float value);
-		void SetMax(float value);
+		void SetActual(const float Value);
+		void SetMax(float Value);
 
 	private:
 		//void OnStatChanged();
 	};
 
 public:
-	void UpdateAttribute(Attribute& attribute, int amount);
+	void UpdateAttribute(attribute& Attribute, int Amount);
 
-	void AddActiveSpell(unique_ptr<ActiveSpell>& spell);
-	void AddPassiveSpell(unique_ptr<PassiveSpell>& spell);
+	void AddActiveSpell(std::unique_ptr<ActiveSpell>& Spell);
+	void AddPassiveSpell(std::unique_ptr<PassiveSpell>& Spell);
 
-	inline vector<unique_ptr<ActiveSpell>>& GetActiveSpells() { return _active_spells; }
-	inline vector<unique_ptr<PassiveSpell>>& GetPassiveSpells() { return _passive_spells; }
+	inline std::vector<std::unique_ptr<ActiveSpell>>& GetActiveSpells() { return ActiveSpells; }
+	inline std::vector<std::unique_ptr<PassiveSpell>>& GetPassiveSpells() { return PassiveSpells; }
 
-	inline void AddEffectId(ESpellID effect_id) { _effect_ids.push_back(effect_id); }
-	void RemoveEffectById(ESpellID effect_id);
-	inline const vector<ESpellID>& GetEffectIds() { return _effect_ids; }
+	inline void AddEffectId(const ESpellID EffectId) { EffectIds.push_back(EffectId); }
+	void RemoveEffectById(ESpellID EffectId);
+	inline const std::vector<ESpellID>& GetEffectIds() { return EffectIds; }
 
 public:
-	inline Stat& GetHealth() { return _health; }
-	inline Stat& GetEssence() { return _essence; }
-	inline Stat& GetStamina() { return _stamina; }
-	inline Stat& GetArmor() { return _armor; }
-	inline Stat& GetAP() { return _attack_power; }
-	inline Stat& GetCritChance() { return _crit_chance; }
-	inline Stat& GetCritDmg() { return _crit_damage; } 
-	inline Stat& GetSP() { return _spell_power; }
-	inline Stat& GetSpellCritChance() { return _spell_crit_chance; }
-	inline Stat& GetSpellCritDmg() { return _spell_crit_damage; }
+	inline Stat& GetHealth() { return Health; }
+	inline Stat& GetEssence() { return Essence; }
+	inline Stat& GetStamina() { return Stamina; }
+	inline Stat& GetArmor() { return Armor; }
+	inline Stat& GetAP() { return AttackPower; }
+	inline Stat& GetCritChance() { return CritChance; }
+	inline Stat& GetCritDmg() { return CritDamage; } 
+	inline Stat& GetSP() { return SpellPower; }
+	inline Stat& GetSpellCritChance() { return SpellCritChance; }
+	inline Stat& GetSpellCritDmg() { return SpellCritDamage; }
 
-	inline ECharacterClass GetClass() const { return _class; }
-	inline char GetAlias() const { return _alias; }
-	inline void SetAlias(char value) { _alias = value; }
-	inline int GetLevel() const { return _lvl; }
-	inline bool IsInCombat() const { return _bIsInCombat; }
-	inline bool IsAlive() const { return _bIsAlive; }
-	inline bool IsOnTurn() const { return _bIsOnTurn; }
-	inline int GetTeam() const { return _team; }
-	inline void SetIsOnTurn(bool value) { _bIsOnTurn = value; }
-	inline void SetIsInCombat(bool in_combat) { _bIsInCombat = in_combat; }
-	inline const PlayerAttributes& GetPlayerAttributes() { return _player_attributes; }
-	inline Resistances& GetResistances() { return _resistances; }
+	inline ECharacterClass GetClass() const { return CharacterClass; }
+	inline char GetAlias() const { return Alias; }
+	inline void SetAlias(const char Value) { Alias = Value; }
+	inline int GetLevel() const { return Level; }
+	inline bool IsInCombat() const { return bIsInCombat; }
+	inline bool IsAlive() const { return bIsAlive; }
+	inline bool IsOnTurn() const { return bIsOnTurn; }
+	inline int GetTeam() const { return Team; }
+	inline void SetIsOnTurn(const bool bValue) { bIsOnTurn = bValue; }
+	inline void SetIsInCombat(const bool bInCombat) { bIsInCombat = bInCombat; }
+	inline const PlayerAttributes& GetPlayerAttributes() const { return CharacterAttributes; }
+	inline Resistances& GetResistances() { return CharacterResistances; }
 
 	// Check if targets Health is below 0 and mark it as bIsAlive = false
 	bool CheckDie();
@@ -132,44 +130,44 @@ public:
 	// EXTRA STATS COMBAT
 	//////////////////////////////////////////
 	// item attributes
-	int _i_str = 0;
-	int _i_agi = 0;
-	int _i_int = 0;
-	int _i_vit = 0;
-	int _i_con = 0;
-	int _i_end = 0;
+	int Item_Strength = 0;
+	int Item_Agility = 0;
+	int Item_Intelligence = 0;
+	int Item_Vitality = 0;
+	int Item_Consciousness = 0;
+	int Item_Endurance = 0;
 
-	int _multi_strike = 0;
+	int MultiStrike = 0;
 	// damage
-	float _arcane_damage = 0.f;
-	float _fire_damage = 0.f;
-	float _lightning_damage = 0.f;
-	float _cold_damage = 0.f;
-	float _poison_damage = 0.f;
-	float _necrotic_damage = 0.f;
-	float _physical_damage = 0.f;
+	float ArcaneDamage = 0.f;
+	float FireDamage = 0.f;
+	float LightningDamage = 0.f;
+	float ColdDamage = 0.f;
+	float PoisonDamage = 0.f;
+	float NecroticDamage = 0.f;
+	float PhysicalDamage = 0.f;
 	
-	int	_min_damage = 0;
-	int _max_damage = 0;
-	int _avg_damage = 0;
+	int	MinDamage = 0;
+	int MaxDamage = 0;
+	int AvgDamage = 0;
 
 	// healing
-	float _healing = 0.f;
+	float Healing = 0.f;
 
 	// duration
-	int _buff_duration = 0;
-	int _debuff_duration = 0;
+	int BuffDuration = 0;
+	int DebuffDuration = 0;
 	/////////////////////////////////////////
 
 
 	// EXTRA STATS OUT OF COMBAT
 	/////////////////////////////////////////
-	float _magic_find = 1.f;
-	int _light_radius = 3;
+	float MagicFind = 1.f;
+	int LightRadius = 3;
 
-	int _n_cons_slots = 0;
-	int _n_spell_slots = 0;
-	int _n_passive_slots = 0;
+	int nConsumableSlots = 0;
+	int nSpellSlots = 0;
+	int nPassiveSlots = 0;
 	///////////////////////////////////////////
 
 protected:
@@ -179,48 +177,48 @@ protected:
 	// Set stat change per attribute for each class
 	void InitStatsPerAttribute();
 
-	void InitStatsPerAttirbute_Barbarian();
+	void InitStatsPerAttribute_Barbarian();
 	void InitStatsPerAttribute_Warlock();
 
 protected:
-	ECharacterClass	_class;
+	ECharacterClass	CharacterClass;
 
-	Stat _health;
-	Stat _essence;
-	Stat _stamina;
+	Stat Health;
+	Stat Essence;
+	Stat Stamina;
 
-	Stat _armor;
-	Stat _attack_power;
-	Stat _crit_chance;
-	Stat _crit_damage;
-	Stat _spell_power;
-	Stat _spell_crit_chance;
-	Stat _spell_crit_damage;
+	Stat Armor;
+	Stat AttackPower;
+	Stat CritChance;
+	Stat CritDamage;
+	Stat SpellPower;
+	Stat SpellCritChance;
+	Stat SpellCritDamage;
 
-	PlayerAttributes _player_attributes;
+	PlayerAttributes CharacterAttributes;
 
-	EDamageType	_damage_type;
+	EDamageType	DamageType;
 
-	Resistances	_resistances;
+	Resistances	CharacterResistances;
 
-	char _alias;
-	int _team;
+	char Alias;
+	int Team;
 
-	int	 _lvl = 1;
+	int	 Level = 1;
 
-	bool _bIsInCombat = false;
-	bool _bIsAlive = true;
-	bool _bIsOnTurn = false;
+	bool bIsInCombat = false;
+	bool bIsAlive = true;
+	bool bIsOnTurn = false;
 
-	std::vector<unique_ptr<ActiveSpell>> _active_spells;
-	std::vector<unique_ptr<PassiveSpell>> _passive_spells;
+	std::vector<std::unique_ptr<ActiveSpell>> ActiveSpells;
+	std::vector<std::unique_ptr<PassiveSpell>> PassiveSpells;
 
 	// ID's (tags) of spell effects
-	std::vector<ESpellID> _effect_ids;
+	std::vector<ESpellID> EffectIds;
 
-	using stat_pair = std::vector<pair<Stat*, float>>;
+	using stat_pair = std::vector<std::pair<Stat*, float>>;
 	// Stat change per attribute
-	std::vector<pair<Attribute*, stat_pair>> _stat_per_attribute;
+	std::vector<std::pair<attribute*, stat_pair>> StatPerAttribute;
 
 public:
 	void OnMagicReceivedBegin();

@@ -8,33 +8,31 @@
 class PlayerCharacter : public Character {
 
 public:
-	
-	explicit PlayerCharacter(ECharacterClass character_class);
+	explicit PlayerCharacter(const ECharacterClass CharacterClass);
 
 	PlayerCharacter(const PlayerCharacter& Other);
 
 	PlayerCharacter(PlayerCharacter&& Player) noexcept;
 
-	~PlayerCharacter() override;
+	~PlayerCharacter() override = default;
 
-	PlayerCharacter& operator=(const PlayerCharacter& other) {
-		if (this != &other) {
-			Character::operator=(other);
+	PlayerCharacter& operator=(const PlayerCharacter& Other) {
+		if (this != &Other) {
+			Character::operator=(Other);
 		}
 		//++_n;
 		return *this;
 	}
 
-	static int _n;;
+	static int N;
 
 public:
-
 	/// remove
-	inline float GetMagicFind() const { return _magic_find; }
-	inline int GetLightRadius() const { return _light_radius; }
+	inline float GetMagicFind() const { return MagicFind; }
+	inline int GetLightRadius() const { return LightRadius; }
 	////
 
-	void ReceiveExperience(const int Experience);
+	void ReceiveExperience(const int InExperience);
 
 	virtual void TakeTurn() override;
 
@@ -42,44 +40,41 @@ public:
 	//// INVENTORY
 	///////////////////////////////////////////////////////////////////////////////////////////////
 public:
-	void EquipItem(unique_ptr<Item>& Item);
+	void EquipItem(const std::unique_ptr<Item>&& InItem);
 
 	// Return immediately if inventory is full
-	void UnEquipItem(unique_ptr<Item>&& InItem);
+	void UnEquipItem(const std::unique_ptr<Item>& InItem);
 
 	// Return true if the item was added, false otherwise
-	bool AddItemToInventory(unique_ptr<Item>&& Item);
+	bool AddItemToInventory(std::unique_ptr<Item>&& InItem);
 
 	[[nodiscard]] int GetInventorySpace() const;
 
 	// Displays all information about the item and its affixes
-	void InspectItem(Item* item);
+	static void InspectItem(std::unique_ptr<Item> Item);
 
-	void DestroyItem(unique_ptr<Item>* Item);
+	void DestroyItem(const std::unique_ptr<Item>&& InItem);
 	
 	void DisplayEquippedItems() const;
 	[[nodiscard]] Item* DisplayInventory() const;
-	[[nodiscard]] const Item* DisplayConsumableSlots(Item* Item1) const;
-	[[nodiscard]] ActiveSpell* DisplayActiveSpellSlots() const;
-	[[nodiscard]] PassiveSpell* DisplayPassiveSpellSlots() const;
-	unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);
-	void DisplayStats();
+	[[nodiscard]] static const Item* DisplayConsumableSlots();
+	static void DisplayActiveSpellSlots();
+	static void DisplayPassiveSpellSlots();
+	std::unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);
+	void DisplayStats() const;
 
 public:
-	std::vector<unique_ptr<Item>> _item_slots;
-	std::vector<unique_ptr<Item>> _inventory;
-	std::vector<unique_ptr<Item>> _consumable_slots;
-	std::vector<unique_ptr<ActiveSpell>> _active_slots;
-	std::vector<unique_ptr<PassiveSpell>> _passive_slots;
+	std::vector<std::unique_ptr<Item>> ItemSlots;
+	std::vector<std::unique_ptr<Item>> Inventory;
+	std::vector<std::unique_ptr<Item>> ConsumableSlots;
+	std::vector<std::unique_ptr<ActiveSpell>> ActiveSlots;
+	std::vector<std::unique_ptr<PassiveSpell>> PassiveSlots;
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
 protected:
-
 	int nInventory = 0;
-
-	int UnspentAttributes = 0;
+	int nUnspentAttributes = 0;
 	int Experience = 0;
-
 	int ExperienceNextLevel[MAX_LVL] = { 0 };
 
 protected:
