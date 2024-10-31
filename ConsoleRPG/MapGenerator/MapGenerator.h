@@ -63,10 +63,10 @@ public:
 	void Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters);
 
 	// Shows the current player position on the map with radius of light_radius
-	void ShowPosition();
+	void ShowPosition() const;
 
 	// Shows the portion of the map the player discovered
-	void ShowMap();
+	void ShowMap() const;
 
 	// Handle keypress for direction of movement
 	void HandleMovement();
@@ -84,18 +84,18 @@ public:
 
 	bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
-	int GetEnemyIdx(char Alias);
+	int GetEnemyIdx(const char Alias);
 
-	int GetPlayerIdx(char Alias);
+	int GetPlayerIdx(const char Alias);
 
-	void KillEnemy(int Idx);
+	void KillEnemy(const int Idx);
 
 	void KillEnemy(const Character* InCharacter);
 
 public:
-	std::weak_ptr<Character> GetCharacterFromAlias(char Target);
+	std::weak_ptr<Character> GetCharacterFromAlias(const char Target);
 
-	std::vector<string> GetCombatDirections(const Character* InCharacter, OUT std::map<int, EDirection>& InMap) const;
+	std::vector<std::string> GetCombatDirections(const Character* InCharacter, OUT std::map<int, EDirection>& InMap) const;
 
 	std::vector<Character*> GetCharactersInRange(const Character* InCharacter);
 
@@ -104,7 +104,7 @@ public:
 
 private:
 	// BFS that generates map
-	void BFS(int X, int Y, int Step);
+	void BFS(const int X, const int Y, const int Step);
 
 	void InitBFS();
 
@@ -116,22 +116,22 @@ private:
 
 	int GetNumberOfMoves();
 
-	int GetDirection(int X, int Y);
+	int GetDirection(const int X, const int Y);
 
 	int GetReverseDirection() const;
 
 	int GetRandomTurnDirection(OUT int& X, OUT int& Y) const;
 
-	int GetVisitedNodeDirection(const PathNode& VisitedNode, int X, int Y);
+	int GetVisitedNodeDirection(const PathNode& VisitedNode, const int X, const int Y);
 
-	void DisableAdjacent(int X, int Y);
+	void DisableAdjacent(const int X, const int Y);
 
-	void DisableLocation(int X, int Y) const;
+	void DisableLocation(const int X, const int Y) const;
 
-	void MakeDebugMessage(int InSteps, const string& Func);
+	void MakeDebugMessage(const int InSteps, const std::string& Func);
 
 	// Makes a random rectangle segment
-	void GetRandomRectangle(int X, int Y) const;
+	void GetRandomRectangle(const int X, const int Y) const;
 
 	void InitEnemies();
 
@@ -145,23 +145,23 @@ private:
 
 	void InitPlayer(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters);
 
-	static void DisplayErrorMessage(const string& Message);
+	static void DisplayErrorMessage(const std::string& Message);
 
 	// Used to display the discovered portion of the map
-	void ExtendMapBorders(int Radius);
+	void ExtendMapBorders(const int Radius);
 
-	void DrawMap(int Xs, int Xe, int Ys, int Ye);
+	void DrawMap(int Xs, int Xe, int Ys, int Ye) const;
 
 	// Gets the color of a specific unit
 	static const char* GetMapAnsi(char C);
 
 	// Calculate distance to each node
-	void BFS_Distance(int X, int Y, int Step);
+	void BFS_Distance(const int X, const int Y, const int Step);
 
-	void InitDistanceBFS(int X, int Y, int Step);
+	void InitDistanceBFS(const int X, const int Y, const int Step);
 
 	// Move after input
-	void Move(int MoveDir);
+	void Move(const int MoveDir);
 
 	std::vector<std::weak_ptr<Character>> GetEnemies(int X, int Y);
 
@@ -196,7 +196,7 @@ private:
 
 	std::vector<int> Distances;
 
-	std::vector<string> Error;
+	std::vector<std::string> Error;
 
 	std::vector<std::pair<int, int>> Turn;
 
@@ -223,7 +223,7 @@ private:
 	int BorderX = 0, BorderXEnd = 0;
 	int BorderY = 0, BorderYEnd = 0;
 
-	string ErrorMessage;
+	std::string ErrorMessage;
 
 	std::vector<DistanceNode> DistancesNodes;
 

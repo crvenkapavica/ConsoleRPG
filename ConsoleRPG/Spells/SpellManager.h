@@ -29,7 +29,7 @@ public:
 	static void CreatePassiveSpell(Character* SpellOwner, const ESpellID Id);
 
 	// Cast the spell with SpellIdx which corresponds to the owners spell vector index
-	static void CastSpell(const int SpellIdx, const shared_ptr<Character>& Instigator, vector<weak_ptr<Character>> Targets);
+	static void CastSpell(const int SpellIdx, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>> Targets);
 
 	//void UnequipSpell(ESpellBookID spell_id);
 

@@ -48,7 +48,7 @@ void GameplayStatics::Initialize(vector<shared_ptr<Character>>&& Players, MapGen
 
 void GameplayStatics::DisplayAllies() {
 
-	system("cls");
+	CLS;
 	int idx = 0;
 	cout << _map_gen->GetPowerLvl();
 	for (const auto& character : _cm->GetPlayers())
@@ -289,7 +289,7 @@ void GameplayStatics::InitiateCombatMode(vector<weak_ptr<Character>>&& enemies) 
 
 
 	ResetCombatVariables();
-	system("cls");
+	CLS;
 
 	//Give / Handle Combat(player) Experience
 	//GenerateLoot
@@ -726,7 +726,7 @@ void GameplayStatics::RollLoot() {
 }
 
 void GameplayStatics::DisplayLoot(const weak_ptr<PlayerCharacter>& Character, std::vector<std::unique_ptr<Item>> Loot) {
-	system("cls");
+	CLS;
 	if (!Loot.empty()) {
 		cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
 

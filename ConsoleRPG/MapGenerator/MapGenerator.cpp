@@ -8,10 +8,12 @@
 
 #include "../GameplayStatics.h"
 
-using namespace std;
+namespace
+{
+	const static auto& RAND_INT = std::function<int(int, int)>([](const int A, const int B) { return GameplayStatics::GetRandInt(A, B); });	
+}
 
 void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters) {
-
 	Map = new char* [MAX_X];
 	for (int i = 0; i < MAX_X; i++) Map[i] = new char[MAX_Y];
 
@@ -31,9 +33,6 @@ void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPla
 }
 
 void MapGenerator::InitBFS() {
-
-	srand(static_cast<unsigned int>(time(0)));
-
 	InitializeEmptyMap();
 
 	//_step_limit = static_cast<int>(static_cast<float>(MAX_X * GetMapDensity()));
@@ -46,7 +45,7 @@ void MapGenerator::InitBFS() {
 	BFS(START_X, START_Y, 0);
 }
 
-void MapGenerator::BFS(int X, int Y, const int Step) {
+void MapGenerator::BFS(const int X, const int Y, const int Step) {
 
 	if (X > MAX_X - 2 || X <= 1 || Y > MAX_Y - 2 || Y <= 1) return;
 	if (TotalSteps > StepLimit) return;
@@ -85,12 +84,10 @@ void MapGenerator::BFS(int X, int Y, const int Step) {
 void MapGenerator::InitializeEmptyMap() const {
 	for (int i = 0; i < MAX_X; i++)
 		for (int j = 0; j < MAX_Y; j++)
-			if (Map[i][j] != PATH)
-				Map[i][j] = OBSTACLE;
+			if (Map[i][j] != PATH) Map[i][j] = OBSTACLE;
 }
 
 void MapGenerator::DisableAdjacent(const int X, const int Y) {
-
 	if (AxisSides == -1) return;
 
 	if (Axis == 'x') {
@@ -146,24 +143,18 @@ void MapGenerator::DisableAdjacent(const int X, const int Y) {
 }
 
 void MapGenerator::DisableLocation(const int X, const int Y) const {
-	if (Map[X][Y] != PATH)
-		Map[X][Y] = OBSTACLE;
+	if (Map[X][Y] != PATH) Map[X][Y] = OBSTACLE;
 }
 
 int MapGenerator::GetNumberOfMoves() {
-	
 	Width = GetCurrentMoveWidth();
-
-	if (TotalSteps < 50)  return rand() % 7 + 1;
-
-	const int Random = rand() % 5;
-
-	Random1 = rand() % 5 + 3;
-	Random2 = rand() % 5 + 3;
-	RandomBoth = rand() % 5 + 3;
+	if (TotalSteps < 50)  return RAND_INT(1, 7);
+	const int Random = RAND_INT(0, 5);
+	Random1 = RAND_INT(3, 7);
+	Random2 = RAND_INT(3, 7);
+	RandomBoth = RAND_INT(3, 7);
 
 	if (Random == 0 || Random == 1) {
-
 		if (Dir == 0 || Dir == 1) {
 			Axis = 'x';
 		}
@@ -176,15 +167,15 @@ int MapGenerator::GetNumberOfMoves() {
 		AxisSides = -1;
 	}
 	if (Random == 1) {
-		AxisSides = rand() % 2;
+		AxisSides = RAND_INT(0, 1);
 	}
 
-	return rand() % 7 + 1;
+	return RAND_INT(1, 7);
 }
 
-int MapGenerator::GetDirection(int X, int Y) {
+int MapGenerator::GetDirection(const int X, const int Y) {
 	Turn.emplace_back(X, Y);
-	return rand() % 4;
+	return RAND_INT(0, 3);
 }
 
 int MapGenerator::GetReverseDirection() const {
@@ -197,7 +188,7 @@ int MapGenerator::GetReverseDirection() const {
 	}
 }
 
-int MapGenerator::GetVisitedNodeDirection(const PathNode& VisitedNode, int X, int Y) {
+int MapGenerator::GetVisitedNodeDirection(const PathNode& VisitedNode, const int X, const int Y) {
 	Turn.emplace_back(X, Y);
 	for (int i = 0; i < 4; i++)
 		if (!VisitedNode[i]) return i;
@@ -207,7 +198,7 @@ int MapGenerator::GetVisitedNodeDirection(const PathNode& VisitedNode, int X, in
 int MapGenerator::GetRandomTurnDirection(OUT int& X, OUT int& Y) const {
 	int RandomDir = -1;
 	while (RandomDir == -1) {
-		const int Random = rand() % Turn.size();
+		const int Random = RAND_INT(0, static_cast<int>(Turn.size()));
 		X = Turn[Random].first;
 		Y = Turn[Random].second;
 
@@ -220,27 +211,23 @@ int MapGenerator::GetRandomTurnDirection(OUT int& X, OUT int& Y) const {
 }
 
 int MapGenerator::GetCurrentMoveWidth() {
-
-	const int Random = rand() % 10 + 1;
-
+	const int Random = RAND_INT(1, 10);
 	if (Random == 10 || Random == 9) return 3;
 	if (Random >= 6 && Random <= 8) return 2;
 	return 1;
 }
 
 float MapGenerator::GetMapDensity() {
-	const int Random = rand() % 4 + 3;
+	const int Random = RAND_INT(3, 6);
 	return static_cast<float>(Random) / 10.f;
 }
 
 void MapGenerator::GetRandomRectangle(const int X, const int Y) const {
-	
 	if (Map[X][Y] == RECTANGLE) return;
 
-	if (const int Random = rand() % 10; Random == 1) {
-
-		const int a = rand() % 3 + 2;
-		const int b = rand() % 3 + 2;
+	if (const int Random = RAND_INT(0, 9); Random == 1) {
+		const int a = RAND_INT(2, 4);
+		const int b = RAND_INT(2, 4);
 
 		for (int i = 0; i < a; i++)
 			for (int j = 0; j < b; j++) {
@@ -251,36 +238,33 @@ void MapGenerator::GetRandomRectangle(const int X, const int Y) const {
 }
 
 void MapGenerator::PrintDebugMap() const {
-
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
-				cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
+				std::cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
 		}
-		cout << '\n';
+		std::cout << '\n';
 	}
-	cout << ANSI_COLOR_RESET << '\n';
+	std::cout << ANSI_COLOR_RESET << '\n';
 }
 
 void MapGenerator::PrintError() const {
-	for (const auto& e : Error)
-		std::cout << e << '\n';
+	for (const auto& Err : Error)
+		std::cout << Err << '\n';
 }
 
-void MapGenerator::MakeDebugMessage(const int InSteps, const string& Func) {
-	const string s = to_string(InSteps) + ":  ---" + Func;
+void MapGenerator::MakeDebugMessage(const int InSteps, const std::string& Func) {
+	const std::string s = std::to_string(InSteps) + ":  ---" + Func;
 	Error.push_back(s);
 }
 
-
 void MapGenerator::GetPlayerStartPosition(int& X, int& Y) const {
 	do {
-		X = rand() % MAX_X;
-		Y = rand() & MAX_Y;
+		X = RAND_INT(0, MAX_X);
+		Y = RAND_INT(0, MAX_Y);
 	} while (Map[X][Y] != PATH);
 }
 
-void MapGenerator::InitPlayer(const vector<weak_ptr<Character>>& InPlayerCharacters) {
-
+void MapGenerator::InitPlayer(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters) {
 	for (const auto& Player : InPlayerCharacters)
 		PlayerCharacters.push_back(std::static_pointer_cast<PlayerCharacter>(Player.lock()));
 
@@ -298,27 +282,22 @@ void MapGenerator::InitPlayer(const vector<weak_ptr<Character>>& InPlayerCharact
 	Map[PlayerX][PlayerY] = PLAYER;
 }
 
-void MapGenerator::ShowMap() {
-
-	system("cls");
-
-	if (BorderX == 0 && BorderXEnd == 0) {
-		ShowPosition();
-	}
+void MapGenerator::ShowMap() const {
+	CLS;
+	if (BorderX == 0 && BorderXEnd == 0) ShowPosition();
 	else {
 		Map[PlayerX][PlayerY] = PATH;
 		DrawMap(BorderX, BorderXEnd, BorderY, BorderYEnd);
 	}
 }
 
-void MapGenerator::DrawMap(int Xs, int Xe, int Ys, int Ye) {
-
+void MapGenerator::DrawMap(const int Xs, const int Xe, const int Ys, const int Ye) const {
 	for (int i = Xs; i < Xe; i++) {
 		for (int j = Ys; j < Ye; j++)
-			cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
-		cout << '\n';
+			std::cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
+		std::cout << '\n';
 	}
-	cout << ANSI_COLOR_RESET;
+	std::cout << ANSI_COLOR_RESET;
 
 	Map[PlayerX][PlayerY] = PLAYER; // for deleting for global map purposes
 
@@ -326,7 +305,6 @@ void MapGenerator::DrawMap(int Xs, int Xe, int Ys, int Ye) {
 }
 
 const char* MapGenerator::GetMapAnsi(const char C) {
-
 	[[fallthrough]]
 	switch (C) {
 		case OBSTACLE:
@@ -343,19 +321,16 @@ const char* MapGenerator::GetMapAnsi(const char C) {
 	}
 }
 
-void MapGenerator::ShowPosition() {
-
-	system("cls");
-
+void MapGenerator::ShowPosition() const {
+	CLS;
 	const int Radius = static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
-
+	
 	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
 	DrawMap(PlayerX - Radius + 1, PlayerX + Radius, PlayerY - Radius + 1, PlayerY + Radius);
 	GameplayStatics::DisplayMapMenu();
 }
 
 void MapGenerator::ExtendMapBorders(const int Radius) {
-
 	BorderX = BorderX - Radius < BorderX ? BorderX - Radius : BorderX;
 	BorderXEnd = BorderXEnd + Radius > BorderXEnd ? BorderXEnd + Radius : BorderX;
 	BorderY = BorderY - Radius < BorderY ? BorderY - Radius : BorderY;
@@ -363,14 +338,13 @@ void MapGenerator::ExtendMapBorders(const int Radius) {
 }
 
 void MapGenerator::HandleMovement() {
-
-	cout << "Which direction do you want to move to ? " << '\n';
-	cout << "use W S A D keys to move " << '\n';
-	cout << ANSI_CLEAR_LINE << "-> ";
-
-	string s;
-	cin >> s;
-
+	std::cout << "Which direction do you want to move to ? " << '\n';
+	std::cout << "use W S A D keys to move " << '\n';
+	std::cout << ANSI_CLEAR_LINE << "-> ";
+	
+	std::string s;
+	std::cin >> s;
+	
 	switch (s[0]) {
 	case 'D':
 	case 'd':
@@ -400,9 +374,7 @@ void MapGenerator::HandleMovement() {
 }
 
 void MapGenerator::Move(const int MoveDir) {
-
 	const int Radius = static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
-
 	Map[PlayerX][PlayerY] = PATH;
 
 	switch (MoveDir) {
@@ -431,7 +403,6 @@ void MapGenerator::Move(const int MoveDir) {
 	}
 
 	if (Map[PlayerX][PlayerY] == ENEMY) {
-
 		ClearCharGrid();
 		DrawPlayGrid();
 
@@ -441,14 +412,13 @@ void MapGenerator::Move(const int MoveDir) {
 
 		GameplayStatics::InitiateCombatMode(std::move(enemies));
 	}
-
+	
 	Map[PlayerX][PlayerY] = PLAYER;
-
 	ShowPosition();
 }
 
-void MapGenerator::DisplayErrorMessage(const string& Message) {
-	cout << ANSI_COLOR_RED << Message << ANSI_COLOR_RESET << '\n' << '\n';
+void MapGenerator::DisplayErrorMessage(const std::string& Message) {
+	std::cout << ANSI_COLOR_RED << Message << ANSI_COLOR_RESET << '\n' << '\n';
 }
 
 void MapGenerator::InitDistanceBFS(const int X, const int Y, const int Step) {
@@ -456,15 +426,16 @@ void MapGenerator::InitDistanceBFS(const int X, const int Y, const int Step) {
 }
 
 void MapGenerator::BFS_Distance(const int X, const int Y, const int Step) {
-
 	Distance[X][Y] = Step;
 
 	for (int i = 0; i < 4; i++) {
 		const int NewX = X + DX[i];
 		const int NewY = Y + DY[i];
 
-		if (NewX >= 2 && NewX < MAX_X - 2 && NewY >= 2 && NewY < MAX_Y - 2 &&
-			Map[NewX][NewY] == PATH && (Distance[NewX][NewY] == 0 || Distance[NewX][NewY] > Step + 1)) {
+		if (NewX >= 2 && NewX < MAX_X - 2
+			&& NewY >= 2 && NewY < MAX_Y - 2
+			&& Map[NewX][NewY] == PATH
+			&& (Distance[NewX][NewY] == 0 || Distance[NewX][NewY] > Step + 1)) {
 			BFS_Distance(NewX, NewY, Step + 1);
 		}
 	}
@@ -475,7 +446,6 @@ void MapGenerator::InitEnemies() {
 }
 
 void MapGenerator::AddRandomMapEnemies() {
-
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
 			int percent = static_cast<int>(TotalSteps * 0.05);
@@ -493,10 +463,10 @@ void MapGenerator::AddRandomMapEnemies() {
 
 				int RandomEnemies = 0;
 				int TotalPower = 0;
-				vector<int> CharClasses;
+				std::vector<int> CharClasses;
 
 				while (PowerLevel) {
-					if (int RandomClass = rand() % 6 + 50; PowerLevel - CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel >= 0) {
+					if (int RandomClass = RAND_INT(50, 55); PowerLevel - CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel >= 0) {
 						++RandomEnemies;
 						CharClasses.push_back(RandomClass);
 						TotalPower += CharDb::Data[static_cast<ECharacterClass>(RandomClass)].PowerLevel;
@@ -512,11 +482,11 @@ void MapGenerator::AddRandomMapEnemies() {
 					}
 				}
 
-				vector<shared_ptr<Character>> EnemiesVector;
-				map<char, weak_ptr<Character>> EnemiesMap;
+				std::vector<std::shared_ptr<Character>> EnemiesVector;
+				std::map<char, std::weak_ptr<Character>> EnemiesMap;
 
 				for (int k = 0; k < RandomEnemies; k++) { 
-					EnemiesVector.push_back(make_shared<EnemyCharacter>(static_cast<ECharacterClass>(CharClasses[k])));
+					EnemiesVector.push_back(std::make_shared<EnemyCharacter>(static_cast<ECharacterClass>(CharClasses[k])));
 					EnemiesMap['A' + k] = EnemiesVector[k];
 				}
 				EnemyMap.push_back(std::move(EnemiesVector));
@@ -531,21 +501,21 @@ void MapGenerator::AddRandomMapEnemies() {
 	}
 }
 
-vector<weak_ptr<Character>> MapGenerator::GetEnemies(const int X, const int Y) {
+std::vector<std::weak_ptr<Character>> MapGenerator::GetEnemies(const int X, const int Y) {
 	EnemyIndex = 0;
-	for (auto& [first, second] : EnemyMapXY) {
+	for (const auto& [first, second] : EnemyMapXY) {
 		if (first == X && second == Y) break;
 		++EnemyIndex;
 	}
 
-	vector<weak_ptr<Character>> WPtr;
-	for (auto& enemy : EnemyMap.at(EnemyIndex))
-		WPtr.push_back(weak_ptr<Character>(enemy));
+	std::vector<std::weak_ptr<Character>> WPtr;
+	for (const auto& Enemy : EnemyMap.at(EnemyIndex))
+		WPtr.emplace_back(std::weak_ptr<Character>(Enemy));
 
 	return WPtr;
 }
 
-weak_ptr<Character> MapGenerator::GetCharacterFromAlias(const char Target) {
+std::weak_ptr<Character> MapGenerator::GetCharacterFromAlias(const char Target) {
 	if (!CharMap.contains(Target)) return {};
 	const int x = CharMap.at(Target).first;
 	const int y = CharMap.at(Target).second;
@@ -555,16 +525,15 @@ weak_ptr<Character> MapGenerator::GetCharacterFromAlias(const char Target) {
 void MapGenerator::DisplayGrid() const {
 	for (const auto& i : Grid) {
 		for (int j = 0; j < GRID_Y; j++) {
-			if (j < 17) cout << ANSI_COLOR_GREEN; else cout << ANSI_COLOR_PASTELLE_BROWN;
-			if (j >= 64) cout << ANSI_COLOR_RED;
-			cout << i[j];
+			if (j < 17) std::cout << ANSI_COLOR_GREEN; else std::cout << ANSI_COLOR_PASTELLE_BROWN;
+			if (j >= 64) std::cout << ANSI_COLOR_RED;
+			std::cout << i[j];
 		}
-		cout << '\n';
+		std::cout << '\n';
 	}
 }
 
 void MapGenerator::DrawPlayGrid() {
-
 	for (int i = 0; i < GRID_X; i++) {
 		for (int j = 0; j < GRID_Y; j++) {		
 			// this is the field where character placement will be
@@ -586,29 +555,26 @@ void MapGenerator::DrawPlayGrid() {
 }
 
 void MapGenerator::GenerateCharacterGridPositions() {
-
-	for (auto& [grid1, grid2] : EnemyNameMap.at(EnemyIndex)) {
-
+	for (const auto& [grid1, grid2] : EnemyNameMap.at(EnemyIndex)) {
 		int First, Second;
 		do {
-			const int Random = rand() % 10;
+			const int Random = RAND_INT(0, 9);
 			First = EnemyStartPositions[Random].first;
 			Second = EnemyStartPositions[Random].second;
 		} while (CharGrid[First][Second].Here.lock().get());
 
 		CharGrid[First][Second].Here = grid2;
-		CharMap[grid1] = make_pair(First, Second);
+		CharMap[grid1] = std::make_pair(First, Second);
 	}
 
 	//add player characters
-	for (int i = 0; i < PlayerCharacters.size(); i++) {
+	for (int i = 0; i < static_cast<int>(PlayerCharacters.size()); i++) {
 		CharGrid[i][0].Here = PlayerCharacters[i];
-		CharMap['0' + i] = make_pair(i, 0);
+		CharMap['0' + i] = std::make_pair(i, 0);
 	}
 }
 
 void MapGenerator::AddCharactersToGrid() {
-
 	for (int i = 0; i < CHAR_GRID_X; i++)
 		for (int j = 0; j < CHAR_GRID_Y; j++) {
 			const int x = i * 4 + 2;
@@ -620,7 +586,6 @@ void MapGenerator::AddCharactersToGrid() {
 }
 
 bool MapGenerator::AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon) {
-
 	const int x = CharMap.at(Instigator->GetAlias()).first;
 	const int y = CharMap.at(Instigator->GetAlias()).second;
 
@@ -645,14 +610,13 @@ bool MapGenerator::AddCharacterToCharGrid(const std::shared_ptr<Character>& Inst
 	}
 
 	Grid[xx * 4 + 2][yy * 8 + 4] = Summon.lock()->GetAlias();
-
+	
 	UpdateCharGrid();
 
 	return bHasSpawned;
 }
 
 void MapGenerator::UpdateCharGrid() {
-
 	for (int i = 0; i < CHAR_GRID_X; ++i) 
 		for (int j = 0; j < CHAR_GRID_Y; ++j) 
 			for (int l = 0; l < 2; l++)
@@ -668,7 +632,7 @@ void MapGenerator::UpdateCharGrid() {
 
 						else CharGrid[i][j].Neighbors[k] = CharGrid[x][y].Here;
 					}
-					else CharGrid[i][j].Neighbors[k] = weak_ptr<Character>();
+					else CharGrid[i][j].Neighbors[k] = std::weak_ptr<Character>();
 				}
 }
 
@@ -681,7 +645,6 @@ void MapGenerator::ClearCharGrid() {
 }
 
 void MapGenerator::MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction) {
-
 	const int x = CharMap.at(InCharacter.GetAlias()).first;
 	const int y = CharMap.at(InCharacter.GetAlias()).second;
 
@@ -695,7 +658,7 @@ void MapGenerator::MoveCharacterOnGrid(const Character& InCharacter, const EDire
 	CharGrid[x][y].Here = {};
 
 #pragma warning(push)
-#pragma warning(disable: 6011) // Suppressing warning C6011: dereferencing null pointer
+#pragma warning(disable: 6011) // Suppressing warning C6011: dereferenstd::cing null pointer
 	// Update map with alias
 	CharMap[CharGrid[xx][yy].Here.lock()->GetAlias()].first = xx;
 	CharMap[CharGrid[xx][yy].Here.lock()->GetAlias()].second = yy;
@@ -709,11 +672,11 @@ void MapGenerator::MoveCharacterOnGrid(const Character& InCharacter, const EDire
 	UpdateCharGrid();
 }
 
-vector<string> MapGenerator::GetCombatDirections(const Character* InCharacter, OUT map<int, EDirection>& InMap) const {
+std::vector<std::string> MapGenerator::GetCombatDirections(const Character* InCharacter, OUT std::map<int, EDirection>& InMap) const {
 	const int x = CharMap.at(InCharacter->GetAlias()).first;
 	const int y = CharMap.at(InCharacter->GetAlias()).second;
-	const vector<string> Directions = { "NORTH", "NORTHEAST", "EAST", "SOUTHEAST", "SOUTH", "SOUTHWEST", "WEST", "NORTHWEST" };
-	vector<string> v;
+	const std::vector<std::string> Directions = { "NORTH", "NORTHEAST", "EAST", "SOUTHEAST", "SOUTH", "SOUTHWEST", "WEST", "NORTHWEST" };
+	std::vector<std::string> v;
 
 	for (int i = 0; i < 8; i++) {
 		const int xx = x + DX8[i];
@@ -729,8 +692,8 @@ vector<string> MapGenerator::GetCombatDirections(const Character* InCharacter, O
 	return v;
 }
 
-vector<Character*> MapGenerator::GetCharactersInRange(const Character* InCharacter) {
-	vector<Character*> v;
+std::vector<Character*> MapGenerator::GetCharactersInRange(const Character* InCharacter) {
+	std::vector<Character*> v;
 	const int x = CharMap.at(InCharacter->GetAlias()).first;
 	const int y = CharMap.at(InCharacter->GetAlias()).second;
 

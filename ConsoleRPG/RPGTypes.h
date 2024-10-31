@@ -1,25 +1,25 @@
 #pragma once
 
-#include <unordered_map>
-#include <map>
-#include <vector>
+#include <algorithm>
+#include <bits.h>
+#include <cctype>
+#include <deque>
 #include <functional>
+#include <iomanip>
 #include <iostream>
+#include <list>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <random>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <memory>
-#include <mutex>
-#include <list>
-#include <bits.h>
 #include <string>
-#include <optional>
-#include <random>
-#include <iomanip>
-#include <sstream>
-#include <algorithm>
-#include <deque>
-#include <cctype>
+#include <unordered_map>
+#include <vector>
 
 typedef int attribute;
 typedef int skill;
@@ -73,6 +73,9 @@ class Character;
 #define ANSI_BG_COLOR_WHITE     "\x1b[47m"
 
 #define ANSI_COLOR_BLINK		"\x1b[5m"
+
+#define ANSI_CLEAR_SCREEN		"\033[2J\033[H"
+#define CLS						ANSI_CLEAR_SCREEN
 
 #define ANSI_COLOR_FG_RGB(r, g, b) "\x1b[38;2;" #r ";" #g ";" #b "m"
 #define ANSI_COLOR_BG_RGB(r, g, b) "\x1b[48;2;" #r ";" #g ";" #b "m"

@@ -1,10 +1,16 @@
 #include "Character.h"
 
 #include <algorithm>
-#include "../Spells/SpellManager.h"
 #include "../GameplayStatics.h"
-#include "../Spells/PassiveSpell.h"
 #include "../Spells/ActiveSpell.h"
+#include "../Spells/PassiveSpell.h"
+#include "../Spells/SpellManager.h"
+
+
+void asd() {
+
+
+}
 
 Character::Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, const char InAlias)
 	: CharacterAttributes(InAttributes)

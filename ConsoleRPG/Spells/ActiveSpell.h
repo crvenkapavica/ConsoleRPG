@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../RPGTypes.h"
-#include "../Spells/Spell.h"
 #include "../Characters/Character.h"
+#include "../Spells/Spell.h"
 
 class PlayerCharacter;
 class EnemyCharacter;
@@ -12,28 +12,28 @@ class ActiveSpell : public Spell {
 public:
     ActiveSpell(ESpellID id, int lvl = 0);
 
-    static unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
+    static std::unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
 
     // Apply the effect of the spell
-    virtual void Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) = 0;
+    virtual void Apply(std::shared_ptr<Character> Instigator, std::vector<std::weak_ptr<Character>>& Targets) = 0;
 
-    inline const EDamageType GetDamageType() const { return _damage_type; }
-    inline const ESpellType GetSpellType() const { return _spell_type; }
+    inline EDamageType GetDamageType() const { return _damage_type; }
+    inline ESpellType GetSpellType() const { return _spell_type; }
 
 protected:
     // Get random damage between spell min and max value at current level
-    float GetRandEffectMinMax(const shared_ptr<Character>& character);
+    float GetRandEffectMinMax(const std::shared_ptr<Character>& character);
 
     // Get random damage between spell min and max value for on aplly effect at current level
-    float GetRandOnApplyMinMax(const shared_ptr<Character>& character);
+    float GetRandOnApplyMinMax(const std::shared_ptr<Character>& character);
 
     // Apply resistances, armor reduction, critial chance and other procs and return final damage
-    float AdjustDamage(float damage, const shared_ptr<Character>& character);
+    float AdjustDamage(float Damage, const std::shared_ptr<Character>& character);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
-    int AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, const shared_ptr<Character>& character, const string& name);
+    int AddRandomTargets(int R, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& character, const string& name);
 
-    bool Summon(ECharacterClass character_class, const shared_ptr<Character>& instigator);
+    bool Summon(ECharacterClass character_class, const std::shared_ptr<Character>& instigator);
 
 protected:
     const EDamageType _damage_type;

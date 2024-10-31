@@ -5,18 +5,16 @@
 
 class Item;
 
-using namespace std; // TODO - remove
-
 class ConsoleMenu {
 
 public:
-    ConsoleMenu(const std::vector<string>& options);
+    ConsoleMenu(const std::vector<std::string>& Options);
     ConsoleMenu() {}
 
     // Return the index of the selected item in the displayed menu(vector)
     int Select();
 
-    inline void SetOptions(const std::vector<string>& options) { _options = options; }
+    inline void SetOptions(const std::vector<std::string>& options) { _options = options; }
     inline void SetUp(const int up) { _up = up; }
     inline void SetRight(const int right) { _right = right; }
     inline void SetItems(const std::vector<Item*> items) { _items = items; _bIsItem = static_cast<bool>(_items.size()); }

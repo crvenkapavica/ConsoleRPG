@@ -11,7 +11,6 @@
 #include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
 
-using namespace std;
 
 void GameLoop(MapGenerator& mapGenerator) {
 	mapGenerator.PrintDebugMap();

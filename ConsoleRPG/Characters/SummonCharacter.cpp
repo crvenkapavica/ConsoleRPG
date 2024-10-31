@@ -8,7 +8,9 @@ int SummonCharacter::nPlayerSummons = 0;
 int SummonCharacter::nEnemySummons = 0;
 
 SummonCharacter::SummonCharacter(const ECharacterClass InCharacterClass, int InTeam)
-	: Character(CharDb::Data[InCharacterClass], InTeam, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
+	: Character(CharDb::Data[InCharacterClass]
+	, InTeam
+	, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
 {}
 
 SummonCharacter::SummonCharacter(const SummonCharacter& Other)

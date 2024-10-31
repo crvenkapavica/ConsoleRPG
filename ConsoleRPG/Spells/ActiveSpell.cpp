@@ -64,64 +64,64 @@ float ActiveSpell::GetRandOnApplyMinMax(const shared_ptr<Character>& character) 
 	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[_id][_lvl].ApplyMin, SpellDb::Data[_id][_lvl].ApplyMax), character);
 }
 
-float ActiveSpell::AdjustDamage(float damage, const shared_ptr<Character>& character) {
+float ActiveSpell::AdjustDamage(float Damage, const shared_ptr<Character>& character) {
 	switch (_damage_type) {
 	case EDamageType::ARCANE:
-		damage += damage * character->ArcaneDamage;
+		Damage += Damage * character->ArcaneDamage;
 		break;
 	case EDamageType::FIRE:
-		damage += damage * character->FireDamage;
+		Damage += Damage * character->FireDamage;
 		break;
 	case EDamageType::LIGHTNING:
-		damage += damage * character->LightningDamage;
+		Damage += Damage * character->LightningDamage;
 		break;
 	case EDamageType::COLD:
-		damage += damage * character->ColdDamage;
+		Damage += Damage * character->ColdDamage;
 		break;
 	case EDamageType::POISON:
-		damage += damage * character->PoisonDamage;
+		Damage += Damage * character->PoisonDamage;
 		break;
 	case EDamageType::NECROTIC:
-		damage += damage * character->NecroticDamage;
+		Damage += Damage * character->NecroticDamage;
 		break;
 	case EDamageType::PHYSICAL:
-		damage += damage * character->PhysicalDamage;
-		damage += character->GetAP().GetActual();
+		Damage += Damage * character->PhysicalDamage;
+		Damage += character->GetAP().GetActual();
 	case EDamageType::HEALING:
-		damage += damage * character->Healing;
+		Damage += Damage * character->Healing;
 		break;
 	default:
 		break;
 	}
 
 	if (_damage_type != EDamageType::PHYSICAL && _damage_type != EDamageType::NONE)
-		damage += character->GetSP().GetActual();
+		Damage += character->GetSP().GetActual();
 
 	// Critical Strike
 	int rnd = GameplayStatics::GetRandInt(0, 100000);
 	if (GetClass() == ESpellClass::MAGIC) {
 		float chance = character->GetSpellCritChance().GetActual() * 100000;
 		if (rnd <= chance)
-			damage *= character->GetSpellCritDmg().GetActual() / 100;
+			Damage *= character->GetSpellCritDmg().GetActual() / 100;
 	}
 	else if (GetClass() == ESpellClass::MELEE || GetClass() == ESpellClass::RANGED) {
 		float chance = character->GetCritChance().GetActual() * 100000; 
 		if (rnd <= chance)
-			damage *= character->GetCritDmg().GetActual();
+			Damage *= character->GetCritDmg().GetActual();
 	}
 
-	return damage;
+	return Damage;
 }
 
-int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, const shared_ptr<Character>& character, const string& name) {
+int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& Targets, const shared_ptr<Character>& character, const string& name) {
 	vector<weak_ptr<Character>> enemies;
 	if (character->GetTeam() == 1)
 		enemies = GameplayStatics::GetEnemyCharacters();
 	else
 		enemies = GameplayStatics::GetPlayerCharacters();
 
-	int expired = static_cast<int>(ranges::count_if(enemies, [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
-	int size = static_cast<int>(enemies.size()) - expired;
+	const int expired = static_cast<int>(ranges::count_if(enemies, [](const weak_ptr<Character>& wptr) { return wptr.expired(); }));
+	const int size = static_cast<int>(enemies.size()) - expired;
 	if (size == 1) return 0;
 	r = size == r ? r - 1 : r;
 	 
@@ -129,21 +129,21 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& targets, c
 		int rnd;
 		do {
 			rnd = rand() % enemies.size();
-		} while (ranges::any_of(targets, [&](const std::weak_ptr<Character>& wptr) { return enemies[rnd].expired() || enemies[rnd].lock().get() == wptr.lock().get(); }));
-		targets.push_back(enemies[rnd]);
+		} while (ranges::any_of(Targets, [&](const std::weak_ptr<Character>& WPtr) { return enemies[rnd].expired() || enemies[rnd].lock().get() == WPtr.lock().get(); }));
+		Targets.push_back(enemies[rnd]);
 	}
-	sort(targets.begin(), targets.end(), 
-		[&](const std::weak_ptr<Character>& a, const std::weak_ptr<Character>& b) { 
-		if (a.lock() && b.lock())
-			if (a.lock()->GetAlias() < b.lock()->GetAlias()) return true;
-		return false;
-		});
+	
+	ranges::sort(Targets,[&](const std::weak_ptr<Character>& CharacterA, const std::weak_ptr<Character>& CharacterB) { 
+         if (CharacterA.lock() && CharacterB.lock())
+             if (CharacterA.lock()->GetAlias() < CharacterB.lock()->GetAlias()) return true;
+         return false;
+    });
 
 	auto& s = GameplayStatics::GetCombatLogStream();
-	static string C = GameplayStatics::GetAliasColor(targets[0].lock()->GetAlias());
-	s << "Characters: " << C << targets[0].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
+	static string C = GameplayStatics::GetAliasColor(Targets[0].lock()->GetAlias());
+	s << "Characters: " << C << Targets[0].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
 	for (int i = 0; i < r; i++) {
-		s << targets[i + 1].lock()->GetAlias(); // POGLEDATI KAJ JE TAJ WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		s << Targets[i + 1].lock()->GetAlias(); // POGLEDATI KAJ JE TAJ WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
 	}
 	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";

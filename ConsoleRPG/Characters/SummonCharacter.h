@@ -2,7 +2,7 @@
 
 #include "Character.h"
 
-class SummonCharacter : public Character {
+class SummonCharacter final : public Character {
 public:
 	SummonCharacter(ECharacterClass InCharacterClass, int InTeam);
 	SummonCharacter(const SummonCharacter& Other);
