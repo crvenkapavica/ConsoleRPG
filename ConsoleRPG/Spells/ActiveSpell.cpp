@@ -172,8 +172,8 @@ void Fireball::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character
 	auto delta = [&](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
-	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, std::move(enemy_apply_stats));
+	apply_params.Flags |= EStructFlags::EFFECT_STAT;
+	apply_params.EffectStat = EffectStat({}, std::move(enemy_apply_stats));
 
 	unique_ptr<Fireball> spell = make_unique<Fireball>();
 	GameplayStatics::ApplyEffect(instigator, targets, std::move(spell), apply_params, {});
@@ -198,9 +198,9 @@ void Burning::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>
 	}
 
 	EffectParams effect_params;
-	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats));
+	effect_params.OnEvent = ECombatEvent::ON_TURN_BEGIN;
+	effect_params.StructFlags |= EStructFlags::EFFECT_STAT;
+	effect_params.EffectStat = EffectStat({}, move(enemy_effect_stats));
 
 	unique_ptr<Burning> spell = make_unique<Burning>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), {}, effect_params);
@@ -229,8 +229,8 @@ void MoltenArmor::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Charac
 		enemy_apply_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::CONSTANT, stat, delta});
 	}
 	ApplyParams apply_params;
-	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_stats));
+	apply_params.Flags |= EStructFlags::EFFECT_STAT;
+	apply_params.EffectStat = EffectStat({}, move(enemy_apply_stats));
 
 	vector<CharacterStat> enemy_effect_stats;
 	for (int i = 0; i <= rand_targets; i++) {
@@ -239,9 +239,9 @@ void MoltenArmor::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Charac
 		enemy_effect_stats.push_back(CharacterStat{ targets[i].lock().get(), EStatType::ANY, EStatMod::ADDITIVE, stat, delta});
 	}
 	EffectParams effect_params;
-	effect_params._on_event = ECombatEvent::ON_TURN_BEGIN;
-	effect_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	effect_params._effect_stat = Effect_Stat({}, move(enemy_effect_stats));
+	effect_params.OnEvent = ECombatEvent::ON_TURN_BEGIN;
+	effect_params.StructFlags |= EStructFlags::EFFECT_STAT;
+	effect_params.EffectStat = EffectStat({}, move(enemy_effect_stats));
 
 	unique_ptr<MoltenArmor> spell = make_unique<MoltenArmor>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, effect_params);
@@ -265,8 +265,8 @@ void Exposure::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character
 	auto delta = [=](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_res.push_back(CharacterStat{ targets[0].lock().get(), EStatType::RESISTANCE, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
-	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat({}, move(enemy_apply_res));
+	apply_params.Flags |= EStructFlags::EFFECT_STAT;
+	apply_params.EffectStat = EffectStat({}, move(enemy_apply_res));
 
 	unique_ptr<Exposure> spell = make_unique<Exposure>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, {});
@@ -426,8 +426,8 @@ void Melee::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>&
 	auto delta = [&](const shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->MinDamage, character->MaxDamage)); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
 	ApplyParams apply_params;
-	apply_params._struct_flags |= EStructFlags::EFFECT_STAT;
-	apply_params._effect_stat = Effect_Stat{ {}, enemy_apply_stats };
+	apply_params.Flags |= EStructFlags::EFFECT_STAT;
+	apply_params.EffectStat = EffectStat{ {}, enemy_apply_stats };
 
 	unique_ptr<Melee> spell = make_unique<Melee>();
 	GameplayStatics::ApplyEffect(instigator, targets, move(spell), apply_params, {});

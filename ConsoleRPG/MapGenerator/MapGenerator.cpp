@@ -1,16 +1,18 @@
 #include "MapGenerator.h"
-
-#include <algorithm>
+#include "../GameplayStatics.h"
 #include "../Characters/Character.h"
 #include "../Characters/CharacterData.h"
 #include "../Characters/EnemyCharacter.h"
 #include "../Characters/PlayerCharacter.h"
 
-#include "../GameplayStatics.h"
-
 namespace
 {
 	const static auto& RAND_INT = std::function<int(int, int)>([](const int A, const int B) { return GameplayStatics::GetRandInt(A, B); });	
+}
+
+MapGenerator& MapGenerator::GetInstance() {
+	static MapGenerator Instance;
+	return Instance;
 }
 
 void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters) {
@@ -435,9 +437,8 @@ void MapGenerator::BFS_Distance(const int X, const int Y, const int Step) {
 		if (NewX >= 2 && NewX < MAX_X - 2
 			&& NewY >= 2 && NewY < MAX_Y - 2
 			&& Map[NewX][NewY] == PATH
-			&& (Distance[NewX][NewY] == 0 || Distance[NewX][NewY] > Step + 1)) {
+			&& (Distance[NewX][NewY] == 0 || Distance[NewX][NewY] > Step + 1))
 			BFS_Distance(NewX, NewY, Step + 1);
-		}
 	}
 }
 
@@ -508,11 +509,11 @@ std::vector<std::weak_ptr<Character>> MapGenerator::GetEnemies(const int X, cons
 		++EnemyIndex;
 	}
 
-	std::vector<std::weak_ptr<Character>> WPtr;
+	std::vector<std::weak_ptr<Character>> Enemies;
 	for (const auto& Enemy : EnemyMap.at(EnemyIndex))
-		WPtr.emplace_back(std::weak_ptr<Character>(Enemy));
+		Enemies.emplace_back(std::weak_ptr<Character>(Enemy));
 
-	return WPtr;
+	return Enemies;
 }
 
 std::weak_ptr<Character> MapGenerator::GetCharacterFromAlias(const char Target) {
@@ -522,7 +523,7 @@ std::weak_ptr<Character> MapGenerator::GetCharacterFromAlias(const char Target) 
 	return CharGrid[x][y].Here;
 }
 
-void MapGenerator::DisplayGrid() const {
+void MapGenerator::DisplayPlayGrid() const {
 	for (const auto& i : Grid) {
 		for (int j = 0; j < GRID_Y; j++) {
 			if (j < 17) std::cout << ANSI_COLOR_GREEN; else std::cout << ANSI_COLOR_PASTELLE_BROWN;
@@ -672,48 +673,47 @@ void MapGenerator::MoveCharacterOnGrid(const Character& InCharacter, const EDire
 	UpdateCharGrid();
 }
 
-std::vector<std::string> MapGenerator::GetCombatDirections(const Character* InCharacter, OUT std::map<int, EDirection>& InMap) const {
+std::vector<std::string> MapGenerator::GetCombatDirections(const Character* InCharacter, INOUT std::map<int, EDirection>& InMap) const {
 	const int x = CharMap.at(InCharacter->GetAlias()).first;
 	const int y = CharMap.at(InCharacter->GetAlias()).second;
 	const std::vector<std::string> Directions = { "NORTH", "NORTHEAST", "EAST", "SOUTHEAST", "SOUTH", "SOUTHWEST", "WEST", "NORTHWEST" };
-	std::vector<std::string> v;
+	std::vector<std::string> Menu;
 
 	for (int i = 0; i < 8; i++) {
 		const int xx = x + DX8[i];
 		const int yy = y + DY8[i];
 		if (xx < 0 || xx >= CHAR_GRID_X || yy < 0 || yy >= CHAR_GRID_Y) continue;
 		if (CharGrid[xx][yy].Here.lock()) continue;
-
-		v.push_back(Directions[i]);
+		Menu.push_back(Directions[i]);
 
 		// Map values from InteractiveDisplay to real values
-		InMap[static_cast<int>(v.size()) - 1] = static_cast<EDirection>(i);
+		InMap[static_cast<int>(Menu.size()) - 1] = static_cast<EDirection>(i);
 	}
-	return v;
+	return Menu;
 }
 
 std::vector<Character*> MapGenerator::GetCharactersInRange(const Character* InCharacter) {
-	std::vector<Character*> v;
+	std::vector<Character*> Menu;
 	const int x = CharMap.at(InCharacter->GetAlias()).first;
 	const int y = CharMap.at(InCharacter->GetAlias()).second;
 
 	for (const auto& c : CharGrid[x][y].Neighbors)
-		if (c.lock()) v.push_back(c.lock().get());
+		if (c.lock()) Menu.push_back(c.lock().get());
 
-	return v;
+	return Menu;
 }
 
-int MapGenerator::GetEnemyIdx(const char Alias) {
+int MapGenerator::GetEnemyIndex(const char Alias) {
 	if (UPPER(Alias) < 'A' || UPPER(Alias) > 'Z') return -1;
 	
-	if (const auto character = GetCharacterFromAlias(UPPER(Alias)).lock())
+	if (const auto& SelectedChar = GetCharacterFromAlias(UPPER(Alias)).lock())
 		for (int i = 0; i < static_cast<int>(EnemyMap.at(EnemyIndex).size()); i++)
-			if (character == EnemyMap.at(EnemyIndex)[i]) return i;
+			if (SelectedChar == EnemyMap.at(EnemyIndex)[i]) return i;
 	
 	return -1;
 }
 
-int MapGenerator::GetPlayerIdx(const char Alias) {
+int MapGenerator::GetPlayerIndex(const char Alias) {
 	const auto Character = GetCharacterFromAlias(Alias);
 	for (int i = 0; i < static_cast<int>(PlayerCharacters.size()); i++)
 		if (std::static_pointer_cast<PlayerCharacter>(Character.lock()) == PlayerCharacters[i].lock()) return i;

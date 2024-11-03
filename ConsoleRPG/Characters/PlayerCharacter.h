@@ -10,7 +10,7 @@ class PlayerCharacter : public Character {
 public:
 	explicit PlayerCharacter(const ECharacterClass InCharacterClass);
 	PlayerCharacter(const PlayerCharacter& Other);
-	PlayerCharacter(PlayerCharacter&& Player) noexcept;
+	PlayerCharacter(PlayerCharacter&& Other) noexcept;
 	~PlayerCharacter() override = default;
 
 	PlayerCharacter& operator=(const PlayerCharacter& Other) {

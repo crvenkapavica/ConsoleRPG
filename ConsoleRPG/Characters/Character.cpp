@@ -1,16 +1,9 @@
 #include "Character.h"
-
-#include <algorithm>
 #include "../GameplayStatics.h"
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"
 #include "../Spells/SpellManager.h"
 
-
-void asd() {
-
-
-}
 
 Character::Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, const char InAlias)
 	: CharacterAttributes(InAttributes)
@@ -198,12 +191,12 @@ void Character::UpdateAttribute(attribute& Attribute, const int Amount) const {
 	Attribute += Amount;
 }
 
-void Character::AddActiveSpell(unique_ptr<ActiveSpell>& Spell) {
-	ActiveSpells.push_back(std::move(Spell));
+void Character::AddActiveSpell(std::unique_ptr<ActiveSpell>& SpellToAdd) {
+	ActiveSpells.push_back(std::move(SpellToAdd));
 }
 
-void Character::AddPassiveSpell(unique_ptr<PassiveSpell>& spell) {
-	PassiveSpells.push_back(std::move(spell));
+void Character::AddPassiveSpell(std::unique_ptr<PassiveSpell>& SpellToAdd) {
+	PassiveSpells.push_back(std::move(SpellToAdd));
 }
 
 void Character::RemoveEffectById(const ESpellID EffectId) {

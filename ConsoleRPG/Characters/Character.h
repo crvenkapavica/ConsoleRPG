@@ -80,8 +80,8 @@ public:
 public:
 	void UpdateAttribute(attribute& Attribute, int Amount) const;
 
-	void AddActiveSpell(std::unique_ptr<ActiveSpell>& Spell);
-	void AddPassiveSpell(std::unique_ptr<PassiveSpell>& Spell);
+	void AddActiveSpell(std::unique_ptr<ActiveSpell>& SpellToAdd);
+	void AddPassiveSpell(std::unique_ptr<PassiveSpell>& SpellToAdd);
 
 	inline std::vector<std::unique_ptr<ActiveSpell>>& GetActiveSpells() { return ActiveSpells; }
 	inline std::vector<std::unique_ptr<PassiveSpell>>& GetPassiveSpells() { return PassiveSpells; }

@@ -31,10 +31,11 @@ PlayerCharacter::PlayerCharacter(const ECharacterClass InCharacterClass)
 }
 
 PlayerCharacter::PlayerCharacter(const PlayerCharacter& Other)
-	: Character(Other) {}
+	: Character(Other)
+{}
 
-PlayerCharacter::PlayerCharacter(PlayerCharacter&& Player) noexcept
-	: Character(std::move(Player)) {}
+PlayerCharacter::PlayerCharacter(PlayerCharacter&& Other) noexcept
+	: Character(std::move(Other)) {}
 
 void PlayerCharacter::ReceiveExperience(const int InExperience) {
 	Experience += InExperience;
@@ -52,7 +53,7 @@ void PlayerCharacter::TakeTurn() {
 	}
 }
 
-void PlayerCharacter::EquipItem(unique_ptr<Item>&& InItem) {
+void PlayerCharacter::EquipItem(std::unique_ptr<Item>&& InItem) {
 	if (!InItem || nInventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
 	if (InItem->ItemInfo.ItemType == EItemType::WEAPON) {
@@ -68,14 +69,14 @@ void PlayerCharacter::EquipItem(unique_ptr<Item>&& InItem) {
 	CalculateInventorySlots();
 }
 
-void PlayerCharacter::UnEquipItem(unique_ptr<Item>& InItem) {
+void PlayerCharacter::UnEquipItem(std::unique_ptr<Item>& InItem) {
 	if (!InItem || nInventory == INV_SLOTS) return;
 	AddItemToInventory(std::move(InItem));
 	CalculatePlayerItemSlots();
 	CalculateInventorySlots();
 }
 
-bool PlayerCharacter::AddItemToInventory(unique_ptr<Item>&& InItem) {
+bool PlayerCharacter::AddItemToInventory(std::unique_ptr<Item>&& InItem) {
 	for (auto& InvItem : Inventory) {
 		if (!InvItem) {
 			InvItem = std::move(InItem);
@@ -103,7 +104,7 @@ void PlayerCharacter::DestroyItem(const std::unique_ptr<Item>&& InItem) {
 
 void PlayerCharacter::DisplayEquippedItems() const {
 	for (const auto& item : ItemSlots)
-		if (item) cout << GameplayStatics::GetEnumString(item->ItemInfo.ItemSlot) << " --> " << item->ItemInfo.Name << '\n';
+		if (item) std::cout << GameplayStatics::GetEnumString(item->ItemInfo.ItemSlot) << " --> " << item->ItemInfo.Name << '\n';
 }
 
 void PlayerCharacter::DisplayInventory() {}
@@ -116,7 +117,7 @@ void PlayerCharacter::DisplayPassiveSpellSlots() {}
 
 std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 
-	vector<string> v = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
+	std::vector<std::string> v = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
 	int Input;
 	if ((Input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
 	const auto type = static_cast<EItemType>(ITEM_TYPES - Input);
@@ -125,7 +126,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 	if ((Input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
 	const auto rarity = static_cast<EItemRarity>(Input);
 
-	map<int, int> ItemMap;
+	std::map<int, int> ItemMap;
 	int ItemIndex = 0;
 	int nInv = 0;
 	std::vector<Item*> items;
@@ -151,7 +152,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 	for (int i = 0; i < static_cast<int>(ItemSlots.size()); i++)
 		if (((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemType == type || type == EItemType::MISC)) || type == EItemType::MISC)
 			&& ((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) || rarity == EItemRarity::MISC)) {
-			string s = GameplayStatics::GetEnumString(static_cast<EItemSlot>(i));
+			std::string s = GameplayStatics::GetEnumString(static_cast<EItemSlot>(i));
 			if (i <= 8 || i == 11) s += "\t  *---> ";
 			if (i == 9) s += " *---> ";
 			if (i == 10) s += "  *---> ";
@@ -180,20 +181,19 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 
 void PlayerCharacter::DisplayStats() const {
 	CLS;
-	cout << "========     STATS    ============" << '\n';
-	cout << "==================================" << '\n';
-	cout << "STR: " << CharacterAttributes.Strength + Item_Strength << "\nAGI: " << CharacterAttributes.Agility + Item_Agility << "\nINT: " << CharacterAttributes.Intelligence + Item_Intelligence << '\n';
-	cout << "VIT: " << CharacterAttributes.Vitality + Item_Vitality << "\nCON: " << CharacterAttributes.Consciousness + Item_Consciousness << "\nEND: " << CharacterAttributes.Endurance + Item_Endurance << '\n';
-	cout << "MinDmg: " << MinDamage << "\nMaxDmg: " << MaxDamage << "\nAvgDmg: " << AvgDamage << '\n';
+	std::cout << "========     STATS    ============" << '\n';
+	std::cout << "==================================" << '\n';
+	std::cout << "STR: " << CharacterAttributes.Strength + Item_Strength << "\nAGI: " << CharacterAttributes.Agility + Item_Agility << "\nINT: " << CharacterAttributes.Intelligence + Item_Intelligence << '\n';
+	std::cout << "VIT: " << CharacterAttributes.Vitality + Item_Vitality << "\nCON: " << CharacterAttributes.Consciousness + Item_Consciousness << "\nEND: " << CharacterAttributes.Endurance + Item_Endurance << '\n';
+	std::cout << "MinDmg: " << MinDamage << "\nMaxDmg: " << MaxDamage << "\nAvgDmg: " << AvgDamage << '\n';
 
-	cout << '\n' << "Press any key to go back.\n";
+	std::cout << '\n' << "Press any key to go back.\n";
 	auto input = _getch();
 	CLS;
 	GameplayStatics::DisplayMapMenuTitle();
 }
 
 void constexpr PlayerCharacter::InitExperienceForLevel() {
-
 	constexpr int start = 17;
 	ExperienceNextLevel[0] = start;
 
@@ -211,15 +211,14 @@ void PlayerCharacter::LevelUp() {
 }
 
 void PlayerCharacter::SortInventory() {
-	ranges::sort(Inventory, [&](const std::unique_ptr<Item>& First, const std::unique_ptr<Item>& Second) { return First && !Second; });
+	std::ranges::sort(Inventory, [&](const std::unique_ptr<Item>& First, const std::unique_ptr<Item>& Second) { return First && !Second; });
 }
 
 void PlayerCharacter::CalculatePlayerItemSlots() {
 	Health = Essence = Stamina = Armor = AttackPower = CritChance = CritDamage = SpellPower = SpellCritChance = SpellCritDamage = 0.f;
 	Item_Strength = Item_Agility = Item_Intelligence = Item_Vitality = Item_Consciousness = Item_Endurance = 0;
 	MinDamage = MaxDamage = 0;
-
-
+	
 	for (const auto& SlottedItem : ItemSlots)
 		if (SlottedItem) {
 			MinDamage += SlottedItem->ItemInfo.MinDmg;

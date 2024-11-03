@@ -19,7 +19,6 @@ struct GridNode {
 };
 
 struct PathNode {
-
 	PathNode()
 	: Right(false)
 	, Left(false)
@@ -27,8 +26,8 @@ struct PathNode {
 	, Up(false)
 	{}
 
-	bool& operator[](const int& Idx) {
-		switch (Idx) {
+	bool& operator[](const int& Index) {
+		switch (Index) {
 		case 0: return Right;
 		case 1: return Left;
 		case 2: return Down;
@@ -37,8 +36,8 @@ struct PathNode {
 		}
 	}
 
-	bool operator[](const int& Idx) const {
-		switch (Idx) {
+	bool operator[](const int& Index) const {
+		switch (Index) {
 		case 0: return Right == true;
 		case 1: return Left == true;
 		case 2: return Down == true;
@@ -55,156 +54,137 @@ struct PathNode {
 };
 
 
-class MapGenerator {
+class MapGenerator final {
 
 public:
-	MapGenerator() = delete;
-
+	MapGenerator() = default;
+	MapGenerator(const MapGenerator&) = delete;
+	MapGenerator(MapGenerator&&) = delete;
+	~MapGenerator() = default;
+	
+	MapGenerator& operator=(const MapGenerator&) = delete;
+	MapGenerator& operator=(MapGenerator&&) = delete;
+	
+	static MapGenerator& GetInstance();
 	void Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters);
-
-	// Shows the current player position on the map with radius of light_radius
+	
+	// Shows the current player position on the map with radius of light radius.
 	void ShowPosition() const;
-
-	// Shows the portion of the map the player discovered
+	// Shows the portion of the map the player discovered.
 	void ShowMap() const;
-
-	// Handle keypress for direction of movement
+	// Handle keypress for direction of movement.
 	void HandleMovement();
 
 	// DEBUG
 	/////////////////////////////////
 	void PrintDebugMap() const;
-
 	void PrintError() const;
 	/////////////////////////////////
-
-	void DisplayGrid() const;
-
+	
+	// Display play grid.
+	void DisplayPlayGrid() const;
+	// Move Character on char and play grids.
 	void MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction);
-
+	// Adds Character to char grid and returns true if successful.
 	bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
-	int GetEnemyIdx(const char Alias);
-
-	int GetPlayerIdx(const char Alias);
-
+	int GetEnemyIndex(const char Alias);
+	int GetPlayerIndex(const char Alias);
 	void KillEnemy(const int Idx);
-
 	void KillEnemy(const Character* InCharacter);
 
 public:
 	std::weak_ptr<Character> GetCharacterFromAlias(const char Target);
-
+	// Get combat direction for InCharacter and save
 	std::vector<std::string> GetCombatDirections(const Character* InCharacter, OUT std::map<int, EDirection>& InMap) const;
-
 	std::vector<Character*> GetCharactersInRange(const Character* InCharacter);
-
-	// inline?
-	[[nodiscard]] inline int GetPowerLvl() const { return PowerLevels[EnemyIndex]; }
+	// Get monster power level at engaged tile.
+	[[nodiscard]] inline int GetPowerLevel() const { return PowerLevels[EnemyIndex]; }
 
 private:
 	// BFS that generates map
 	void BFS(const int X, const int Y, const int Step);
-
 	void InitBFS();
-
 	void InitializeEmptyMap() const;
-
-	static int GetCurrentMoveWidth();
-
-	static float GetMapDensity();
-
+	
+	int GetCurrentMoveWidth();
+	float GetMapDensity();
 	int GetNumberOfMoves();
-
 	int GetDirection(const int X, const int Y);
-
-	int GetReverseDirection() const;
-
+	[[nodiscard]] int GetReverseDirection() const;
 	int GetRandomTurnDirection(OUT int& X, OUT int& Y) const;
-
 	int GetVisitedNodeDirection(const PathNode& VisitedNode, const int X, const int Y);
-
 	void DisableAdjacent(const int X, const int Y);
-
 	void DisableLocation(const int X, const int Y) const;
 
-	void MakeDebugMessage(const int InSteps, const std::string& Func);
-
-	// Makes a random rectangle segment
+	// Makes a random rectangle segment.
 	void GetRandomRectangle(const int X, const int Y) const;
-
+	// Initialize enemies on engaged tile.
 	void InitEnemies();
-
 	// Spawns enemies on the map and decides their power level
 	void AddRandomMapEnemies();
+
+	void MakeDebugMessage(const int InSteps, const std::string& Func);
 
 	// PLAYER SPECIFIC
 	// -------------------------------------------------------------------
 
-	void GetPlayerStartPosition(int& X, int& Y) const;
-
 	void InitPlayer(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters);
+	
+	void GetPlayerStartPosition(int& X, int& Y) const;
+	
+	// Get Enemy Characters at the engaged tile.
+	std::vector<std::weak_ptr<Character>> GetEnemies(int X, int Y);
 
-	static void DisplayErrorMessage(const std::string& Message);
-
+	// Calculate distance to each node.
+	void BFS_Distance(const int X, const int Y, const int Step);
+	// Initialize "Step" distance starting from XY.
+	void InitDistanceBFS(const int X, const int Y, const int Step);
+	
+	// Move after input.
+	void Move(const int MoveDir);
+	
 	// Used to display the discovered portion of the map
 	void ExtendMapBorders(const int Radius);
-
+	// Draw discovered map.
 	void DrawMap(int Xs, int Xe, int Ys, int Ye) const;
-
-	// Gets the color of a specific unit
-	static const char* GetMapAnsi(char C);
-
-	// Calculate distance to each node
-	void BFS_Distance(const int X, const int Y, const int Step);
-
-	void InitDistanceBFS(const int X, const int Y, const int Step);
-
-	// Move after input
-	void Move(const int MoveDir);
-
-	std::vector<std::weak_ptr<Character>> GetEnemies(int X, int Y);
+	// Gets the color of a specific unit.
+	const char* GetMapAnsi(char C);
+	
+	void DisplayErrorMessage(const std::string& Message);
 
 	// GRID SPECIFIC
 	// -------------------------------------------------------------------
-
+	
+	// Draws the GRID_X * GRID_Y play grid.
 	void DrawPlayGrid();
-
-	// Places each enemy on the [currently] random square on the play grid
+	// Places each enemy on the [currently] random square on the play grid.
 	void GenerateCharacterGridPositions();
-
-	// Adds characters to the play grid
+	// Adds characters to the play grid.
 	void AddCharactersToGrid();
-
-	// Update internal char_grid's neighbours
+	// Update internal char_grid's neighbours.
 	void UpdateCharGrid();
-
+	// Clear the whole Character grid.
 	void ClearCharGrid();
-
+	// -------------------------------------------------------------------
+	
 private:
 	std::vector<EnemyCharacter*> Enemies;
-
-	class std::vector<std::weak_ptr<PlayerCharacter>> PlayerCharacters;
+	std::vector<std::weak_ptr<PlayerCharacter>> PlayerCharacters;
 
 	char** Map;
-
 	PathNode** Nodes;
-
 	int** Steps;
-
 	int** Distance;
 
 	std::vector<int> Distances;
-
 	std::vector<std::string> Error;
-
 	std::vector<std::pair<int, int>> Turn;
-
-	int StepLimit;
-
-	int Moves;
+	
 	int Dir;
-
+	int Moves;
+	int StepLimit;
+	
 	int DX[4] = { 0, 0, 1, -1 };
 	int DY[4] = { 1, -1, 0, 0 };
 
@@ -219,22 +199,17 @@ private:
 
 	int PlayerX;
 	int PlayerY;
-
 	int BorderX = 0, BorderXEnd = 0;
 	int BorderY = 0, BorderYEnd = 0;
-
+	int EnemyIndex;
+	
 	std::string ErrorMessage;
-
 	std::vector<DistanceNode> DistancesNodes;
-
-	std::vector<std::vector<std::shared_ptr<Character>>> EnemyMap; // this two vectors are aligned
+	std::vector<int> PowerLevels;
+	std::vector<std::vector<std::shared_ptr<Character>>> EnemyMap;   // this two vectors are aligned
 	std::vector<std::pair<int, int>> EnemyMapXY;					 // this two vectors are aligned
 	std::vector<std::map<char, std::weak_ptr<Character>>> EnemyNameMap;
-
-	std::vector<int> PowerLevels;
-
-	int EnemyIndex;
-
+	
 	// GRID SPECIFIC
 	// ------------------------------------------------------------------
 	char Grid[21][81];

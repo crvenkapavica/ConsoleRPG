@@ -13,6 +13,7 @@
 #include <mutex>
 #include <optional>
 #include <random>
+#include <ranges>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,7 +152,7 @@ class Character;
 
 #define RPG_ASSERT(expr, msg) \
     if (!(expr)) { \
-		system("cls"); \
+		CLS \
         std::cout << "Assertion failed: " << (msg) << "\n"; \
         std::cout << "In file: " << __FILE__ << ", line: " << __LINE__ << "\n"; \
         std::exit(EXIT_FAILURE); \

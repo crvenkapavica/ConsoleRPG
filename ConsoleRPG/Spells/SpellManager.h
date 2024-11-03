@@ -10,15 +10,15 @@ class EnemyCharacter;
 class PassiveSpell;
 struct EffectParams;
 
-class SpellManager {
+class SpellManager final {
 
 public:
 	SpellManager() = default;
 	SpellManager(const SpellManager&) = delete;
 	SpellManager(SpellManager&&) = delete;
-	~SpellManager() = delete;
+	~SpellManager() = default;
 	
-	SpellManager& operator=(const SpellManager&) = delete;
+	SpellManager& operator=(const SpellManager&) = default;
 	SpellManager& operator=(SpellManager&&) = delete;
 	
 	static SpellManager& GetInstance();
@@ -29,7 +29,7 @@ public:
 	static void CreatePassiveSpell(Character* SpellOwner, const ESpellID Id);
 
 	// Cast the spell with SpellIdx which corresponds to the owners spell vector index
-	static void CastSpell(const int SpellIdx, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>> Targets);
+	static void CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets);
 
 	//void UnequipSpell(ESpellBookID spell_id);
 

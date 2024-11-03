@@ -12,24 +12,21 @@ SpellManager& SpellManager::GetInstance() {
 }
 
 void SpellManager::CreateActiveSpell(Character* SpellOwner, const ESpellID Id) {
-
 	if (Id == ESpellID::NONE) return;
 
-	unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(Id);
+	std::unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(Id);
 	SpellOwner->AddActiveSpell(spell);
 }
 
 void SpellManager::CreatePassiveSpell(Character* SpellOwner, const ESpellID Id) {
-
 	if (Id == ESpellID::NONE) return;
 
-	unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(Id);
+	std::unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(Id);
 	SpellOwner->AddPassiveSpell(spell);
 }
 
-void SpellManager::CastSpell(const int SpellIdx, const shared_ptr<Character>& Instigator, vector<weak_ptr<Character>> Targets) {
-
-	ActiveSpell* Spell = Instigator->GetActiveSpells()[SpellIdx].get();
+void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
+	ActiveSpell* Spell = Instigator->GetActiveSpells()[SpellIndex].get();
 	CombatManager& cm = CombatManager::GetInstance();
 
 	if (Spell->GetClass() == ESpellClass::MAGIC)

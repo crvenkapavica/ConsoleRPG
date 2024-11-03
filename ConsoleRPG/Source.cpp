@@ -1,15 +1,15 @@
 #pragma once
 
+#include "GameplayStatics.h"
 #include "RPGTypes.h"
 #include "Characters/Character.h"
 #include "Characters/CharacterData.h"
-#include "MapGenerator/MapGenerator.h"
 #include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
-#include "Spells/SpellData.h"
-#include "GameplayStatics.h"
-#include "Spells/SpellManager.h"
 #include "Combat/CombatManager.h"
+#include "MapGenerator/MapGenerator.h"
+#include "Spells/SpellData.h"
+#include "Spells/SpellManager.h"
 
 
 void GameLoop(MapGenerator& mapGenerator) {
@@ -93,23 +93,27 @@ void SendAltEnter() {
 //}
 
 
-#include "Items/ItemData.h"
 #include "Characters/SummonCharacter.h"
+#include "Items/ItemData.h"
+
 int main() {
 
 
     //Sleep(100);
     //SendAltEnter();
 
-    auto dltr = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };
+	SpellManager::GetInstance();
+	CombatManager::GetInstance();
+	MapGenerator::GetInstance();
 
-    const std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), dltr);
-    const std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), dltr);
+    auto CharDeleter = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };
 
-    vector<shared_ptr<Character>> PlayerCharacters = { PlayerMain, PlayerWarlock1 };
+    const std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), CharDeleter);
+    const std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), CharDeleter);
 
+    std::vector<std::shared_ptr<Character>> PlayerCharacters = { PlayerMain, PlayerWarlock1 };
+	
     using sm = SpellManager;
-
     sm::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
     sm::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
     sm::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
@@ -117,16 +121,14 @@ int main() {
     sm::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
     sm::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);
 
-    //pasive
+    // passive
     sm::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
-
-    CombatManager& CM = CombatManager::GetInstance();
+	
 	ConsoleMenu Menu;
-	MapGenerator MapGen;
-
+	
     // Later we don't send none of these initializers to GS. 
     // Have to implement a starting routine and a game loop. at the starting routine we get the instances.
-	GameplayStatics::Initialize(std::move(PlayerCharacters), sm, CM, std::move(MapGen), Menu);
+	GameplayStatics::Initialize(std::move(PlayerCharacters), Menu);
 }
 
 

@@ -109,9 +109,9 @@ Item::Item(const ItemData& Data) {
 	ItemInfo.WeaponType = Data.WeaponType;
 }
 
-std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const weak_ptr<PlayerCharacter>& Player, int PowerLevel) {
-	std::vector<unique_ptr<Item>> Loot;
-	std::vector<pair<int, int>> ItemTypeLimit = {
+std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const std::weak_ptr<PlayerCharacter>& Player, int PowerLevel) {
+	std::vector<std::unique_ptr<Item>> Loot;
+	std::vector<std::pair<int, int>> ItemTypeLimit = {
 		{ 0,1 },{ 0,1 },{ 0,1 },{ 0,2 },{ 0,3 },{ 0,3 }
 	};
 

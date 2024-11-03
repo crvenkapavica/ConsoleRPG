@@ -1,52 +1,50 @@
 #pragma once
 
 #include "../RPGTypes.h"
-#include "../Spells/Spell.h"
 #include "../Characters/Character.h"
+#include "../Spells/Spell.h"
 
 class PassiveSpell : public Spell {
 
 public:
-	PassiveSpell(ESpellID id, int lvl = 0);
+	explicit PassiveSpell(const ESpellID Id, const int Level = 0);
 
-	static unique_ptr<PassiveSpell> CreatePassiveSpell(ESpellID id);
+	static std::unique_ptr<PassiveSpell> CreatePassiveSpell(ESpellID Id);
 
 	// Apply the passive spell effect
 	virtual void Apply() = 0;
 
 	// Get the event on which the passive triggers
-	inline const ECombatEvent GetOnEvent() const { return _combat_event; }
+	inline ECombatEvent GetOnEvent() const { return CombatEvent; }
 
 public:
-	weak_ptr<Character> _instigator;
-	vector<weak_ptr<Character>> _targets;
+	std::weak_ptr<Character> Instigator;
+	std::vector<std::weak_ptr<Character>> Targets;
 
 protected:
-	ECombatEvent _combat_event;
+	ECombatEvent CombatEvent;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class VampiricTouch : public PassiveSpell {
+class VampiricTouch final : public PassiveSpell {
 public:
 	VampiricTouch() : PassiveSpell(ESpellID::VAMPIRIC_TOUCH) {}
 	
 	virtual void Apply() override;
-
-	virtual stringstream& GetTooltip() override;
+	virtual std::stringstream& GetTooltip() override;
 
 private:
-	float _value = 0.8f;	
+	float Value = 0.8f;	
 };
 
-class Thorns : public PassiveSpell {
+class Thorns final : public PassiveSpell {
 public:
 	Thorns() : PassiveSpell(ESpellID::THORNS) {}
 
 	virtual void Apply() override;
-
 	//virtual stringstream& GetTooltip() override;
 
 private:
-	float _value = 10.f;
+	float Value = 10.f;
 };

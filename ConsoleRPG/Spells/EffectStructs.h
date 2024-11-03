@@ -1,61 +1,55 @@
 #pragma once
+
 #include "../RPGTypes.h"
 #include "../Characters/Character.h"
 #include "../Spells/ActiveSpell.h"
 
 struct CharacterStat {
-	Character* _character;
-	EStatType _stat_type;
-	EStatMod _stat_mod;
-	float* _stat;
-	std::function<float(const shared_ptr<Character>& character)> GetDelta;
-	float _total = 0;
+	Character* PtrCharacter;
+	EStatType StatType;
+	EStatMod StatMod;
+	float* Stat;
+	std::function<float(const std::shared_ptr<Character>& SPtrCharacter)> GetDelta;
+	float Total = 0;
 };
 
-struct Effect_Stat {
-
-	Effect_Stat(vector<CharacterStat> ally_stat, vector<CharacterStat> enemy_stat)
-		: _ally_stat(move(ally_stat))
-		, _enemy_stat(move(enemy_stat))
+struct EffectStat {
+	EffectStat(const std::vector<CharacterStat>& AllyStats, const std::vector<CharacterStat>& EnemyStats)
+		: AllyStats(AllyStats)
+		, EnemyStats(EnemyStats)
 	{}
-
-	vector<CharacterStat> _ally_stat;
-	vector<CharacterStat> _enemy_stat;
+	
+	std::vector<CharacterStat> AllyStats;
+	std::vector<CharacterStat> EnemyStats;
 };
 
 struct EffectParams {
-
-	ECombatEvent _on_event;
-	int _struct_flags = 0;
-
-	std::optional<Effect_Stat> _effect_stat;
+	ECombatEvent OnEvent;
+	int StructFlags = 0;
+	std::optional<EffectStat> EffectStat;
 };
 
 struct ApplyParams {
-
-	int _struct_flags = 0;
-
-	std::optional<Effect_Stat> _effect_stat;
+	int Flags = 0;
+	std::optional<EffectStat> EffectStat;
 };
 
 struct CombatEffect {
-
-	CombatEffect(std::shared_ptr<Character> instigator, std::vector<weak_ptr<Character>> targets, unique_ptr<ActiveSpell>& spell, std::optional<ApplyParams> apply_params, std::optional<EffectParams> effect_params, int duration)
-		: _instigator(instigator)
-		, _targets(targets)
-		, _spell(move(spell))
-		, _apply_params(apply_params)
-		, _effect_params(effect_params)
-		, _duration(duration)
+	CombatEffect(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell>&& Spell, const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams, const int Duration)
+		: Instigator(Instigator)
+		, Targets(Targets)
+		, Spell(std::move(Spell))
+		, ApplyParams(ApplyParams)
+		, EffectParams(EffectParams)
+		, Duration(Duration)
 	{}
 
-	std::shared_ptr<Character> _instigator;
-	std::vector<weak_ptr<Character>> _targets;
-	std::unique_ptr<ActiveSpell> _spell;
-	std::optional<ApplyParams> _apply_params;
-	std::optional<EffectParams> _effect_params;
-	int _duration;
-
-	int i = 0;
-	int _turn_applied = -1;
+	std::shared_ptr<Character> Instigator;
+	std::vector<std::weak_ptr<Character>> Targets;
+	std::unique_ptr<ActiveSpell> Spell;
+	std::optional<ApplyParams> ApplyParams;
+	std::optional<EffectParams> EffectParams;
+	int Duration;
+	int Index = 0;
+	int TurnApplied = -1;
 };

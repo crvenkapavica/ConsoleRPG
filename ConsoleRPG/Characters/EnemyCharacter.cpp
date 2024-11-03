@@ -20,9 +20,7 @@ EnemyCharacter::EnemyCharacter(EnemyCharacter&& Other)
 {}
 
 void EnemyCharacter::TakeTurn() {
-
 	Move();
-
 	//CastSpell();
 
 	GameplayStatics::RedrawGameScreen();
@@ -32,11 +30,11 @@ void EnemyCharacter::TakeTurn() {
 }
 
 void EnemyCharacter::Move() {
-	map<int, EDirection> DirectionMap;
+	std::map<int, EDirection> DirectionMap;
 	GameplayStatics::EnemyCombatMove(this, DirectionMap);
 	if (!DirectionMap.empty()) {
-		const int Rnd = rand() % static_cast<int>(DirectionMap.size());
-		GameplayStatics::MoveCharacterOnGrid(static_pointer_cast<Character*>(this), DirectionMap[Rnd]);
+		const int Rnd = GameplayStatics::GetRandInt(1, static_cast<int>(DirectionMap.size()));
+		GameplayStatics::MoveCharacterOnGrid(std::static_pointer_cast<Character*>(this), DirectionMap[Rnd]);
 		
 	}
 }
@@ -44,10 +42,10 @@ void EnemyCharacter::Move() {
 void EnemyCharacter::CastSpell() {
 	Players = GameplayStatics::GetPlayerCharacters();
 	Enemies = GameplayStatics::GetEnemyCharacters();
-	const vector<int> p_idx = { 0 };
-	const vector<int> e_idx;
+	const std::vector<int> p_idx = { 0 };
+	const std::vector<int> e_idx;
 
-	const vector<weak_ptr<Character>> targets = { Players[p_idx[0]] };
+	const std::vector<std::weak_ptr<Character>> targets = { Players[p_idx[0]] };
 
 	if (!GetPassiveSpells().empty() && GetPassiveSpells()[0]) {
 		
