@@ -25,8 +25,8 @@ void EnemyCharacter::TakeTurn() {
 
 	GameplayStatics::RedrawGameScreen();
 	Sleep(1200);
-
-	EndTurn();
+	
+	CombatManager::EndTurn(*this);
 }
 
 void EnemyCharacter::Move() {

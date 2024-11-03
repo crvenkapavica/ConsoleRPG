@@ -152,7 +152,7 @@ class Character;
 
 #define RPG_ASSERT(expr, msg) \
     if (!(expr)) { \
-		CLS \
+		CLS; \
         std::cout << "Assertion failed: " << (msg) << "\n"; \
         std::cout << "In file: " << __FILE__ << ", line: " << __LINE__ << "\n"; \
         std::exit(EXIT_FAILURE); \

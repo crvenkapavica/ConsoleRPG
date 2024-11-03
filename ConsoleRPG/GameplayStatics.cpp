@@ -680,7 +680,7 @@ float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, C
 	return ActualDamage;
 }
 
-void GameplayStatics::ApplyEffect(std::::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
+void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
 								  const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams) {
 	const std::string C = GetAliasColor(Instigator->GetAlias());
 	auto& s = GetCombatLogStream();
@@ -692,10 +692,6 @@ void GameplayStatics::ApplyEffect(std::::shared_ptr<Character>& Instigator, std:
 
 void GameplayStatics::KillEnemy(int Idx) {
 	_map_gen->KillEnemy(Idx);
-}
-
-void GameplayStatics::EndTurn(Character* character) {
-	_cm->EndTurn(character);
 }
 
 

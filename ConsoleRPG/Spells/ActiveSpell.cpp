@@ -150,13 +150,12 @@ int ActiveSpell::AddRandomTargets(int r, vector<weak_ptr<Character>>& Targets, c
 	return r;
 }
 
-bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Character>& instigator) {
+bool ActiveSpell::Summon(ECharacterClass character_class, const std::shared_ptr<Character>& instigator) {
 	auto dltr = [](const SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::nPlayerSummons-- : SummonCharacter::nEnemySummons--; delete ptr; };
 	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, instigator->GetTeam()), dltr);
 
 	if (GameplayStatics::AddCharacterToCharGrid(instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton
-		CombatManager& cm = CombatManager::GetInstance();
-		cm.AddSummonToCombat(std::move(summon));
+		CombatManager::AddSummonToCombat(summon);
 		return true;
 	}
 
@@ -165,21 +164,21 @@ bool ActiveSpell::Summon(ECharacterClass character_class, const shared_ptr<Chara
 	return false;
 }
 
-void Fireball::Apply(shared_ptr<Character> instigator, vector<weak_ptr<Character>>& targets) {
+void Fireball::Apply(std::shared_ptr<Character> instigator, std::vector<std::weak_ptr<Character>>& targets) {
 
-	vector<CharacterStat> enemy_apply_stats;
+	std::vector<CharacterStat> enemy_apply_stats;
 	const auto stat = &targets[0].lock()->GetHealth().GetActual();
-	auto delta = [&](const shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
+	auto delta = [&](const std::shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
 	enemy_apply_stats.push_back(CharacterStat{ targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
 	ApplyParams apply_params;
 	apply_params.Flags |= EStructFlags::EFFECT_STAT;
 	apply_params.EffectStat = EffectStat({}, std::move(enemy_apply_stats));
 
-	unique_ptr<Fireball> spell = make_unique<Fireball>();
+	std::unique_ptr<Fireball> spell = std::make_unique<Fireball>();
 	GameplayStatics::ApplyEffect(instigator, targets, std::move(spell), apply_params, {});
 }
 
-stringstream& Fireball::GetTooltip() {
+std::stringstream& Fireball::GetTooltip() {
 	//if (_tooltip.str().empty()) {
 	//	_tooltip << COLOR_INFO << "Hits the target for " << COLOR_VALUE <<  << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
 	//}

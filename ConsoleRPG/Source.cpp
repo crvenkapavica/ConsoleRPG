@@ -103,7 +103,6 @@ int main() {
     //SendAltEnter();
 
 	SpellManager::GetInstance();
-	CombatManager::GetInstance();
 	MapGenerator::GetInstance();
 
     auto CharDeleter = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };

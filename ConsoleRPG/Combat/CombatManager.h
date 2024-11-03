@@ -13,53 +13,53 @@ class SpellManager;
 class CombatManager final {
 
 public:
-	CombatManager() = default;
+	CombatManager() = delete;
 	CombatManager(const CombatManager&) = delete;
 	CombatManager(CombatManager&&) = delete;
-	~CombatManager() = default;
+	~CombatManager() = delete;
 	
 	CombatManager& operator=(const CombatManager&) = delete;
 	CombatManager& operator=(CombatManager&&) = delete;
 	
-	static CombatManager& GetInstance();
-
 	// Set turns for each side and add them to the turn table
-	void SetTurns(const std::vector<std::weak_ptr<Character>>& Team1, const std::vector<std::weak_ptr<Character>>& Team2);
+	static void SetTurns(const std::vector<std::weak_ptr<Character>>& Team1, const std::vector<std::weak_ptr<Character>>& Team2);
 
-	void StartCombat(const std::weak_ptr<Character>& player);
+	static void StartCombat(const std::weak_ptr<Character>& Avatar);
 	
 	// Add the effect of the spell to the effect pool until it expires
-	void AddCombatEffect(const std::shared_ptr<CombatEffect>& Effect);
+	static void AddCombatEffect(const std::shared_ptr<CombatEffect>& Effect);
 
-	void BeginTurn(const std::weak_ptr<Character>& InCharacter);
-	void EndTurn(Character* InCharacter);
+	static void BeginTurn(const std::weak_ptr<Character>& InCharacter);
+	static void EndTurn(Character& InCharacter);
 	
 	// Add a summoned unit (from spell or item) to the combat and turn order
-	void AddSummonToCombat(std::shared_ptr<SummonCharacter> Summon);
+	static void AddSummonToCombat(const std::shared_ptr<SummonCharacter>& Summon);
 
 	// Gets the turn table aliases for printing turn order
-	void DisplayTurnOrder() const;
+	static void DisplayTurnOrder();
 
 	// Gets the Character currently on turn
-	inline std::weak_ptr<Character> GetTurnCharacter() const { return TurnTable[TurnIndex]; }
+	static inline std::weak_ptr<Character> GetTurnCharacter() { return TurnTable[nTurn]; }
 
 	// Gets the alias of the character currently on turn
-	inline char GetTurnAlias() const { return TurnTable[TurnIndex].lock()->GetAlias(); }
-	inline int GetTurn() const { return Turn; }
+	static inline char GetTurnAlias() { return TurnTable[nTurn].lock()->GetAlias(); }
+	static inline int GetTurn() { return nCycle; }
 
-	inline std::vector<std::weak_ptr<Character>> GetPlayers() const { return Players; }
-	inline std::vector<std::weak_ptr<Character>> GetEnemies() const { return Enemies; }
-	inline std::vector<std::shared_ptr<Character>> GetSummons() const { return Summons; }
+	static inline std::vector<std::weak_ptr<Character>> GetPlayers() { return PlayerCharacters; }
+	static inline std::vector<std::weak_ptr<Character>> GetEnemies() { return EnemyCharacters; }
+	static inline std::vector<std::shared_ptr<Character>> GetSummons() { return SummonCharacters; }
 
 	// Flags all characters with HP < 0 with bIsAlive = false
-	void FlagDeadCharacters();
+	static void FlagDeadCharacters();
 	// Reset the pointer pointing to a dead character
-	void KillFlaggedCharacters();
+	static void KillFlaggedCharacters();
 	// Remove dead characters from the turn table
-	void RemoveDeadCharacters();
-	
-	void ExitCombatMode();
-	void ResetCombatVariables();
+	static void RemoveDeadCharacters();
+
+
+	// TODO: MOVE TO PRIVATE?
+	static void ExitCombatMode();
+	static void ResetCombatVariables();
 
 	//===== PUBLIC EVENTS ===== //
 	//////////////////////////////////////////////////////////////////////////////////
@@ -85,25 +85,25 @@ public:
 	//////////////////////////////////////////////////////////////////////////////////
 private:
 	// Apply the value of the effect to the related targets' stat
-	void ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target, const CharacterStat& CharStat, INOUT float& Total, bool bIsOnApply);
+	static void ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target, const CharacterStat& CharStat, INOUT float& Total, bool bIsOnApply);
 
-	void HandleCombatEffect(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target);
+	static void HandleCombatEffect(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target);
 
 	// Calls Apply Stat for each character passed in the effect on effect application
-	void HandleApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target);
+	static void HandleApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target);
 
 	// Calls Apply Stat for each character passed in the effect with per tick value
-	void HandleEffectStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target);
+	static void HandleEffectStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target);
 
 	// Gets the characters' base for resetting values after each turn
-	void GetCharactersBase();
+	static void GetCharactersBase();
 
 	// Resets the values so they are not re-applied if they're expired
-	void ResetCharacterValues() const;
+	static void ResetCharacterValues();
 
-	void RemoveExpiredCombatEffects();
+	static void RemoveExpiredCombatEffects();
 
-	void ApplyEffectsOnEvent(const ECombatEvent OnEvent);
+	static void ApplyEffectsOnEvent(const ECombatEvent OnEvent);
 
 	// Called when the passive effect is being instigated, which means it's the instigators turn
 	static void InstigatePassiveEffects(const std::weak_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets, const ECombatEvent OnEvent);
@@ -114,28 +114,28 @@ private:
 	//=====  EVENTS ===== //
 	///////////////////////
 
-	void OnApplyEffect();
-	void OnCombatBegin();
-	void OnCombatEnd();
-	void OnTurnBegin();
-	void OnTurnEnd();
-	void OnCycleBegin();
-	void OnCycleEnd();
+	static void OnApplyEffect();
+	static void OnCombatBegin();
+	static void OnCombatEnd();
+	static void OnTurnBegin();
+	static void OnTurnEnd();
+	static void OnCycleBegin();
+	static void OnCycleEnd();
 	//////////////////////
 
 private:
-	std::weak_ptr<Character> Player;
-	std::vector<std::weak_ptr<Character>> Players;
-	std::vector<PlayerCharacter> PlayersBase;
-	std::vector<std::weak_ptr<Character>> Enemies;
-	std::vector<EnemyCharacter> EnemiesBase;
-	std::vector<std::shared_ptr<Character>> Summons;
-	std::vector<SummonCharacter> SummonsBase;
+	static std::weak_ptr<Character> PlayerAvatar;
+	static std::vector<std::weak_ptr<Character>> PlayerCharacters;
+	static std::vector<PlayerCharacter> PlayerCharactersBase;
+	static std::vector<std::weak_ptr<Character>> EnemyCharacters;
+	static std::vector<EnemyCharacter> EnemyCharactersBase;
+	static std::vector<std::shared_ptr<Character>> SummonCharacters;
+	static std::vector<SummonCharacter> SummonCharactersBase;
 
-	std::vector<std::pair<int, std::shared_ptr<CombatEffect>>> CombatEffects;
-	std::vector<std::weak_ptr<Character>> TurnTable;
+	static std::vector<std::pair<int, std::shared_ptr<CombatEffect>>> CombatEffects;
+	static std::vector<std::weak_ptr<Character>> TurnTable;
 
-	int TurnIndex = 0;
-	int Turn = 0;
-	bool bNext = false;
+	static int nCycle;
+	static int nTurn;
+	static bool bNext;
 };

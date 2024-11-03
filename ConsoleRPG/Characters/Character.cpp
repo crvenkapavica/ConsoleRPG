@@ -1,5 +1,6 @@
 #include "Character.h"
 #include "../GameplayStatics.h"
+#include "../Combat/CombatManager.h"
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"
 #include "../Spells/SpellManager.h"
@@ -277,10 +278,6 @@ void Character::InitStatsPerAttribute_Warlock() {
 	StatVector.clear();
 	StatVector.emplace_back(&Stamina, 5.f);
 	StatPerAttribute.emplace_back(&CharacterAttributes.Endurance, StatVector);
-}
-
-void Character::EndTurn() {
-	GameplayStatics::EndTurn(this);
 }
 
 bool Character::CheckDie() {
