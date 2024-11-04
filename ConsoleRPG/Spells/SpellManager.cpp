@@ -25,25 +25,25 @@ void SpellManager::CreatePassiveSpell(Character* SpellOwner, const ESpellID Id) 
 	SpellOwner->AddPassiveSpell(spell);
 }
 
-void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
+void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) {
 	ActiveSpell* Spell = Instigator->GetActiveSpells()[SpellIndex].get();
-	CombatManager& cm = CombatManager::GetInstance();
+	using cm = CombatManager;
 
 	if (Spell->GetClass() == ESpellClass::MAGIC)
-		cm.OnMagicBegin(Instigator, Targets);
+		cm::OnMagicBegin(Instigator, Targets);
 	else if (Spell->GetClass() == ESpellClass::MELEE)
-		cm.OnMeleeBegin(Instigator, Targets);
+		cm::OnMeleeBegin(Instigator, Targets);
 	else if (Spell->GetClass() == ESpellClass::RANGED)
-		cm.OnRangedBegin(Instigator, Targets);
+		cm::OnRangedBegin(Instigator, Targets);
 
 	Spell->Apply(Instigator, Targets);
 
 	if (Spell->GetClass() == ESpellClass::MAGIC)
-		cm.OnMagicEnd(Instigator, Targets);
+		cm::OnMagicEnd(Instigator, Targets);
 	else if (Spell->GetClass() == ESpellClass::MELEE)
-		cm.OnMeleeEnd(Instigator, Targets);
+		cm::OnMeleeEnd(Instigator, Targets);
 	else if (Spell->GetClass() == ESpellClass::RANGED)
-		cm.OnRangedEnd(Instigator, Targets);
+		cm::OnRangedEnd(Instigator, Targets);
 
-	cm.FlagDeadCharacters();
+	cm::FlagDeadCharacters();
 }

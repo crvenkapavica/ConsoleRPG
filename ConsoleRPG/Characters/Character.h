@@ -13,6 +13,12 @@ public:
 	Character() = delete;
 	Character(const Character& Other);
 	Character(Character&& InCharacter) noexcept;
+	// Player 
+	Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, char InAlias);
+	// Enemy
+	Character(const CharacterData& InCharacterData, char InAlias);
+	// Summon
+	Character(const CharacterData& InCharacterData, int InTeam, const std::function<char(void)>& InAlias);
 	virtual ~Character() = default;
 	
 	Character& operator=(const Character& Other) {
@@ -31,13 +37,6 @@ public:
 		return *this;
 	}
 	Character& operator=(Character&& Other) noexcept = default;
-	
-	// Player
-	Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, char InAlias);
-	// Enemy
-	Character(const CharacterData& InCharacterData, char InAlias);
-	// Summon
-	Character(const CharacterData& InCharacterData, int InTeam, const std::function<char(void)>& InAlias);
 	
 	virtual void TakeTurn() = 0;
 
@@ -59,7 +58,7 @@ public:
 			Actual = Value;
 			Max = Value;
 
-			return Base;	// zakaj base ? prouciti
+			return Base;	//TODO: FIXME 
 		}
 
 		inline const float& GetBase() const { return Base; }
@@ -118,8 +117,6 @@ public:
 	// Check if targets Health is below 0 and mark it as bIsAlive = false
 	bool CheckDie();
 
-	void EndTurn();
-
 public:
 	// EXTRA STATS COMBAT
 	//////////////////////////////////////////
@@ -153,7 +150,7 @@ public:
 	int DebuffDuration = 0;
 	/////////////////////////////////////////
 
-
+	
 	// EXTRA STATS OUT OF COMBAT
 	/////////////////////////////////////////
 	float MagicFind = 1.f;

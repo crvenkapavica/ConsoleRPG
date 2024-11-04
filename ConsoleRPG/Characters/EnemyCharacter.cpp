@@ -34,7 +34,7 @@ void EnemyCharacter::Move() {
 	GameplayStatics::EnemyCombatMove(this, DirectionMap);
 	if (!DirectionMap.empty()) {
 		const int Rnd = GameplayStatics::GetRandInt(1, static_cast<int>(DirectionMap.size()));
-		GameplayStatics::MoveCharacterOnGrid(std::static_pointer_cast<Character*>(this), DirectionMap[Rnd]);
+		GameplayStatics::MoveCharacterOnGrid(std::static_pointer_cast<Character*>(*this), DirectionMap[Rnd]);
 		
 	}
 }
@@ -45,10 +45,8 @@ void EnemyCharacter::CastSpell() {
 	const std::vector<int> p_idx = { 0 };
 	const std::vector<int> e_idx;
 
-	const std::vector<std::weak_ptr<Character>> targets = { Players[p_idx[0]] };
+	const std::vector<std::weak_ptr<Character>>& TargetCharacters = { Players[p_idx[0]] };
 
-	if (!GetPassiveSpells().empty() && GetPassiveSpells()[0]) {
-		
-		SpellManager::CastSpell(0, GameplayStatics::GetSharedCharacter(this), targets);
-	}
+	if (!GetPassiveSpells().empty() && GetPassiveSpells()[0])
+		SpellManager::CastSpell(0, GameplayStatics::GetSharedCharacter(*this), TargetCharacters);
 }

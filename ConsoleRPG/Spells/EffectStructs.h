@@ -14,7 +14,7 @@ struct CharacterStat {
 };
 
 struct EffectStat {
-	EffectStat(const std::vector<CharacterStat>& AllyStats, const std::vector<CharacterStat>& EnemyStats)
+	EffectStat(std::vector<CharacterStat>&& AllyStats, std::vector<CharacterStat>&& EnemyStats)
 		: AllyStats(AllyStats)
 		, EnemyStats(EnemyStats)
 	{}

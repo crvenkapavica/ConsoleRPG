@@ -8,14 +8,14 @@ int CombatManager::nCycle = 0;
 int CombatManager::nTurn = 0;
 bool CombatManager::bNext = false;
 
-void CombatManager::SetTurns(const std::vector<std::weak_ptr<Character>>& Team1, const std::vector<std::weak_ptr<Character>>& Team2) {
+void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std::vector<std::weak_ptr<Character>>&& Team2) {
 	// In future adjust turn tables to be either randomized, or sorted based on a particular stat (level, power, etc..)
 	PlayerCharacters = Team1;
 	EnemyCharacters = Team2;
 
 	for (const auto& Char : Team1) {
 		TurnTable.push_back(Char);
-		//character.lock()->SetIsInCombat(true); // TODO: FIXME
+		Char.lock()->SetIsInCombat(true); // TODO: FIXME
 	}
 
 	for (const auto& Char : Team2)

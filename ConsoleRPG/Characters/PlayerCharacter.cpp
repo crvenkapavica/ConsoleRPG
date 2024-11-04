@@ -35,7 +35,8 @@ PlayerCharacter::PlayerCharacter(const PlayerCharacter& Other)
 {}
 
 PlayerCharacter::PlayerCharacter(PlayerCharacter&& Other) noexcept
-	: Character(std::move(Other)) {}
+	: Character(std::move(Other))
+{}
 
 void PlayerCharacter::ReceiveExperience(const int InExperience) {
 	Experience += InExperience;
@@ -53,8 +54,9 @@ void PlayerCharacter::TakeTurn() {
 	}
 }
 
-void PlayerCharacter::EquipItem(std::unique_ptr<Item>&& InItem) {
-	if (!InItem || nInventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
+// TODO : Add Auto-Equip for empty slots
+void PlayerCharacter::EquipItem(std::unique_ptr<Item>& InItem) {
+	//if (nInventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
 	if (InItem->ItemInfo.ItemType == EItemType::WEAPON) {
 		if (InItem->ItemInfo.ItemSlot == EItemSlot::WPN_BOTH)
@@ -62,21 +64,22 @@ void PlayerCharacter::EquipItem(std::unique_ptr<Item>&& InItem) {
 	}
 
 	ItemSlots[static_cast<int>(InItem->ItemInfo.ItemSlot)].swap(InItem);
-	if (InItem) AddItemToInventory(std::move(InItem));
+	if (InItem) AddItemToInventory(InItem);
 
 	SortInventory();
 	CalculatePlayerItemSlots();
 	CalculateInventorySlots();
 }
 
+// TODO: Add Item Swapping
 void PlayerCharacter::UnEquipItem(std::unique_ptr<Item>& InItem) {
-	if (!InItem || nInventory == INV_SLOTS) return;
-	AddItemToInventory(std::move(InItem));
+	if (nInventory == INV_SLOTS) return;
+	AddItemToInventory(InItem);
 	CalculatePlayerItemSlots();
 	CalculateInventorySlots();
 }
 
-bool PlayerCharacter::AddItemToInventory(std::unique_ptr<Item>&& InItem) {
+bool PlayerCharacter::AddItemToInventory(std::unique_ptr<Item>& InItem) {
 	for (auto& InvItem : Inventory) {
 		if (!InvItem) {
 			InvItem = std::move(InItem);
@@ -97,6 +100,7 @@ int PlayerCharacter::GetInventorySpace() const {
 void PlayerCharacter::InspectItem(std::unique_ptr<Item> Item) {}
 
 void PlayerCharacter::DestroyItem(const std::unique_ptr<Item>&& InItem) {
+	// TODO : Check reset? (timely InItem destruction)
 	CalculatePlayerItemSlots();
 	SortInventory();
 	CalculateInventorySlots();
@@ -115,7 +119,7 @@ void PlayerCharacter::DisplayActiveSpellSlots() {}
 
 void PlayerCharacter::DisplayPassiveSpellSlots() {}
 
-std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
+std::unique_ptr<Item>& PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 
 	std::vector<std::string> v = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
 	int Input;

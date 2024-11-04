@@ -20,7 +20,7 @@ class GameplayStatics {
 public:
 	GameplayStatics() = delete;
 	
-	static void Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& Menu);
+	static void Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& InMenu);
 
 	static void DisplayAllies();
 	static void DisplayEnemies();
@@ -42,13 +42,13 @@ public:
 	//static void DisplaySomeSpellMenu();
 	static void DisplayPlayerStats();
 
-	static void InitiateCombatMode(std::vector<std::weak_ptr<Character>>&& enemies);
+	static void InitiateCombatMode(std::vector<std::weak_ptr<Character>>&& Enemies);
 	static void ResetCombatVariables();
 
 	static void GiveExperience(EnemyCharacter* enemy);
 
 	static int DisplayCombatMenu(Character* character);
-	static void HandleCombatInput(PlayerCharacter* character, int Input);
+	static void HandleCombatInput(PlayerCharacter* InCharacter, int Input);
 	static void HandleCombatInput(SummonCharacter* character, int Input);
 	
 	static void CombatMove();
@@ -58,7 +58,7 @@ public:
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
 
-	static int GetSpellIndex(ActiveSpell* spell, std::shared_ptr<Character>& character);
+	static int GetSpellIndex(const ActiveSpell* CastSpell, std::shared_ptr<Character>& CasterCharacter);
 
 	static void DisplayMeleeMenu();
 	static void DisplayRangedMenu();
@@ -83,13 +83,11 @@ public:
 	static std::vector<std::weak_ptr<Character>> GetPlayerCharacters();
 	static std::vector<std::weak_ptr<Character>> GetEnemyCharacters();
 
-	static float ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, bool bIsOnApply);
+	static float ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, const bool bIsOnApply);
 	static void ApplyEffect(std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
 							const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams);
 
 	static void KillEnemy(int Idx);
-
-	static void EndTurn(Character* character);
 
 	static bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 

@@ -47,7 +47,7 @@ void MapGenerator::InitBFS() {
 	BFS(START_X, START_Y, 0);
 }
 
-void MapGenerator::BFS(const int X, const int Y, const int Step) {
+void MapGenerator::BFS(int X, int Y, const int Step) {
 
 	if (X > MAX_X - 2 || X <= 1 || Y > MAX_Y - 2 || Y <= 1) return;
 	if (TotalSteps > StepLimit) return;
@@ -306,7 +306,7 @@ void MapGenerator::DrawMap(const int Xs, const int Xe, const int Ys, const int Y
 	GameplayStatics::DisplayMapMenu();
 }
 
-const char* MapGenerator::GetMapAnsi(const char C) {
+const char* MapGenerator::GetMapAnsi(const char C) const {
 	[[fallthrough]]
 	switch (C) {
 		case OBSTACLE:

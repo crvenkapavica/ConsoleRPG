@@ -22,7 +22,7 @@ public:
 	CombatManager& operator=(CombatManager&&) = delete;
 	
 	// Set turns for each side and add them to the turn table
-	static void SetTurns(const std::vector<std::weak_ptr<Character>>& Team1, const std::vector<std::weak_ptr<Character>>& Team2);
+	static void SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std::vector<std::weak_ptr<Character>>&& Team2);
 
 	static void StartCombat(const std::weak_ptr<Character>& Avatar);
 	

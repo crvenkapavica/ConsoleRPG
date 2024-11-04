@@ -1,4 +1,7 @@
 #include "GameplayStatics.h"
+
+#include <algorithm>
+#include <utility>
 #include "Resistances.h"
 #include "Characters/Character.h"
 #include "Characters/EnemyCharacter.h"
@@ -17,29 +20,25 @@ std::vector<std::shared_ptr<Character>> GameplayStatics::PlayerCharacters;
 std::stringstream GameplayStatics::CombatLog; 
 ConsoleMenu* GameplayStatics::DisplayMenu = nullptr;
 
+#define MG MapGenerator::GetInstance()   // TODO : Check valid define (and replace)
 
-void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& Menu) {
+// TODO : FIXME Initialization (WHERE) ?
+void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& InMenu) {
 	std::cout << std::fixed << std::setprecision(2);
 	
 	// This is a std::vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
 	// So it can be resurrected. If all player characters die in a combat, the player loses. Later we actually implement how to handle this.
-
-	// ALL play characters
-	PlayerCharacters = InPlayerCharacters;
-
-	// Main player character - avatar
-	PlayerAvatar = InPlayerCharacters[0];
-
+	PlayerCharacters = std::move(InPlayerCharacters); 	// ALL play characters
+	PlayerAvatar = PlayerCharacters[0];					// Main player character - avatar
+	DisplayMenu = &InMenu;
 	
 	// for (const auto& PlayerChar : PlayerCharacters)
 	// 	Players.push_back(PlayerChar);
 	
-	Menu = &Menu;
-
 	// MapGenerator mg = MapGenerator::GetInstance();
-	Initialize(InPlayerCharacters);
-	//_map_gen->PrintDebugMap();
-	//_map_gen->PrintDistance();
+	//Initialize(PlayerCharacters);
+	//MG.PrintDebugMap();
+	//MG.PrintDistance();
 
 	DisplayMapMenu();
 }
@@ -47,8 +46,8 @@ void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPla
 void GameplayStatics::DisplayAllies() {
 	CLS;
 	int CharIndex = 0;
-	std::cout << MapGenerator::GetPowerLevel();
-	for (const auto& PlayerChar : _cm->GetPlayers())
+	std::cout << MG.GetPowerLevel();
+	for (const auto& PlayerChar : CombatManager::GetPlayers())
 		if (!PlayerChar.expired()) {
 			std::cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(PlayerChar.lock()->GetClass()) << " Level " << std::to_string(PlayerChar.lock()->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << std::string(1, PlayerChar.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
 			std::cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << PlayerChar.lock()->GetHealth().GetActual();
@@ -70,7 +69,7 @@ void GameplayStatics::DisplayAllies() {
 		}
 
 	CharIndex = 0;
-	for (const auto& Summon : _cm->GetSummons())
+	for (const auto& Summon : CombatManager::GetSummons())
 		if (Summon && Summon->GetTeam() == 1) {
 			std::cout << ANSI_COLOR_VIVID_GREEN << GameplayStatics::GetEnumString(Summon->GetClass()) << " Level " << std::to_string(Summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_GREEN << std::string(1, Summon->GetAlias()) << ANSI_COLOR_RESET << ")";
 			std::cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << Summon->GetHealth().GetActual();
@@ -94,7 +93,7 @@ void GameplayStatics::DisplayAllies() {
 
 void GameplayStatics::DisplayEnemies() {
 	int CharIndex = 0;
-	for (const auto& EnemyChar : _cm->GetEnemies()) {
+	for (const auto& EnemyChar : CombatManager::GetEnemies()) {
 		if (!EnemyChar.expired()) {
 			std::cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(EnemyChar.lock()->GetClass()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << std::string(1, EnemyChar.lock()->GetAlias()) << ANSI_COLOR_RESET << ")";
 			std::cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << EnemyChar.lock()->GetHealth().GetActual();
@@ -116,7 +115,7 @@ void GameplayStatics::DisplayEnemies() {
 	}
 
 	CharIndex = 0;
-	for (const auto& Summon : _cm->GetSummons())
+	for (const auto& Summon : CombatManager::GetSummons())
 		if (Summon && Summon->GetTeam() == 2) {
 			std::cout << ANSI_COLOR_RED << GameplayStatics::GetEnumString(Summon->GetClass()) << " Level " << std::to_string(Summon->GetLevel()) << ANSI_COLOR_RESET << " (" << ANSI_COLOR_RED << std::string(1, Summon->GetAlias()) << ANSI_COLOR_RESET << ")";
 			std::cout << ANSI_COLOR_CYAN_LIGHT << "\tH: " << ANSI_COLOR_VIVID_YELLOW << Summon->GetHealth().GetActual();
@@ -187,13 +186,13 @@ void GameplayStatics::DisplayMapMenu() {
 void GameplayStatics::HandleMapInput(const int Input) {
 	switch (Input) {
 	case 0:
-		_map_gen->ShowPosition();
+		MG.ShowPosition();
 		break;
 	case 1:
-		_map_gen->ShowMap();
+		MG.ShowMap();
 		break;
 	case 2:
-		_map_gen->HandleMovement();
+		MG.HandleMovement();
 		break;
 	case 3:
 		DisplayItemMenu();
@@ -210,12 +209,12 @@ void GameplayStatics::HandleMapInput(const int Input) {
 
 PlayerCharacter* GameplayStatics::GetTurnCharacter() {
 	std::vector<std::string> Menu;
-	for (const auto& Char : Players)
-		Menu.push_back(GameplayStatics::GetEnumString(Char.lock()->GetClass()));
+	for (const auto& Char : PlayerCharacters)
+		Menu.push_back(GameplayStatics::GetEnumString(Char->GetClass()));
 	Menu.emplace_back("<--BACK--<");
 	int Input;
 	if ((Input = InteractiveDisplay(Menu)) == -1) return nullptr;
-	return dynamic_cast<PlayerCharacter*>(Players[Input].lock().get());
+	return dynamic_cast<PlayerCharacter*>(PlayerCharacters[Input].get());  //TODO : Check Ref Count ??
 }
 
 void GameplayStatics::DisplayItemMenu() {
@@ -223,7 +222,7 @@ void GameplayStatics::DisplayItemMenu() {
 	if ((CurrentCharacter = GetTurnCharacter()) == nullptr) return;
 
 	bool bIsEquipped = false;
-	const auto& SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
+	auto& SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
 	if (bIsEquipped) return;
 	
 	std::vector<std::string> Menu;
@@ -231,19 +230,19 @@ void GameplayStatics::DisplayItemMenu() {
 	if (bIsEquipped) {
 		Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->EquipItem(std::move(SelectedItem));
+			CurrentCharacter->EquipItem(SelectedItem);
 			return;
 		}
-		if (Input == 0) CurrentCharacter->UnEquipItem(std::move(SelectedItem));
+		if (Input == 0) CurrentCharacter->UnEquipItem(SelectedItem);
 		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 	else {
 		Menu = { "EQUIP", "DESTROY", "<--BACK--<" };
 		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->AddItemToInventory(std::move(SelectedItem));
+			CurrentCharacter->AddItemToInventory(SelectedItem);  // TODO : if inventory is FULL, item is ["CONSUMED" - LOST]
 			return;
 		}
-		if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
+		if (Input == 0) CurrentCharacter->EquipItem(SelectedItem);
 		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 }
@@ -255,19 +254,21 @@ void GameplayStatics::DisplayPlayerStats() {
 void GameplayStatics::RedrawGameScreen() {
 	DisplayAllies();
 	DisplayEnemies();
-	_map_gen->DisplayGrid();
-	_cm->DisplayTurnOrder();
+	MG.DisplayPlayGrid();
+	//MG.DisplayGrid();
+	CombatManager::DisplayTurnOrder();
 	DisplayCombatLog();
 }
 
 
-void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&& enemies) {
+void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&& Enemies) {
 	PlayerAvatar.lock()->SetIsInCombat(true);
 
-	Enemies = enemies;
-
-	CombatManager::SetTurns(Players, Enemies);
-	_cm->StartCombat(PlayerAvatar);
+	std::vector<std::weak_ptr<Character>> WPtrPlayerCharacters(PlayerCharacters.size());
+	std::ranges::transform(PlayerCharacters, WPtrPlayerCharacters.begin(), [](const std::weak_ptr<Character>& WPtrChar) { return std::weak_ptr<Character>(WPtrChar); });
+	
+	CombatManager::SetTurns(std::move(WPtrPlayerCharacters), std::move(Enemies));
+	CombatManager::StartCombat(PlayerAvatar);
 
 
 	//std::cout << "STR: " << _player.lock()->GetPlayerAttributes()._strength << "  BASE CRIT DMG: " << _player.lock()->GetCritDmg().GetBase() << "  ACTUAL CRIT DMG: " << _player.lock()->GetCritDmg().GetActual() << '\n';
@@ -302,8 +303,8 @@ void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&&
 	//int x; cin >> x;
 }
 
+// TODO: Move to a different file, Logger.cpp ???
 void GameplayStatics::ResetCombatVariables() {
-	Enemies.clear();
 	auto& StringStream = GetCombatLogStream();
 	StringStream.clear();
 	StringStream.str("");
@@ -337,7 +338,7 @@ int GameplayStatics::DisplayCombatMenu(Character* character) {
 	return -1;
 }
 
-void GameplayStatics::HandleCombatInput(PlayerCharacter* character, const int Input) {
+void GameplayStatics::HandleCombatInput(PlayerCharacter* InCharacter, const int Input) {
 	switch (Input) {
 	case 0:
 		DisplayMeleeMenu();
@@ -355,7 +356,7 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* character, const int In
 		DisplayInfoMenu();
 		break;
 	case 5:
-		EndTurn(character);
+		CombatManager::EndTurn(std::weak_ptr<Character>(InCharacter));
 		break;
 	default:
 		break;
@@ -380,26 +381,26 @@ void GameplayStatics::HandleCombatInput(SummonCharacter* character, const int In
 
 void GameplayStatics::CombatMove() {
 	std::map<int, EDirection> DirectionMap;
-	std::vector<std::string> Menu = _map_gen->GetCombatDirections(CombatManager::GetTurnCharacter().lock().get(), DirectionMap);
+	std::vector<std::string> Menu = MG.GetCombatDirections(CombatManager::GetTurnCharacter().lock().get(), DirectionMap);
 	Menu.emplace_back("<--BACK--<");
 
 	const int Input = InteractiveDisplay(Menu);
 	if (Input == -1) return;
 
-	_map_gen->MoveCharacterOnGrid(CombatManager::GetTurnCharacter().lock().get(), DirectionMap[Input]);
+	MG.MoveCharacterOnGrid(CombatManager::GetTurnCharacter().lock().get(), DirectionMap[Input]);
 }
 
 void GameplayStatics::EnemyCombatMove(Character* Enemy, OUT std::map<int, EDirection>& DirectionMap) {
-	std::vector<std::string> Menu = _map_gen->GetCombatDirections(Enemy, DirectionMap);
+	std::vector<std::string> Menu = MG.GetCombatDirections(Enemy, DirectionMap);
 }
 
 void GameplayStatics::MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction) {
-	_map_gen->MoveCharacterOnGrid(&InCharacter, Direction);
+	MG.MoveCharacterOnGrid(&InCharacter, Direction);
 }
 
 int GameplayStatics::GetPlayerIdx(char c) {
 	int ret;
-	while ((ret = _map_gen->GetPlayerIdx(c)) == -1) {
+	while ((ret = MG.GetPlayerIdx(c)) == -1) {
 		DisplayMenu->Clear(2);
 		std::cout << ANSI_COLOR_RED << "Wrong alias. Input target alias: " << ANSI_COLOR_RESET << '\n';
 		std::cout << "-> ";
@@ -412,7 +413,7 @@ int GameplayStatics::GetPlayerIdx(char c) {
 
 int GameplayStatics::GetEnemyIdx(char c) {
 	int ret;
-	while ((ret = _map_gen->GetEnemyIndex(c)) == -1) {
+	while ((ret = MG.GetEnemyIndex(c)) == -1) {
 		DisplayMenu->Clear(2);
 		std::cout << ANSI_COLOR_RED << "Wrong alias. Input target alias: " << ANSI_COLOR_RESET << '\n';
 		std::cout << "-> ";
@@ -435,7 +436,7 @@ int GameplayStatics::GetSpellIndex(const ActiveSpell* CastSpell, std::shared_ptr
 void GameplayStatics::DisplayMeleeMenu() {
 	std::vector<std::string> v;
 	std::vector<ActiveSpell*> spells;
-	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
+	for (const auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::MELEE) {
 			v.push_back(GetEnumString(spell->GetId()));
 			spells.push_back(spell.get());
@@ -451,7 +452,7 @@ void GameplayStatics::DisplayMeleeMenu() {
 void GameplayStatics::DisplayRangedMenu() {
 	std::vector<std::string> v;
 	std::vector<ActiveSpell*> spells;
-	for (const auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells())
+	for (const auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::RANGED) {
 			v.push_back(GetEnumString(spell->GetId()));
 			spells.push_back(spell.get());
@@ -470,7 +471,7 @@ void GameplayStatics::DisplaySpellMenu() {
 
 	std::vector<std::string> v;
 	std::vector<ActiveSpell*> spells;
-	for (auto& spell : _cm->GetTurnCharacter().lock()->GetActiveSpells()) {
+	for (auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells()) {
 		if (spell->GetClass() == ESpellClass::MAGIC) {
 			v.push_back(GetEnumString(spell->GetId()));
 			spells.push_back(spell.get());
@@ -522,7 +523,7 @@ void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
 	std::shared_ptr<Character> character;
 	int spell_idx = GetSpellIndex(spell, character);
 
-	std::vector<Character*> characters = _map_gen->GetCharactersInRange(_cm->GetTurnCharacter().lock().get());
+	std::vector<Character*> characters = MG.GetCharactersInRange(CombatManager::GetTurnCharacter().lock().get());
 
 	std::vector<std::string> alias;
 	for (const auto& c : characters)
@@ -554,7 +555,7 @@ void GameplayStatics::HandleInfoInput(int input) {
 
 //void GameplayStatics::HandleEffectInfo(int spell_idx, ESpellType spell_type, int effect_idx) {
 //	std::vector<std::shared_ptr<ActiveSpell>> effects;
-//	auto spellbooks = _cm->GetTurnCharacter().lock()->GetActiveSpells();
+//	auto spellbooks = CombatManager::GetTurnCharacter().lock()->GetActiveSpells();
 //	for (int i = 0; i < spellbooks.size(); i++) {
 //		if (spell_idx == i) {
 //			effects = spellbooks[spell_idx]->GetEffects();
@@ -586,7 +587,7 @@ void GameplayStatics::DisplayCombatLog() {
 
 	std::cout << ANSI_CURSOR_UP(50);
 	int e_size = static_cast<int>(std::count_if(Enemies.begin(), Enemies.end(), [](const std::weak_ptr<Character>& wptr) { return !wptr.expired(); }));
-	int s_size = static_cast<int>(_cm->GetSummons().size());
+	int s_size = static_cast<int>(CombatManager::GetSummons().size());
 	DisplayMenu->ANSI_CURSOR_DOWN_N(static_cast<int>(Players.size() + e_size + s_size));
 	std::cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
 	std::cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << "\n" << CURSOR_LOG_RIGHT;
@@ -658,7 +659,7 @@ std::vector<std::weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
 	return Enemies;
 }
 
-float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const unique_ptr<ActiveSpell>& Spell, bool bIsOnApply) {
+float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, const bool bIsOnApply) {
 	RPG_ASSERT(!Instigator.expired(), "ApplyDamage")
 
 	Damage = Float2(Damage);
@@ -691,20 +692,20 @@ void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& Instigator, std::v
 }
 
 void GameplayStatics::KillEnemy(int Idx) {
-	_map_gen->KillEnemy(Idx);
+	MG.KillEnemy(Idx);
 }
 
 
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
 bool GameplayStatics::AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon) {
-	return _map_gen->AddCharacterToCharGrid(Instigator, Summon);
+	return MG.AddCharacterToCharGrid(Instigator, Summon);
 }
 
 ////////////////////////////////////////////////
 
 void GameplayStatics::RollLoot() {
 	for (const auto& player : PlayerCharacters) {
-		auto loot = std::move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*_map_gen->GetPowerLvl()*/ 360));
+		auto loot = std::move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*MG.GetPowerLvl()*/ 360));
 		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), std::move(loot));
 	}
 }
@@ -715,17 +716,17 @@ void GameplayStatics::DisplayLoot(const std::weak_ptr<PlayerCharacter>& Characte
 		std::cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
 
 		std::vector<Item*> items;
-		std::vector<std::string> v = { "--> ALL ITEMS <--" };
+		std::vector<std::string> Menu = { "--> ALL ITEMS <--" };
 		
 		while (!Loot.empty()) {
 			items.clear();
 			for (const auto& item : Loot) {
-				v.push_back(item->ItemInfo.Name);
+				Menu.push_back(item->ItemInfo.Name);
 				items.push_back(item.get());
 			}
-			v.emplace_back("<--BACK--<");
+			Menu.emplace_back("<--BACK--<");
 
-			const int input = InteractiveDisplay(v, 0, true, items);
+			const int input = InteractiveDisplay(Menu, 0, true, items);
 			if (input == -1) break;
 			if (input == 0) { // add all items
 				if (Character.lock()->GetInventorySpace() >= Loot.size()) {
@@ -740,12 +741,12 @@ void GameplayStatics::DisplayLoot(const std::weak_ptr<PlayerCharacter>& Characte
 			else { // add selected item
 				if (Character.lock()->GetInventorySpace() > 0) {
 					Character.lock()->AddItemToInventory(std::move(Loot[input - 1]));
-					Loot.erase(std::find(Loot.begin(), Loot.end(),nullptr));
+					Loot.erase(std::ranges::find_if(Loot, [](const auto& Ptr) { return Ptr == nullptr; }));  // TODO : CHECK RANGES WORK
 
-					v = { "--> ALL ITEMS <--" };
+					Menu = { "--> ALL ITEMS <--" };
 					for (const auto& item : Loot)
-						v.push_back(item->ItemInfo.Name);
-					v.emplace_back("<--BACK--<");
+						Menu.push_back(item->ItemInfo.Name);
+					Menu.emplace_back("<--BACK--<");
 				}
 				else {
 					std::cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.lock()->GetInventorySpace() << ")\n";
@@ -755,7 +756,7 @@ void GameplayStatics::DisplayLoot(const std::weak_ptr<PlayerCharacter>& Characte
 	}
 	else {
 		std::cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << " received no loot this time.\n";
-		system("pause");
+		CLS;
 	}
 }
 

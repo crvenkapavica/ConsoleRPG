@@ -53,7 +53,7 @@ struct PathNode {
 	bool Up;
 };
 
-
+// TODO :: MAKE STATIC FUNCTIONS 
 class MapGenerator final {
 
 public:
@@ -103,7 +103,7 @@ public:
 
 private:
 	// BFS that generates map
-	void BFS(const int X, const int Y, const int Step);
+	void BFS(int X, int Y, const int Step);
 	void InitBFS();
 	void InitializeEmptyMap() const;
 	
@@ -149,7 +149,7 @@ private:
 	// Draw discovered map.
 	void DrawMap(int Xs, int Xe, int Ys, int Ye) const;
 	// Gets the color of a specific unit.
-	const char* GetMapAnsi(char C);
+	const char* GetMapAnsi(const char C) const;
 	
 	void DisplayErrorMessage(const std::string& Message);
 

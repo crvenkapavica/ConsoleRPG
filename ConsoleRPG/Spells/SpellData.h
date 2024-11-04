@@ -39,11 +39,10 @@ public:
 	static std::unordered_map<ESpellID, PassiveConstData> PassiveConstMap;
 
 private:
-
 	static struct SpellDataConstructor {
 		SpellDataConstructor();
 	} SpellData;
-	static struct ActiveConstDataConstructor {
+	static struct ActiveConstDataConstructor {    	// TODO: FIXME : NAME
 		ActiveConstDataConstructor();
 	} ActiveConstData;
 	static struct PassiveConstDataConstructor {

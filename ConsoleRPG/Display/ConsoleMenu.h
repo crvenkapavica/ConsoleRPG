@@ -8,17 +8,17 @@ class Item;
 class ConsoleMenu {
 
 public:
-    ConsoleMenu(const std::vector<std::string>& Options);
-    ConsoleMenu() {}
+    ConsoleMenu(const std::vector<std::string>& InOptions);
+    ConsoleMenu() = default;
 
     // Return the index of the selected item in the displayed menu(vector)
     int Select();
 
-    inline void SetOptions(const std::vector<std::string>& options) { _options = options; }
-    inline void SetUp(const int up) { _up = up; }
-    inline void SetRight(const int right) { _right = right; }
-    inline void SetItems(const std::vector<Item*> items) { _items = items; _bIsItem = static_cast<bool>(_items.size()); }
-    void SetClear(const bool clear) { _bClear = clear; }
+    inline void SetOptions(const std::vector<std::string>& InOptions) { _options = InOptions; }
+    inline void SetUp(const int Up) { _up = Up; }
+    inline void SetRight(const int Right) { _right = Right; }
+    inline void SetItems(const std::vector<Item*>& Items) { _items = Items; _bIsItem = static_cast<bool>(!_items.empty()); }
+    void SetClear(const bool Clear) { _bClear = Clear; }
 
     inline bool GetBack() {
         bool b = _bBack;
