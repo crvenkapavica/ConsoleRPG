@@ -64,7 +64,7 @@ void PlayerCharacter::EquipItem(std::unique_ptr<Item>& InItem) {
 	}
 
 	ItemSlots[static_cast<int>(InItem->ItemInfo.ItemSlot)].swap(InItem);
-	if (InItem) AddItemToInventory(InItem);
+	if (InItem) AddItemToInventory(std::move(InItem));
 
 	SortInventory();
 	CalculatePlayerItemSlots();
@@ -74,12 +74,12 @@ void PlayerCharacter::EquipItem(std::unique_ptr<Item>& InItem) {
 // TODO: Add Item Swapping
 void PlayerCharacter::UnEquipItem(std::unique_ptr<Item>& InItem) {
 	if (nInventory == INV_SLOTS) return;
-	AddItemToInventory(InItem);
+	AddItemToInventory(std::move(InItem));
 	CalculatePlayerItemSlots();
 	CalculateInventorySlots();
 }
 
-bool PlayerCharacter::AddItemToInventory(std::unique_ptr<Item>& InItem) {
+bool PlayerCharacter::AddItemToInventory(std::unique_ptr<Item>&& InItem) {
 	for (auto& InvItem : Inventory) {
 		if (!InvItem) {
 			InvItem = std::move(InItem);
@@ -119,7 +119,7 @@ void PlayerCharacter::DisplayActiveSpellSlots() {}
 
 void PlayerCharacter::DisplayPassiveSpellSlots() {}
 
-std::unique_ptr<Item>& PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
+std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 
 	std::vector<std::string> v = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
 	int Input;

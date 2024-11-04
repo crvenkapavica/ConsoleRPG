@@ -222,7 +222,7 @@ void GameplayStatics::DisplayItemMenu() {
 	if ((CurrentCharacter = GetTurnCharacter()) == nullptr) return;
 
 	bool bIsEquipped = false;
-	auto& SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
+	auto SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
 	if (bIsEquipped) return;
 	
 	std::vector<std::string> Menu;
@@ -230,7 +230,7 @@ void GameplayStatics::DisplayItemMenu() {
 	if (bIsEquipped) {
 		Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->EquipItem(SelectedItem);
+			CurrentCharacter->EquipItem(SelectedItem);   // TODO: Rvalue?
 			return;
 		}
 		if (Input == 0) CurrentCharacter->UnEquipItem(SelectedItem);
@@ -239,7 +239,7 @@ void GameplayStatics::DisplayItemMenu() {
 	else {
 		Menu = { "EQUIP", "DESTROY", "<--BACK--<" };
 		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->AddItemToInventory(SelectedItem);  // TODO : if inventory is FULL, item is ["CONSUMED" - LOST]
+			CurrentCharacter->AddItemToInventory(std::move(SelectedItem));  // TODO : if inventory is FULL, item is ["CONSUMED" - LOST]
 			return;
 		}
 		if (Input == 0) CurrentCharacter->EquipItem(SelectedItem);
@@ -356,14 +356,15 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* InCharacter, const int 
 		DisplayInfoMenu();
 		break;
 	case 5:
-		CombatManager::EndTurn(std::weak_ptr<Character>(InCharacter));
+		//CombatManager::EndTurn(std::weak_ptr<Character>(InCharacter));
+			CombatManager::EndTurn(*InCharacter);
 		break;
 	default:
 		break;
 	}
 }
 
-void GameplayStatics::HandleCombatInput(SummonCharacter* character, const int Input) {
+void GameplayStatics::HandleCombatInput(SummonCharacter* InCharacter, const int Input) {
 	switch (Input) {
 	case 0:
 		DisplaySpellMenu();
@@ -372,7 +373,7 @@ void GameplayStatics::HandleCombatInput(SummonCharacter* character, const int In
 		//Move();
 		break;
 	case 2:
-		EndTurn(character);
+		CombatManager::EndTurn(*InCharacter);
 		break;
 	default:
 		break;
@@ -387,20 +388,16 @@ void GameplayStatics::CombatMove() {
 	const int Input = InteractiveDisplay(Menu);
 	if (Input == -1) return;
 
-	MG.MoveCharacterOnGrid(CombatManager::GetTurnCharacter().lock().get(), DirectionMap[Input]);
+	MG.MoveCharacterOnGrid(*CombatManager::GetTurnCharacter().lock(), DirectionMap[Input]);
 }
 
-void GameplayStatics::EnemyCombatMove(Character* Enemy, OUT std::map<int, EDirection>& DirectionMap) {
+void GameplayStatics::EnemyCombatMove(const Character* Enemy, OUT std::map<int, EDirection>& DirectionMap) {
 	std::vector<std::string> Menu = MG.GetCombatDirections(Enemy, DirectionMap);
-}
-
-void GameplayStatics::MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction) {
-	MG.MoveCharacterOnGrid(&InCharacter, Direction);
 }
 
 int GameplayStatics::GetPlayerIdx(char c) {
 	int ret;
-	while ((ret = MG.GetPlayerIdx(c)) == -1) {
+	while ((ret = MG.GetPlayerIndex(c)) == -1) {
 		DisplayMenu->Clear(2);
 		std::cout << ANSI_COLOR_RED << "Wrong alias. Input target alias: " << ANSI_COLOR_RESET << '\n';
 		std::cout << "-> ";
@@ -509,19 +506,19 @@ void GameplayStatics::HandleTarget(const ActiveSpell* TargetSpell) {
 	std::vector<std::weak_ptr<Character>> targets;
 	if (e_idx.empty())
 		for (const int i : p_idx)
-			targets.push_back(Players[i]);
+			targets.push_back(PlayerCharacters[i]);
 	else
 		for (const int i : e_idx)
-			targets.push_back(Enemies[i]);
+			targets.push_back(CombatManager::GetEnemies()[i]);
 
 	std::shared_ptr<Character> character;
 	int spell_idx = GetSpellIndex(TargetSpell, character);
-	_sm->CastSpell(spell_idx, character, targets);
+	SpellManager::CastSpell(spell_idx, character, targets);
 }
 
-void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
+void GameplayStatics::HandleMeleeTarget(const ActiveSpell* Spell) {
 	std::shared_ptr<Character> character;
-	int spell_idx = GetSpellIndex(spell, character);
+	const int SpellIndex = GetSpellIndex(Spell, character);
 
 	std::vector<Character*> characters = MG.GetCharactersInRange(CombatManager::GetTurnCharacter().lock().get());
 
@@ -530,12 +527,12 @@ void GameplayStatics::HandleMeleeTarget(ActiveSpell* spell) {
 		if (c) alias.emplace_back(1, (c->GetAlias()));
 	alias.emplace_back("<--BACK--<");
 
-	int input;
-	if ((input = InteractiveDisplay(alias)) == -1) return;
+	int Input;
+	if ((Input = InteractiveDisplay(alias)) == -1) return;
 
-	int enemy_idx = GetEnemyIdx(alias[input][0]);
-	std::vector<std::weak_ptr<Character>> targets = { Enemies[enemy_idx] };
-	_sm->CastSpell(spell_idx, character, targets);
+	int EnemyIndex = GetEnemyIdx(alias[Input][0]);
+	std::vector<std::weak_ptr<Character>> targets = { CombatManager::GetEnemies()[EnemyIndex] };
+	SpellManager::CastSpell(SpellIndex, character, targets);
 }
 
 void GameplayStatics::DisplayInfoMenu() {
@@ -586,9 +583,9 @@ void GameplayStatics::HandleInfoInput(int input) {
 void GameplayStatics::DisplayCombatLog() {
 
 	std::cout << ANSI_CURSOR_UP(50);
-	int e_size = static_cast<int>(std::count_if(Enemies.begin(), Enemies.end(), [](const std::weak_ptr<Character>& wptr) { return !wptr.expired(); }));
+	int e_size = static_cast<int>(std::count_if(CombatManager::GetEnemies().begin(), CombatManager::GetEnemies().end(), [](const std::weak_ptr<Character>& WPtr) { return !WPtr.expired(); }));
 	int s_size = static_cast<int>(CombatManager::GetSummons().size());
-	DisplayMenu->ANSI_CURSOR_DOWN_N(static_cast<int>(Players.size() + e_size + s_size));
+	DisplayMenu->ANSI_CURSOR_DOWN_N(static_cast<int>(PlayerCharacters.size() + e_size + s_size));
 	std::cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
 	std::cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << "\n" << CURSOR_LOG_RIGHT;
 	std::cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << "\n";
@@ -604,7 +601,7 @@ void GameplayStatics::DisplayCombatLog() {
 
 	// Move Menu below grid
 	std::cout << ANSI_CURSOR_UP(50);
-	DisplayMenu->ANSI_CURSOR_DOWN_N(21 + e_size + s_size + static_cast<int>(Players.size()));
+	DisplayMenu->ANSI_CURSOR_DOWN_N(21 + e_size + s_size + static_cast<int>(PlayerCharacters.size()));
 }
 
 void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<std::string>& Lines, const int MaxLines, std::stringstream& Buffer, OUT int& StartIndex) {
@@ -622,41 +619,47 @@ void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<std::string>&
 	StartIndex = std::max(0, static_cast<int>(Lines.size()) - MaxLines);
 }
 
+// TODO: Change GetWPtr to modern??, Enemy is already Wptr, change!
 std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(const Character& InCharacter) {
 	if (InCharacter.GetTeam() == 1) {
-		for (const auto& player : Players)
-			if (player.lock()->GetAlias() == InCharacter.GetAlias())
-				return player;
+		for (const auto& Player : PlayerCharacters)
+			if (Player->GetAlias() == InCharacter.GetAlias())
+				return Player;
 	}
 	else {
-		for (const auto& enemy : Enemies)
-			if (enemy.lock()->GetAlias() == InCharacter.GetAlias())
-				return enemy;
+		for (const auto& Enemy : CombatManager::GetEnemies())
+			if (Enemy.lock()->GetAlias() == InCharacter.GetAlias())
+				return Enemy;
 	}
 	return {};
 }
 
 std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(const Character& InCharacter) {
-	
 	if (InCharacter.GetTeam() == 1) {
-		for (const auto& player : Players)
-			if (auto sharedPlayer = player.lock();
-				sharedPlayer && sharedPlayer->GetAlias() == InCharacter.GetAlias()) return sharedPlayer;
+		for (const auto& Player : PlayerCharacters)
+			if (const auto& SharedPlayer = Player;
+				SharedPlayer && SharedPlayer->GetAlias() == InCharacter.GetAlias()) return SharedPlayer;
 	}
 	else
-		for (const auto& enemy : Enemies)
-			if (auto sharedEnemy = enemy.lock();
-				sharedEnemy && sharedEnemy->GetAlias() == InCharacter.GetAlias()) return sharedEnemy;
+		for (const auto& Enemy : CombatManager::GetEnemies())
+			if (const auto& SharedEnemy = Enemy.lock();
+				SharedEnemy && SharedEnemy->GetAlias() == InCharacter.GetAlias()) return SharedEnemy;
 	
 	return nullptr;
 }
 
+// TODO: Change in EnemyChar
 std::vector<std::weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
-	return Players;
+	std::vector<std::weak_ptr<Character>> WPtrCharacters;
+	for (const auto& Player : PlayerCharacters)
+		WPtrCharacters.emplace_back(Player);
+	return WPtrCharacters;
+	//return PlayerCharacters;
 }
 
+// TODO: Change in EnemyChar
 std::vector<std::weak_ptr<Character>> GameplayStatics::GetEnemyCharacters() {
-	return Enemies;
+	return CombatManager::GetEnemies();
 }
 
 float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, const bool bIsOnApply) {
@@ -681,14 +684,14 @@ float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, C
 	return ActualDamage;
 }
 
-void GameplayStatics::ApplyEffect(std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
+void GameplayStatics::ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
 								  const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams) {
 	const std::string C = GetAliasColor(Instigator->GetAlias());
 	auto& s = GetCombatLogStream();
 	s << C << Instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << ".\n";
 
-	auto effect = std::make_shared<CombatEffect>(std::move(Instigator), Targets, Spell, ApplyParams, EffectParams, SpellDb::Data[Spell->GetId()][Spell->GetLvl()].Duration);
-	CombatManager->AddCombatEffect(std::move(effect));
+	const auto Effect = std::make_shared<CombatEffect>(Instigator, Targets, std::move(Spell), ApplyParams, EffectParams, SpellDb::Data[Spell->GetId()][Spell->GetLvl()].Duration);
+	CombatManager::AddCombatEffect(Effect);
 }
 
 void GameplayStatics::KillEnemy(int Idx) {

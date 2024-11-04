@@ -8,7 +8,7 @@
 
 namespace
 {
-	std::vector<pair<EItemType, pair<int, double>>> DropTable_ItemType{
+	std::vector<std::pair<EItemType, std::pair<int, double>>> DropTable_ItemType{
 		{ EItemType::RELIC,{ 45,0.02 } },
 		{ EItemType::WEAPON,{ 28,0.10 } },
 		{ EItemType::JEWELLERY,{ 22,0.15 } },
@@ -17,7 +17,7 @@ namespace
 		{ EItemType::CONSUMABLE,{ 2,0.45 } }
 	};
 
-	std::vector<pair<EItemRarity, double>> DropTable_ItemRarity{
+	std::vector<std::pair<EItemRarity, double>> DropTable_ItemRarity{
 		{ EItemRarity::UNIQUE,0.005 },
 		{ EItemRarity::GODLIKE,0.025 },
 		{ EItemRarity::LEGENDARY,0.05 },
@@ -141,7 +141,6 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const std::weak_ptr<Player
 }
 
 std::unique_ptr<Item> Item::CreateItem(const int PlayerLevel, const float MfBonus, const EItemType ItemType) {
-
 	auto Rarity = EItemRarity::COMMON;
 	const int Rnd = GameplayStatics::GetRandInt(1, 100000);
 
@@ -151,12 +150,13 @@ std::unique_ptr<Item> Item::CreateItem(const int PlayerLevel, const float MfBonu
 			break;
 		}
 	
-	return make_unique<Item>(GenerateItemInfo(PlayerLevel, ItemType, Rarity));
+	return std::make_unique<Item>(GenerateItemInfo(PlayerLevel, ItemType, Rarity));
 }
 
 std::unique_ptr<Item> Item::CreateItemById(const EItemId Id) {
 	for (const auto& ItemData : ItemDb::Data)
-		if (ItemData.Id == Id) return make_unique<Item>(ItemData);
+		if (ItemData.Id == Id)
+			return std::make_unique<Item>(ItemData);
 	
 	return nullptr;
 }

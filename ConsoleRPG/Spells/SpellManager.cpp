@@ -25,7 +25,7 @@ void SpellManager::CreatePassiveSpell(Character* SpellOwner, const ESpellID Id) 
 	SpellOwner->AddPassiveSpell(spell);
 }
 
-void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) {
+void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
 	ActiveSpell* Spell = Instigator->GetActiveSpells()[SpellIndex].get();
 	using cm = CombatManager;
 

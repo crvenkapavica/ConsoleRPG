@@ -42,7 +42,7 @@ public:
 	// Return immediately if inventory is full
 	void UnEquipItem(std::unique_ptr<Item>& InItem);
 	// Return true if the item was added, false otherwise
-	bool AddItemToInventory(std::unique_ptr<Item>& InItem);
+	bool AddItemToInventory(std::unique_ptr<Item>&& InItem);
 	[[nodiscard]] int GetInventorySpace() const;
 	// Displays all information about the item and its affixes
 	static void InspectItem(std::unique_ptr<Item> Item);
@@ -52,7 +52,7 @@ public:
 	static void DisplayConsumableSlots();
 	static void DisplayActiveSpellSlots();
 	static void DisplayPassiveSpellSlots();
-	std::unique_ptr<Item>& DisplayAllItems(OUT bool& bIsEquipped);
+	std::unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);
 	void DisplayStats() const;
 	
 public:

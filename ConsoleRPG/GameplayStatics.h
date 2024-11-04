@@ -49,11 +49,10 @@ public:
 
 	static int DisplayCombatMenu(Character* character);
 	static void HandleCombatInput(PlayerCharacter* InCharacter, int Input);
-	static void HandleCombatInput(SummonCharacter* character, int Input);
+	static void HandleCombatInput(SummonCharacter* InCharacter, int Input);
 	
 	static void CombatMove();
-	static void EnemyCombatMove(Character* Enemy, OUT std::map<int, EDirection>& DirectionMap) {}
-	static void MoveCharacterOnGrid(const Character& InCharacter, const EDirection Direction);
+	static void EnemyCombatMove(const Character* Enemy, OUT std::map<int, EDirection>& DirectionMap);
 	 
 	static int GetPlayerIdx(char c);
 	static int GetEnemyIdx(char c);
@@ -65,7 +64,7 @@ public:
 	static void DisplaySpellMenu();
 
 	static void HandleTarget(const ActiveSpell* TargetSpell);
-	static void HandleMeleeTarget(ActiveSpell* spell);
+	static void HandleMeleeTarget(const ActiveSpell* Spell);
 
 	static void DisplayInfoMenu();
 	static void HandleInfoInput(int input);
@@ -84,7 +83,7 @@ public:
 	static std::vector<std::weak_ptr<Character>> GetEnemyCharacters();
 
 	static float ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, const bool bIsOnApply);
-	static void ApplyEffect(std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
+	static void ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
 							const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams);
 
 	static void KillEnemy(int Idx);

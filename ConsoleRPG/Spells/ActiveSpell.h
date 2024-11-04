@@ -15,7 +15,7 @@ public:
     static std::unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
 
     // Apply the effect of the spell
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) = 0;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) = 0;
 
     inline EDamageType GetDamageType() const { return _damage_type; }
     inline ESpellType GetSpellType() const { return _spell_type; }
@@ -42,69 +42,69 @@ protected:
 
 //============================================================================== MAGIC =============================================================================================
 //==================================================================================================================================================================================
-class Fireball : public ActiveSpell {
+class Fireball final : public ActiveSpell {
 public:
     Fireball() : ActiveSpell(ESpellID::FIREBALL) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
     virtual std::stringstream& GetTooltip() override;
 };
 
-class Burning : public ActiveSpell {
+class Burning final : public ActiveSpell {
 public:
     Burning() : ActiveSpell(ESpellID::BURNING) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
     virtual std::stringstream& GetTooltip() override;
 };
 
-class MoltenArmor : public ActiveSpell {
+class MoltenArmor final : public ActiveSpell {
 public:
     MoltenArmor() : ActiveSpell(ESpellID::MOLTEN_ARMOR) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
     virtual std::stringstream& GetTooltip() override;
 };
 
-class Exposure : public ActiveSpell {
+class Exposure final : public ActiveSpell {
 public:
     Exposure() : ActiveSpell(ESpellID::EXPOSURE) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
     virtual std::stringstream& GetTooltip() override;
 };
 
-class Stoneskin : public ActiveSpell {
+class Stoneskin final : public ActiveSpell {
 public:
     Stoneskin() : ActiveSpell(ESpellID::STONESKIN) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
     virtual std::stringstream& GetTooltip() override;
 };
 
-class Disarm : public ActiveSpell {
+class Disarm final : public ActiveSpell {
 public:
     Disarm() : ActiveSpell(ESpellID::DISARM) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
-class Bloodbath : public ActiveSpell {
+class Bloodbath final : public ActiveSpell {
 public:
     Bloodbath() : ActiveSpell(ESpellID::BLOODBATH) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
-class ArcaneInfusion : public ActiveSpell {
+class ArcaneInfusion final : public ActiveSpell {
 public:
     ArcaneInfusion() : ActiveSpell(ESpellID::ARCANE_INFUSION) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
-class BloodRain : public ActiveSpell {
+class BloodRain final : public ActiveSpell {
 public:
     BloodRain() : ActiveSpell(ESpellID::BLOOD_RAIN) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
-class ViscousAcid : public ActiveSpell {
+class ViscousAcid final : public ActiveSpell {
 public:
     ViscousAcid() : ActiveSpell(ESpellID::VISCOUS_ACID) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
     virtual std::stringstream& GetTooltip() override;
 };
 
@@ -116,26 +116,26 @@ public:
 //==============================================================================  MISC  ============================================================================================
 //==================================================================================================================================================================================
 
-class Blind : public ActiveSpell {
+class Blind final : public ActiveSpell {
 public:
     Blind() : ActiveSpell(ESpellID::BLIND) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
 
 //=============================================================================  SUMMON  ===========================================================================================
 //==================================================================================================================================================================================
 
-class SummonFireElemental : public ActiveSpell {
+class SummonFireElemental final : public ActiveSpell {
 public:
     SummonFireElemental() : ActiveSpell(ESpellID::SUM_FIRE_ELE) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
-class SummonFireImp : public ActiveSpell {
+class SummonFireImp final : public ActiveSpell {
 public:
     SummonFireImp() : ActiveSpell(ESpellID::SUM_FIRE_IMP) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
 
@@ -144,10 +144,10 @@ public:
 //============================================================================== MELEE =============================================================================================
 //==================================================================================================================================================================================
 
-class Melee : public ActiveSpell {
+class Melee final : public ActiveSpell {
 public:
     Melee() : ActiveSpell(ESpellID::MELEE) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };
 
 
@@ -157,8 +157,8 @@ public:
 //============================================================================== RANGED =============================================================================================
 //===================================================================================================================================================================================
 
-class Ranged : public ActiveSpell {
+class Ranged final : public ActiveSpell {
 public:
     Ranged() : ActiveSpell(ESpellID::RANGED) {}
-    virtual void Apply(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets) override;
+    virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) override;
 };

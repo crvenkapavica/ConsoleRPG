@@ -8,17 +8,18 @@ int CombatManager::nCycle = 0;
 int CombatManager::nTurn = 0;
 bool CombatManager::bNext = false;
 
+// TODO : Rename Team1, Team2 - for randomized combat?
 void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std::vector<std::weak_ptr<Character>>&& Team2) {
 	// In future adjust turn tables to be either randomized, or sorted based on a particular stat (level, power, etc..)
-	PlayerCharacters = Team1;
-	EnemyCharacters = Team2;
+	PlayerCharacters = std::move(Team1);
+	EnemyCharacters = std::move(Team2);
 
-	for (const auto& Char : Team1) {
+	for (const auto& Char : PlayerCharacters) {
 		TurnTable.push_back(Char);
 		Char.lock()->SetIsInCombat(true); // TODO: FIXME
 	}
 
-	for (const auto& Char : Team2)
+	for (const auto& Char : EnemyCharacters)
 		TurnTable.push_back(Char); 
 
 	OnCombatBegin();

@@ -47,7 +47,6 @@ public:
 	};
 
 	explicit Item(const ItemProperties& ItemInfo);
-
 	explicit Item(ItemProperties&& ItemInfo);
 
 	// This will only be used for starting items [pre-determined]
