@@ -69,6 +69,9 @@ public:
 public:
 	ItemProperties ItemInfo;
 
+	static std::vector<std::pair<EItemType, std::pair<int, double>>> DropTable_ItemType;
+	static std::vector<std::pair<EItemRarity, double>> DropTable_ItemRarity;
+
 private:
 	static ItemProperties GenerateItemInfo(const int PlayerLevel, const EItemType ItemType, const EItemRarity ItemRarity);
 

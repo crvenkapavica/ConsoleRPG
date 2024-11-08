@@ -24,15 +24,15 @@ void VampiricTouch::Apply() {
 		if (!Target.expired()) {
 			const float Value = Value * Target.lock()->GetHealth().GetMax();
 			Target.lock()->GetHealth().GetActual() -= Value;
-			Target.lock()->AddEffectId(_id);
+			Target.lock()->AddEffectId(ID);
 			Instigator.lock()->GetHealth().GetActual() += Value;
 		}
 }
 
 std::stringstream& VampiricTouch::GetTooltip() {
-	if (_tooltip.str().empty())
-		_tooltip << CI << "Drains all afflicted targets for " << CV << GameplayStatics::Float2(Value) << CI << " damage and transfers it to the caster.\n";
-	return _tooltip;
+	if (Tooltip.str().empty())
+		Tooltip << CI << "Drains all afflicted targets for " << CV << GameplayStatics::Float2(Value) << CI << " damage and transfers it to the caster.\n";
+	return Tooltip;
 }
 
 void Thorns::Apply() {

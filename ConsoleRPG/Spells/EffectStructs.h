@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../RPGTypes.h"
-#include "../Characters/Character.h"
+//#include "../Characters/Character.h"
 #include "../Spells/ActiveSpell.h"
+
+class Character;
 
 struct CharacterStat {
 	Character* PtrCharacter;
@@ -15,8 +17,8 @@ struct CharacterStat {
 
 struct EffectStat {
 	EffectStat(std::vector<CharacterStat>&& AllyStats, std::vector<CharacterStat>&& EnemyStats)
-		: AllyStats(AllyStats)
-		, EnemyStats(EnemyStats)
+		: AllyStats(std::move(AllyStats))
+		, EnemyStats(std::move(EnemyStats))
 	{}
 	
 	std::vector<CharacterStat> AllyStats;
@@ -35,10 +37,10 @@ struct ApplyParams {
 };
 
 struct CombatEffect {
-	CombatEffect(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell>&& Spell, const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams, const int Duration)
+	CombatEffect(const std::shared_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell>&& ActiveSpell, const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams, const int Duration)
 		: Instigator(Instigator)
 		, Targets(Targets)
-		, Spell(std::move(Spell))
+		, ActiveSpell(std::move(ActiveSpell))
 		, ApplyParams(ApplyParams)
 		, EffectParams(EffectParams)
 		, Duration(Duration)
@@ -46,7 +48,7 @@ struct CombatEffect {
 
 	std::shared_ptr<Character> Instigator;
 	std::vector<std::weak_ptr<Character>> Targets;
-	std::unique_ptr<ActiveSpell> Spell;
+	std::unique_ptr<ActiveSpell> ActiveSpell;
 	std::optional<ApplyParams> ApplyParams;
 	std::optional<EffectParams> EffectParams;
 	int Duration;

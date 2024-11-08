@@ -1,18 +1,20 @@
 #pragma once
 
 #include "../RPGTypes.h"
-#include "../Characters/Character.h"
+//#include "../Characters/Character.h"
 #include "../Spells/Spell.h"
 
+class Character;
 class PlayerCharacter;
 class EnemyCharacter;
 struct EffectParams;
 
 class ActiveSpell : public Spell {
 public:
-    ActiveSpell(ESpellID id, int lvl = 0);
-
-    static std::unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID id);
+    //ActiveSpell(const ESpellID SpellID);
+    explicit ActiveSpell(const ESpellID SpellID, int InLevel = 0);
+    
+    static std::unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID SpellID);
 
     // Apply the effect of the spell
     virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) = 0;

@@ -1,20 +1,25 @@
 #include "../Spells/ActiveSpell.h"
-#include "../Characters/PlayerCharacter.h"
-#include "../Characters/EnemyCharacter.h"
-#include "../Characters/SummonCharacter.h"
-#include "../Spells/SpellData.h"
 #include "../GameplayStatics.h"
-#include "../Spells/EffectStructs.h"
+#include "../Characters/PlayerCharacter.h"
+#include "../Characters/SummonCharacter.h"
 #include "../Combat/CombatManager.h"
+#include "../Spells/EffectStructs.h"
+#include "../Spells/SpellData.h"
 
-ActiveSpell::ActiveSpell(ESpellID id, int lvl)
-	: Spell(id, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(id).Rarity, SpellDb::ActiveConstMap.at(id).Class, SpellDb::ActiveConstMap.at(id).MinReqLevel, lvl)
-	, _damage_type(SpellDb::ActiveConstMap.at(id).DamageType)
-	, _spell_type(SpellDb::ActiveConstMap.at(id).SpellType)
+// ActiveSpell::ActiveSpell(const ESpellID SpellID)
+// 	: Spell(SpellID, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(SpellID).Rarity, SpellDb::ActiveConstMap.at(SpellID).Class, SpellDb::ActiveConstMap.at(SpellID).MinReqLevel, 0)
+// 	, _damage_type(SpellDb::ActiveConstMap.at(SpellID).DamageType)
+// 	, _spell_type(SpellDb::ActiveConstMap.at(SpellID).SpellType)
+// {}
+
+ActiveSpell::ActiveSpell(const ESpellID SpellID, const int InLevel)
+	: Spell(SpellID, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(SpellID).Rarity, SpellDb::ActiveConstMap.at(SpellID).Class, SpellDb::ActiveConstMap.at(SpellID).MinReqLevel, InLevel)
+	, _damage_type(SpellDb::ActiveConstMap.at(SpellID).DamageType)
+	, _spell_type(SpellDb::ActiveConstMap.at(SpellID).SpellType)
 {}
 
-std::unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
-	switch (id) {
+std::unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(const ESpellID SpellID) {
+	switch (SpellID) {
 		// MAGIC
 	case ESpellID::FIREBALL:
 		return std::make_unique<Fireball>();
@@ -57,11 +62,11 @@ std::unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(ESpellID id) {
 }
 
 float ActiveSpell::GetRandEffectMinMax(const std::shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[_id][_lvl].EffectMin, SpellDb::Data[_id][_lvl].EffectMax), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[ID][Level].EffectMin, SpellDb::Data[ID][Level].EffectMax), character);
 }
 
 float ActiveSpell::GetRandOnApplyMinMax(const std::shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[_id][_lvl].ApplyMin, SpellDb::Data[_id][_lvl].ApplyMax), character);
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[ID][Level].ApplyMin, SpellDb::Data[ID][Level].ApplyMax), character);
 }
 
 float ActiveSpell::AdjustDamage(float Damage, const std::shared_ptr<Character>& character) {
@@ -126,7 +131,7 @@ int ActiveSpell::AddRandomTargets(int r, std::vector<std::weak_ptr<Character>>& 
 	for (int i = 0; i < r; i++) {
 		int Rnd;
 		do {
-			Rnd = rand() % Enemies.size();
+			Rnd = GameplayStatics::GetRandInt(0, static_cast<int>(Enemies.size() - 1));
 		} while (std::ranges::any_of(Targets, [&](const std::weak_ptr<Character>& WPtr) { return Enemies[Rnd].expired() || Enemies[Rnd].lock().get() == WPtr.lock().get(); }));
 		Targets.push_back(Enemies[Rnd]);
 	}
@@ -171,15 +176,15 @@ void Fireball::Apply(const std::shared_ptr<Character>& Instigator, std::vector<s
 	apply_params.Flags |= EStructFlags::EFFECT_STAT;
 	apply_params.EffectStat = EffectStat({}, std::move(enemy_apply_stats));
 
-	std::unique_ptr<Fireball> spell = std::make_unique<Fireball>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(spell), apply_params, {});
+	auto Spell = std::make_unique<Fireball>();
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), apply_params, {});
 }
 
 std::stringstream& Fireball::GetTooltip() {
 	//if (_tooltip.str().empty()) {
 	//	_tooltip << COLOR_INFO << "Hits the target for " << COLOR_VALUE <<  << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
 	//}
-	return _tooltip;
+	return Tooltip;
 }
 
 void Burning::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
@@ -207,7 +212,7 @@ std::stringstream& Burning::GetTooltip() {
 	//	_tooltip << "Applies burn to the target and 2 random Targets that deals " << COLOR_VALUE << _spell->GetEffectMin(_idx, _spell->GetLevel()) << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetEffectMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
 	//	_tooltip << "The burn effect lasts for " << COLOR_VALUE << _spell->GetDuration(_idx, _spell->GetLevel()) << COLOR_INFO << " turn(s).";
 	//}
-	return _tooltip;
+	return Tooltip;
 }
 
 //============================================================================== MAGIC =============================================================================================
@@ -261,7 +266,7 @@ std::stringstream& MoltenArmor::GetTooltip() {
 	//	_tooltip << "Additionaly, hits 2 random enemies and applies the effect to them! \n";
 	//	_tooltip << "The effect lasts for " << CV << _spell->GetDuration(_idx, _spell->GetLevel()) << CI << " turns.\n";
 	//}
-	return _tooltip;
+	return Tooltip;
 }
 
 void Exposure::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
@@ -284,7 +289,7 @@ std::stringstream& Exposure::GetTooltip() {
 	//	_tooltip << "decreasing their resistance to fire and burn spells by " << CV << _spell->GetEffectMin(_idx, _spell->GetLevel()) << CI << " to " << CV << _spell->GetEffectMax(_idx, _spell->GetLevel()) << CI ".\n";
 	//	_tooltip << "The effect lasts for " << CV << _spell->GetDuration(_idx, _spell->GetLevel()) << CI << " turns.\n";
 	//}
-	return _tooltip;
+	return Tooltip;
 }
 
 void Stoneskin::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
@@ -309,7 +314,7 @@ std::stringstream& Stoneskin::GetTooltip() {
 	//	_tooltip << "Hardens the Targets skin, increasing armor by " << CV << _spell->GetOnApplyMin(_idx, _spell->GetLevel()) << CI << " to " << CV << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << CI << " each turn.\n";
 	//	_tooltip << "The effect lasts for " << CV << _spell->GetDuration(_idx, _spell->GetLevel()) << CI << " turns.\n";
 	//}
-	return _tooltip;
+	return Tooltip;
 }
 
 void Disarm::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
@@ -392,7 +397,7 @@ std::stringstream& ViscousAcid::GetTooltip() {
 	//	_tooltip << "Additionaly, the target will suffer " << CV << _spell->GetEffectMin(_idx, _spell->GetLevel()) << CI << " to " << CV << _spell->GetEffectMax(_idx, _spell->GetLevel()) << CI << " poison damage at the start of their turn.\n";
 	//	_tooltip << "Lasts for " << CV << _spell->GetDuration(_idx, _spell->GetLevel()) << CI << " turns.\n";
 	//}
-	return _tooltip;
+	return Tooltip;
 }
 
 

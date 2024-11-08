@@ -25,8 +25,6 @@
 typedef int attribute;
 typedef int skill;
 
-class Character;
-
 #undef _stat
 #undef max
 #undef min

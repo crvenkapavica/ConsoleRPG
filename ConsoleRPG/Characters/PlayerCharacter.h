@@ -9,18 +9,17 @@ class PlayerCharacter final : public Character {
 
 public:
 	explicit PlayerCharacter(const ECharacterClass InCharacterClass);
-	PlayerCharacter(const PlayerCharacter& Other);
-	PlayerCharacter(PlayerCharacter&& Other) noexcept;
+	PlayerCharacter(const PlayerCharacter& Other) = default;
+	PlayerCharacter(PlayerCharacter&& Other) noexcept = default;
 	~PlayerCharacter() override = default;
-
-	PlayerCharacter& operator=(const PlayerCharacter& Other) {
-		if (this != &Other) {
+	
+	inline PlayerCharacter& operator=(const PlayerCharacter& Other) {
+		if (this != &Other)
 			Character::operator=(Other);
-		}
 		++nPlayerCharacters; // TODO : FIXME Summon Count
 		return *this;
 	}
-	PlayerCharacter& operator=(PlayerCharacter&& Other) noexcept = default;
+	inline PlayerCharacter& operator=(PlayerCharacter&& Other) noexcept = default;
 
 	static int nPlayerCharacters;
 
@@ -38,9 +37,9 @@ public:
 	//// INVENTORY
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	
-	void EquipItem(std::unique_ptr<Item>& InItem);
+	void EquipItem(std::unique_ptr<Item>&& InItem);
 	// Return immediately if inventory is full
-	void UnEquipItem(std::unique_ptr<Item>& InItem);
+	void UnEquipItem(std::unique_ptr<Item>&& InItem);
 	// Return true if the item was added, false otherwise
 	bool AddItemToInventory(std::unique_ptr<Item>&& InItem);
 	[[nodiscard]] int GetInventorySpace() const;

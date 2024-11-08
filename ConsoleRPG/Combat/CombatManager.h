@@ -8,7 +8,6 @@
 #include "../Spells/EffectStructs.h"
 
 class Character;
-class SpellManager;
 
 class CombatManager final {
 

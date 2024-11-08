@@ -102,8 +102,8 @@ int main() {
     //Sleep(100);
     //SendAltEnter();
 	
-	SpellManager::GetInstance(); // TODO :: Initialize in Map Loop [UI??]
-	MapGenerator::GetInstance(); // Initialize in Map Loop [UI??]
+	//SpellManager::GetInstance(); // TODO :: Initialize in Map Loop [UI??]
+	//MapGenerator::GetInstance(); // Initialize in Map Loop [UI??]
 
     auto CharDeleter = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };
 
@@ -112,16 +112,16 @@ int main() {
 
     std::vector<std::shared_ptr<Character>> PlayerCharacters = { PlayerMain, PlayerWarlock1 };
 	
-    using sm = SpellManager;
-    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
-    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
-    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
-    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::MOLTEN_ARMOR);
-    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
-    sm::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);
+	
+    SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
+    SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
+    SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
+    SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::MOLTEN_ARMOR);
+    SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
+    SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);
 
     // passive
-    sm::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
+    SpellManager::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
 	
 	ConsoleMenu Menu;
 	

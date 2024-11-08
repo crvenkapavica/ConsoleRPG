@@ -12,7 +12,7 @@ class Character {
 public:
 	Character() = delete;
 	Character(const Character& Other);
-	Character(Character&& InCharacter) noexcept;
+	Character(Character&& Other) noexcept;
 	// Player 
 	Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, char InAlias);
 	// Enemy
@@ -21,7 +21,7 @@ public:
 	Character(const CharacterData& InCharacterData, int InTeam, const std::function<char(void)>& InAlias);
 	virtual ~Character() = default;
 	
-	Character& operator=(const Character& Other) {
+	inline Character& operator=(const Character& Other) {
 		// "reset" all stats that effects might modify
 		Health.SetMax(Other.Health.GetMax()); // treba testirati, dali u combatu, nakon bonus gaina, koji povecaju actual, i tako i maximum, da li se maximum restarta na prijasnji nakon bonus expire
 		Essence = Other.Essence;
@@ -36,7 +36,7 @@ public:
 		CharacterResistances = Other.CharacterResistances;
 		return *this;
 	}
-	Character& operator=(Character&& Other) noexcept = default;
+	inline Character& operator=(Character&& Other) noexcept = default;
 	
 	virtual void TakeTurn() = 0;
 
@@ -53,12 +53,19 @@ public:
 			, Max(0.f)
 		{}
 
-		const float& operator=(const float& Value) {
+		Stat(const float InBase, const float InActual, const float InMax)
+			: Base(InBase)
+			, Actual(InActual)
+			, Max(InMax)
+		{}
+		
+		inline Stat& operator=(const float& Value) {
 			Base = Value;
 			Actual = Value;
 			Max = Value;
-
-			return Base;	//TODO: FIXME 
+			return *this;
+			// inline const float& operator=
+			//return Base;	//TODO: FIXME 
 		}
 
 		inline const float& GetBase() const { return Base; }
@@ -79,8 +86,8 @@ public:
 public:
 	void UpdateAttribute(attribute& Attribute, int Amount) const;
 
-	void AddActiveSpell(std::unique_ptr<ActiveSpell>& SpellToAdd);
-	void AddPassiveSpell(std::unique_ptr<PassiveSpell>& SpellToAdd);
+	void AddActiveSpell(std::unique_ptr<ActiveSpell>&& SpellToAdd);
+	void AddPassiveSpell(std::unique_ptr<PassiveSpell>&& SpellToAdd);
 
 	inline std::vector<std::unique_ptr<ActiveSpell>>& GetActiveSpells() { return ActiveSpells; }
 	inline std::vector<std::unique_ptr<PassiveSpell>>& GetPassiveSpells() { return PassiveSpells; }

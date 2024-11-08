@@ -2,8 +2,10 @@
 
 #include "RPGTypes.h"
 
-class Resistances {
+class Character;
 
+class Resistances {
+	
 public:
 	Resistances();
 	Resistances(float arcane, float fire, float lightning, float cold, float poison, float necrotic);

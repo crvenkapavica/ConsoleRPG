@@ -307,12 +307,12 @@ void MapGenerator::DrawMap(const int Xs, const int Xe, const int Ys, const int Y
 }
 
 const char* MapGenerator::GetMapAnsi(const char C) const {
-	[[fallthrough]]
+	
 	switch (C) {
 		case OBSTACLE:
 			return ANSI_COLOR_CYAN;
 		case PATH:;
-		case RECTANGLE:
+		case RECTANGLE:  // TODO :: FallThrough
 			return ANSI_COLOR_YELLOW;
 		case PLAYER:
 			return ANSI_COLOR_GREEN;

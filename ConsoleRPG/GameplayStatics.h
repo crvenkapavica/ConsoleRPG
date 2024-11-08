@@ -7,7 +7,6 @@ class Character;
 class PlayerCharacter;
 class EnemyCharacter;
 class SummonCharacter;
-class SpellManager;
 class CombatManager;
 class MapGenerator;
 class ActiveSpell;

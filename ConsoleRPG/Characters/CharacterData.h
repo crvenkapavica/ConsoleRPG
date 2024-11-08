@@ -59,7 +59,7 @@ private:
 	} CharacterData;
 	static struct PlayerAttributesConstructor {
 		PlayerAttributesConstructor();
-	} PlayerAttributes;
+	} PlayerAttributes; // TODO: Rename
 };
 
 

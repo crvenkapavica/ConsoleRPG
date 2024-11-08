@@ -21,11 +21,11 @@ CharDb::CharacterDataConstructor::CharacterDataConstructor() {
 	Data[ECharacterClass::E_SWORDSMAN] = { ECharacterClass::E_SWORDSMAN,			48.f,	0.f,		20.f,		45.f,		6.6f,		0.11f,		220.f,		10.f,	0.07f,		220.f,		EDamageType::PHYSICAL,		{10.f,	10.f,	10.f,	10.f,	10.f,	5.f},	{ESpellID::NONE, 0},				{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::THORNS, 0},			{ESpellID::NONE, 0},			{},										{},						5,			};
 	Data[ECharacterClass::E_WARLOCK] = { ECharacterClass::E_WARLOCK,				30.f,	50.f,		10.f,		20.f,		6.6f,		0.11f,		220.f,		10.f,	0.07f,		220.f,		EDamageType::FIRE,			{10.f,	10.f,	10.f,	10.f,	10.f,	5.f},	{ESpellID::SUM_FIRE_IMP, 0},		{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{ESpellID::NONE, 0},			{},										{},						6,			};
 }
-CharDb::CharacterDataConstructor CharDb::_character_data_constructor;
+CharDb::CharacterDataConstructor CharDb::CharacterData;
 
 CharDb::PlayerAttributesConstructor::PlayerAttributesConstructor() {
 //	 	    class								   str     agi     int     vit     con	   end    
 	Attributes[ECharacterClass::BARBARIAN] = {		3,		2,		1,		6,		1,		4 };
 	Attributes[ECharacterClass::WARLOCK] = {		1,		1,		4,		2,		3,		1 };
 }
-CharDb::PlayerAttributesConstructor CharDb::_player_attributes_constructor;
+CharDb::PlayerAttributesConstructor CharDb::PlayerAttributes;

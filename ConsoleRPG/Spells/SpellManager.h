@@ -5,23 +5,17 @@
 #include "../Spells/SpellData.h"
 
 class Character;
-class PlayerCharacter;
-class EnemyCharacter;
-class PassiveSpell;
-struct EffectParams;
 
 class SpellManager final {
 
 public:
-	SpellManager() = default;
+	SpellManager() = delete;
 	SpellManager(const SpellManager&) = delete;
 	SpellManager(SpellManager&&) = delete;
 	~SpellManager() = default;
 	
 	SpellManager& operator=(const SpellManager&) = default;
 	SpellManager& operator=(SpellManager&&) = delete;
-	
-	static SpellManager& GetInstance();
 
 	// Create an active spell and add it to the owner
 	static void CreateActiveSpell(Character* SpellOwner, const ESpellID Id);

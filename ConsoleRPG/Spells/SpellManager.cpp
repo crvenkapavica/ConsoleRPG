@@ -6,23 +6,18 @@
 #include "../Combat/CombatManager.h"
 #include "../Spells/PassiveSpell.h"
 
-SpellManager& SpellManager::GetInstance() {
-	static SpellManager Instance;
-	return Instance;
-}
-
 void SpellManager::CreateActiveSpell(Character* SpellOwner, const ESpellID Id) {
 	if (Id == ESpellID::NONE) return;
 
 	std::unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(Id);
-	SpellOwner->AddActiveSpell(spell);
+	SpellOwner->AddActiveSpell(std::move(spell));
 }
 
 void SpellManager::CreatePassiveSpell(Character* SpellOwner, const ESpellID Id) {
 	if (Id == ESpellID::NONE) return;
 
 	std::unique_ptr<PassiveSpell> spell = PassiveSpell::CreatePassiveSpell(Id);
-	SpellOwner->AddPassiveSpell(spell);
+	SpellOwner->AddPassiveSpell(std::move(spell));
 }
 
 void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {

@@ -6,26 +6,26 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Spells/SpellData.h"
 
-namespace
-{
-	std::vector<std::pair<EItemType, std::pair<int, double>>> DropTable_ItemType{
-		{ EItemType::RELIC,{ 45,0.02 } },
-		{ EItemType::WEAPON,{ 28,0.10 } },
-		{ EItemType::JEWELLERY,{ 22,0.15 } },
-		{ EItemType::ARMOR,{ 15,0.25 } },
-		{ EItemType::SCROLL,{ 6,0.35 } },
-		{ EItemType::CONSUMABLE,{ 2,0.45 } }
-	};
+//TODO: FIX alignment
+std::vector<std::pair<EItemType, std::pair<int, double>>> Item::DropTable_ItemType {
+	{ EItemType::RELIC,{		45,		0.02 } },
+	{ EItemType::WEAPON,{		28,		0.10 } },
+	{ EItemType::JEWELLERY,{	22,		0.15 } },
+	{ EItemType::ARMOR,{		15,		0.25 } },
+	{ EItemType::SCROLL,{		6,		0.35 } },
+	{ EItemType::CONSUMABLE,{ 2,	0.45 } }
+};
 
-	std::vector<std::pair<EItemRarity, double>> DropTable_ItemRarity{
-		{ EItemRarity::UNIQUE,0.005 },
-		{ EItemRarity::GODLIKE,0.025 },
-		{ EItemRarity::LEGENDARY,0.05 },
-		{ EItemRarity::EPIC,0.12 },
-		{ EItemRarity::RARE,0.25 },
-		{ EItemRarity::COMMON,1 }
-	};
-}
+std::vector<std::pair<EItemRarity, double>> Item::DropTable_ItemRarity {
+	{ EItemRarity::UNIQUE,		0.005 },
+	{ EItemRarity::GODLIKE,		0.025 },
+	{ EItemRarity::LEGENDARY,	0.05 },
+	{ EItemRarity::EPIC,			0.12 },
+	{ EItemRarity::RARE,			0.25 },
+	{ EItemRarity::COMMON,		1 }
+};
+
+
 
 //Consumable
 //Health potion

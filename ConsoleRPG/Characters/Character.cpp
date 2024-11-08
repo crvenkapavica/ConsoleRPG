@@ -3,7 +3,7 @@
 #include "../Combat/CombatManager.h"
 #include "../Spells/ActiveSpell.h"
 #include "../Spells/PassiveSpell.h"
-#include "../Spells/SpellManager.h"
+//#include "../Spells/SpellManager.h"
 
 
 Character::Character(const CharacterData& InCharacterData, const PlayerAttributes& InAttributes, const char InAlias)
@@ -25,17 +25,17 @@ Character::Character(const CharacterData& InCharacterData, const PlayerAttribute
 	DamageType = InCharacterData.DamageType;
 	CharacterResistances = InCharacterData.Resistances;
 
-	using sm = SpellManager;
-	sm::CreateActiveSpell(this, InCharacterData.Spell1.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell2.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell3.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell4.first);
-
-	sm::CreateActiveSpell(this, ESpellID::MELEE);
-	sm::CreateActiveSpell(this, ESpellID::RANGED);
-
-	sm::CreatePassiveSpell(this, InCharacterData.Passive1.first);
-	sm::CreatePassiveSpell(this, InCharacterData.Passive2.first);
+	// using sm = SpellManager;
+	// sm::CreateActiveSpell(this, InCharacterData.Spell1.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell2.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell3.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell4.first);
+	//
+	// sm::CreateActiveSpell(this, ESpellID::MELEE);
+	// sm::CreateActiveSpell(this, ESpellID::RANGED);
+	//
+	// sm::CreatePassiveSpell(this, InCharacterData.Passive1.first);
+	// sm::CreatePassiveSpell(this, InCharacterData.Passive2.first);
 
 	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
 	
@@ -62,17 +62,17 @@ Character::Character(const CharacterData& InCharacterData, const char InAlias)
 	DamageType = InCharacterData.DamageType;
 	CharacterResistances = InCharacterData.Resistances;
 
-	using sm = SpellManager;
-	sm::CreateActiveSpell(this, InCharacterData.Spell1.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell2.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell3.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell4.first);
-
-	//sm.CreateActiveSpell(this, ESpellID::MELEE);
-	//sm.CreateActiveSpell(this, ESpellID::RANGED);
-
-	sm::CreatePassiveSpell(this, InCharacterData.Passive1.first);
-	sm::CreatePassiveSpell(this, InCharacterData.Passive2.first);
+	// using sm = SpellManager;
+	// sm::CreateActiveSpell(this, InCharacterData.Spell1.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell2.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell3.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell4.first);
+	//
+	// //sm.CreateActiveSpell(this, ESpellID::MELEE);
+	// //sm.CreateActiveSpell(this, ESpellID::RANGED);
+	//
+	// sm::CreatePassiveSpell(this, InCharacterData.Passive1.first);
+	// sm::CreatePassiveSpell(this, InCharacterData.Passive2.first);
 
 	// TODO === ADD MAIN_HAND AND OFF_HAND WEAPON SLOTS TO CHARACTER
 }
@@ -95,17 +95,17 @@ Character::Character(const CharacterData& InCharacterData, const int InTeam, con
 	DamageType = InCharacterData.DamageType;
 	CharacterResistances = InCharacterData.Resistances;
 
-	using sm = SpellManager;
-	sm::CreateActiveSpell(this, InCharacterData.Spell1.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell2.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell3.first);
-	sm::CreateActiveSpell(this, InCharacterData.Spell4.first);
-
-	sm::CreateActiveSpell(this, ESpellID::MELEE);
-	sm::CreateActiveSpell(this, ESpellID::RANGED);
-
-	sm::CreatePassiveSpell(this, InCharacterData.Passive1.first);
-	sm::CreatePassiveSpell(this, InCharacterData.Passive2.first);
+	// using sm = SpellManager;
+	// sm::CreateActiveSpell(this, InCharacterData.Spell1.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell2.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell3.first);
+	// sm::CreateActiveSpell(this, InCharacterData.Spell4.first);
+	//
+	// sm::CreateActiveSpell(this, ESpellID::MELEE);
+	// sm::CreateActiveSpell(this, ESpellID::RANGED);
+	//
+	// sm::CreatePassiveSpell(this, InCharacterData.Passive1.first);
+	// sm::CreatePassiveSpell(this, InCharacterData.Passive2.first);
 }
 
 Character::Character(const Character& Other)
@@ -127,12 +127,12 @@ Character::Character(const Character& Other)
 	, Team(Other.Team)
 {}
 
-Character::Character(Character&& InCharacter) noexcept
-	: CharacterClass(InCharacter.CharacterClass)
-	, CharacterAttributes(InCharacter.CharacterAttributes)
-	, DamageType(InCharacter.DamageType)
-	, Alias(InCharacter.Alias)
-	, Team(InCharacter.Team)
+Character::Character(Character&& Other) noexcept
+	: CharacterClass(Other.CharacterClass)
+	, CharacterAttributes(Other.CharacterAttributes)
+	, DamageType(Other.DamageType)
+	, Alias(Other.Alias)
+	, Team(Other.Team)
 {}
 
 void Character::Stat::UpdateBase(const float Value) {
@@ -192,11 +192,11 @@ void Character::UpdateAttribute(attribute& Attribute, const int Amount) const {
 	Attribute += Amount;
 }
 
-void Character::AddActiveSpell(std::unique_ptr<ActiveSpell>& SpellToAdd) {
+void Character::AddActiveSpell(std::unique_ptr<ActiveSpell>&& SpellToAdd) {
 	ActiveSpells.push_back(std::move(SpellToAdd));
 }
 
-void Character::AddPassiveSpell(std::unique_ptr<PassiveSpell>& SpellToAdd) {
+void Character::AddPassiveSpell(std::unique_ptr<PassiveSpell>&& SpellToAdd) {
 	PassiveSpells.push_back(std::move(SpellToAdd));
 }
 

@@ -1,8 +1,7 @@
 #include "../Combat/CombatManager.h"
-#include "../Characters/Character.h"
+//#include "../Characters/Character.h"
 #include "../Spells/EffectStructs.h"
 #include "../Spells/PassiveSpell.h"
-#include "../Spells/SpellManager.h"
 
 int CombatManager::nCycle = 0;
 int CombatManager::nTurn = 0;
@@ -124,9 +123,9 @@ void CombatManager::ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const
 	else Value = Delta;
 
 	if (CharStat.StatType == EStatType::HEALTH)
-		Value = GameplayStatics::ApplyDamage(GetTurnCharacter(), CharStat.PtrCharacter, Delta, Effect->Spell, bIsOnApply);
+		Value = GameplayStatics::ApplyDamage(GetTurnCharacter(), CharStat.PtrCharacter, Delta, Effect->ActiveSpell, bIsOnApply);
 
-	const auto SpellClass = Effect->Spell->GetClass();
+	const auto SpellClass = Effect->ActiveSpell->GetClass();
 
 	if (SpellClass == ESpellClass::MAGIC)
 		OnMagicReceivedBegin(Target, Effect->Instigator);
@@ -218,7 +217,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 			if (it->second->Instigator->GetAlias() == GetTurnAlias()) {
 				for (auto& t : it->second->Targets) {
 					if (!t.expired())
-						t.lock()->RemoveEffectById(it->second->Spell->GetId());
+						t.lock()->RemoveEffectById(it->second->ActiveSpell->GetID());
 				}
 				it = CombatEffects.erase(it);
 			}
@@ -330,7 +329,7 @@ void CombatManager::OnApplyEffect() {
 		HandleCombatEffect(Effect, Effect->Targets[0]);
 	
 	for (auto& e : Effect->Targets)
-		if (!e.expired()) e.lock()->AddEffectId(Effect->Spell->GetId());
+		if (!e.expired()) e.lock()->AddEffectId(Effect->ActiveSpell->GetID());
 }
 
 void CombatManager::OnCombatBegin() {

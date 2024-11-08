@@ -1,23 +1,23 @@
 #include "EnemyCharacter.h"
 #include "SummonCharacter.h"
 #include "../GameplayStatics.h"
-#include "../Spells/SpellManager.h"
-#include "../Combat/CombatManager.h"
 #include "../Characters/CharacterData.h"
+#include "../Combat/CombatManager.h"
 #include "../MapGenerator/MapGenerator.h"
+//#include "../Spells/SpellManager.h"
 
 int EnemyCharacter::nEnemyCharacters = 0;
 
-EnemyCharacter::EnemyCharacter(const ECharacterClass InCharacterClass)
-	: Character(CharDb::Data[InCharacterClass], 'A' + nEnemyCharacters++)
-	// , Level(0)
-	// , Count(0)
+EnemyCharacter::EnemyCharacter(const ECharacterClass Other)
+	: Character(CharDb::Data[Other], 'A' + nEnemyCharacters++)
 {}
 
-EnemyCharacter::EnemyCharacter(EnemyCharacter&& Other) 
+EnemyCharacter::EnemyCharacter(const EnemyCharacter& Other)
+	: Character(Other)
+{}
+
+EnemyCharacter::EnemyCharacter(EnemyCharacter&& Other) noexcept
 	: Character(std::move(Other))
-	// , Level(0)
-	// , Count(0)
 {}
 
 void EnemyCharacter::TakeTurn() {
@@ -30,7 +30,7 @@ void EnemyCharacter::TakeTurn() {
 	CombatManager::EndTurn(*this);
 }
 
-void EnemyCharacter::Move() {
+void EnemyCharacter::Move() const {
 	std::map<int, EDirection> DirectionMap;
 	GameplayStatics::EnemyCombatMove(this, DirectionMap);
 	if (!DirectionMap.empty()) {
@@ -47,6 +47,8 @@ void EnemyCharacter::CastSpell() {
 
 	std::vector<std::weak_ptr<Character>> TargetCharacters = { Players[PlayerTargetIndex[0]] };
 
-	if (!GetPassiveSpells().empty() && GetPassiveSpells()[0])
-		SpellManager::CastSpell(0, GameplayStatics::GetSharedCharacter(*this), TargetCharacters);
+
+		// TODO : CAST SPELL
+	// if (!GetPassiveSpells().empty() && GetPassiveSpells()[0])
+	// 	SpellManager::CastSpell(0, GameplayStatics::GetSharedCharacter(*this), TargetCharacters);
 }

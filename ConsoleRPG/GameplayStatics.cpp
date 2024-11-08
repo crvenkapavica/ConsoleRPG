@@ -223,17 +223,17 @@ void GameplayStatics::DisplayItemMenu() {
 
 	bool bIsEquipped = false;
 	auto SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
-	if (bIsEquipped) return;
+	if (!SelectedItem || bIsEquipped) return;
 	
 	std::vector<std::string> Menu;
 	int Input;
 	if (bIsEquipped) {
 		Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
 		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->EquipItem(SelectedItem);   // TODO: Rvalue?
+			CurrentCharacter->EquipItem(std::move(SelectedItem));   // TODO: Rvalue?
 			return;
 		}
-		if (Input == 0) CurrentCharacter->UnEquipItem(SelectedItem);
+		if (Input == 0) CurrentCharacter->UnEquipItem(std::move(SelectedItem));
 		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 	else {
@@ -242,8 +242,8 @@ void GameplayStatics::DisplayItemMenu() {
 			CurrentCharacter->AddItemToInventory(std::move(SelectedItem));  // TODO : if inventory is FULL, item is ["CONSUMED" - LOST]
 			return;
 		}
-		if (Input == 0) CurrentCharacter->EquipItem(SelectedItem);
-		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
+		if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
+		else CurrentCharacter->DestroyIem(std::move(SelectedItem));
 	}
 }
 
@@ -435,7 +435,7 @@ void GameplayStatics::DisplayMeleeMenu() {
 	std::vector<ActiveSpell*> spells;
 	for (const auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::MELEE) {
-			v.push_back(GetEnumString(spell->GetId()));
+			v.push_back(GetEnumString(spell->GetID()));
 			spells.push_back(spell.get());
 		}
 	v.emplace_back("<--BACK--<");
@@ -451,7 +451,7 @@ void GameplayStatics::DisplayRangedMenu() {
 	std::vector<ActiveSpell*> spells;
 	for (const auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells())
 		if (spell->GetClass() == ESpellClass::RANGED) {
-			v.push_back(GetEnumString(spell->GetId()));
+			v.push_back(GetEnumString(spell->GetID()));
 			spells.push_back(spell.get());
 		}
 	v.emplace_back("<--BACK--<");
@@ -470,7 +470,7 @@ void GameplayStatics::DisplaySpellMenu() {
 	std::vector<ActiveSpell*> spells;
 	for (auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells()) {
 		if (spell->GetClass() == ESpellClass::MAGIC) {
-			v.push_back(GetEnumString(spell->GetId()));
+			v.push_back(GetEnumString(spell->GetID()));
 			spells.push_back(spell.get());
 		}
 	}
@@ -677,8 +677,8 @@ float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, C
 	auto& s = GetCombatLogStream();
 	const std::string C = GetAliasColor(Instigator.lock()->GetAlias());
 	const std::string CT = GetAliasColor(Target->GetAlias());
-	if (bIsOnApply) s << CT << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
-	else s << C << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	if (bIsOnApply) s << CT << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	else s << C << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
 	//==============================================
 
 	return ActualDamage;
@@ -688,9 +688,9 @@ void GameplayStatics::ApplyEffect(const std::shared_ptr<Character>& Instigator, 
 								  const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams) {
 	const std::string C = GetAliasColor(Instigator->GetAlias());
 	auto& s = GetCombatLogStream();
-	s << C << Instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(Spell->GetId()) << COLOR_COMBAT_LOG << ".\n";
+	s << C << Instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(Spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
 
-	const auto Effect = std::make_shared<CombatEffect>(Instigator, Targets, std::move(Spell), ApplyParams, EffectParams, SpellDb::Data[Spell->GetId()][Spell->GetLvl()].Duration);
+	const auto Effect = std::make_shared<CombatEffect>(Instigator, Targets, std::move(Spell), ApplyParams, EffectParams, SpellDb::Data[Spell->GetID()][Spell->GetLevel()].Duration);
 	CombatManager::AddCombatEffect(Effect);
 }
 

@@ -30,14 +30,6 @@ PlayerCharacter::PlayerCharacter(const ECharacterClass InCharacterClass)
 	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
 }
 
-PlayerCharacter::PlayerCharacter(const PlayerCharacter& Other)
-	: Character(Other)
-{}
-
-PlayerCharacter::PlayerCharacter(PlayerCharacter&& Other) noexcept
-	: Character(std::move(Other))
-{}
-
 void PlayerCharacter::ReceiveExperience(const int InExperience) {
 	Experience += InExperience;
 	if (Experience >= ExperienceNextLevel[Level - 1]) {
@@ -55,7 +47,7 @@ void PlayerCharacter::TakeTurn() {
 }
 
 // TODO : Add Auto-Equip for empty slots
-void PlayerCharacter::EquipItem(std::unique_ptr<Item>& InItem) {
+void PlayerCharacter::EquipItem(std::unique_ptr<Item>&& InItem) {
 	//if (nInventory == INV_SLOTS) return; // treba promeniti da se pita ak je inventory pun samo ako je slot zauzet
 
 	if (InItem->ItemInfo.ItemType == EItemType::WEAPON) {
@@ -72,7 +64,7 @@ void PlayerCharacter::EquipItem(std::unique_ptr<Item>& InItem) {
 }
 
 // TODO: Add Item Swapping
-void PlayerCharacter::UnEquipItem(std::unique_ptr<Item>& InItem) {
+void PlayerCharacter::UnEquipItem(std::unique_ptr<Item>&& InItem) {
 	if (nInventory == INV_SLOTS) return;
 	AddItemToInventory(std::move(InItem));
 	CalculatePlayerItemSlots();

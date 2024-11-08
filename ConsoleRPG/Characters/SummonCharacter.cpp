@@ -3,22 +3,15 @@
 #include "EnemyCharacter.h"
 #include "PlayerCharacter.h"
 #include "../GameplayStatics.h"
+#include "../Combat/CombatManager.h"
 
 int SummonCharacter::nPlayerSummons = 0;
 int SummonCharacter::nEnemySummons = 0;
 
 SummonCharacter::SummonCharacter(const ECharacterClass InCharacterClass, int InTeam)
 	: Character(CharDb::Data[InCharacterClass]
-	, InTeam
-	, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
-{}
-
-SummonCharacter::SummonCharacter(const SummonCharacter& Other)
-	: Character(Other)
-{}
-
-SummonCharacter::SummonCharacter(SummonCharacter&& Other) noexcept
-	: Character(std::move(Other))
+		, InTeam
+		, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
 {}
 
 void SummonCharacter::TakeTurn() {
@@ -34,6 +27,6 @@ void SummonCharacter::TakeTurn() {
 		GameplayStatics::RedrawGameScreen();
 		Sleep(300);
 
-		EndTurn();
+		CombatManager::EndTurn(*this);
 	}
 }
