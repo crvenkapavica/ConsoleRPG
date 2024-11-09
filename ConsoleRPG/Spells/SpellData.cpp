@@ -101,7 +101,7 @@ SpellDb::SpellDataConstructor::SpellDataConstructor() {
 	Data[ESpellID::MELEE] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 15 } };
 	Data[ESpellID::RANGED] = { { 0.f, 0.f, 0.f, 0.f, 0, 0, 0, 10 } };
 }
-SpellDb::SpellDataConstructor SpellDb::SpellData;
+SpellDb::SpellDataConstructor SpellDb::SpellDataCtor;
 
 SpellDb::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	// MAGIC
@@ -133,10 +133,10 @@ SpellDb::ActiveConstDataConstructor::ActiveConstDataConstructor() {
 	ActiveConstMap[ESpellID::MELEE] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::MELEE, 1, 0 };
 	ActiveConstMap[ESpellID::RANGED] = { EDamageType::PHYSICAL, ESpellType::NONE, ESpellRarity::BASIC, ESpellClass::RANGED, 1, 0 };
 };
-SpellDb::ActiveConstDataConstructor SpellDb::ActiveConstData;
+SpellDb::ActiveConstDataConstructor SpellDb::ActiveConstDataCtor;
 
 SpellDb::PassiveConstDataConstructor::PassiveConstDataConstructor() {
 	PassiveConstMap[ESpellID::VAMPIRIC_TOUCH] = { ECombatEvent::ON_MAGIC_END, ESpellRarity::EPIC, ESpellClass::MAGIC, 1, 12 };
 	PassiveConstMap[ESpellID::THORNS] = { ECombatEvent::ON_MELEE_RECEIVED_END, ESpellRarity::BASIC, ESpellClass::MELEE, 1, 3 };
 };
-SpellDb::PassiveConstDataConstructor SpellDb::PassiveConstData;
+SpellDb::PassiveConstDataConstructor SpellDb::PassiveConstDataCtor;

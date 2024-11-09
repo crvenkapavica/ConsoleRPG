@@ -6,14 +6,8 @@
 #include "../Spells/EffectStructs.h"
 #include "../Spells/SpellData.h"
 
-// ActiveSpell::ActiveSpell(const ESpellID SpellID)
-// 	: Spell(SpellID, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(SpellID).Rarity, SpellDb::ActiveConstMap.at(SpellID).Class, SpellDb::ActiveConstMap.at(SpellID).MinReqLevel, 0)
-// 	, _damage_type(SpellDb::ActiveConstMap.at(SpellID).DamageType)
-// 	, _spell_type(SpellDb::ActiveConstMap.at(SpellID).SpellType)
-// {}
-
 ActiveSpell::ActiveSpell(const ESpellID SpellID, const int InLevel)
-	: Spell(SpellID, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(SpellID).Rarity, SpellDb::ActiveConstMap.at(SpellID).Class, SpellDb::ActiveConstMap.at(SpellID).MinReqLevel, InLevel)
+	: Spell(SpellID, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(SpellID).Rarity, SpellDb::ActiveConstMap.at(SpellID).Class, SpellDb::ActiveConstMap.at(SpellID).RequiredLevel, InLevel)
 	, _damage_type(SpellDb::ActiveConstMap.at(SpellID).DamageType)
 	, _spell_type(SpellDb::ActiveConstMap.at(SpellID).SpellType)
 {}
@@ -57,60 +51,60 @@ std::unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(const ESpellID Spell
 		return std::make_unique<Ranged>();
 
 	default:
-		throw new std::invalid_argument("SpellID not found.");
+		throw std::invalid_argument("SpellID not found.");
 	}
 }
 
-float ActiveSpell::GetRandEffectMinMax(const std::shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[ID][Level].EffectMin, SpellDb::Data[ID][Level].EffectMax), character);
+float ActiveSpell::GetRandEffectMinMax(const std::shared_ptr<Character>& InCharacter) {
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[ID][Level].EffectMin, SpellDb::Data[ID][Level].EffectMax), InCharacter);
 }
 
-float ActiveSpell::GetRandOnApplyMinMax(const std::shared_ptr<Character>& character) {
-	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[ID][Level].ApplyMin, SpellDb::Data[ID][Level].ApplyMax), character);
+float ActiveSpell::GetRandOnApplyMinMax(const std::shared_ptr<Character>& InCharacter) {
+	return AdjustDamage(GameplayStatics::GetRandFloat(SpellDb::Data[ID][Level].ApplyMin, SpellDb::Data[ID][Level].ApplyMax), InCharacter);
 }
 
-float ActiveSpell::AdjustDamage(float Damage, const std::shared_ptr<Character>& character) {
+float ActiveSpell::AdjustDamage(float Damage, const std::shared_ptr<Character>& InCharacter) {
 	switch (_damage_type) {
 	case EDamageType::ARCANE:
-		Damage += Damage * character->ArcaneDamage;
+		Damage += Damage * InCharacter->ArcaneDamage;
 		break;
 	case EDamageType::FIRE:
-		Damage += Damage * character->FireDamage;
+		Damage += Damage * InCharacter->FireDamage;
 		break;
 	case EDamageType::LIGHTNING:
-		Damage += Damage * character->LightningDamage;
+		Damage += Damage * InCharacter->LightningDamage;
 		break;
 	case EDamageType::COLD:
-		Damage += Damage * character->ColdDamage;
+		Damage += Damage * InCharacter->ColdDamage;
 		break;
 	case EDamageType::POISON:
-		Damage += Damage * character->PoisonDamage;
+		Damage += Damage * InCharacter->PoisonDamage;
 		break;
 	case EDamageType::NECROTIC:
-		Damage += Damage * character->NecroticDamage;
+		Damage += Damage * InCharacter->NecroticDamage;
 		break;
 	case EDamageType::PHYSICAL:
-		Damage += Damage * character->PhysicalDamage;
-		Damage += character->GetAP().GetActual();
+		Damage += Damage * InCharacter->PhysicalDamage;
+		Damage += InCharacter->GetAP().GetActual();
 	case EDamageType::HEALING:
-		Damage += Damage * character->Healing;
+		Damage += Damage * InCharacter->Healing;
 		break;
 	default:
 		break;
 	}
 
 	if (_damage_type != EDamageType::PHYSICAL && _damage_type != EDamageType::NONE)
-		Damage += character->GetSP().GetActual();
+		Damage += InCharacter->GetSP().GetActual();
 
 	// Critical Strike
 	const int Rnd = GameplayStatics::GetRandInt(0, 100000);
 	if (GetClass() == ESpellClass::MAGIC) {
-		if (const float Chance = character->GetSpellCritChance().GetActual() * 100000; Rnd <= Chance)
-			Damage *= character->GetSpellCritDmg().GetActual() / 100;
+		if (const float Chance = InCharacter->GetSpellCritChance().GetActual() * 100000; Rnd <= Chance)
+			Damage *= InCharacter->GetSpellCritDmg().GetActual() / 100;
 	}
 	else if (GetClass() == ESpellClass::MELEE || GetClass() == ESpellClass::RANGED) {
-		if (const float Chance = character->GetCritChance().GetActual() * 100000; Rnd <= Chance)
-			Damage *= character->GetCritDmg().GetActual();
+		if (const float Chance = InCharacter->GetCritChance().GetActual() * 100000; Rnd <= Chance)
+			Damage *= InCharacter->GetCritDmg().GetActual();
 	}
 
 	return Damage;

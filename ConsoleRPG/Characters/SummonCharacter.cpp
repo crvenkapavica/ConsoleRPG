@@ -10,8 +10,8 @@ int SummonCharacter::nEnemySummons = 0;
 
 SummonCharacter::SummonCharacter(const ECharacterClass InCharacterClass, int InTeam)
 	: Character(CharDb::Data[InCharacterClass]
-		, InTeam
-		, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
+	, InTeam
+	, [InTeam]() { return InTeam == 1 ? '0' + PlayerCharacter::nPlayerCharacters + nPlayerSummons++ : 'A' + EnemyCharacter::nEnemyCharacters + nEnemySummons++; })
 {}
 
 void SummonCharacter::TakeTurn() {

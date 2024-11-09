@@ -18,7 +18,7 @@ struct ActiveConstData {
 	ESpellType		SpellType;
 	ESpellRarity	Rarity;
 	ESpellClass		Class;
-	int				MinReqLevel;
+	int				RequiredLevel;
 	int				PowerLevel;
 };
 
@@ -26,7 +26,7 @@ struct PassiveConstData {
 	ECombatEvent	CombatEvent;
 	ESpellRarity	Rarity;
 	ESpellClass		Class;
-	int				MinReqLevel;
+	int				RequiredLevel;
 	int				PowerLevel;
 };
 
@@ -41,11 +41,11 @@ public:
 private:
 	static struct SpellDataConstructor {
 		SpellDataConstructor();
-	} SpellData;
-	static struct ActiveConstDataConstructor {    	// TODO: FIXME : NAME
+	} SpellDataCtor;
+	static struct ActiveConstDataConstructor {
 		ActiveConstDataConstructor();
-	} ActiveConstData;
+	} ActiveConstDataCtor;
 	static struct PassiveConstDataConstructor {
 		PassiveConstDataConstructor();
-	} PassiveConstData;
-}
+	} PassiveConstDataCtor;
+};

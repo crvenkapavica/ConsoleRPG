@@ -11,26 +11,25 @@ struct EffectParams;
 
 class ActiveSpell : public Spell {
 public:
-    //ActiveSpell(const ESpellID SpellID);
-    explicit ActiveSpell(const ESpellID SpellID, int InLevel = 0);
+    explicit ActiveSpell(const ESpellID SpellID, const int InLevel = 0);
     
     static std::unique_ptr<ActiveSpell> CreateActiveSpell(ESpellID SpellID);
 
     // Apply the effect of the spell
     virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) = 0;
 
-    inline EDamageType GetDamageType() const { return _damage_type; }
-    inline ESpellType GetSpellType() const { return _spell_type; }
+    // inline EDamageType GetDamageType() const { return _damage_type; }
+    // inline ESpellType GetSpellType() const { return _spell_type; }
 
 protected:
     // Get random damage between spell min and max value at current level
-    float GetRandEffectMinMax(const std::shared_ptr<Character>& character);
+    float GetRandEffectMinMax(const std::shared_ptr<Character>& InCharacter);
 
     // Get random damage between spell min and max value for on aplly effect at current level
-    float GetRandOnApplyMinMax(const std::shared_ptr<Character>& character);
+    float GetRandOnApplyMinMax(const std::shared_ptr<Character>& InCharacter);
 
-    // Apply resistances, armor reduction, critial chance and other procs and return final damage
-    float AdjustDamage(float Damage, const std::shared_ptr<Character>& character);
+    // Apply resistances, armor reduction, critical chance and other procs and return final damage
+    float AdjustDamage(float Damage, const std::shared_ptr<Character>& InCharacter);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
     int AddRandomTargets(int R, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& character, const std::string& name);
