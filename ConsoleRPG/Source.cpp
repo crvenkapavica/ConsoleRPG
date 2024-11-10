@@ -94,30 +94,28 @@ void SendAltEnter() {
 int main() {
 
 
-    //Sleep(100);
-    //SendAltEnter();
+    // Sleep(100);
+    // SendAltEnter();
 	
 	//SpellManager::GetInstance(); // TODO :: Initialize in Map Loop [UI??]
 	//MapGenerator::GetInstance(); // Initialize in Map Loop [UI??]
 
     auto CharDeleter = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };
 
-    const std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), CharDeleter);
-    const std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), CharDeleter);
+    std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), CharDeleter);
+    std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), CharDeleter);
+	
+	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
+	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
+	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
+	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::MOLTEN_ARMOR);
+	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
+	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);
+	
+    SpellManager::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
 
-    std::vector<std::shared_ptr<Character>> PlayerCharacters = { PlayerMain, PlayerWarlock1 };
 	
-	
-    //SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
-    // SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
-    // SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
-    // SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::MOLTEN_ARMOR);
-    // SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
-    // SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);
-
-    // passive
-    //SpellManager::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
-	
+	std::vector<std::shared_ptr<Character>> PlayerCharacters = { std::move(PlayerMain), std::move(PlayerWarlock1) };
 	ConsoleMenu Menu;
 	
     // Later we don't send none of these initializers to GS. 

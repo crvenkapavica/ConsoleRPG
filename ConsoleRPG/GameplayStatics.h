@@ -19,7 +19,7 @@ class GameplayStatics {
 public:
 	GameplayStatics() = delete;
 	
-	static void Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& InMenu);
+	static void Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& Menu);
 
 	static void DisplayAllies();
 	static void DisplayEnemies();
@@ -97,9 +97,9 @@ public:
 
 	static std::string String2(float F);
 	static float Float2(float F);
-
-	static int GetRandInt(int A, int B);
-	static float GetRandFloat(float A, float B);
+	
+	static int GetRandInt(const int A, const int B);
+	static float GetRandFloat(const float A, const float B);
 
 public:
 	static std::string GetEnumString(ESpellID Enum);

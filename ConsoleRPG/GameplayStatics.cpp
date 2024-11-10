@@ -23,14 +23,20 @@ ConsoleMenu* GameplayStatics::DisplayMenu = nullptr;
 #define MG MapGenerator::GetInstance()   // TODO : Check valid define (and replace)
 
 // TODO : FIXME Initialization (WHERE) ?
-void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& InMenu) {
+void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& Menu) {
 	std::cout << std::fixed << std::setprecision(2);
 	
 	// This is a std::vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
 	// So it can be resurrected. If all player characters die in a combat, the player loses. Later we actually implement how to handle this.
+
+	std::vector<std::weak_ptr<Character>> WPtrs;
+	WPtrs.reserve(InPlayerCharacters.size());
+	for (auto& WPtr : InPlayerCharacters) WPtrs.push_back(WPtr);
+	MG.Initialize(WPtrs);
+	
 	PlayerCharacters = std::move(InPlayerCharacters); 	// ALL play characters
 	PlayerAvatar = PlayerCharacters[0];					// Main player character - avatar
-	DisplayMenu = &InMenu;
+	DisplayMenu = &Menu;
 	
 	// for (const auto& PlayerChar : PlayerCharacters)
 	// 	Players.push_back(PlayerChar);
@@ -39,6 +45,7 @@ void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPla
 	//Initialize(PlayerCharacters);
 	//MG.PrintDebugMap();
 	//MG.PrintDistance();
+
 
 	DisplayMapMenu();
 }
@@ -177,8 +184,8 @@ void GameplayStatics::DisplayMapMenu() {
 
 	// MAP LOOP
 	while (PlayerAvatar.lock()->IsAlive()) {
-		std::vector<std::string> v = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS", "SPELLS", "STATS"};
-		const int Input = InteractiveDisplay(v);
+		std::vector<std::string> Menu = { "SHOW POSITION", "SHOW MAP", "MOVE", "ITEMS", "SPELLS", "STATS"};
+		const int Input = InteractiveDisplay(Menu);
 		HandleMapInput(Input);
 	}
 }
@@ -777,16 +784,17 @@ float GameplayStatics::Float2(const float F) {
 	return round(F * 100) / 100;
 }
 
+
 int GameplayStatics::GetRandInt(const int A, const int B) {
-	static std::mt19937 generator(std::random_device{}());
-	std::uniform_int_distribution<int> distribution(A, B);
-	return distribution(generator);
+	static std::mt19937 Generator(std::random_device{}());
+	std::uniform_int_distribution<int> Distribution(A, B);
+	return Distribution(Generator);
 }
 
 float GameplayStatics::GetRandFloat(const float A, const float B) {
-	static std::mt19937 generator(std::random_device{}());
-	std::uniform_real_distribution<float> distribution(A, B);
-	return Float2(distribution(generator));
+	static std::mt19937 Generator(std::random_device{}());
+	std::uniform_real_distribution<float> Distribution(A, B);
+	return Float2(Distribution(Generator));
 }
 
 std::string GameplayStatics::GetEnumString(const ESpellID Enum) {

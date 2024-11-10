@@ -200,7 +200,7 @@ int MapGenerator::GetVisitedNodeDirection(const PathNode& VisitedNode, const int
 int MapGenerator::GetRandomTurnDirection(OUT int& X, OUT int& Y) const {
 	int RandomDir = -1;
 	while (RandomDir == -1) {
-		const int Random = RAND_INT(0, static_cast<int>(Turn.size()));
+		const int Random = RAND_INT(0, static_cast<int>(Turn.size()) - 1);
 		X = Turn[Random].first;
 		Y = Turn[Random].second;
 
