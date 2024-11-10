@@ -43,9 +43,9 @@ public:
 	static inline char GetTurnAlias() { return TurnTable[nTurn].lock()->GetAlias(); }
 	static inline int GetTurn() { return nCycle; }
 
-	static inline std::vector<std::weak_ptr<Character>> GetPlayers() { return PlayerCharacters; }
-	static inline std::vector<std::weak_ptr<Character>> GetEnemies() { return EnemyCharacters; }
-	static inline std::vector<std::shared_ptr<Character>> GetSummons() { return SummonCharacters; }
+	static inline std::vector<std::weak_ptr<Character>>& GetPlayers() { return PlayerCharacters; }
+	static inline std::vector<std::weak_ptr<Character>>& GetEnemies() { return EnemyCharacters; }
+	static inline std::vector<std::shared_ptr<Character>>& GetSummons() { return SummonCharacters; }
 
 	// Flags all characters with HP < 0 with bIsAlive = false
 	static void FlagDeadCharacters();
@@ -124,9 +124,9 @@ private:
 private:
 	static std::weak_ptr<Character> PlayerAvatar;
 	static std::vector<std::weak_ptr<Character>> PlayerCharacters;
-	static std::vector<PlayerCharacter> PlayerCharactersBase;
+	static std::vector<PlayerCharacter*> PlayerCharactersBase;
 	static std::vector<std::weak_ptr<Character>> EnemyCharacters;
-	static std::vector<EnemyCharacter> EnemyCharactersBase;
+	static std::vector<EnemyCharacter*> EnemyCharactersBase;
 	static std::vector<std::shared_ptr<Character>> SummonCharacters;
 	static std::vector<SummonCharacter> SummonCharactersBase;
 

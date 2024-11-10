@@ -85,8 +85,6 @@ public:
 	static void ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
 							const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams);
 
-	static void KillEnemy(int Idx);
-
 	static bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
 	static void RollLoot();

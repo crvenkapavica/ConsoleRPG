@@ -261,8 +261,8 @@ void MapGenerator::MakeDebugMessage(const int InSteps, const std::string& Func) 
 
 void MapGenerator::GetPlayerStartPosition(int& X, int& Y) const {
 	do {
-		X = RAND_INT(0, MAX_X);
-		Y = RAND_INT(0, MAX_Y);
+		X = RAND_INT(0, MAX_X - 1);
+		Y = RAND_INT(0, MAX_Y - 1);
 	} while (Map[X][Y] != PATH);
 }
 
@@ -285,7 +285,7 @@ void MapGenerator::InitPlayer(const std::vector<std::weak_ptr<Character>>& InPla
 }
 
 void MapGenerator::ShowMap() const {
-	CLS;
+	system("cls");;
 	if (BorderX == 0 && BorderXEnd == 0) ShowPosition();
 	else {
 		Map[PlayerX][PlayerY] = PATH;
@@ -324,7 +324,7 @@ const char* MapGenerator::GetMapAnsi(const char C) const {
 }
 
 void MapGenerator::ShowPosition() const {
-	CLS;
+	system("cls");;
 	const int Radius = static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
 	
 	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
@@ -408,11 +408,11 @@ void MapGenerator::Move(const int MoveDir) {
 		ClearCharGrid();
 		DrawPlayGrid();
 
-		auto enemies = GetEnemies(PlayerX, PlayerY);
+		auto EngagedEnemies = GetEnemies(PlayerX, PlayerY);
 		GenerateCharacterGridPositions();
 		AddCharactersToGrid();
 
-		GameplayStatics::InitiateCombatMode(std::move(enemies));
+		GameplayStatics::InitiateCombatMode(std::move(EngagedEnemies));
 	}
 	
 	Map[PlayerX][PlayerY] = PLAYER;
@@ -449,10 +449,10 @@ void MapGenerator::InitEnemies() {
 void MapGenerator::AddRandomMapEnemies() {
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
-			int percent = static_cast<int>(TotalSteps * 0.05);
+			int Percent = static_cast<int>(TotalSteps * 0.05);
 			int Random = GameplayStatics::GetRandInt(0, TotalSteps);
 
-			if (/*Random <= percent && */Steps[i][j] > 0 && Map[i][j] != PLAYER) {
+			if (/*Random <= Percent &&*/ Steps[i][j] > 0 && Map[i][j] != PLAYER) {
 				constexpr int MAP_LEVEL = 1;
 				Map[i][j] = ENEMY;
 

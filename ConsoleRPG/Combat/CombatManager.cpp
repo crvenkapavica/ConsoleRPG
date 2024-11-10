@@ -1,12 +1,13 @@
 #include "../Combat/CombatManager.h"
 #include "../Spells/EffectStructs.h"
 #include "../Spells/PassiveSpell.h"
+#include "../MapGenerator/MapGenerator.h"
 
 std::weak_ptr<Character> CombatManager::PlayerAvatar;
 std::vector<std::weak_ptr<Character>> CombatManager::PlayerCharacters;
-std::vector<PlayerCharacter> CombatManager::PlayerCharactersBase;
+std::vector<PlayerCharacter*> CombatManager::PlayerCharactersBase;
 std::vector<std::weak_ptr<Character>> CombatManager::EnemyCharacters;
-std::vector<EnemyCharacter> CombatManager::EnemyCharactersBase;
+std::vector<EnemyCharacter*> CombatManager::EnemyCharactersBase;
 std::vector<std::shared_ptr<Character>> CombatManager::SummonCharacters;
 std::vector<SummonCharacter> CombatManager::SummonCharactersBase;
 std::vector<std::pair<int, std::shared_ptr<CombatEffect>>> CombatManager::CombatEffects;
@@ -70,7 +71,9 @@ void CombatManager::EndTurn(Character& InCharacter) {
 	OnTurnEnd();
 	InCharacter.SetIsOnTurn(false);
 
-	if (nTurn == static_cast<int>(TurnTable.size() - 1)) OnCycleEnd();
+	if (nTurn == static_cast<int>(TurnTable.size() - 1)) 
+		OnCycleEnd();
+
 	nTurn = ++nTurn % static_cast<int>(TurnTable.size());
 
 	if (nTurn == 0) {
@@ -192,11 +195,14 @@ void CombatManager::HandleEffectStat(const std::shared_ptr<CombatEffect>& Effect
 }
 
 void CombatManager::GetCharactersBase() {
-	// for (const auto& Char : PlayerCharacters)
-	// 	PlayerCharactersBase.push_back(*dynamic_cast<PlayerCharacter*>(Char.lock().get()));
-	//
-	// for (auto& Char : EnemyCharacters)
-	// 	EnemyCharactersBase.push_back(*dynamic_cast<EnemyCharacter*>(Char.lock().get()));
+	for (const auto& Char : PlayerCharacters)
+		//auto& a = *dynamic_cast<PlayerCharacter*>(Char.lock().get());
+		//PlayerCharactersBase.push_back(&*dynamic_cast<PlayerCharacter*>(Char.lock().get()));
+		PlayerCharactersBase.emplace_back(dynamic_cast<PlayerCharacter*>(Char.lock().get()));
+	
+	 for (auto& Char : EnemyCharacters)
+	 	//EnemyCharactersBase.push_back(&*dynamic_cast<EnemyCharacter*>(Char.lock().get()));
+		 EnemyCharactersBase.emplace_back(dynamic_cast<EnemyCharacter*>(Char.lock().get()));
 }
 
 void CombatManager::ResetCharacterValues() {
@@ -204,13 +210,13 @@ void CombatManager::ResetCharacterValues() {
 	for (int i = 0; i < static_cast<int>(PlayerCharacters.size()); i++)
 		if (GetTurnCharacter().lock().get() == PlayerCharacters[i].lock().get())
 			// ReSharper disable once CppPossiblyUnintendedObjectSlicing
-			*PlayerCharacters[i].lock() = PlayerCharactersBase[i];
+			*PlayerCharacters[i].lock() = *PlayerCharactersBase[i];
 
 	// Reset enemy characters for re-application of spells
 	for (int i = 0; i < static_cast<int>(EnemyCharacters.size()); i++)
 		if (GetTurnCharacter().lock().get() == EnemyCharacters[i].lock().get())
 			// ReSharper disable once CppPossiblyUnintendedObjectSlicing
-			*EnemyCharacters[i].lock() = EnemyCharactersBase[i];
+			*EnemyCharacters[i].lock() = *EnemyCharactersBase[i];
 	
 	for (int i = 0; i < static_cast<int>(SummonCharacters.size()); i++)
 		if (GetTurnCharacter().lock().get() == SummonCharacters[i].get())
@@ -285,9 +291,10 @@ void CombatManager::FlagDeadCharacters() {
 }
 
 void CombatManager::KillFlaggedCharacters() {
-	for (int i = 0; i < static_cast<int>(EnemyCharacters.size()); i++) 
+	for (int i = 0; i < static_cast<int>(EnemyCharacters.size()); i++)
 		if (!EnemyCharacters[i].expired() && !EnemyCharacters[i].lock()->IsAlive())
-			GameplayStatics::KillEnemy(i);
+			//GameplayStatics::KillEnemy(i);
+			MapGenerator::GetInstance().KillEnemy(i);
 	
 	RemoveDeadCharacters();
 

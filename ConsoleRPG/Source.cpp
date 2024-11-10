@@ -94,8 +94,8 @@ void SendAltEnter() {
 int main() {
 
 
-    // Sleep(100);
-    // SendAltEnter();
+    Sleep(100);
+    SendAltEnter();
 	
 	//SpellManager::GetInstance(); // TODO :: Initialize in Map Loop [UI??]
 	//MapGenerator::GetInstance(); // Initialize in Map Loop [UI??]

@@ -176,7 +176,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 }
 
 void PlayerCharacter::DisplayStats() const {
-	CLS;
+	system("cls");;
 	std::cout << "========     STATS    ============" << '\n';
 	std::cout << "==================================" << '\n';
 	std::cout << "STR: " << CharacterAttributes.Strength + Item_Strength << "\nAGI: " << CharacterAttributes.Agility + Item_Agility << "\nINT: " << CharacterAttributes.Intelligence + Item_Intelligence << '\n';
@@ -185,7 +185,7 @@ void PlayerCharacter::DisplayStats() const {
 
 	std::cout << '\n' << "Press any key to go back.\n";
 	auto input = _getch();
-	CLS;
+	system("cls");;
 	GameplayStatics::DisplayMapMenuTitle();
 }
 

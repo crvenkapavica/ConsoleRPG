@@ -225,7 +225,8 @@ void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vecto
 			.PtrCharacter = Targets[i].lock().get(),
 			.StatType = EStatType::ANY,
 			.StatMod = EStatMod::CONSTANT,
-			.Stat = stat,.GetDelta = delta
+			.Stat = stat,
+			.GetDelta = delta
 		});
 	}
 	ApplyParams apply_params;
@@ -240,7 +241,8 @@ void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vecto
 			.PtrCharacter = Targets[i].lock().get(),
 			.StatType = EStatType::ANY,
 			.StatMod = EStatMod::ADDITIVE,
-			.Stat = stat,.GetDelta = delta
+			.Stat = stat,
+			.GetDelta = delta
 		});
 	}
 	EffectParams effect_params;

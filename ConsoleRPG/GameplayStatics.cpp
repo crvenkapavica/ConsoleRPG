@@ -20,7 +20,7 @@ std::vector<std::shared_ptr<Character>> GameplayStatics::PlayerCharacters;
 std::stringstream GameplayStatics::CombatLog; 
 ConsoleMenu* GameplayStatics::DisplayMenu = nullptr;
 
-#define MG MapGenerator::GetInstance()   // TODO : Check valid define (and replace)
+#define MG MapGenerator::GetInstance()
 
 // TODO : FIXME Initialization (WHERE) ?
 void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& Menu) {
@@ -51,7 +51,7 @@ void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPla
 }
 
 void GameplayStatics::DisplayAllies() {
-	CLS;
+	system("cls");;
 	int CharIndex = 0;
 	std::cout << MG.GetPowerLevel();
 	for (const auto& PlayerChar : CombatManager::GetPlayers())
@@ -288,7 +288,7 @@ void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&&
 
 
 	ResetCombatVariables();
-	CLS;
+	system("cls");;
 
 	//Give / Handle Combat(player) Experience
 	//GenerateLoot
@@ -699,10 +699,6 @@ void GameplayStatics::ApplyEffect(const std::shared_ptr<Character>& Instigator, 
 	CombatManager::AddCombatEffect(Effect);
 }
 
-void GameplayStatics::KillEnemy(int Idx) {
-	MG.KillEnemy(Idx);
-}
-
 
 //// REMOVE AFTER MAKING MAP_GEN A SINGLETON
 bool GameplayStatics::AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon) {
@@ -719,7 +715,7 @@ void GameplayStatics::RollLoot() {
 }
 
 void GameplayStatics::DisplayLoot(const std::weak_ptr<PlayerCharacter>& Character, std::vector<std::unique_ptr<Item>> Loot) {
-	CLS;
+	system("cls");;
 	if (!Loot.empty()) {
 		std::cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
 
@@ -764,7 +760,7 @@ void GameplayStatics::DisplayLoot(const std::weak_ptr<PlayerCharacter>& Characte
 	}
 	else {
 		std::cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << " received no loot this time.\n";
-		CLS;
+		system("cls");;
 	}
 }
 

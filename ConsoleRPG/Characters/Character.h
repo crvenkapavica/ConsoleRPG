@@ -59,13 +59,13 @@ public:
 			, Max(InMax)
 		{}
 		
-		inline Stat& operator=(const float& Value) {
+		/*inline Stat&*/ inline float& operator=(const float& Value) {
 			Base = Value;
 			Actual = Value;
 			Max = Value;
-			return *this;
+			//return *this;
 			// inline const float& operator=
-			//return Base;	//TODO: FIXME 
+			return Base;	//TODO: FIXME 
 		}
 
 		inline const float& GetBase() const { return Base; }
