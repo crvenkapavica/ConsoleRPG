@@ -1,10 +1,8 @@
 #pragma once
 
 #include "../RPGTypes.h"
-//#include "../Characters/Character.h"
+#include "../Characters/Character.h"
 #include "../Spells/ActiveSpell.h"
-
-class Character;
 
 struct CharacterStat {
 	Character* PtrCharacter;

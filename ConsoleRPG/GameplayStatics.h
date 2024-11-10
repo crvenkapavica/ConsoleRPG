@@ -2,8 +2,8 @@
 
 #include "RPGTypes.h"
 #include "Display/ConsoleMenu.h"
+#include "Characters/Character.h"
 
-class Character;
 class PlayerCharacter;
 class EnemyCharacter;
 class SummonCharacter;

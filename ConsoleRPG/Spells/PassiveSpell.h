@@ -7,9 +7,9 @@
 class PassiveSpell : public Spell {
 
 public:
-	explicit PassiveSpell(const ESpellID Id, const int Level = 0);
+	explicit PassiveSpell(const ESpellID Id, const int InLevel = 0);
 
-	static std::unique_ptr<PassiveSpell> CreatePassiveSpell(ESpellID Id);
+	static std::unique_ptr<PassiveSpell> CreatePassiveSpell(ESpellID SpellID);
 
 	// Apply the passive spell effect
 	virtual void Apply() = 0;
@@ -35,7 +35,7 @@ public:
 	virtual std::stringstream& GetTooltip() override;
 
 private:
-	float Value = 0.8f;	
+	float Modifier = 0.8f;	
 };
 
 class Thorns final : public PassiveSpell {
@@ -46,5 +46,5 @@ public:
 	//virtual stringstream& GetTooltip() override;
 
 private:
-	float Value = 10.f;
+	float Modifier = 10.f;
 };

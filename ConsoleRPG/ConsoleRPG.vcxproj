@@ -133,10 +133,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Characters\SummonCharacter.cpp" />
+    <ClCompile Include="Combat\CombatManager.cpp" />
     <ClCompile Include="Spells\ActiveSpell.cpp" />
     <ClCompile Include="Characters\Character.cpp" />
     <ClCompile Include="Characters\CharacterData.cpp" />
-    <ClCompile Include="Combat\CombatManager.cpp" />
     <ClCompile Include="Display\ConsoleMenu.cpp" />
     <ClCompile Include="Spells\Spell.cpp" />
     <ClCompile Include="Characters\EnemyCharacter.cpp" />

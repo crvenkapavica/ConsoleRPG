@@ -8,8 +8,8 @@
 
 ActiveSpell::ActiveSpell(const ESpellID SpellID, const int InLevel)
 	: Spell(SpellID, ESpellActivity::ACTIVE, SpellDb::ActiveConstMap.at(SpellID).Rarity, SpellDb::ActiveConstMap.at(SpellID).Class, SpellDb::ActiveConstMap.at(SpellID).RequiredLevel, InLevel)
-	, _damage_type(SpellDb::ActiveConstMap.at(SpellID).DamageType)
-	, _spell_type(SpellDb::ActiveConstMap.at(SpellID).SpellType)
+	, DamageType(SpellDb::ActiveConstMap.at(SpellID).DamageType)
+	, SpellType(SpellDb::ActiveConstMap.at(SpellID).SpellType)
 {}
 
 std::unique_ptr<ActiveSpell> ActiveSpell::CreateActiveSpell(const ESpellID SpellID) {
@@ -64,7 +64,7 @@ float ActiveSpell::GetRandOnApplyMinMax(const std::shared_ptr<Character>& InChar
 }
 
 float ActiveSpell::AdjustDamage(float Damage, const std::shared_ptr<Character>& InCharacter) {
-	switch (_damage_type) {
+	switch (DamageType) {
 	case EDamageType::ARCANE:
 		Damage += Damage * InCharacter->ArcaneDamage;
 		break;
@@ -93,7 +93,7 @@ float ActiveSpell::AdjustDamage(float Damage, const std::shared_ptr<Character>& 
 		break;
 	}
 
-	if (_damage_type != EDamageType::PHYSICAL && _damage_type != EDamageType::NONE)
+	if (DamageType != EDamageType::PHYSICAL && DamageType != EDamageType::NONE)
 		Damage += InCharacter->GetSP().GetActual();
 
 	// Critical Strike
@@ -147,9 +147,9 @@ int ActiveSpell::AddRandomTargets(int r, std::vector<std::weak_ptr<Character>>& 
 	return r;
 }
 
-bool ActiveSpell::Summon(ECharacterClass character_class, const std::shared_ptr<Character>& Instigator) {
+bool ActiveSpell::Summon(ECharacterClass CharacterClass, const std::shared_ptr<Character>& Instigator) {
 	auto dltr = [](const SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::nPlayerSummons-- : SummonCharacter::nEnemySummons--; delete ptr; };
-	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(character_class, Instigator->GetTeam()), dltr);
+	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(CharacterClass, Instigator->GetTeam()), dltr);
 
 	if (GameplayStatics::AddCharacterToCharGrid(Instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton
 		CombatManager::AddSummonToCombat(summon);

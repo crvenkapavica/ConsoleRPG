@@ -1,13 +1,12 @@
 #pragma once
 
-#include "../GameplayStatics.h"
 #include "../RPGTypes.h"
+#include "../Characters/Character.h"
 #include "../Characters/EnemyCharacter.h"
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/SummonCharacter.h"
+#include "../GameplayStatics.h"
 #include "../Spells/EffectStructs.h"
-
-class Character;
 
 class CombatManager final {
 

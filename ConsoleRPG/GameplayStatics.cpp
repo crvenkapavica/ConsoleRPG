@@ -243,7 +243,7 @@ void GameplayStatics::DisplayItemMenu() {
 			return;
 		}
 		if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
-		else CurrentCharacter->DestroyIem(std::move(SelectedItem));
+		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 }
 
@@ -619,17 +619,15 @@ void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<std::string>&
 	StartIndex = std::max(0, static_cast<int>(Lines.size()) - MaxLines);
 }
 
-// TODO: Change GetWPtr to modern??, Enemy is already Wptr, change!
+// TODO: Change GetWPtr to modern??, Enemy is already WPtr, change!
 std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(const Character& InCharacter) {
 	if (InCharacter.GetTeam() == 1) {
 		for (const auto& Player : PlayerCharacters)
-			if (Player->GetAlias() == InCharacter.GetAlias())
-				return Player;
+			if (Player->GetAlias() == InCharacter.GetAlias()) return Player;
 	}
 	else {
 		for (const auto& Enemy : CombatManager::GetEnemies())
-			if (Enemy.lock()->GetAlias() == InCharacter.GetAlias())
-				return Enemy;
+			if (Enemy.lock()->GetAlias() == InCharacter.GetAlias()) return Enemy;
 	}
 	return {};
 }
@@ -650,7 +648,7 @@ std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(const Character& 
 
 // TODO: Change in EnemyChar
 std::vector<std::weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
-	std::vector<std::weak_ptr<Character>> WPtrCharacters;
+	std::vector<std::weak_ptr<Character>> WPtrCharacters(PlayerCharacters.size());
 	for (const auto& Player : PlayerCharacters)
 		WPtrCharacters.emplace_back(Player);
 	return WPtrCharacters;

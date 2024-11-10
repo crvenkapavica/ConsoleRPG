@@ -1,5 +1,3 @@
-#pragma once
-
 #include "GameplayStatics.h"
 #include "RPGTypes.h"
 #include "Characters/Character.h"
@@ -12,14 +10,11 @@
 #include "Spells/SpellManager.h"
 
 
-void GameLoop(MapGenerator& mapGenerator) {
-	mapGenerator.PrintDebugMap();
-	//mapGenerator.DisplayMenu();s
-}
+// void GameLoop(MapGenerator& mapGenerator) {
+// 	mapGenerator.PrintDebugMap();
+// 	//mapGenerator.DisplayMenu();s
+// }
 
-#include "Display/ConsoleMenu.h"		
-
-#include <windows.h>
 
 void SendAltEnter() {
     // Array of INPUT structures for the key events

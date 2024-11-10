@@ -1,7 +1,16 @@
 #include "../Combat/CombatManager.h"
-//#include "../Characters/Character.h"
 #include "../Spells/EffectStructs.h"
 #include "../Spells/PassiveSpell.h"
+
+std::weak_ptr<Character> CombatManager::PlayerAvatar;
+std::vector<std::weak_ptr<Character>> CombatManager::PlayerCharacters;
+std::vector<PlayerCharacter> CombatManager::PlayerCharactersBase;
+std::vector<std::weak_ptr<Character>> CombatManager::EnemyCharacters;
+std::vector<EnemyCharacter> CombatManager::EnemyCharactersBase;
+std::vector<std::shared_ptr<Character>> CombatManager::SummonCharacters;
+std::vector<SummonCharacter> CombatManager::SummonCharactersBase;
+std::vector<std::pair<int, std::shared_ptr<CombatEffect>>> CombatManager::CombatEffects;
+std::vector<std::weak_ptr<Character>> CombatManager::TurnTable;
 
 int CombatManager::nCycle = 0;
 int CombatManager::nTurn = 0;
@@ -50,9 +59,8 @@ void CombatManager::BeginTurn(const std::weak_ptr<Character>& InCharacter) {
 	}
 
 	if (!InCharacter.expired()) {
-		for (auto& effect : InCharacter.lock()->GetEffectIds())
-			if (effect == ESpellID::BLIND)
-				return EndTurn(*InCharacter.lock());
+		for (const auto& Effect : InCharacter.lock()->GetEffectIds())
+			if (Effect == ESpellID::BLIND) return EndTurn(*InCharacter.lock());
 
 		InCharacter.lock()->TakeTurn();
 	}
@@ -115,34 +123,34 @@ void CombatManager::DisplayTurnOrder() {
 void CombatManager::ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target, const CharacterStat& CharStat, INOUT float& Total, const bool bIsOnApply) {
 	float Value;
 	const float Delta = CharStat.GetDelta(Effect->Instigator);
-
+	
 	if (CharStat.StatMod == EStatMod::ADDITIVE) {
 		Total += Delta;
 		Value = Total;
 	}
 	else Value = Delta;
-
+	
 	if (CharStat.StatType == EStatType::HEALTH)
 		Value = GameplayStatics::ApplyDamage(GetTurnCharacter(), CharStat.PtrCharacter, Delta, Effect->ActiveSpell, bIsOnApply);
-
+	
 	const auto SpellClass = Effect->ActiveSpell->GetClass();
-
+	
 	if (SpellClass == ESpellClass::MAGIC)
 		OnMagicReceivedBegin(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::MELEE)
 		OnMeleeReceivedBegin(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::RANGED)
 		OnRangedReceivedBegin(Target, Effect->Instigator);
-
+	
 	*CharStat.Stat += Value;
-
+	
 	if (SpellClass == ESpellClass::MAGIC)
 		OnMagicReceivedEnd(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::MELEE)
 		OnMeleeReceivedEnd(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::RANGED)
 		OnRangedReceivedEnd(Target, Effect->Instigator);
-
+	
 	FlagDeadCharacters();
 }
 
@@ -160,35 +168,35 @@ void CombatManager::HandleCombatEffect(const std::shared_ptr<CombatEffect>& Effe
 void CombatManager::HandleApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target) {
 	auto& AllyStats = Effect->ApplyParams->EffectStat->AllyStats;
 	auto& EnemyStats = Effect->ApplyParams->EffectStat->EnemyStats;
-
-	for (auto& stat : AllyStats)
-		if ((Effect->TurnApplied == -1) || (stat.PtrCharacter == Target.lock().get() && stat.StatType != EStatType::HEALTH))
-			ApplyStat(Effect, Target, stat, stat.Total, true);
-
-	for (auto& stat : EnemyStats)
-		if ((Effect->TurnApplied == -1) || (stat.PtrCharacter == Target.lock().get() && stat.StatType != EStatType::HEALTH))
-			ApplyStat(Effect, Target, stat, stat.Total, true);
+	
+	for (auto& Stat : AllyStats)
+		if ((Effect->TurnApplied == -1) || (Stat.PtrCharacter == Target.lock().get() && Stat.StatType != EStatType::HEALTH))
+			ApplyStat(Effect, Target, Stat, Stat.Total, true);
+	
+	for (auto& Stat : EnemyStats)
+		if ((Effect->TurnApplied == -1) || (Stat.PtrCharacter == Target.lock().get() && Stat.StatType != EStatType::HEALTH))
+			ApplyStat(Effect, Target, Stat, Stat.Total, true);
 }
 
 void CombatManager::HandleEffectStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target) {
 	auto& AllyStats = Effect->EffectParams->EffectStat->AllyStats;
 	auto& EnemyStats = Effect->EffectParams->EffectStat->EnemyStats;
-
-	for (auto& stat : AllyStats)
-		if (stat.PtrCharacter == Target.lock().get() || stat.PtrCharacter == Effect->Instigator.get())
-			ApplyStat(Effect, Target, stat, stat.Total, false);
-
-	for (auto& stat : EnemyStats)
-		if (stat.PtrCharacter == Target.lock().get() || stat.PtrCharacter == Effect->Instigator.get())
-			ApplyStat(Effect, Target, stat, stat.Total, false);
+	
+	for (auto& Stat : AllyStats)
+		if (Stat.PtrCharacter == Target.lock().get() || Stat.PtrCharacter == Effect->Instigator.get())
+			ApplyStat(Effect, Target, Stat, Stat.Total, false);
+	
+	for (auto& Stat : EnemyStats)
+		if (Stat.PtrCharacter == Target.lock().get() || Stat.PtrCharacter == Effect->Instigator.get())
+			ApplyStat(Effect, Target, Stat, Stat.Total, false);
 }
 
 void CombatManager::GetCharactersBase() {
-	for (auto& character : PlayerCharacters)
-		PlayerCharactersBase.push_back(*dynamic_cast<PlayerCharacter*>(character.lock().get()));
-
-	for (auto& character : EnemyCharacters)
-		EnemyCharactersBase.push_back(*dynamic_cast<EnemyCharacter*>(character.lock().get()));
+	// for (const auto& Char : PlayerCharacters)
+	// 	PlayerCharactersBase.push_back(*dynamic_cast<PlayerCharacter*>(Char.lock().get()));
+	//
+	// for (auto& Char : EnemyCharacters)
+	// 	EnemyCharactersBase.push_back(*dynamic_cast<EnemyCharacter*>(Char.lock().get()));
 }
 
 void CombatManager::ResetCharacterValues() {
@@ -271,8 +279,8 @@ void CombatManager::TriggerPassiveEffects(const std::weak_ptr<Character>& Target
 }
 
 void CombatManager::FlagDeadCharacters() {
-	for (auto& character : TurnTable)
-		if (!character.expired()) character.lock()->CheckDie();
+	for (const auto& Char : TurnTable)
+		if (!Char.expired()) Char.lock()->CheckDie();
 	KillFlaggedCharacters();
 }
 
@@ -304,8 +312,8 @@ void CombatManager::RemoveDeadCharacters() {
 void CombatManager::ExitCombatMode() {
 	OnCombatEnd();
 
-	for (auto& c : PlayerCharacters)
-		c.lock()->SetIsInCombat(false);
+	for (auto& Char : PlayerCharacters)
+		Char.lock()->SetIsInCombat(false);
 
 	PlayerAvatar.lock()->SetIsInCombat(false);
 }
@@ -328,8 +336,8 @@ void CombatManager::OnApplyEffect() {
 	if (Effect->ApplyParams)
 		HandleCombatEffect(Effect, Effect->Targets[0]);
 	
-	for (auto& e : Effect->Targets)
-		if (!e.expired()) e.lock()->AddEffectId(Effect->ActiveSpell->GetID());
+	for (auto& Char : Effect->Targets)
+		if (!Char.expired()) Char.lock()->AddEffectId(Effect->ActiveSpell->GetID());
 }
 
 void CombatManager::OnCombatBegin() {

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../RPGTypes.h"
-//#include "../Characters/Character.h"
+#include "../Characters/Character.h"
 #include "../Spells/Spell.h"
 
-class Character;
+//class Character;
 class PlayerCharacter;
 class EnemyCharacter;
 struct EffectParams;
@@ -18,14 +18,14 @@ public:
     // Apply the effect of the spell
     virtual void Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) = 0;
 
-    // inline EDamageType GetDamageType() const { return _damage_type; }
-    // inline ESpellType GetSpellType() const { return _spell_type; }
+    inline EDamageType GetDamageType() const { return DamageType; }
+    inline ESpellType GetSpellType() const { return SpellType; }
 
 protected:
     // Get random damage between spell min and max value at current level
     float GetRandEffectMinMax(const std::shared_ptr<Character>& InCharacter);
 
-    // Get random damage between spell min and max value for on aplly effect at current level
+    // Get random damage between spell min and max value for on apply effect at current level
     float GetRandOnApplyMinMax(const std::shared_ptr<Character>& InCharacter);
 
     // Apply resistances, armor reduction, critical chance and other procs and return final damage
@@ -34,11 +34,11 @@ protected:
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
     int AddRandomTargets(int R, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& character, const std::string& name);
 
-    bool Summon(ECharacterClass character_class, const std::shared_ptr<Character>& instigator);
+    bool Summon(ECharacterClass CharacterClass, const std::shared_ptr<Character>& Instigator);
 
 protected:
-    const EDamageType _damage_type;
-    const ESpellType _spell_type;
+    const EDamageType DamageType;
+    const ESpellType SpellType;
 };
 
 //============================================================================== MAGIC =============================================================================================

@@ -6,12 +6,12 @@
 #include "../Combat/CombatManager.h"
 #include "../Spells/PassiveSpell.h"
 
-// void SpellManager::CreateActiveSpell(Character* SpellOwner, const ESpellID Id) {
-// 	if (Id == ESpellID::NONE) return;
-//
-// 	std::unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(Id);
-// 	SpellOwner->AddActiveSpell(std::move(spell));
-// }
+void SpellManager::CreateActiveSpell(Character* SpellOwner, const ESpellID Id) {
+	if (Id == ESpellID::NONE) return;
+
+	std::unique_ptr<ActiveSpell> spell = ActiveSpell::CreateActiveSpell(Id);
+	SpellOwner->AddActiveSpell(std::move(spell));
+}
 
 void SpellManager::CreatePassiveSpell(Character* SpellOwner, const ESpellID Id) {
 	if (Id == ESpellID::NONE) return;

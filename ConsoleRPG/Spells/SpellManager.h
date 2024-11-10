@@ -18,7 +18,7 @@ public:
 	SpellManager& operator=(SpellManager&&) = delete;
 
 	// Create an active spell and add it to the owner
-	//static void CreateActiveSpell(Character* SpellOwner, const ESpellID Id);
+	static void CreateActiveSpell(Character* SpellOwner, const ESpellID Id);
 	// Create a passive spell and add it to the owner
 	static void CreatePassiveSpell(Character* SpellOwner, const ESpellID Id);
 
