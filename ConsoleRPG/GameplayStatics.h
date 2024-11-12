@@ -1,8 +1,8 @@
 #pragma once
 
 #include "RPGTypes.h"
-#include "Display/ConsoleMenu.h"
 #include "Characters/Character.h"
+#include "Display/ConsoleMenu.h"
 
 class PlayerCharacter;
 class EnemyCharacter;

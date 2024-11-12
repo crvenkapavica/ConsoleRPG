@@ -13,7 +13,7 @@ class PlayerCharacter;
 class Item {
 public:
 	struct ItemProperties {
-		EItemId Id = EItemId::NONE;
+		EItemID Id = EItemID::NONE;
 		int Level = 0;
 		int MinDmg = 0;
 		int MaxDmg = 0;
@@ -61,7 +61,7 @@ public:
 
 	// Used exclusively for starting pre-determined items for each class and enemy.
 	// Might be used later for unique items (which are also pre-determined).
-	static std::unique_ptr<Item> CreateItemById(const EItemId Id);
+	static std::unique_ptr<Item> CreateItemById(const EItemID Id);
 
 	// Use the consumable, scroll, or an active spell of an item.
 	void Use(Character* Character) const;

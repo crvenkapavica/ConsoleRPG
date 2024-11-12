@@ -153,7 +153,7 @@ std::unique_ptr<Item> Item::CreateItem(const int PlayerLevel, const float MfBonu
 	return std::make_unique<Item>(GenerateItemInfo(PlayerLevel, ItemType, Rarity));
 }
 
-std::unique_ptr<Item> Item::CreateItemById(const EItemId Id) {
+std::unique_ptr<Item> Item::CreateItemById(const EItemID Id) {
 	for (const auto& ItemData : ItemDb::Data)
 		if (ItemData.Id == Id)
 			return std::make_unique<Item>(ItemData);
@@ -336,7 +336,7 @@ void Item::GenerateRandomConsumable(ItemProperties& ItemInfo) {
 			ItemInfo.Amount = RndItem.Amount * ItemInfo.nAffixes;
 
 			// For now only health and essence potions cant be used out of combat
-			if (RndItem.Id != EItemId::HPotion && RndItem.Id != EItemId::EPotion)
+			if (RndItem.Id != EItemID::HPotion && RndItem.Id != EItemID::EPotion)
 				ItemInfo.bUsableMap = true;
 
 			break;
@@ -362,7 +362,7 @@ void Item::Use(Character* Character) const {
 	switch (ItemInfo.ItemType) {
 		case EItemType::CONSUMABLE:
 			switch (ItemInfo.Id) {
-			case EItemId::HPotion:
+			case EItemID::HPotion:
 				Character->GetHealth().UpdateActual(ItemInfo.Amount, Character);
 				break;
 			default: break;

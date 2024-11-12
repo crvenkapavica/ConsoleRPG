@@ -11,6 +11,8 @@
 #include <optional>
 #include <ranges>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unordered_map>
 #include <vector>
 
@@ -128,12 +130,6 @@ typedef int skill;
 
 #define CURSOR_LOG_RIGHT		ANSI_CURSOR_RIGHT(90)
 #define CURSOR_LOG_LEFT			ANSI_CURSOR_LEFT(90)
-
-#define OBSTACLE 'O'		// TODO: Enum?
-#define PATH '.'
-#define RECTANGLE ','
-#define PLAYER '@'
-#define ENEMY 'X'
 
 #define OUT
 #define INOUT
@@ -310,11 +306,11 @@ enum class ECombatEvent {
 	ON_RANGED_RECEIVED_END,
 };
 
-enum EStructFlags {
+enum EStructFlags : uint8_t {
 	EFFECT_STAT = 1,
 };
 
-enum class EItemId {
+enum class EItemID {
 	NONE,
 	//consumables
 	HPotion,

@@ -30,7 +30,7 @@ struct EffectParams {
 };
 
 struct ApplyParams {
-	int Flags = 0;
+	uint8_t Flags = 0;
 	std::optional<EffectStat> EffectStat;
 };
 

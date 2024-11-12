@@ -31,8 +31,8 @@ struct CharacterData {
 	std::pair<ESpellID, int> Passive1;
 	std::pair<ESpellID, int> Passive2;
 
-	std::pair<EItemSlot, EItemId> SlotMainHand;
-	std::pair<EItemSlot, EItemId> SlotOffHand;
+	std::pair<EItemSlot, EItemID> SlotMainHand;
+	std::pair<EItemSlot, EItemID> SlotOffHand;
 
 	int PowerLevel;
 };

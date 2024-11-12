@@ -22,12 +22,12 @@ PlayerCharacter::PlayerCharacter(const ECharacterClass InCharacterClass)
 	for (auto& item : items)
 		AddItemToInventory(move(item));*/
 
-	AddItemToInventory(Item::CreateItemById(EItemId::HatchAxe));
-	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
-	AddItemToInventory(Item::CreateItemById(EItemId::HatchAxe));
-	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
-	AddItemToInventory(Item::CreateItemById(EItemId::HatchAxe));
-	AddItemToInventory(Item::CreateItemById(EItemId::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
+	AddItemToInventory(Item::CreateItemById(EItemID::HatchAxe));
+	AddItemToInventory(Item::CreateItemById(EItemID::AssNeedle));
 }
 
 void PlayerCharacter::ReceiveExperience(const int InExperience) {

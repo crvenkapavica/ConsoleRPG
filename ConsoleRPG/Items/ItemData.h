@@ -3,7 +3,7 @@
 #include "../RPGTypes.h"
 
 struct ItemData {
-	EItemId			Id;
+	EItemID			Id;
 	std::string		Name;
 	EItemType		ItemType;
 	EWeaponType		WeaponType;

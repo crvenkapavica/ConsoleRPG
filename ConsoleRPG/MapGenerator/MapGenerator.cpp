@@ -7,6 +7,14 @@
 
 namespace
 {
+	enum EMapEntity : uint8_t {
+		OBSTACLE = 'O',
+		PATH = '.',
+		RECTANGLE = ',',
+		PLAYER = '@',
+		ENEMY = 'X'
+	};
+	
 	constexpr auto RAND_INT = &GameplayStatics::GetRandInt;
 }
 
@@ -48,13 +56,12 @@ void MapGenerator::InitBFS() {
 }
 
 void MapGenerator::BFS(int X, int Y, const int Step) {
-
 	if (X > MAX_X - 2 || X <= 1 || Y > MAX_Y - 2 || Y <= 1) return;
 	if (TotalSteps > StepLimit) return;
 	if (Map[X][Y] == PATH) return;
 
 	GetRandomRectangle(X, Y);
-
+	
 	if (Map[X][Y] != PATH) ++TotalSteps;
 	Map[X][Y] = PATH;
 	DisableAdjacent(X, Y);
@@ -555,7 +562,7 @@ void MapGenerator::DrawPlayGrid() {
 }
 
 void MapGenerator::GenerateCharacterGridPositions() {
-	for (const auto& [grid1, grid2] : EnemyNameMap.at(EnemyIndex)) {
+	for (const auto& [Grid1, Grid2] : EnemyNameMap.at(EnemyIndex)) {
 		int First, Second;
 		do {
 			const int Random = RAND_INT(0, 9);
@@ -563,11 +570,11 @@ void MapGenerator::GenerateCharacterGridPositions() {
 			Second = EnemyStartPositions[Random].second;
 		} while (CharGrid[First][Second].Here.lock().get());
 
-		CharGrid[First][Second].Here = grid2;
-		CharMap[grid1] = std::make_pair(First, Second);
+		CharGrid[First][Second].Here = Grid2;
+		CharMap[Grid1] = std::make_pair(First, Second);
 	}
-
-	//add player characters
+	
+	// Add player characters
 	for (int i = 0; i < static_cast<int>(PlayerCharacters.size()); i++) {
 		CharGrid[i][0].Here = PlayerCharacters[i];
 		CharMap['0' + i] = std::make_pair(i, 0);
@@ -626,13 +633,11 @@ void MapGenerator::UpdateCharGrid() {
 					const int y = j + DY8[k];
 
 					if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
-
 						if (l && CharGrid[i][j].Neighbors[k].lock() && !CharGrid[x][y].Here.lock())
 							CharGrid[x][y].Here = CharGrid[i][j].Neighbors[k];
-
 						else CharGrid[i][j].Neighbors[k] = CharGrid[x][y].Here;
 					}
-					else CharGrid[i][j].Neighbors[k] = std::weak_ptr<Character>();
+					else CharGrid[i][j].Neighbors[k] = {};
 				}
 }
 
@@ -658,7 +663,7 @@ void MapGenerator::MoveCharacterOnGrid(const Character& InCharacter, const EDire
 	CharGrid[x][y].Here = {};
 
 #pragma warning(push)
-#pragma warning(disable: 6011) // Suppressing warning C6011: dereferenstd::cing null pointer
+#pragma warning(disable: 6011) // Suppressing warning C6011: dereferencing null pointer
 	// Update map with alias
 	CharMap[CharGrid[xx][yy].Here.lock()->GetAlias()].first = xx;
 	CharMap[CharGrid[xx][yy].Here.lock()->GetAlias()].second = yy;
@@ -713,7 +718,7 @@ int MapGenerator::GetEnemyIndex(const char Alias) {
 }
 
 int MapGenerator::GetPlayerIndex(const char Alias) {
-	const auto Character = GetCharacterFromAlias(Alias);
+	const auto& Character = GetCharacterFromAlias(Alias);
 	for (int i = 0; i < static_cast<int>(PlayerCharacters.size()); i++)
 		if (std::static_pointer_cast<PlayerCharacter>(Character.lock()) == PlayerCharacters[i].lock()) return i;
 	
@@ -721,14 +726,14 @@ int MapGenerator::GetPlayerIndex(const char Alias) {
 }
 
 void MapGenerator::KillEnemy(const int Index) {
-	if (const Character* Character = EnemyMap.at(EnemyIndex)[Index].get()) {
-		const int x = CharMap.at(Character->GetAlias()).first;
-		const int y = CharMap.at(Character->GetAlias()).second;
+	if (const auto& Char = EnemyMap.at(EnemyIndex)[Index]) {
+		const int x = CharMap.at(Char->GetAlias()).first;
+		const int y = CharMap.at(Char->GetAlias()).second;
 		CharGrid[x][y].Here = {};
 		UpdateCharGrid();	// to make it more efficient we can just update the killed characters neighbours' neighbours
 		Grid[x * 4 + 2][y * 8 + 4] = ' ';
 
-		CharMap.erase(Character->GetAlias());
+		CharMap.erase(Char->GetAlias());
 		EnemyMap.at(EnemyIndex)[Index].reset();
 	}
 }
@@ -741,6 +746,6 @@ void MapGenerator::KillEnemy(const Character* InCharacter) {
 
 	CharMap.erase(InCharacter->GetAlias());
 
-	for (auto& enemy : EnemyMap.at(EnemyIndex))
-		if (enemy.get() == InCharacter) enemy.reset();
+	for (auto& Enemy : EnemyMap.at(EnemyIndex))
+		if (Enemy.get() == InCharacter) Enemy.reset();
 }
