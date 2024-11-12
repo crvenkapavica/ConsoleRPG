@@ -16,12 +16,14 @@
 #include <unordered_map>
 #include <vector>
 
+
+
 typedef int attribute;
 typedef int skill;
 
 #undef _stat
-#undef max
-#undef min
+// #undef max
+// #undef min
 #undef PURE
 
 #define START_X 20
