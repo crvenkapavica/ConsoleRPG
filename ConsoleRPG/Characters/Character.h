@@ -114,6 +114,7 @@ public:
 	inline int GetLevel() const { return Level; }
 	inline bool IsInCombat() const { return bIsInCombat; }
 	inline bool IsAlive() const { return bIsAlive; }
+	inline void SetIsAlive(const bool bAlive) { bIsAlive = bAlive; } // TODO: maybe change to ToggleAlive | FlagDead
 	inline bool IsOnTurn() const { return bIsOnTurn; }
 	inline int GetTeam() const { return Team; }
 	inline void SetIsOnTurn(const bool bValue) { bIsOnTurn = bValue; }
@@ -122,7 +123,7 @@ public:
 	inline Resistances& GetResistances() { return CharacterResistances; }
 
 	// Check if targets Health is below 0 and mark it as bIsAlive = false
-	bool CheckDie();
+	bool CheckIsAlive(); // TODO: maybe merge with IsAlive() ?
 
 public:
 	// EXTRA STATS COMBAT

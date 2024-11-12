@@ -7,7 +7,7 @@
 
 namespace
 {
-	const static auto& RAND_INT = std::function<int(int, int)>([](const int A, const int B) { return GameplayStatics::GetRandInt(A, B); });	
+	constexpr auto RAND_INT = &GameplayStatics::GetRandInt;
 }
 
 MapGenerator& MapGenerator::GetInstance() {
@@ -37,9 +37,9 @@ void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPla
 void MapGenerator::InitBFS() {
 	InitializeEmptyMap();
 
-	//_step_limit = static_cast<int>(static_cast<float>(MAX_X * GetMapDensity()));
+	StepLimit = static_cast<int>(static_cast<float>(MAX_X * GetMapDensity()));
 
-	StepLimit = 688;
+	//StepLimit = 688;
 
 	Moves = GetNumberOfMoves();
 	Dir = GetDirection(START_X, START_Y);
@@ -220,7 +220,7 @@ int MapGenerator::GetCurrentMoveWidth() {
 }
 
 float MapGenerator::GetMapDensity() {
-	const int Random = RAND_INT(3, 6);
+	const int Random = RAND_INT(55, 85);
 	return static_cast<float>(Random) / 10.f;
 }
 
@@ -449,10 +449,8 @@ void MapGenerator::InitEnemies() {
 void MapGenerator::AddRandomMapEnemies() {
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
-			int Percent = static_cast<int>(TotalSteps * 0.05);
-			int Random = GameplayStatics::GetRandInt(0, TotalSteps);
-
-			if (/*Random <= Percent &&*/ Steps[i][j] > 0 && Map[i][j] != PLAYER) {
+			const int Percent = static_cast<int>(TotalSteps * 0.05);
+			if (const int Random = RAND_INT(0, TotalSteps); Random <= Percent && Steps[i][j] > 0 && Map[i][j] != PLAYER) {
 				constexpr int MAP_LEVEL = 1;
 				Map[i][j] = ENEMY;
 
@@ -460,7 +458,7 @@ void MapGenerator::AddRandomMapEnemies() {
 				int PowerLevelHigh = PowerLevelLow;
 				PowerLevelLow -= static_cast<int>(PowerLevelLow * 0.3);
 				PowerLevelHigh += static_cast<int>(PowerLevelHigh * 0.3);
-				int PowerLevel = GameplayStatics::GetRandInt(PowerLevelLow, PowerLevelHigh);
+				int PowerLevel = RAND_INT(PowerLevelLow, PowerLevelHigh);
 
 				int RandomEnemies = 0;
 				int TotalPower = 0;
@@ -487,15 +485,15 @@ void MapGenerator::AddRandomMapEnemies() {
 				std::map<char, std::weak_ptr<Character>> EnemiesMap;
 
 				for (int k = 0; k < RandomEnemies; k++) { 
-					EnemiesVector.push_back(std::make_shared<EnemyCharacter>(static_cast<ECharacterClass>(CharClasses[k])));
+					EnemiesVector.emplace_back(std::make_shared<EnemyCharacter>(static_cast<ECharacterClass>(CharClasses[k])));
 					EnemiesMap['A' + k] = EnemiesVector[k];
 				}
-				EnemyMap.push_back(std::move(EnemiesVector));
+				EnemyMap.emplace_back(std::move(EnemiesVector));
 				EnemyMapXY.emplace_back(i, j);	
 				EnemyNameMap.push_back(EnemiesMap);
 				PowerLevels.push_back(TotalPower);
 				
-				// restart static instance counter
+				// Restart static instance counter
 				EnemyCharacter::nEnemyCharacters = 0;
 			}
 		}
@@ -509,11 +507,12 @@ std::vector<std::weak_ptr<Character>> MapGenerator::GetEnemies(const int X, cons
 		++EnemyIndex;
 	}
 
-	std::vector<std::weak_ptr<Character>> Enemies;
-	for (const auto& Enemy : EnemyMap.at(EnemyIndex))
-		Enemies.emplace_back(std::weak_ptr<Character>(Enemy));
-
-	return Enemies;
+	std::vector<std::weak_ptr<Character>> WPtrs(EnemyMap.at(EnemyIndex).size());
+	std::ranges::transform(
+		EnemyMap.at(EnemyIndex), WPtrs.begin(),
+		[](const auto& Enemy) { return std::weak_ptr<Character>(Enemy); }
+	);
+	return WPtrs;
 }
 
 std::weak_ptr<Character> MapGenerator::GetCharacterFromAlias(const char Target) {
@@ -721,8 +720,8 @@ int MapGenerator::GetPlayerIndex(const char Alias) {
 	return -1;
 }
 
-void MapGenerator::KillEnemy(const int Idx) {
-	if (const Character* Character = EnemyMap.at(EnemyIndex)[Idx].get()) {
+void MapGenerator::KillEnemy(const int Index) {
+	if (const Character* Character = EnemyMap.at(EnemyIndex)[Index].get()) {
 		const int x = CharMap.at(Character->GetAlias()).first;
 		const int y = CharMap.at(Character->GetAlias()).second;
 		CharGrid[x][y].Here = {};
@@ -730,7 +729,7 @@ void MapGenerator::KillEnemy(const int Idx) {
 		Grid[x * 4 + 2][y * 8 + 4] = ' ';
 
 		CharMap.erase(Character->GetAlias());
-		EnemyMap.at(EnemyIndex)[Idx].reset();
+		EnemyMap.at(EnemyIndex)[Index].reset();
 	}
 }
 

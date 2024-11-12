@@ -280,12 +280,10 @@ void Character::InitStatsPerAttribute_Warlock() {
 	StatPerAttribute.emplace_back(&CharacterAttributes.Endurance, StatVector);
 }
 
-bool Character::CheckDie() {
-	if (GetHealth().GetActual() <= 0.005f) {
-		bIsAlive = true;
-		return true;
-	}
-	return false;
+bool Character::CheckIsAlive() {
+	if (GetHealth().GetActual() <= 0.005f)
+		return false;
+	return true;
 }
 
 void Character::OnMagicReceivedBegin() {

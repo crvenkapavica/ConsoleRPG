@@ -286,14 +286,14 @@ void CombatManager::TriggerPassiveEffects(const std::weak_ptr<Character>& Target
 
 void CombatManager::FlagDeadCharacters() {
 	for (const auto& Char : TurnTable)
-		if (!Char.expired()) Char.lock()->CheckDie();
+		if (!Char.expired() && Char.lock()->CheckIsAlive())
+			Char.lock()->SetIsAlive(false);
 	KillFlaggedCharacters();
 }
 
 void CombatManager::KillFlaggedCharacters() {
 	for (int i = 0; i < static_cast<int>(EnemyCharacters.size()); i++)
 		if (!EnemyCharacters[i].expired() && !EnemyCharacters[i].lock()->IsAlive())
-			//GameplayStatics::KillEnemy(i);
 			MapGenerator::GetInstance().KillEnemy(i);
 	
 	RemoveDeadCharacters();

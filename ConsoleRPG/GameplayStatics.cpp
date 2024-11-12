@@ -26,32 +26,26 @@ ConsoleMenu* GameplayStatics::DisplayMenu = nullptr;
 void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPlayerCharacters, ConsoleMenu& Menu) {
 	std::cout << std::fixed << std::setprecision(2);
 	
-	// This is a std::vector of shared pointers of main player characters. this should never reset. if the player character dies, we employ some custom logic
-	// So it can be resurrected. If all player characters die in a combat, the player loses. Later we actually implement how to handle this.
-
-	std::vector<std::weak_ptr<Character>> WPtrs;
-	WPtrs.reserve(InPlayerCharacters.size());
-	for (auto& WPtr : InPlayerCharacters) WPtrs.push_back(WPtr);
+	std::vector<std::weak_ptr<Character>> WPtrs(InPlayerCharacters.size());
+	std::ranges::transform(
+		InPlayerCharacters, WPtrs.begin(),
+		[](const auto& Char) { return std::weak_ptr<Character>(Char); }
+	);
+	
 	MG.Initialize(WPtrs);
 	
 	PlayerCharacters = std::move(InPlayerCharacters); 	// ALL play characters
 	PlayerAvatar = PlayerCharacters[0];					// Main player character - avatar
 	DisplayMenu = &Menu;
 	
-	// for (const auto& PlayerChar : PlayerCharacters)
-	// 	Players.push_back(PlayerChar);
-	
-	// MapGenerator mg = MapGenerator::GetInstance();
-	//Initialize(PlayerCharacters);
 	//MG.PrintDebugMap();
-	//MG.PrintDistance();
-
-
+	//std::cin.get();
+	
 	DisplayMapMenu();
-}
+}		
 
 void GameplayStatics::DisplayAllies() {
-	system("cls");;
+	system("cls");
 	int CharIndex = 0;
 	std::cout << MG.GetPowerLevel();
 	for (const auto& PlayerChar : CombatManager::GetPlayers())
@@ -215,10 +209,13 @@ void GameplayStatics::HandleMapInput(const int Input) {
 }
 
 PlayerCharacter* GameplayStatics::GetTurnCharacter() {
-	std::vector<std::string> Menu;
-	for (const auto& Char : PlayerCharacters)
-		Menu.push_back(GameplayStatics::GetEnumString(Char->GetClass()));
+	std::vector<std::string> Menu; // TODO: PlayerCharacters.size() reserve ? (back_inserter overwrites?)
+	std::ranges::transform(
+		PlayerCharacters, std::back_inserter(Menu),
+		[](const auto& Char) { return GetEnumString(Char->GetClass()); }
+	);
 	Menu.emplace_back("<--BACK--<");
+	
 	int Input;
 	if ((Input = InteractiveDisplay(Menu)) == -1) return nullptr;
 	return dynamic_cast<PlayerCharacter*>(PlayerCharacters[Input].get());  //TODO : Check Ref Count ??
@@ -262,7 +259,6 @@ void GameplayStatics::RedrawGameScreen() {
 	DisplayAllies();
 	DisplayEnemies();
 	MG.DisplayPlayGrid();
-	//MG.DisplayGrid();
 	CombatManager::DisplayTurnOrder();
 	DisplayCombatLog();
 }
@@ -271,10 +267,13 @@ void GameplayStatics::RedrawGameScreen() {
 void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&& Enemies) {
 	PlayerAvatar.lock()->SetIsInCombat(true);
 
-	std::vector<std::weak_ptr<Character>> WPtrPlayerCharacters(PlayerCharacters.size());
-	std::ranges::transform(PlayerCharacters, WPtrPlayerCharacters.begin(), [](const std::weak_ptr<Character>& WPtrChar) { return std::weak_ptr<Character>(WPtrChar); });
+	std::vector<std::weak_ptr<Character>> WPtrs(PlayerCharacters.size());
+	std::ranges::transform(
+		PlayerCharacters, WPtrs.begin(),
+		[](const auto& Char) { return std::weak_ptr<Character>(Char); }
+	);
 	
-	CombatManager::SetTurns(std::move(WPtrPlayerCharacters), std::move(Enemies));
+	CombatManager::SetTurns(std::move(WPtrs), std::move(Enemies));
 	CombatManager::StartCombat(PlayerAvatar);
 
 
@@ -288,7 +287,7 @@ void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&&
 
 
 	ResetCombatVariables();
-	system("cls");;
+	system("cls");
 
 	//Give / Handle Combat(player) Experience
 	//GenerateLoot
@@ -588,27 +587,26 @@ void GameplayStatics::HandleInfoInput(int input) {
 //}
 
 void GameplayStatics::DisplayCombatLog() {
-
 	std::cout << ANSI_CURSOR_UP(50);
-	int e_size = static_cast<int>(std::count_if(CombatManager::GetEnemies().begin(), CombatManager::GetEnemies().end(), [](const std::weak_ptr<Character>& WPtr) { return !WPtr.expired(); }));
-	int s_size = static_cast<int>(CombatManager::GetSummons().size());
-	DisplayMenu->ANSI_CURSOR_DOWN_N(static_cast<int>(PlayerCharacters.size() + e_size + s_size));
+	const int ESize = static_cast<int>(std::ranges::count_if(CombatManager::GetEnemies(), [](const std::weak_ptr<Character>& WPtr) { return !WPtr.expired(); }));
+	const int SSize = static_cast<int>(CombatManager::GetSummons().size());
+	DisplayMenu->ANSI_CURSOR_DOWN_N(static_cast<int>(PlayerCharacters.size() + ESize + SSize));
 	std::cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
 	std::cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << "\n" << CURSOR_LOG_RIGHT;
 	std::cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << "\n";
 
-	const int max_lines = 49;
-	std::vector<std::string> lines;
-	int start_index;
-	ExtractLinesFromStringStream(lines, max_lines, CombatLog, start_index);
+	constexpr int MaxLines = 49;
+	std::vector<std::string> Lines;
+	int StartIndex;
+	ExtractLinesFromStringStream(Lines, MaxLines, CombatLog, StartIndex);
 
-	for (int i = start_index; i < lines.size(); i++) {
-		std::cout << CURSOR_LOG_RIGHT << lines[i];
+	for (int i = StartIndex; i < static_cast<int>(Lines.size()); i++) {
+		std::cout << CURSOR_LOG_RIGHT << Lines[i];
 	}
 
 	// Move Menu below grid
 	std::cout << ANSI_CURSOR_UP(50);
-	DisplayMenu->ANSI_CURSOR_DOWN_N(21 + e_size + s_size + static_cast<int>(PlayerCharacters.size()));
+	DisplayMenu->ANSI_CURSOR_DOWN_N(21 + ESize + SSize + static_cast<int>(PlayerCharacters.size()));
 }
 
 void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<std::string>& Lines, const int MaxLines, std::stringstream& Buffer, OUT int& StartIndex) {
@@ -645,10 +643,9 @@ std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(const Character& 
 			if (const auto& SharedPlayer = Player;
 				SharedPlayer && SharedPlayer->GetAlias() == InCharacter.GetAlias()) return SharedPlayer;
 	}
-	else
-		for (const auto& Enemy : CombatManager::GetEnemies())
-			if (const auto& SharedEnemy = Enemy.lock();
-				SharedEnemy && SharedEnemy->GetAlias() == InCharacter.GetAlias()) return SharedEnemy;
+	else for (const auto& Enemy : CombatManager::GetEnemies())
+		if (const auto& SharedEnemy = Enemy.lock();
+			SharedEnemy && SharedEnemy->GetAlias() == InCharacter.GetAlias()) return SharedEnemy;
 	
 	return nullptr;
 }
@@ -708,9 +705,9 @@ bool GameplayStatics::AddCharacterToCharGrid(const std::shared_ptr<Character>& I
 ////////////////////////////////////////////////
 
 void GameplayStatics::RollLoot() {
-	for (const auto& player : PlayerCharacters) {
-		auto loot = std::move(Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(player), /*MG.GetPowerLvl()*/ 360));
-		DisplayLoot(static_pointer_cast<PlayerCharacter>(player), std::move(loot));
+	for (const auto& Char : PlayerCharacters) {
+		auto Loot = Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(Char), /*MG.GetPowerLvl()*/ 360);
+		DisplayLoot(static_pointer_cast<PlayerCharacter>(Char), std::move(Loot));
 	}
 }
 
@@ -779,7 +776,6 @@ std::string GameplayStatics::String2(const float F) {
 float GameplayStatics::Float2(const float F) {
 	return round(F * 100) / 100;
 }
-
 
 int GameplayStatics::GetRandInt(const int A, const int B) {
 	static std::mt19937 Generator(std::random_device{}());

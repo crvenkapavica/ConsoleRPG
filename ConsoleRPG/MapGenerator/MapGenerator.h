@@ -90,7 +90,7 @@ public:
 
 	int GetEnemyIndex(const char Alias);
 	int GetPlayerIndex(const char Alias);
-	void KillEnemy(const int Idx);
+	void KillEnemy(const int Index);
 	void KillEnemy(const Character* InCharacter);
 
 public:

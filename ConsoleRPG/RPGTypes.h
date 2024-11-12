@@ -1,24 +1,16 @@
 #pragma once
 
 #include <algorithm>
-#include <bits.h>
 #include <cctype>
-#include <deque>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <list>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <optional>
-#include <random>
 #include <ranges>
 #include <sstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -30,10 +22,10 @@ typedef int skill;
 #undef min
 #undef PURE
 
-#define START_X 8
-#define START_Y 8
-#define MAX_X 100
-#define MAX_Y 100
+#define START_X 20
+#define START_Y 20
+#define MAX_X 160
+#define MAX_Y 160
 
 #define GRID_X 21  // decrease by 4 to change grid height
 #define GRID_Y 81 // decrease by 8 to change grid width
@@ -137,7 +129,7 @@ typedef int skill;
 #define CURSOR_LOG_RIGHT		ANSI_CURSOR_RIGHT(90)
 #define CURSOR_LOG_LEFT			ANSI_CURSOR_LEFT(90)
 
-#define OBSTACLE 'O'
+#define OBSTACLE 'O'		// TODO: Enum?
 #define PATH '.'
 #define RECTANGLE ','
 #define PLAYER '@'
