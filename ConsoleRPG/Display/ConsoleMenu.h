@@ -5,60 +5,56 @@
 
 class Item;
 
+// TODO: Static?
 class ConsoleMenu {
-
 public:
-    ConsoleMenu(const std::vector<std::string>& InOptions);
     ConsoleMenu() = default;
+    explicit ConsoleMenu(const std::vector<std::string>& InOptions);
 
     // Return the index of the selected item in the displayed menu(vector)
     int Select();
 
-    inline void SetOptions(const std::vector<std::string>& InOptions) { _options = InOptions; }
-    inline void SetUp(const int Up) { _up = Up; }
-    inline void SetRight(const int Right) { _right = Right; }
-    inline void SetItems(const std::vector<Item*>& Items) { _items = Items; _bIsItem = static_cast<bool>(!_items.empty()); }
-    void SetClear(const bool Clear) { _bClear = Clear; }
+    inline void SetOptions(const std::vector<std::string>& InOptions) { Options = InOptions; }
+    inline void SetUp(const int InUp) { Up = InUp; }
+    inline void SetRight(const int InRight) { Right = InRight; }
+    inline void SetItems(const std::vector<Item*>& InItems) { Items = InItems; bIsItem = static_cast<bool>(!Items.empty()); }
+    void SetClear(const bool Clear) { bClear = Clear; }
 
+private:
     inline bool GetBack() {
-        bool b = _bBack;
-        _bBack = false;
-        return b;
+        const bool bTemp = bBack;
+        bBack = false;
+        return bTemp;
     }
 
-    void ANSI_CURSOR_DOWN_N(const int n);
+public:
+    void AnsiCursorDownN(const int N);
 
-    void Clear(int lines);
-    void ClearRight(int lines);
-    void ClearItemInfo(int lines);
+    void Clear(int Lines);
+    void ClearRight(int Lines);
+    void ClearItemInfo(int Lines);
 
 private:
     int Prompt();
-
     void Display();
+    void AnsiCursorUpN(int N, const bool Clear);
+    void AnsiCursorRightN(const int N);
 
-    void ANSI_CURSOR_UP_N(int n, const bool clear);
-    void ANSI_CURSOR_RIGHT_N(const int n);
+    std::string GetColor(int OptionIndex, std::string& String1, std::string& String2);
+    void DisplayItemInfo(int InItem);
 
-    std::string GetColor(int i, std::string& s1, std::string& s2);
-
-    void DisplayItemInfo(int i);
-
-    int _info_lines = 0;
+    int InfoLines = 0;
 
 private:
-    std::vector<std::string> _options;
-    std::vector<std::string> _last_options;
+    std::vector<std::string> Options;
+    std::vector<std::string> PreviousOptions;
+    std::vector<Item*> Items;
 
-    std::vector<Item*> _items;
+    int Index = 0;
+    int Up = 0;
+    int Right = 0;
 
-    int _index = 0;
-    int _up = 0;
-    int _right = 0;
-
-    bool _bClear = true;
-
-    bool _bBack = false;
-
-    bool _bIsItem = false;
+    bool bClear = true;
+    bool bBack = false;
+    bool bIsItem = false;
 };

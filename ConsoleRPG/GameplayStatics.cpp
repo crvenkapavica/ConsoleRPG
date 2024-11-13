@@ -38,10 +38,10 @@ void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPla
 	PlayerAvatar = PlayerCharacters[0];					// Main player character - avatar
 	DisplayMenu = &Menu;
 	
-	MG.PrintDebugMap();
-	std::cin.get();
+	//MG.PrintDebugMap();
+	//std::cin.get();
 	
-	//DisplayMapMenu();
+	DisplayMapMenu();
 }		
 
 void GameplayStatics::DisplayAllies() {
@@ -148,7 +148,7 @@ int GameplayStatics::InteractiveDisplay(const std::vector<std::string>& Options,
 }
 
 void GameplayStatics::ANSI_CURSOR_DOWN_N(const int nDown) {
-	DisplayMenu->ANSI_CURSOR_DOWN_N(nDown);
+	DisplayMenu->AnsiCursorDownN(nDown);
 }
 
 void GameplayStatics::DisplayMapMenuTitle() {
@@ -590,7 +590,7 @@ void GameplayStatics::DisplayCombatLog() {
 	std::cout << ANSI_CURSOR_UP(50);
 	const int ESize = static_cast<int>(std::ranges::count_if(CombatManager::GetEnemies(), [](const std::weak_ptr<Character>& WPtr) { return !WPtr.expired(); }));
 	const int SSize = static_cast<int>(CombatManager::GetSummons().size());
-	DisplayMenu->ANSI_CURSOR_DOWN_N(static_cast<int>(PlayerCharacters.size() + ESize + SSize));
+	DisplayMenu->AnsiCursorDownN(static_cast<int>(PlayerCharacters.size() + ESize + SSize));
 	std::cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
 	std::cout << ANSI_COLOR_BLUE << "()()()   COMBAT LOG   ()()()" << "\n" << CURSOR_LOG_RIGHT;
 	std::cout << ANSI_COLOR_BLUE << "()()()()()()()()()()()()()()" << ANSI_COLOR_RESET << "\n";
@@ -606,7 +606,7 @@ void GameplayStatics::DisplayCombatLog() {
 
 	// Move Menu below grid
 	std::cout << ANSI_CURSOR_UP(50);
-	DisplayMenu->ANSI_CURSOR_DOWN_N(21 + ESize + SSize + static_cast<int>(PlayerCharacters.size()));
+	DisplayMenu->AnsiCursorDownN(21 + ESize + SSize + static_cast<int>(PlayerCharacters.size()));
 }
 
 void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<std::string>& Lines, const int MaxLines, std::stringstream& Buffer, OUT int& StartIndex) {

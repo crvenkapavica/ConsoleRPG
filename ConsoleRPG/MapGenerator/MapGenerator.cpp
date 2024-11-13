@@ -7,7 +7,8 @@
 
 namespace
 {
-	enum EMapEntity : uint8_t {
+	// EMapEntity
+	enum : uint8_t {
 		OBSTACLE = 'O',
 		PATH = '.',
 		RECTANGLE = ',',
@@ -85,8 +86,8 @@ void MapGenerator::BFS(int X, int Y, const int Step) {
 	}
 
 	for (int i = Dir; i < Dir + 3; i++) {
-		const int idx = i % 4;
-		BFS(X + DX[idx], Y + DY[idx], Step + 1);
+		const int DirIndex = i % 4;
+		BFS(X + DX[DirIndex], Y + DY[DirIndex], Step + 1);
 	}
 }
 

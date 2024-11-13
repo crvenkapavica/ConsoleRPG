@@ -150,6 +150,7 @@ void Character::Stat::SetMax(const float Value) {
 	Actual = std::min(Actual, Max);
 }
 
+// TODO: FIXME CharPtr
 void Character::Stat::UpdateActual(const float Value, Character* InCharacter) {
 	Actual += Value;
 	Actual = std::min(Actual, Max);
@@ -162,32 +163,32 @@ void Character::Stat::UpdateMax(const float Value) {
 }
 
 void Character::InitStats() const {
-	for (const auto& [attr, stat_pair] : StatPerAttribute)
-		if (attr == &CharacterAttributes.Strength)
-			for (auto [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>((CharacterAttributes.Strength + Item_Strength)));
-		else if (attr == &CharacterAttributes.Agility)
-			for (auto [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>((CharacterAttributes.Agility + Item_Agility)));
-		else if (attr == &CharacterAttributes.Intelligence)
-			for (auto [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>((CharacterAttributes.Intelligence + Item_Intelligence)));
-		else if (attr == &CharacterAttributes.Vitality)
-			for (auto [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>((CharacterAttributes.Vitality + Item_Vitality)));
-		else if (attr == &CharacterAttributes.Consciousness)
-			for (auto [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>((CharacterAttributes.Consciousness + Item_Consciousness)));
-		else if (attr == &CharacterAttributes.Endurance)
-			for (auto [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>((CharacterAttributes.Endurance + Item_Endurance)));
+	for (const auto& [Attr, StatPair] : StatPerAttribute)
+		if (Attr == &CharacterAttributes.Strength)
+			for (auto [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>((CharacterAttributes.Strength + Item_Strength)));
+		else if (Attr == &CharacterAttributes.Agility)
+			for (auto [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>((CharacterAttributes.Agility + Item_Agility)));
+		else if (Attr == &CharacterAttributes.Intelligence)
+			for (auto [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>((CharacterAttributes.Intelligence + Item_Intelligence)));
+		else if (Attr == &CharacterAttributes.Vitality)
+			for (auto [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>((CharacterAttributes.Vitality + Item_Vitality)));
+		else if (Attr == &CharacterAttributes.Consciousness)
+			for (auto [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>((CharacterAttributes.Consciousness + Item_Consciousness)));
+		else if (Attr == &CharacterAttributes.Endurance)
+			for (auto [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>((CharacterAttributes.Endurance + Item_Endurance)));
 }
 
 void Character::UpdateAttribute(attribute& Attribute, const int Amount) const {
-	for (const auto& [attr, stat_pair] : StatPerAttribute)
-		if (attr == &Attribute) 
-			for (const auto& [stat, val] : stat_pair)
-				stat->UpdateBase(val * static_cast<float>(Amount));
+	for (const auto& [Attr, StatPair] : StatPerAttribute)
+		if (Attr == &Attribute) 
+			for (const auto& [Stat, Value] : StatPair)
+				Stat->UpdateBase(Value * static_cast<float>(Amount));
 
 	Attribute += Amount;
 }
