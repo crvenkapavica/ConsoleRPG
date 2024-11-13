@@ -38,10 +38,10 @@ void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPla
 	PlayerAvatar = PlayerCharacters[0];					// Main player character - avatar
 	DisplayMenu = &Menu;
 	
-	//MG.PrintDebugMap();
-	//std::cin.get();
+	MG.PrintDebugMap();
+	std::cin.get();
 	
-	DisplayMapMenu();
+	//DisplayMapMenu();
 }		
 
 void GameplayStatics::DisplayAllies() {

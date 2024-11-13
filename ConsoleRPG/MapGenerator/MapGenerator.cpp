@@ -45,9 +45,9 @@ void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPla
 void MapGenerator::InitBFS() {
 	InitializeEmptyMap();
 
-	StepLimit = static_cast<int>(static_cast<float>(MAX_X * GetMapDensity()));
+	//StepLimit = static_cast<int>(static_cast<float>(MAX_X * GetMapDensity()));
 
-	//StepLimit = 688;
+	StepLimit = 688;
 
 	Moves = GetNumberOfMoves();
 	Dir = GetDirection(START_X, START_Y);
@@ -249,7 +249,7 @@ void MapGenerator::GetRandomRectangle(const int X, const int Y) const {
 void MapGenerator::PrintDebugMap() const {
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
-				std::cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
+			std::cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
 		}
 		std::cout << '\n';
 	}

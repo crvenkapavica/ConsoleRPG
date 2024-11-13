@@ -1,35 +1,40 @@
 #pragma once
 
 #include <algorithm>
+#include <bits.h>
 #include <cctype>
+#include <deque>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <list>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <optional>
+#include <random>
 #include <ranges>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <string>
 #include <unordered_map>
 #include <vector>
-
 
 
 typedef int attribute;
 typedef int skill;
 
 #undef _stat
-// #undef max
-// #undef min
+#undef max
+#undef min
 #undef PURE
 
-#define START_X 20
-#define START_Y 20
-#define MAX_X 160
-#define MAX_Y 160
+#define START_X 8
+#define START_Y 8
+#define MAX_X 100
+#define MAX_Y 100
 
 #define GRID_X 21  // decrease by 4 to change grid height
 #define GRID_Y 81 // decrease by 8 to change grid width
@@ -38,8 +43,8 @@ typedef int skill;
 
 #define MAX_LVL 75
 
-#define NUM_PLAYER_CLASSES 1
-#define NUM_ENEMY_CLASSES 1
+#define N_PLAYER_CLASSES 1
+#define N_ENEMY_CLASSES 1
 
 #define ITEM_TYPES 6
 #define ITEM_RARITIES 6
@@ -140,7 +145,7 @@ typedef int skill;
 
 #define RPG_ASSERT(expr, msg) \
     if (!(expr)) { \
-		system("cls");; \
+		system("cls"); \
         std::cout << "Assertion failed: " << (msg) << "\n"; \
         std::cout << "In file: " << __FILE__ << ", line: " << __LINE__ << "\n"; \
         std::exit(EXIT_FAILURE); \
@@ -308,7 +313,7 @@ enum class ECombatEvent {
 	ON_RANGED_RECEIVED_END,
 };
 
-enum EStructFlags : uint8_t {
+enum EStructFlags {
 	EFFECT_STAT = 1,
 };
 
