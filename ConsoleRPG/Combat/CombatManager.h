@@ -42,23 +42,25 @@ public:
 	// Gets the alias of the character currently on turn
 	static inline char GetTurnAlias() { return TurnTable[nTurn].lock()->GetAlias(); }
 	static inline int GetTurn() { return nCycle; }
+	static inline bool IsCombatFinished() { return bCombatFinished; }  //TODO: Rename??
 
 	static inline std::vector<std::weak_ptr<Character>>& GetPlayers() { return PlayerCharacters; }
 	static inline std::vector<std::weak_ptr<Character>>& GetEnemies() { return EnemyCharacters; }
 	static inline std::vector<std::shared_ptr<Character>>& GetSummons() { return SummonCharacters; }
 
+	// TODO: MOVE TO PRIVATE?
+	//////////////////////////////////////////////////////////////
 	// Flags all characters with HP < 0 with bIsAlive = false
 	static void FlagDeadCharacters();
 	// Reset the pointer pointing to a dead character
 	static void KillFlaggedCharacters();
 	// Remove dead characters from the turn table
 	static void RemoveDeadCharacters();
-
-
-	// TODO: MOVE TO PRIVATE?
+	
 	static void ExitCombatMode();
 	static void ResetCombatVariables();
-
+	//////////////////////////////////////////////////////////////
+	
 	//===== PUBLIC EVENTS ===== //
 	//////////////////////////////////////////////////////////////////////////////////
 
@@ -136,4 +138,5 @@ private:
 	static int nCycle;
 	static int nTurn;
 	static bool bNext;
+	static bool bCombatFinished;
 };

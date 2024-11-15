@@ -35,7 +35,7 @@ public:
 	virtual std::stringstream& GetTooltip() override;
 
 private:
-	float Modifier = 0.8f;	
+	float Modifier = 1.f;	
 };
 
 class Thorns final : public PassiveSpell {

@@ -215,10 +215,10 @@ PlayerCharacter* GameplayStatics::GetTurnCharacter() {
 		[](const auto& Char) { return GetEnumString(Char->GetClass()); }
 	);
 	Menu.emplace_back("<--BACK--<");
-	
+
 	int Input;
-	if ((Input = InteractiveDisplay(Menu)) == -1) return nullptr;
-	return dynamic_cast<PlayerCharacter*>(PlayerCharacters[Input].get());  //TODO : Check Ref Count ??
+	return (Input = InteractiveDisplay(Menu)) == -1 ? nullptr
+	: dynamic_cast<PlayerCharacter*>(PlayerCharacters[Input].get());  //TODO : Check Ref Count ??
 }
 
 void GameplayStatics::DisplayItemMenu() {
@@ -233,17 +233,17 @@ void GameplayStatics::DisplayItemMenu() {
 	int Input;
 	if (bIsEquipped) {
 		Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
-		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->EquipItem(std::move(SelectedItem));   // TODO: Rvalue?
-			return;
-		}
+		if ((Input = InteractiveDisplay(Menu)) == -1)
+			return CurrentCharacter->EquipItem(std::move(SelectedItem));   // TODO: Rvalue?
 		if (Input == 0) CurrentCharacter->UnEquipItem(std::move(SelectedItem));
 		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 	else {
 		Menu = { "EQUIP", "DESTROY", "<--BACK--<" };
 		if ((Input = InteractiveDisplay(Menu)) == -1) {
-			CurrentCharacter->AddItemToInventory(std::move(SelectedItem));  // TODO : if inventory is FULL, item is ["CONSUMED" - LOST]
+			const bool bAdded = CurrentCharacter->AddItemToInventory(std::move(SelectedItem));
+			// TODO: if inventory is FULL, item is ["CONSUMED" - LOST];
+			// implement bAdded
 			return;
 		}
 		if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
@@ -614,8 +614,8 @@ void GameplayStatics::ExtractLinesFromStringStream(OUT std::vector<std::string>&
 	if (content.empty()) Buffer << std::fixed << std::setprecision(2);
 	int start = 0;
 
-	for (int i = 0; i < content.size(); ++i) {
-		if (content[i] == '\n' || i == content.size() - 1) {
+	for (int i = 0; i < static_cast<int>(content.size()); ++i) {
+		if (content[i] == '\n' || i == static_cast<int>(content.size()) - 1) {
 			std::string line = content.substr(start, i - start + 1);
 			Lines.push_back(line);
 			start = i + 1;
@@ -630,22 +630,21 @@ std::weak_ptr<Character> GameplayStatics::GetWeakCharacter(const Character& InCh
 		for (const auto& Player : PlayerCharacters)
 			if (Player->GetAlias() == InCharacter.GetAlias()) return Player;
 	}
-	else {
-		for (const auto& Enemy : CombatManager::GetEnemies())
-			if (Enemy.lock()->GetAlias() == InCharacter.GetAlias()) return Enemy;
-	}
+	else for (const auto& Enemy : CombatManager::GetEnemies())
+		if (Enemy.lock()->GetAlias() == InCharacter.GetAlias()) return Enemy;
+	
 	return {};
 }
 
 std::shared_ptr<Character> GameplayStatics::GetSharedCharacter(const Character& InCharacter) {
 	if (InCharacter.GetTeam() == 1) {
 		for (const auto& Player : PlayerCharacters)
-			if (const auto& SharedPlayer = Player;
-				SharedPlayer && SharedPlayer->GetAlias() == InCharacter.GetAlias()) return SharedPlayer;
+			if (const auto& SharedPtr = Player;
+				SharedPtr && SharedPtr->GetAlias() == InCharacter.GetAlias()) return SharedPtr;
 	}
 	else for (const auto& Enemy : CombatManager::GetEnemies())
-		if (const auto& SharedEnemy = Enemy.lock();
-			SharedEnemy && SharedEnemy->GetAlias() == InCharacter.GetAlias()) return SharedEnemy;
+		if (const auto& SharedPtr = Enemy.lock();
+			SharedPtr && SharedPtr->GetAlias() == InCharacter.GetAlias()) return SharedPtr;
 	
 	return nullptr;
 }
@@ -656,7 +655,6 @@ std::vector<std::weak_ptr<Character>> GameplayStatics::GetPlayerCharacters() {
 	for (const auto& Player : PlayerCharacters)
 		WPtrCharacters.emplace_back(Player);
 	return WPtrCharacters;
-	//return PlayerCharacters;
 }
 
 // TODO: Change in EnemyChar
@@ -679,15 +677,14 @@ float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, C
 	auto& s = GetCombatLogStream();
 	const std::string C = GetAliasColor(Instigator.lock()->GetAlias());
 	const std::string CT = GetAliasColor(Target->GetAlias());
-	if (bIsOnApply) s << CT << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
-	else s << C << Target->GetAlias() << COLOR_COMBAT_LOG << " suffers from " << COLOR_EFFECT << GetEnumString(Spell->GetID()) << COLOR_COMBAT_LOG << " for " << COLOR_VALUE << ActualDamage * -1 << COLOR_COMBAT_LOG << " damage [resisted:" << COLOR_VALUE << Resisted * -1 << COLOR_COMBAT_LOG << "]\n";
+	if (bIsOnApply) s << CT << Target->GetAlias() << CC << " suffers from " << CEF << GetEnumString(Spell->GetID()) << CC << " for " << CV << ActualDamage * -1 << CC << " damage [resisted:" << CV << Resisted * -1 << CC << "]\n";
+	else s << C << Target->GetAlias() << CC << " suffers from " << CEF << GetEnumString(Spell->GetID()) << CC << " for " << CV << ActualDamage * -1 << CC << " damage [resisted:" << CV << Resisted * -1 << CC << "]\n";
 	//==============================================
 
 	return ActualDamage;
 }
 
-void GameplayStatics::ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
-								  const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams) {
+void GameplayStatics::ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell, const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams) {
 	const std::string C = GetAliasColor(Instigator->GetAlias());
 	auto& s = GetCombatLogStream();
 	s << C << Instigator->GetAlias() << COLOR_COMBAT_LOG << " Casts " << COLOR_EFFECT << GameplayStatics::GetEnumString(Spell->GetID()) << COLOR_COMBAT_LOG << ".\n";
@@ -706,58 +703,58 @@ bool GameplayStatics::AddCharacterToCharGrid(const std::shared_ptr<Character>& I
 
 void GameplayStatics::RollLoot() {
 	for (const auto& Char : PlayerCharacters) {
-		auto Loot = Item::GenerateLoot(static_pointer_cast<PlayerCharacter>(Char), /*MG.GetPowerLvl()*/ 360);
-		DisplayLoot(static_pointer_cast<PlayerCharacter>(Char), std::move(Loot));
+		auto Loot = Item::GenerateLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), /*MG.GetPowerLvl()*/ 360);
+		DisplayLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), Loot);
 	}
 }
 
-void GameplayStatics::DisplayLoot(const std::weak_ptr<PlayerCharacter>& Character, std::vector<std::unique_ptr<Item>> Loot) {
-	system("cls");;
+void GameplayStatics::DisplayLoot(PlayerCharacter& Character, std::vector<std::unique_ptr<Item>>& Loot) {
+	system("cls");
 	if (!Loot.empty()) {
-		std::cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
+		std::cout << COLOR_LOOT << GetEnumString(Character.GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
 
-		std::vector<Item*> items;
+		std::vector<Item*> Items;
 		std::vector<std::string> Menu = { "--> ALL ITEMS <--" };
 		
 		while (!Loot.empty()) {
-			items.clear();
-			for (const auto& item : Loot) {
-				Menu.push_back(item->ItemInfo.Name);
-				items.push_back(item.get());
+			Items.clear();
+			for (const auto& UPtrItem : Loot) {
+				Menu.push_back(UPtrItem->ItemInfo.Name);
+				Items.push_back(UPtrItem.get());
 			}
 			Menu.emplace_back("<--BACK--<");
 
-			const int input = InteractiveDisplay(Menu, 0, true, items);
-			if (input == -1) break;
-			if (input == 0) { // add all items
-				if (Character.lock()->GetInventorySpace() >= Loot.size()) {
-					for (auto& item : Loot)
-						if (item) Character.lock()->AddItemToInventory(std::move(item));
+			const int Input = InteractiveDisplay(Menu, 0, true, Items);
+			if (Input == -1) break;
+			if (Input == 0) { // add all items
+				if (Character.GetInventorySpace() >= static_cast<int>(Loot.size())) {
+					for (auto& SelectedItem : Loot)
+						if (SelectedItem) Character.AddItemToInventory(std::move(SelectedItem));
 					break;
 				}
 				else {
-					std::cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.lock()->GetInventorySpace() << ")\n";
+					std::cout << CE << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.GetInventorySpace() << ")\n";
 				}
 			}
 			else { // add selected item
-				if (Character.lock()->GetInventorySpace() > 0) {
-					Character.lock()->AddItemToInventory(std::move(Loot[input - 1]));
-					Loot.erase(std::ranges::find_if(Loot, [](const auto& Ptr) { return Ptr == nullptr; }));  // TODO : CHECK RANGES WORK
+				if (Character.GetInventorySpace() > 0) {
+					Character.AddItemToInventory(std::move(Loot[Input - 1]));
+					Loot.erase(std::ranges::find_if(Loot, [](const auto& Ptr) { return !Ptr; }));  // TODO : CHECK RANGES WORK
 
 					Menu = { "--> ALL ITEMS <--" };
-					for (const auto& item : Loot)
-						Menu.push_back(item->ItemInfo.Name);
+					for (const auto& UPtrItem : Loot)
+						Menu.push_back(UPtrItem->ItemInfo.Name);
 					Menu.emplace_back("<--BACK--<");
 				}
 				else {
-					std::cout << COLOR_ERROR << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.lock()->GetInventorySpace() << ")\n";
+					std::cout << CE << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.GetInventorySpace() << ")\n";
 				}
 			}
 		}
 	}
 	else {
-		std::cout << COLOR_LOOT << GetEnumString(Character.lock()->GetClass()) << " received no loot this time.\n";
-		system("cls");;
+		std::cout << COLOR_LOOT << GetEnumString(Character.GetClass()) << " received no loot this time.\n";
+		system("cls");
 	}
 }
 

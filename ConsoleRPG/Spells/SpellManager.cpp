@@ -40,5 +40,6 @@ void SpellManager::CastSpell(const int SpellIndex, const std::shared_ptr<Charact
 	else if (Spell->GetClass() == ESpellClass::RANGED)
 		cm::OnRangedEnd(Instigator, Targets);
 
-	cm::FlagDeadCharacters();
+	//if (!CombatManager::IsCombatFinished())
+		cm::FlagDeadCharacters();
 }

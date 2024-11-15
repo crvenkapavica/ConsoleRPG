@@ -112,34 +112,33 @@ void PlayerCharacter::DisplayActiveSpellSlots() {}
 void PlayerCharacter::DisplayPassiveSpellSlots() {}
 
 std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
-
-	std::vector<std::string> v = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
+	std::vector<std::string> Menu = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
 	int Input;
-	if ((Input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+	if ((Input = GameplayStatics::InteractiveDisplay(Menu)) == -1) return nullptr;
 	const auto type = static_cast<EItemType>(ITEM_TYPES - Input);
 
-	v = { "ALL RARITIES","COMMON","RARE","EPIC","LEGENDARY","GODLIKE","UNIQUE","<--BACK--<" };
-	if ((Input = GameplayStatics::InteractiveDisplay(v)) == -1) return nullptr;
+	Menu = { "ALL RARITIES","COMMON","RARE","EPIC","LEGENDARY","GODLIKE","UNIQUE","<--BACK--<" };
+	if ((Input = GameplayStatics::InteractiveDisplay(Menu)) == -1) return nullptr;
 	const auto rarity = static_cast<EItemRarity>(Input);
 
 	std::map<int, int> ItemMap;
 	int ItemIndex = 0;
 	int nInv = 0;
 	std::vector<Item*> items;
-	v.clear();
-
+	Menu.clear();
+	
 	// treba auto sortirati da su svi v inventoriju po redu a na kraju nullptr
 	for (int i = 0; i < static_cast<int>(Inventory.size()); i++)
 		if (!Inventory[i]) {
 			if (type == EItemType::MISC && rarity == EItemRarity::MISC) {
-				v.emplace_back("INVENTORY ---> (empty)");
+				Menu.emplace_back("INVENTORY ---> (empty)");
 				items.push_back(nullptr);
 				++nInv;
 				ItemMap[ItemIndex++] = i;
 			}
 		}
 		else if ((Inventory[i]->ItemInfo.ItemType == type || type == EItemType::MISC) && (Inventory[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) {
-			v.push_back("INVENTORY ---> " + Inventory[i]->ItemInfo.Name);
+			Menu.push_back("INVENTORY ---> " + Inventory[i]->ItemInfo.Name);
 			items.push_back(Inventory[i].get());
 			ItemMap[ItemIndex++] = i;
 			++nInv;
@@ -154,13 +153,13 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 			if (i == 10) s += "  *---> ";
 			if (ItemSlots[i]) s += ItemSlots[i]->ItemInfo.Name;
 			else s += "(empty)";
-			v.push_back(s);
+			Menu.push_back(s);
 			items.push_back(ItemSlots[i].get());
 			ItemMap[ItemIndex++] = i;
 		}
-	v.emplace_back("<--BACK--<");
+	Menu.emplace_back("<--BACK--<");
 
-	if ((Input = GameplayStatics::InteractiveDisplay(v, 70, true, items)) == -1) return nullptr;
+	if ((Input = GameplayStatics::InteractiveDisplay(Menu, 70, true, items)) == -1) return nullptr;
 
 	// item is from inventory
 	if (Input < nInv) {
@@ -176,7 +175,7 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 }
 
 void PlayerCharacter::DisplayStats() const {
-	system("cls");;
+	system("cls");
 	std::cout << "========     STATS    ============" << '\n';
 	std::cout << "==================================" << '\n';
 	std::cout << "STR: " << CharacterAttributes.Strength + Item_Strength << "\nAGI: " << CharacterAttributes.Agility + Item_Agility << "\nINT: " << CharacterAttributes.Intelligence + Item_Intelligence << '\n';
@@ -185,7 +184,7 @@ void PlayerCharacter::DisplayStats() const {
 
 	std::cout << '\n' << "Press any key to go back.\n";
 	auto input = _getch();
-	system("cls");;
+	system("cls");
 	GameplayStatics::DisplayMapMenuTitle();
 }
 

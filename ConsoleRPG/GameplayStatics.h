@@ -29,7 +29,7 @@ public:
 	static void DisplayCombatMenuTitle();
 	static void DisplaySpellMenuTitle();
 
-	static int InteractiveDisplay(const std::vector<std::string>& Options, const int Right = 0, const bool bClear = true, const std::vector<Item*>& Items = std::vector<Item*>());
+	static int InteractiveDisplay(const std::vector<std::string>& Options, const int Right = 0, const bool bClear = true, const std::vector<Item*>& Items = {});
 	static void ANSI_CURSOR_DOWN_N(int nDown);
 
 	static void DisplayMapMenu();
@@ -82,14 +82,13 @@ public:
 	static std::vector<std::weak_ptr<Character>> GetEnemyCharacters();
 
 	static float ApplyDamage(const std::weak_ptr<Character>& Instigator, Character* Target, float Damage, const std::unique_ptr<ActiveSpell>& Spell, const bool bIsOnApply);
-	static void ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell,
-							const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams);
+	static void ApplyEffect(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets, std::unique_ptr<ActiveSpell> Spell, const std::optional<ApplyParams>& ApplyParams, const std::optional<EffectParams>& EffectParams);
 
 	static bool AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon);
 
 	static void RollLoot();
 	
-	static void DisplayLoot(const std::weak_ptr<PlayerCharacter>& Character, std::vector<std::unique_ptr<Item>> Loot);
+	static void DisplayLoot(PlayerCharacter& Character, std::vector<std::unique_ptr<Item>>& Loot);
 
 	static std::string GetAliasColor(char Alias);
 

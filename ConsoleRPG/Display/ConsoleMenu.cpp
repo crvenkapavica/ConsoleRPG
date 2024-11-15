@@ -5,7 +5,7 @@ ConsoleMenu::ConsoleMenu(const std::vector<std::string>& InOptions)
     : Options(InOptions) 
 {}
 
-int ConsoleMenu::Prompt() {
+const int& ConsoleMenu::Prompt() {
     Index = 0;
     char Input;
     do {
@@ -78,7 +78,7 @@ void ConsoleMenu::Display() {
         DisplayItemInfo(Index);
 }
 
-int ConsoleMenu::Select() {
+const int& ConsoleMenu::Select() {
     return Prompt();
 }
 

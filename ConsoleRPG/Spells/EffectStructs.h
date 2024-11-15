@@ -9,7 +9,7 @@ struct CharacterStat {
 	EStatType StatType;
 	EStatMod StatMod;
 	float* Stat;
-	std::function<float(const std::shared_ptr<Character>& SPtrCharacter)> GetDelta;
+	std::function<float(const std::shared_ptr<Character>& SPtrChar)> GetDelta;
 	float Total = 0;
 };
 

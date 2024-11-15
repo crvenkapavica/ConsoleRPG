@@ -109,7 +109,7 @@ Item::Item(const ItemData& Data) {
 	ItemInfo.WeaponType = Data.WeaponType;
 }
 
-std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const std::weak_ptr<PlayerCharacter>& Player, int PowerLevel) {
+std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const PlayerCharacter& Player, int PowerLevel) {
 	std::vector<std::unique_ptr<Item>> Loot;
 	std::vector<std::pair<int, int>> ItemTypeLimit = {
 		{ 0,1 },{ 0,1 },{ 0,1 },{ 0,2 },{ 0,3 },{ 0,3 }
@@ -124,8 +124,8 @@ std::vector<std::unique_ptr<Item>> Item::GenerateLoot(const std::weak_ptr<Player
 			}
 
 			const int Rnd = GameplayStatics::GetRandInt(1, 1000);
-			if (const int Weight = DropTable_ItemType[i].second.first * Player.lock()->GetLevel(); PowerLevel - Weight >= 0 && Rnd <= DropTable_ItemType[i].second.second * 1000) {
-				Loot.push_back(Item::CreateItem(Player.lock()->GetLevel(), Player.lock()->GetMagicFind(), DropTable_ItemType[i].first));
+			if (const int Weight = DropTable_ItemType[i].second.first * Player.GetLevel(); PowerLevel - Weight >= 0 && Rnd <= DropTable_ItemType[i].second.second * 1000) {
+				Loot.push_back(Item::CreateItem(Player.GetLevel(), Player.GetMagicFind(), DropTable_ItemType[i].first));
 				ItemTypeLimit[i].first++;
 				PowerLevel -= Weight;
 				break;

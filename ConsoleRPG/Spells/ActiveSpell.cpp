@@ -162,16 +162,27 @@ bool ActiveSpell::Summon(ECharacterClass CharacterClass, const std::shared_ptr<C
 }
 
 void Fireball::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
-	std::vector<CharacterStat> enemy_apply_stats;
-	const auto stat = &Targets[0].lock()->GetHealth().GetActual();
-	auto delta = [&](const std::shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
-	enemy_apply_stats.push_back(CharacterStat{ Targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta});
-	ApplyParams apply_params;
-	apply_params.Flags |= EStructFlags::EFFECT_STAT;
-	apply_params.EffectStat = EffectStat({}, std::move(enemy_apply_stats));
+	std::vector<CharacterStat> EnemyApplyStats;
+	const int RandTargets = AddRandomTargets(2, Targets, Instigator, "FIREBALL SPREAD");
+	
+	for (int i = 0; i <= RandTargets; ++i) {
+		const auto Stat = &Targets[i].lock()->GetHealth().GetActual();
+		auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandOnApplyMinMax(SPtrChar); };
+		EnemyApplyStats.emplace_back(CharacterStat{
+			.PtrCharacter = Targets[i].lock().get(),
+			.StatType = EStatType::HEALTH,
+			.StatMod = EStatMod::CONSTANT,
+			.Stat = Stat,
+			.GetDelta = Delta
+		});
+	}
+	
+	ApplyParams EnemyApplyParams;
+	EnemyApplyParams.Flags |= EStructFlags::EFFECT_STAT;
+	EnemyApplyParams.EffectStat = EffectStat({}, std::move(EnemyApplyStats));
 
 	auto Spell = std::make_unique<Fireball>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), apply_params, {});
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), EnemyApplyParams, {});
 }
 
 std::stringstream& Fireball::GetTooltip() {
@@ -182,30 +193,35 @@ std::stringstream& Fireball::GetTooltip() {
 }
 
 void Burning::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
-
-	int rand_targets = AddRandomTargets(2, Targets, Instigator, "BURNING");
-
-	std::vector<CharacterStat> enemy_effect_stats;
-	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = &Targets[i].lock()->GetHealth().GetActual();
-		auto delta = [&](const std::shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
-		enemy_effect_stats.push_back(CharacterStat{ Targets[i].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
+	std::vector<CharacterStat> EnemyEffectStats;
+	const int RandTargets = AddRandomTargets(2, Targets, Instigator, "BURNING");
+	
+	for (int i = 0; i <= RandTargets; i++) {
+		const auto Stat = &Targets[i].lock()->GetHealth().GetActual();
+		auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandEffectMinMax(SPtrChar); };
+		EnemyEffectStats.emplace_back(CharacterStat{
+			.PtrCharacter = Targets[i].lock().get(),
+			.StatType = EStatType::HEALTH,
+			.StatMod = EStatMod::CONSTANT,
+			.Stat = Stat,
+			.GetDelta = Delta
+		});
 	}
 
-	EffectParams effect_params;
-	effect_params.OnEvent = ECombatEvent::ON_TURN_BEGIN;
-	effect_params.StructFlags |= EStructFlags::EFFECT_STAT;
-	effect_params.EffectStat = EffectStat({}, move(enemy_effect_stats));
+	EffectParams EnemyEffectParams;
+	EnemyEffectParams.OnEvent = ECombatEvent::ON_TURN_BEGIN;
+	EnemyEffectParams.StructFlags |= EStructFlags::EFFECT_STAT;
+	EnemyEffectParams.EffectStat = EffectStat({}, std::move(EnemyEffectStats));
 
-	std::unique_ptr<Burning> spell = std::make_unique<Burning>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, move(spell), {}, effect_params);
+	auto Spell = std::make_unique<Burning>();
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), {}, EnemyEffectParams);
 }
 
 std::stringstream& Burning::GetTooltip() {
-	//if (_tooltip.str().empty()) {
-	//	_tooltip << "Applies burn to the target and 2 random Targets that deals " << COLOR_VALUE << _spell->GetEffectMin(_idx, _spell->GetLevel()) << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetEffectMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
-	//	_tooltip << "The burn effect lasts for " << COLOR_VALUE << _spell->GetDuration(_idx, _spell->GetLevel()) << COLOR_INFO << " turn(s).";
-	//}
+	if (Tooltip.str().empty()) {
+		Tooltip << "Applies burn to the target and 2 random Targets that deals " << CV << SpellDb::Data[ID][Level].EffectMin << COLOR_INFO << " to " << CV << SpellDb::Data[ID][Level].EffectMax << COLOR_INFO << " damage.\n";
+		Tooltip << "The burn effect lasts for " << CV << SpellDb::Data[ID][Level].Duration;
+	}
 	return Tooltip;
 }
 
@@ -213,45 +229,46 @@ std::stringstream& Burning::GetTooltip() {
 //==================================================================================================================================================================================
 
 void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
+	std::vector<CharacterStat> EnemyApplyStats;
+	const int RandTargets = AddRandomTargets(2, Targets, Instigator, "MOLTEN ARMOR");
 	
-	int rand_targets = AddRandomTargets(2, Targets, Instigator, "MOLTEN ARMOR");
-
-	std::vector<CharacterStat> enemy_apply_stats;
-	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = &Targets[i].lock()->GetArmor().GetActual();
-		auto const_delta = -GetRandOnApplyMinMax(Instigator);
-		auto delta = [=](const std::shared_ptr<Character>& character) { return const_delta; };
-		enemy_apply_stats.push_back(CharacterStat{
+	for (int i = 0; i <= RandTargets; i++) {
+		const auto Stat = &Targets[i].lock()->GetArmor().GetActual();
+		const auto ConstDelta = -GetRandOnApplyMinMax(Instigator);
+		auto Delta = [=](const std::shared_ptr<Character>& SPtrChar) { return ConstDelta; };
+		EnemyApplyStats.emplace_back(CharacterStat{
 			.PtrCharacter = Targets[i].lock().get(),
 			.StatType = EStatType::ANY,
 			.StatMod = EStatMod::CONSTANT,
-			.Stat = stat,
-			.GetDelta = delta
+			.Stat = Stat,
+			.GetDelta = Delta
 		});
 	}
-	ApplyParams apply_params;
-	apply_params.Flags |= EStructFlags::EFFECT_STAT;
-	apply_params.EffectStat = EffectStat({}, std::move(enemy_apply_stats));
+	
+	ApplyParams AppParams;
+	AppParams.Flags |= EStructFlags::EFFECT_STAT;
+	AppParams.EffectStat = EffectStat({}, std::move(EnemyApplyStats));
 
-	std::vector<CharacterStat> enemy_effect_stats;
-	for (int i = 0; i <= rand_targets; i++) {
-		auto stat = &Targets[i].lock()->GetArmor().GetActual();
-		auto delta = [&](const std::shared_ptr<Character>& character) { return -GetRandEffectMinMax(character); };
-		enemy_effect_stats.push_back(CharacterStat{
+	std::vector<CharacterStat> EnemyEffectStats;
+	for (int i = 0; i <= RandTargets; i++) {
+		const auto Stat = &Targets[i].lock()->GetArmor().GetActual();
+		auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandEffectMinMax(SPtrChar); };
+		EnemyEffectStats.emplace_back(CharacterStat{
 			.PtrCharacter = Targets[i].lock().get(),
 			.StatType = EStatType::ANY,
 			.StatMod = EStatMod::ADDITIVE,
-			.Stat = stat,
-			.GetDelta = delta
+			.Stat = Stat,
+			.GetDelta = Delta
 		});
 	}
-	EffectParams effect_params;
-	effect_params.OnEvent = ECombatEvent::ON_TURN_BEGIN;
-	effect_params.StructFlags |= EStructFlags::EFFECT_STAT;
-	effect_params.EffectStat = EffectStat({}, std::move(enemy_effect_stats));
+	
+	EffectParams EffParams;
+	EffParams.OnEvent = ECombatEvent::ON_TURN_BEGIN;
+	EffParams.StructFlags |= EStructFlags::EFFECT_STAT;
+	EffParams.EffectStat = EffectStat({}, std::move(EnemyEffectStats));
 
-	std::unique_ptr<MoltenArmor> spell = std::make_unique<MoltenArmor>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(spell), apply_params, effect_params);
+	auto Spell = std::make_unique<MoltenArmor>();
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), AppParams, EffParams);
 }
 
 std::stringstream& MoltenArmor::GetTooltip() {

@@ -332,7 +332,7 @@ const char* MapGenerator::GetMapAnsi(const char C) const {
 }
 
 void MapGenerator::ShowPosition() const {
-	system("cls");;
+	system("cls");
 	const int Radius = static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
 	
 	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
@@ -458,7 +458,7 @@ void MapGenerator::AddRandomMapEnemies() {
 	for (int i = 0; i < MAX_X; i++) {
 		for (int j = 0; j < MAX_Y; j++) {
 			const int Percent = static_cast<int>(TotalSteps * 0.05);
-			if (const int Random = RAND_INT(0, TotalSteps); Random <= Percent && Steps[i][j] > 0 && Map[i][j] != PLAYER) {
+			if (const int Random = RAND_INT(0, TotalSteps); /*Random <= Percent &&*/ Steps[i][j] > 0 && Map[i][j] != PLAYER) {
 				constexpr int MAP_LEVEL = 1;
 				Map[i][j] = ENEMY;
 

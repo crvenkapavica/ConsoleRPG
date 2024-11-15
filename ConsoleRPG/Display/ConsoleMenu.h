@@ -12,13 +12,13 @@ public:
     explicit ConsoleMenu(const std::vector<std::string>& InOptions);
 
     // Return the index of the selected item in the displayed menu(vector)
-    int Select();
+    const int& Select();
 
     inline void SetOptions(const std::vector<std::string>& InOptions) { Options = InOptions; }
     inline void SetUp(const int InUp) { Up = InUp; }
     inline void SetRight(const int InRight) { Right = InRight; }
     inline void SetItems(const std::vector<Item*>& InItems) { Items = InItems; bIsItem = static_cast<bool>(!Items.empty()); }
-    void SetClear(const bool Clear) { bClear = Clear; }
+    inline void SetClear(const bool InbClear) { bClear = InbClear; }
 
 private:
     inline bool GetBack() {
@@ -35,7 +35,7 @@ public:
     void ClearItemInfo(int Lines);
 
 private:
-    int Prompt();
+    const int& Prompt();
     void Display();
     void AnsiCursorUpN(int N, const bool Clear);
     void AnsiCursorRightN(const int N);

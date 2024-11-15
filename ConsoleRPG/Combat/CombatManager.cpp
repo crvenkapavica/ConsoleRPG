@@ -1,7 +1,7 @@
 #include "../Combat/CombatManager.h"
+#include "../MapGenerator/MapGenerator.h"
 #include "../Spells/EffectStructs.h"
 #include "../Spells/PassiveSpell.h"
-#include "../MapGenerator/MapGenerator.h"
 
 std::weak_ptr<Character> CombatManager::PlayerAvatar;
 std::vector<std::weak_ptr<Character>> CombatManager::PlayerCharacters;
@@ -16,6 +16,7 @@ std::vector<std::weak_ptr<Character>> CombatManager::TurnTable;
 int CombatManager::nCycle = 0;
 int CombatManager::nTurn = 0;
 bool CombatManager::bNext = false;
+bool CombatManager::bCombatFinished = false;
 
 // TODO : Rename Team1, Team2 - for randomized combat?
 void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std::vector<std::weak_ptr<Character>>&& Team2) {
@@ -25,7 +26,7 @@ void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std:
 
 	for (const auto& Char : PlayerCharacters) {
 		TurnTable.push_back(Char);
-		Char.lock()->SetIsInCombat(true); // TODO: FIXME
+		//Char.lock()->SetIsInCombat(true); // TODO: FIXME
 	}
 
 	for (const auto& Char : EnemyCharacters)
@@ -37,6 +38,7 @@ void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std:
 
 void CombatManager::StartCombat(const std::weak_ptr<Character>& Avatar) {
 	PlayerAvatar = Avatar;
+	Avatar.lock()->SetIsInCombat(true);
 	
 	// COMBAT LOOP
 	while (PlayerAvatar.lock()->IsInCombat()) {
@@ -124,6 +126,7 @@ void CombatManager::DisplayTurnOrder() {
 }
 
 void CombatManager::ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target, const CharacterStat& CharStat, INOUT float& Total, const bool bIsOnApply) {
+
 	float Value;
 	const float Delta = CharStat.GetDelta(Effect->Instigator);
 	
@@ -153,13 +156,14 @@ void CombatManager::ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const
 		OnMeleeReceivedEnd(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::RANGED)
 		OnRangedReceivedEnd(Target, Effect->Instigator);
-	
-	FlagDeadCharacters();
+
+	//if (PlayerAvatar.lock()->IsInCombat())
+		FlagDeadCharacters();
 }
 
 void CombatManager::HandleCombatEffect(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target) {	
 	RPG_ASSERT(!Target.expired(), "HandleCombatEffect")
-
+	
 	if (Effect->ApplyParams)
 		HandleApplyStat(Effect, Target);
 	Effect->TurnApplied = nCycle;
@@ -196,12 +200,9 @@ void CombatManager::HandleEffectStat(const std::shared_ptr<CombatEffect>& Effect
 
 void CombatManager::GetCharactersBase() {
 	for (const auto& Char : PlayerCharacters)
-		//auto& a = *dynamic_cast<PlayerCharacter*>(Char.lock().get());
-		//PlayerCharactersBase.push_back(&*dynamic_cast<PlayerCharacter*>(Char.lock().get()));
 		PlayerCharactersBase.emplace_back(dynamic_cast<PlayerCharacter*>(Char.lock().get()));
 	
 	 for (auto& Char : EnemyCharacters)
-	 	//EnemyCharactersBase.push_back(&*dynamic_cast<EnemyCharacter*>(Char.lock().get()));
 		 EnemyCharactersBase.emplace_back(dynamic_cast<EnemyCharacter*>(Char.lock().get()));
 }
 
@@ -245,7 +246,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 
 void CombatManager::ApplyEffectsOnEvent(const ECombatEvent OnEvent) {
 	for (auto& Effect : CombatEffects | std::views::values) {
-		if (!PlayerAvatar.lock()->IsInCombat()) return;
+		if (!PlayerAvatar.lock()->IsInCombat()) return; //TODO: check
 
 		const int EffectIndex = Effect->Index % static_cast<int>(Effect->Targets.size());
 		if ((Effect->EffectParams && Effect->EffectParams->OnEvent == OnEvent) || Effect->ApplyParams) {
@@ -263,31 +264,32 @@ void CombatManager::ApplyEffectsOnEvent(const ECombatEvent OnEvent) {
 void CombatManager::InstigatePassiveEffects(const std::weak_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets, const ECombatEvent OnEvent) {
 	RPG_ASSERT(!Instigator.expired(), "InstigatePassiveEffects - Instigator")
 	
-	for (const auto& passive : Instigator.lock()->GetPassiveSpells()) {
+	for (const auto& passive : Instigator.lock()->GetPassiveSpells())
 		if (passive->GetOnEvent() == OnEvent) {
 			passive->Instigator = Instigator;
 			passive->Targets = Targets;
 			passive->Apply();
 		}
-	}
 }
 
 void CombatManager::TriggerPassiveEffects(const std::weak_ptr<Character>& Target, const std::weak_ptr<Character>& Instigator, const ECombatEvent OnEvent) {
 	RPG_ASSERT(!Target.expired(), "TriggerPassiveEffects - character")
 	RPG_ASSERT(!Instigator.expired(), "TriggerPassiveEffects - Instigator")
 	
-	for (const auto& passive : Target.lock()->GetPassiveSpells()) {
-		if (passive->GetOnEvent() == OnEvent) {
-			passive->Instigator = Instigator;
-			passive->Apply();
+	for (const auto& Passive : Target.lock()->GetPassiveSpells())
+		if (Passive->GetOnEvent() == OnEvent) {
+			Passive->Instigator = Instigator;
+			Passive->Apply();
 		}
-	}
 }
 
 void CombatManager::FlagDeadCharacters() {
+	if (!PlayerAvatar.lock()->IsInCombat()) return;
+	
 	for (const auto& Char : TurnTable)
-		if (!Char.expired() && Char.lock()->CheckIsAlive())
+		if (!Char.expired() && !Char.lock()->CheckIsAlive())
 			Char.lock()->SetIsAlive(false);
+	
 	KillFlaggedCharacters();
 }
 
@@ -317,12 +319,18 @@ void CombatManager::RemoveDeadCharacters() {
 }
 
 void CombatManager::ExitCombatMode() {
-	OnCombatEnd();
-
-	for (auto& Char : PlayerCharacters)
-		Char.lock()->SetIsInCombat(false);
-
+	//if (!PlayerAvatar.lock()->IsInCombat()) return; //TODO: Check why this gets called twice
 	PlayerAvatar.lock()->SetIsInCombat(false);
+	bCombatFinished = true;
+	OnCombatEnd();
+}
+
+void CombatManager::OnCombatEnd() {
+	// Turn this on to not make characters heal at end of combat. But the function has to be changed so only player characters are reset. 
+	// Needs to be implemented after resurrection functionality
+	//ResetCharacterValues();
+	ResetCombatVariables();
+	GameplayStatics::RollLoot();
 }
 
 void CombatManager::ResetCombatVariables() {
@@ -336,6 +344,8 @@ void CombatManager::ResetCombatVariables() {
 	SummonCharactersBase.clear();
 	nTurn = 0;
 	nCycle = 0;
+	bNext = false;
+	bCombatFinished = false;
 }
 
 void CombatManager::OnApplyEffect() {
@@ -349,16 +359,6 @@ void CombatManager::OnApplyEffect() {
 
 void CombatManager::OnCombatBegin() {
 	GetCharactersBase();
-}
-
-void CombatManager::OnCombatEnd() {
-	//Turn this on to not make characters heal at end of combat. But the function has to be changed so only player characters are reset. 
-	//Needs to be implemented after resurrection functionality
-	//ResetCharacterValues();  
-
-	ResetCombatVariables();
-
-	GameplayStatics::RollLoot();
 }
 
 void CombatManager::OnTurnBegin() {
