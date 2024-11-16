@@ -30,7 +30,7 @@ public:
 	static void DisplaySpellMenuTitle();
 
 	static int InteractiveDisplay(const std::vector<std::string>& Options, const int Right = 0, const bool bClear = true, const std::vector<Item*>& Items = {});
-	static void ANSI_CURSOR_DOWN_N(int nDown);
+	static void AnsiCursorDownN(int nDown);
 
 	static void DisplayMapMenu();
 	static void HandleMapInput(int Input);

@@ -16,7 +16,7 @@ std::vector<std::weak_ptr<Character>> CombatManager::TurnTable;
 int CombatManager::nCycle = 0;
 int CombatManager::nTurn = 0;
 bool CombatManager::bNext = false;
-bool CombatManager::bCombatFinished = false;
+bool CombatManager::bCombatFinished = true;
 
 // TODO : Rename Team1, Team2 - for randomized combat?
 void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std::vector<std::weak_ptr<Character>>&& Team2) {
@@ -24,10 +24,8 @@ void CombatManager::SetTurns(std::vector<std::weak_ptr<Character>>&& Team1, std:
 	PlayerCharacters = std::move(Team1);
 	EnemyCharacters = std::move(Team2);
 
-	for (const auto& Char : PlayerCharacters) {
+	for (const auto& Char : PlayerCharacters)
 		TurnTable.push_back(Char);
-		//Char.lock()->SetIsInCombat(true); // TODO: FIXME
-	}
 
 	for (const auto& Char : EnemyCharacters)
 		TurnTable.push_back(Char); 
@@ -92,7 +90,7 @@ void CombatManager::AddSummonToCombat(const std::shared_ptr<SummonCharacter>& Su
 
 void CombatManager::DisplayTurnOrder() {
 	std::cout << ANSI_CURSOR_UP(50);
-	GameplayStatics::ANSI_CURSOR_DOWN_N(static_cast<int>(TurnTable.size()));
+	GameplayStatics::AnsiCursorDownN(static_cast<int>(TurnTable.size()));
 	
 	std::cout << ANSI_COLOR_BROWN_LIGHT << ANSI_CURSOR_RIGHT(85) << "^" << '\n';
 	std::cout << ANSI_COLOR_BROWN_LIGHT << ANSI_CURSOR_RIGHT(85) << "^" << '\n';
@@ -156,9 +154,8 @@ void CombatManager::ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const
 		OnMeleeReceivedEnd(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::RANGED)
 		OnRangedReceivedEnd(Target, Effect->Instigator);
-
-	//if (PlayerAvatar.lock()->IsInCombat())
-		FlagDeadCharacters();
+	
+	FlagDeadCharacters();
 }
 
 void CombatManager::HandleCombatEffect(const std::shared_ptr<CombatEffect>& Effect, const std::weak_ptr<Character>& Target) {	
@@ -238,8 +235,7 @@ void CombatManager::RemoveExpiredCombatEffects() {
 			}
 			else ++it;
 		}
-		// if the turn is not the same we stop looking as the _combat_effects std::vector is sorted by turns
-		//else break;
+		// If the turn is not the same we stop looking as the _combat_effects std::vector is sorted by turns
 		else ++it;
 	}
 }
@@ -284,16 +280,16 @@ void CombatManager::TriggerPassiveEffects(const std::weak_ptr<Character>& Target
 }
 
 void CombatManager::FlagDeadCharacters() {
-	if (!PlayerAvatar.lock()->IsInCombat()) return;
-	
 	for (const auto& Char : TurnTable)
-		if (!Char.expired() && !Char.lock()->CheckIsAlive())
+		if (!Char.expired() && !Char.lock()->IsAlive())
 			Char.lock()->SetIsAlive(false);
 	
 	KillFlaggedCharacters();
 }
 
 void CombatManager::KillFlaggedCharacters() {
+	if (!PlayerAvatar.lock()->IsInCombat()) return;
+	
 	for (int i = 0; i < static_cast<int>(EnemyCharacters.size()); i++)
 		if (!EnemyCharacters[i].expired() && !EnemyCharacters[i].lock()->IsAlive())
 			MapGenerator::GetInstance().KillEnemy(i);
@@ -319,7 +315,6 @@ void CombatManager::RemoveDeadCharacters() {
 }
 
 void CombatManager::ExitCombatMode() {
-	//if (!PlayerAvatar.lock()->IsInCombat()) return; //TODO: Check why this gets called twice
 	PlayerAvatar.lock()->SetIsInCombat(false);
 	bCombatFinished = true;
 	OnCombatEnd();

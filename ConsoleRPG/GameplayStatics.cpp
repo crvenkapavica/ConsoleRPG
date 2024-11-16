@@ -1,7 +1,4 @@
 #include "GameplayStatics.h"
-
-#include <algorithm>
-#include <utility>
 #include "Resistances.h"
 #include "Characters/Character.h"
 #include "Characters/EnemyCharacter.h"
@@ -147,7 +144,7 @@ int GameplayStatics::InteractiveDisplay(const std::vector<std::string>& Options,
 	return DisplayMenu->Select();
 }
 
-void GameplayStatics::ANSI_CURSOR_DOWN_N(const int nDown) {
+void GameplayStatics::AnsiCursorDownN(const int nDown) {
 	DisplayMenu->AnsiCursorDownN(nDown);
 }
 
@@ -275,38 +272,9 @@ void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&&
 	
 	CombatManager::SetTurns(std::move(WPtrs), std::move(Enemies));
 	CombatManager::StartCombat(PlayerAvatar);
-
-
-	//std::cout << "STR: " << _player.lock()->GetPlayerAttributes()._strength << "  BASE CRIT DMG: " << _player.lock()->GetCritDmg().GetBase() << "  ACTUAL CRIT DMG: " << _player.lock()->GetCritDmg().GetActual() << '\n';
-	//std::cout << "AGI: " << _player.lock()->GetPlayerAttributes()._agility << "  BASE ARMOR: " << _player.lock()->GetArmor().GetBase() << "  ACTUAL ARMOR: " << _player.lock()->GetArmor().GetActual() << '\n';
-	//std::cout << "INT: " << _player.lock()->GetPlayerAttributes()._intelligence << "  BASE ESSENCE: " << _player.lock()->GetEssence().GetBase() << "  ACTUAL ESSENCE: " << _player.lock()->GetEssence().GetActual() << "SpellBook Crit %: " << _player.lock()->GetSpellCritChance().GetBase() << '\n';
-	//std::cout << "VIT: " << _player.lock()->GetPlayerAttributes()._vitality << "  BASE HP: " << _player.lock()->GetHealth().GetBase() << "  ACTUAL HP: " << _player.lock()->GetHealth().GetActual() << '\n';
-
-	//int x; cin >> x;
-
-
-
+	
 	ResetCombatVariables();
 	system("cls");
-
-	//Give / Handle Combat(player) Experience
-	//GenerateLoot
-	//Add loot to inventory
-	//DIsplay message how much xp has been gained and which items received
-	//Offer an option to inspect and equip/uneqip items
-	//Continue to map
-
-
-			// OPTIONALLY
-				// -> try to move Map Loop from MapGenerator to GameplayStatics, if that makes sense.
-
-	//std::vector<unique_ptr<Item>> items = Item::GenerateLoot(_player, 195);
-	//for (auto& item : items) {
-	//	std::cout << item->_item_info._name << "\n";
-	//	std::cout << GetEnumString(item->_item_info._item_slot) << "\t" << GetEnumString(item->_item_info._item_rarity) << "\t" << GetEnumString(item->_item_info._item_type) << "\t" << GetEnumString(item->_item_info._weapon_type) << "\n";
-	//	cout << "Dmg min: " << item->_item_info._dmg_min << "\tDmg max: " << item->_item_info._dmg_max << "\tArmor: " << item->_item_info._armor << "\tIlvl: " << item->_item_info._lvl << "\n\n";
-	//}
-	//int x; cin >> x;
 }
 
 // TODO: Move to a different file, Logger.cpp ???
@@ -700,10 +668,10 @@ bool GameplayStatics::AddCharacterToCharGrid(const std::shared_ptr<Character>& I
 }
 
 ////////////////////////////////////////////////
-
+// TODO: Move to 1 function
 void GameplayStatics::RollLoot() {
 	for (const auto& Char : PlayerCharacters) {
-		auto Loot = Item::GenerateLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), /*MG.GetPowerLvl()*/ 360);
+		auto Loot = Item::GenerateLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), /*MG.GetPowerLvl()*/ 12); //360
 		DisplayLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), Loot);
 	}
 }
@@ -754,7 +722,8 @@ void GameplayStatics::DisplayLoot(PlayerCharacter& Character, std::vector<std::u
 	}
 	else {
 		std::cout << COLOR_LOOT << GetEnumString(Character.GetClass()) << " received no loot this time.\n";
-		system("cls");
+		//system("cls");
+		std::cin.get();
 	}
 }
 

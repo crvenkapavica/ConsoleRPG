@@ -281,7 +281,7 @@ void Character::InitStatsPerAttribute_Warlock() {
 	StatPerAttribute.emplace_back(&CharacterAttributes.Endurance, StatVector);
 }
 
-bool Character::CheckIsAlive() {
+bool Character::IsAlive() {
 	if (GetHealth().GetActual() <= 0.005f)
 		return false;
 	return true;

@@ -46,7 +46,7 @@ struct PathNode {
 		}
 	}
 
-	// Corresponds to dX and dY directions
+	// Corresponds to DX and DY directions
 	bool Right;
 	bool Left;
 	bool Down;

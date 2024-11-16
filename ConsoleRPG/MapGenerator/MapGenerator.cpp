@@ -304,7 +304,7 @@ void MapGenerator::ShowMap() const {
 void MapGenerator::DrawMap(const int Xs, const int Xe, const int Ys, const int Ye) const {
 	for (int i = Xs; i < Xe; i++) {
 		for (int j = Ys; j < Ye; j++)
-			std::cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;
+			std::cout << GetMapAnsi(Map[i][j]) << Map[i][j] << ANSI_COLOR_RESET;  //TODO: FIXME radius 101 (Xe);
 		std::cout << '\n';
 	}
 	std::cout << ANSI_COLOR_RESET;
@@ -335,7 +335,7 @@ void MapGenerator::ShowPosition() const {
 	system("cls");
 	const int Radius = static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
 	
-	// TODO -=  NAPRAVOITI CHECK ZA OUT OF BOUNDS
+	// TODO -= CHECK FOR OUT OF BOUNDS
 	DrawMap(PlayerX - Radius + 1, PlayerX + Radius, PlayerY - Radius + 1, PlayerY + Radius);
 	GameplayStatics::DisplayMapMenu();
 }
@@ -437,17 +437,13 @@ void MapGenerator::InitDistanceBFS(const int X, const int Y, const int Step) {
 
 void MapGenerator::BFS_Distance(const int X, const int Y, const int Step) {
 	Distance[X][Y] = Step;
-
-	for (int i = 0; i < 4; i++) {
-		const int NewX = X + DX[i];
-		const int NewY = Y + DY[i];
-
-		if (NewX >= 2 && NewX < MAX_X - 2
+	for (int i = 0; i < 4; i++)
+		if (const int NewY = Y + DY[i],  NewX = X + DX[i];
+			NewX >= 2 && NewX < MAX_X - 2
 			&& NewY >= 2 && NewY < MAX_Y - 2
 			&& Map[NewX][NewY] == PATH
 			&& (Distance[NewX][NewY] == 0 || Distance[NewX][NewY] > Step + 1))
 			BFS_Distance(NewX, NewY, Step + 1);
-	}
 }
 
 void MapGenerator::InitEnemies() {
@@ -496,11 +492,11 @@ void MapGenerator::AddRandomMapEnemies() {
 					EnemiesVector.emplace_back(std::make_shared<EnemyCharacter>(static_cast<ECharacterClass>(CharClasses[k])));
 					EnemiesMap['A' + k] = EnemiesVector[k];
 				}
-				EnemyMap.emplace_back(std::move(EnemiesVector));
+				EnemyMap.push_back(std::move(EnemiesVector));
 				EnemyMapXY.emplace_back(i, j);	
-				EnemyNameMap.push_back(EnemiesMap);
+				EnemyNameMap.push_back(std::move(EnemiesMap));
 				PowerLevels.push_back(TotalPower);
-				
+
 				// Restart static instance counter
 				EnemyCharacter::nEnemyCharacters = 0;
 			}
@@ -628,18 +624,12 @@ void MapGenerator::UpdateCharGrid() {
 	for (int i = 0; i < CHAR_GRID_X; ++i) 
 		for (int j = 0; j < CHAR_GRID_Y; ++j) 
 			for (int l = 0; l < 2; l++)
-				for (int k = 0; k < 8; k++) {
-
-					const int x = i + DX8[k];
-					const int y = j + DY8[k];
-
-					if (x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) {
+				for (int k = 0; k < 8; k++)
+					if (const int y = j + DY8[k], x = i + DX8[k]; x >= 0 && x < CHAR_GRID_X && y >= 0 && y < CHAR_GRID_Y) 
 						if (l && CharGrid[i][j].Neighbors[k].lock() && !CharGrid[x][y].Here.lock())
 							CharGrid[x][y].Here = CharGrid[i][j].Neighbors[k];
 						else CharGrid[i][j].Neighbors[k] = CharGrid[x][y].Here;
-					}
 					else CharGrid[i][j].Neighbors[k] = {};
-				}
 }
 
 void MapGenerator::ClearCharGrid() {

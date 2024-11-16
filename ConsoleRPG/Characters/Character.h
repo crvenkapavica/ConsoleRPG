@@ -122,7 +122,7 @@ public:
 	inline Resistances& GetResistances() { return CharacterResistances; }
 
 	// Check if targets Health is below 0 and mark it as bIsAlive = false
-	bool CheckIsAlive(); // TODO: maybe merge with IsAlive() ?
+	bool IsAlive(); // TODO: maybe merge with IsAlive() ?
 
 public:
 	// EXTRA STATS COMBAT
