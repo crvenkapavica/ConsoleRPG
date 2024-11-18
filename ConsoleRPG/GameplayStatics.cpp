@@ -220,30 +220,28 @@ PlayerCharacter* GameplayStatics::GetTurnCharacter() {
 
 void GameplayStatics::DisplayItemMenu() {
 	PlayerCharacter* CurrentCharacter;
-	if ((CurrentCharacter = GetTurnCharacter()) == nullptr) return;
+	if (!((CurrentCharacter = GetTurnCharacter()))) return;
 
 	bool bIsEquipped = false;
 	auto SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
-	if (!SelectedItem || bIsEquipped) return;
+	if (!SelectedItem) return;
 	
-	std::vector<std::string> Menu;
-	int Input;
 	if (bIsEquipped) {
-		Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
-		if ((Input = InteractiveDisplay(Menu)) == -1)
-			return CurrentCharacter->EquipItem(std::move(SelectedItem));   // TODO: Rvalue?
-		if (Input == 0) CurrentCharacter->UnEquipItem(std::move(SelectedItem));
+		const std::vector<std::string> Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
+		if (const int Input = InteractiveDisplay(Menu); Input == -1)
+			return CurrentCharacter->EquipItem(std::move(SelectedItem));
+		else if (Input == 0) CurrentCharacter->UnEquipItem(std::move(SelectedItem));
 		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 	else {
-		Menu = { "EQUIP", "DESTROY", "<--BACK--<" };
-		if ((Input = InteractiveDisplay(Menu)) == -1) {
+		const std::vector<std::string> Menu = { "EQUIP", "DESTROY", "<--BACK--<" };
+		if (const int Input = InteractiveDisplay(Menu); Input == -1) {
 			const bool bAdded = CurrentCharacter->AddItemToInventory(std::move(SelectedItem));
 			// TODO: if inventory is FULL, item is ["CONSUMED" - LOST];
 			// implement bAdded
 			return;
 		}
-		if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
+		else if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
 		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
 	}
 }
@@ -331,7 +329,7 @@ void GameplayStatics::HandleCombatInput(PlayerCharacter* InCharacter, const int 
 		break;
 	case 5:
 		//CombatManager::EndTurn(std::weak_ptr<Character>(InCharacter));
-			CombatManager::EndTurn(*InCharacter);
+		CombatManager::EndTurn(*InCharacter);
 		break;
 	default:
 		break;
@@ -645,8 +643,8 @@ float GameplayStatics::ApplyDamage(const std::weak_ptr<Character>& Instigator, C
 	auto& s = GetCombatLogStream();
 	const std::string C = GetAliasColor(Instigator.lock()->GetAlias());
 	const std::string CT = GetAliasColor(Target->GetAlias());
-	if (bIsOnApply) s << CT << Target->GetAlias() << CC << " suffers from " << CEF << GetEnumString(Spell->GetID()) << CC << " for " << CV << ActualDamage * -1 << CC << " damage [resisted:" << CV << Resisted * -1 << CC << "]\n";
-	else s << C << Target->GetAlias() << CC << " suffers from " << CEF << GetEnumString(Spell->GetID()) << CC << " for " << CV << ActualDamage * -1 << CC << " damage [resisted:" << CV << Resisted * -1 << CC << "]\n";
+	if (bIsOnApply) s << CT << Target->GetAlias() << CL << " suffers from " << CEF << GetEnumString(Spell->GetID()) << CL << " for " << CV << ActualDamage * -1 << CL << " damage [resisted:" << CV << Resisted * -1 << CL << "]\n";
+	else s << C << Target->GetAlias() << CL << " suffers from " << CEF << GetEnumString(Spell->GetID()) << CL << " for " << CV << ActualDamage * -1 << CL << " damage [resisted:" << CV << Resisted * -1 << CL << "]\n";
 	//==============================================
 
 	return ActualDamage;
@@ -671,59 +669,50 @@ bool GameplayStatics::AddCharacterToCharGrid(const std::shared_ptr<Character>& I
 // TODO: Move to 1 function
 void GameplayStatics::RollLoot() {
 	for (const auto& Char : PlayerCharacters) {
-		auto Loot = Item::GenerateLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), /*MG.GetPowerLvl()*/ 12); //360
+		auto Loot = Item::GenerateLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), /*MG.GetPowerLvl()*/ 360);
 		DisplayLoot(*dynamic_cast<PlayerCharacter*>(Char.get()), Loot);
 	}
 }
 
-void GameplayStatics::DisplayLoot(PlayerCharacter& Character, std::vector<std::unique_ptr<Item>>& Loot) {
+void GameplayStatics::DisplayLoot(PlayerCharacter& InCharacter, std::vector<std::unique_ptr<Item>>& Loot) {
 	system("cls");
-	if (!Loot.empty()) {
-		std::cout << COLOR_LOOT << GetEnumString(Character.GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
 
+	if (Loot.empty()) {
+		std::cout << CLT << GetEnumString(InCharacter.GetClass()) << " received no loot this time.\n";
+		_getch();
+		return;
+	}
+	
+	std::cout << CLT << GetEnumString(InCharacter.GetClass()) << "'s loot!. (" << Loot.size() << ")" << "\nChoose which items you want to keep.\n";
+	while (!Loot.empty()) {
 		std::vector<Item*> Items;
 		std::vector<std::string> Menu = { "--> ALL ITEMS <--" };
 		
-		while (!Loot.empty()) {
-			Items.clear();
-			for (const auto& UPtrItem : Loot) {
-				Menu.push_back(UPtrItem->ItemInfo.Name);
-				Items.push_back(UPtrItem.get());
-			}
-			Menu.emplace_back("<--BACK--<");
-
-			const int Input = InteractiveDisplay(Menu, 0, true, Items);
-			if (Input == -1) break;
-			if (Input == 0) { // add all items
-				if (Character.GetInventorySpace() >= static_cast<int>(Loot.size())) {
-					for (auto& SelectedItem : Loot)
-						if (SelectedItem) Character.AddItemToInventory(std::move(SelectedItem));
-					break;
-				}
-				else {
-					std::cout << CE << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.GetInventorySpace() << ")\n";
-				}
-			}
-			else { // add selected item
-				if (Character.GetInventorySpace() > 0) {
-					Character.AddItemToInventory(std::move(Loot[Input - 1]));
-					Loot.erase(std::ranges::find_if(Loot, [](const auto& Ptr) { return !Ptr; }));  // TODO : CHECK RANGES WORK
-
-					Menu = { "--> ALL ITEMS <--" };
-					for (const auto& UPtrItem : Loot)
-						Menu.push_back(UPtrItem->ItemInfo.Name);
-					Menu.emplace_back("<--BACK--<");
-				}
-				else {
-					std::cout << CE << "Not enough inventory space! " << COLOR_LOOT << "(" << Character.GetInventorySpace() << ")\n";
-				}
-			}
+		for (const auto& UPtrItem : Loot) {
+			Menu.push_back(UPtrItem->ItemInfo.Name);
+			Items.push_back(UPtrItem.get());
 		}
-	}
-	else {
-		std::cout << COLOR_LOOT << GetEnumString(Character.GetClass()) << " received no loot this time.\n";
-		//system("cls");
-		std::cin.get();
+		Menu.emplace_back("<--BACK--<");
+
+		if (const int Input = InteractiveDisplay(Menu, 0, true, Items); Input == -1) return; 
+		else if (Input == 0) { // add all items
+			if (InCharacter.GetInventorySpace() >= static_cast<int>(Loot.size())) {
+				for (auto& SelectedItem : Loot)
+					if (SelectedItem) InCharacter.AddItemToInventory(std::move(SelectedItem));
+				break;
+			}
+			else std::cout << CE << "Not enough inventory space! " << CLT << "(" << InCharacter.GetInventorySpace() << ")\n";
+		}
+		else { // add selected item
+			if (InCharacter.GetInventorySpace() > 0) {
+				InCharacter.AddItemToInventory(std::move(Loot[Input - 1]));
+				Loot.erase(std::ranges::find_if(
+					Loot, [](const auto& Ptr) { return !Ptr; }
+				));
+				continue;
+			}
+			else std::cout << CE << "Not enough inventory space! " << CLT << "(" << InCharacter.GetInventorySpace() << ")\n";
+		}
 	}
 }
 

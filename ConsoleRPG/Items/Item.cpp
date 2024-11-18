@@ -59,21 +59,20 @@ std::vector<std::pair<EItemRarity, double>> Item::DropTable_ItemRarity {
 
 /////////////////ARMOR SPECIAL EFFECTS////////////////////////////
 // 
-// // Head - ability level +
-// 
-//Hands = slots for spells
-//Legs = magic_damage
-//Belt = slots for consumables
-//Feet = magic_resistance
+// Head - ability level +
+// Hands = slots for spells
+// Legs = magic_damage
+// Belt = slots for consumables
+// Feet = magic_resistance | move_speed
 
 
 //SpellType = MAGIC | ABILITY
 
 
 //ITEMS
-//mace = min_max dmg skoro isti
-//sword = min_max dmg veliki range
-//axe = min_max dmg mali range
+// mace = min_max dmg skoro isti
+// sword = min_max dmg veliki range
+// axe = min_max dmg mali range
 
 //--> dodati offhand za castere
 
@@ -258,10 +257,7 @@ void Item::RollAffixes(ItemProperties& ItemInfo) {
 	// legend passive 1 out of 2
 	// passive 1 out of 5
 
-	// active 1 out of 10
-
-
-
+	// active 1 out of 10~~
 }
 
 void Item::CalculateItemDamage(ItemProperties& ItemInfo) {

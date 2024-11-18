@@ -3,6 +3,7 @@
 #include "../Characters/PlayerCharacter.h"
 #include "../Characters/SummonCharacter.h"
 #include "../Combat/CombatManager.h"
+#include "../MapGenerator/MapGenerator.h"
 #include "../Spells/EffectStructs.h"
 #include "../Spells/SpellData.h"
 
@@ -110,52 +111,61 @@ float ActiveSpell::AdjustDamage(float Damage, const std::shared_ptr<Character>& 
 	return Damage;
 }
 
-int ActiveSpell::AddRandomTargets(int r, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& character, const std::string& name) {
+int ActiveSpell::AddRandomTargets(int nTargets, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& Instigator, const std::string& Name) {
 	std::vector<std::weak_ptr<Character>> Enemies;
-	if (character->GetTeam() == 1)
-		Enemies = GameplayStatics::GetEnemyCharacters();
-	else
-		Enemies = GameplayStatics::GetPlayerCharacters();
+	if (Instigator->GetTeam() == 1) Enemies = GameplayStatics::GetEnemyCharacters();
+	else Enemies = GameplayStatics::GetPlayerCharacters();
 
-	const int expired = static_cast<int>(std::ranges::count_if(Enemies, [](const std::weak_ptr<Character>& WPtr) { return WPtr.expired(); }));
+	const int expired = static_cast<int>(std::ranges::count_if(
+		Enemies, [](const auto& WPtrChar) { return WPtrChar.expired(); }
+	));
 	const int size = static_cast<int>(Enemies.size()) - expired;
 	if (size == 1) return 0;
-	r = size == r ? r - 1 : r;
+	nTargets = size == nTargets ? nTargets - 1 : nTargets;
 	 
-	for (int i = 0; i < r; i++) {
-		int Rnd;
-		do {
-			Rnd = GameplayStatics::GetRandInt(0, static_cast<int>(Enemies.size() - 1));
-		} while (std::ranges::any_of(Targets, [&](const std::weak_ptr<Character>& WPtr) { return Enemies[Rnd].expired() || Enemies[Rnd].lock().get() == WPtr.lock().get(); }));
-		Targets.push_back(Enemies[Rnd]);
+	for (int i = 0; i < nTargets; i++) {
+		int Random;
+		do Random = GameplayStatics::GetRandInt(0, static_cast<int>(Enemies.size() - 1));
+		while (std::ranges::any_of(
+			Targets, [&](const auto& WPtrChar) {
+				return Enemies[Random].expired() || Enemies[Random].lock().get() == WPtrChar.lock().get();
+			}
+		));
+		Targets.push_back(Enemies[Random]);
 	}
 	
-	std::ranges::sort(Targets,[&](const std::weak_ptr<Character>& CharacterA, const std::weak_ptr<Character>& CharacterB) { 
-         if (CharacterA.lock() && CharacterB.lock())
-             if (CharacterA.lock()->GetAlias() < CharacterB.lock()->GetAlias()) return true;
-         return false;
-    });
+	std::ranges::sort(
+		Targets, [&](const auto& CharacterA, const auto& CharacterB) {
+			return (!CharacterA.lock() || !CharacterB.lock())
+			? false
+			: CharacterA.lock()->GetAlias() < CharacterB.lock()->GetAlias();
+		}
+    );
 
-	auto& s = GameplayStatics::GetCombatLogStream();
+	// if (CharacterA.lock() && CharacterB.lock();
+	// CharacterA.lock()->GetAlias() < CharacterB.lock()->GetAlias()
+	// ) return true;
+	// return false;
+
+	auto& Stream = GameplayStatics::GetCombatLogStream();
 	static std::string C = GameplayStatics::GetAliasColor(Targets[0].lock()->GetAlias());
-	s << "Characters: " << C << Targets[0].lock()->GetAlias() << COLOR_COMBAT_LOG << ", " << C;
-	for (int i = 0; i < r; i++) {
-		s << Targets[i + 1].lock()->GetAlias(); // POGLEDATI KAJ JE TAJ WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		if (i != r - 1) s << COLOR_COMBAT_LOG << ", " << C;
+	Stream << "Characters: " << C << Targets[0].lock()->GetAlias() << CL << ", " << C;
+	for (int i = 0; i < nTargets; i++) {
+		Stream << Targets[i + 1].lock()->GetAlias();  //warning ?
+		if (i != nTargets - 1) Stream << CL << ", " << C;
 	}
-	s << COLOR_COMBAT_LOG << " got hit by " << COLOR_EFFECT << name << COLOR_COMBAT_LOG << ".\n";
-	return r;
+	Stream << CL << " got hit by " << CEF << Name << CL << ".\n";
+	return nTargets;
 }
 
-bool ActiveSpell::Summon(ECharacterClass CharacterClass, const std::shared_ptr<Character>& Instigator) {
-	auto dltr = [](const SummonCharacter* ptr) { ptr->GetTeam() == 1 ? SummonCharacter::nPlayerSummons-- : SummonCharacter::nEnemySummons--; delete ptr; };
-	std::shared_ptr<SummonCharacter> summon(new SummonCharacter(CharacterClass, Instigator->GetTeam()), dltr);
+bool ActiveSpell::Summon(const ECharacterClass CharacterClass, const std::shared_ptr<Character>& Instigator) {
+	auto Deleter = [](const SummonCharacter* Ptr) { Ptr->GetTeam() == 1 ? SummonCharacter::nPlayerSummons-- : SummonCharacter::nEnemySummons--; delete Ptr; };
 
-	if (GameplayStatics::AddCharacterToCharGrid(Instigator, summon)) { // replace with direct map_gen call after making map_GEN singleton
-		CombatManager::AddSummonToCombat(summon);
-		return true;
-	}
-
+	// replace with direct map_gen call after making map_GEN singleton
+	if (const std::shared_ptr<SummonCharacter> Summon(new SummonCharacter(CharacterClass, Instigator->GetTeam()), Deleter);
+		MapGenerator::GetInstance().AddCharacterToCharGrid(Instigator, Summon)
+		) { CombatManager::AddSummonToCombat(Summon); return true; }
+	
 	auto& s = GameplayStatics::GetCombatLogStream();
 	s << COLOR_ERROR << "Summon failed. No space." << ANSI_COLOR_RESET << "\n";
 	return false;
@@ -163,9 +173,9 @@ bool ActiveSpell::Summon(ECharacterClass CharacterClass, const std::shared_ptr<C
 
 void Fireball::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
 	std::vector<CharacterStat> EnemyApplyStats;
-	const int RandTargets = AddRandomTargets(2, Targets, Instigator, "FIREBALL SPREAD");
+	const int RandomTargets = AddRandomTargets(2, Targets, Instigator, "FIREBALL SPREAD");
 	
-	for (int i = 0; i <= RandTargets; ++i) {
+	for (int i = 0; i <= RandomTargets; ++i) {
 		const auto Stat = &Targets[i].lock()->GetHealth().GetActual();
 		auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandOnApplyMinMax(SPtrChar); };
 		EnemyApplyStats.emplace_back(CharacterStat{
@@ -177,40 +187,37 @@ void Fireball::Apply(const std::shared_ptr<Character>& Instigator, std::vector<s
 		});
 	}
 	
-	ApplyParams EnemyApplyParams;
-	EnemyApplyParams.Flags |= EStructFlags::EFFECT_STAT;
-	EnemyApplyParams.EffectStat = EffectStat({}, std::move(EnemyApplyStats));
+	ApplyParams AppParams;
+	AppParams.Flags |= EStructFlags::EFFECT_STAT;
+	AppParams.EffectStat = EffectStat({}, std::move(EnemyApplyStats));
 
 	auto Spell = std::make_unique<Fireball>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), EnemyApplyParams, {});
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), AppParams, {});
 }
 
 std::stringstream& Fireball::GetTooltip() {
-	//if (_tooltip.str().empty()) {
-	//	_tooltip << COLOR_INFO << "Hits the target for " << COLOR_VALUE <<  << COLOR_INFO << " to " << COLOR_VALUE << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << COLOR_INFO << " damage.\n";
-	//}
+	if (Tooltip.str().empty()) {
+		Tooltip << COLOR_INFO << "Hits the target for " << COLOR_VALUE << SpellDb::Data[ID][Level].ApplyMin << COLOR_INFO << " to " << COLOR_VALUE << SpellDb::Data[ID][Level].ApplyMax << COLOR_INFO << " damage.\n";
+	}
 	return Tooltip;
 }
 
 void Burning::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
 	std::vector<CharacterStat> EnemyEffectStats;
-	const int RandTargets = AddRandomTargets(2, Targets, Instigator, "BURNING");
-	
-	for (int i = 0; i <= RandTargets; i++) {
-		const auto Stat = &Targets[i].lock()->GetHealth().GetActual();
-		auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandEffectMinMax(SPtrChar); };
+	const int RandomTargets = AddRandomTargets(2, Targets, Instigator, "BURNING SPREAD");
+	for (int i = 0; i <= RandomTargets; i++) {
 		EnemyEffectStats.emplace_back(CharacterStat{
 			.PtrCharacter = Targets[i].lock().get(),
 			.StatType = EStatType::HEALTH,
 			.StatMod = EStatMod::CONSTANT,
-			.Stat = Stat,
-			.GetDelta = Delta
+			.Stat = &Targets[i].lock()->GetHealth().GetActual(),
+			.GetDelta = [this](const std::shared_ptr<Character>& SPtrChar) { return -GetRandEffectMinMax(SPtrChar); }
 		});
 	}
 
 	EffectParams EnemyEffectParams;
 	EnemyEffectParams.OnEvent = ECombatEvent::ON_TURN_BEGIN;
-	EnemyEffectParams.StructFlags |= EStructFlags::EFFECT_STAT;
+	EnemyEffectParams.Flags |= EStructFlags::EFFECT_STAT;
 	EnemyEffectParams.EffectStat = EffectStat({}, std::move(EnemyEffectStats));
 
 	auto Spell = std::make_unique<Burning>();
@@ -230,18 +237,17 @@ std::stringstream& Burning::GetTooltip() {
 
 void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
 	std::vector<CharacterStat> EnemyApplyStats;
-	const int RandTargets = AddRandomTargets(2, Targets, Instigator, "MOLTEN ARMOR");
+	const int RandomTargets = AddRandomTargets(2, Targets, Instigator, "MOLTEN ARMOR SPREAD");
 	
-	for (int i = 0; i <= RandTargets; i++) {
-		const auto Stat = &Targets[i].lock()->GetArmor().GetActual();
+	for (int i = 0; i <= RandomTargets; i++) {
 		const auto ConstDelta = -GetRandOnApplyMinMax(Instigator);
-		auto Delta = [=](const std::shared_ptr<Character>& SPtrChar) { return ConstDelta; };
+		auto Delta = [=](const auto& SPtrChar) { return ConstDelta; };
 		EnemyApplyStats.emplace_back(CharacterStat{
 			.PtrCharacter = Targets[i].lock().get(),
 			.StatType = EStatType::ANY,
 			.StatMod = EStatMod::CONSTANT,
-			.Stat = Stat,
-			.GetDelta = Delta
+			.Stat = &Targets[i].lock()->GetArmor().GetActual(),
+			.GetDelta =[&](const auto& SPtrChar) { return -GetRandOnApplyMinMax(Instigator); }
 		});
 	}
 	
@@ -250,7 +256,7 @@ void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vecto
 	AppParams.EffectStat = EffectStat({}, std::move(EnemyApplyStats));
 
 	std::vector<CharacterStat> EnemyEffectStats;
-	for (int i = 0; i <= RandTargets; i++) {
+	for (int i = 0; i <= RandomTargets; i++) {
 		const auto Stat = &Targets[i].lock()->GetArmor().GetActual();
 		auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandEffectMinMax(SPtrChar); };
 		EnemyEffectStats.emplace_back(CharacterStat{
@@ -264,7 +270,7 @@ void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vecto
 	
 	EffectParams EffParams;
 	EffParams.OnEvent = ECombatEvent::ON_TURN_BEGIN;
-	EffParams.StructFlags |= EStructFlags::EFFECT_STAT;
+	EffParams.Flags |= EStructFlags::EFFECT_STAT;
 	EffParams.EffectStat = EffectStat({}, std::move(EnemyEffectStats));
 
 	auto Spell = std::make_unique<MoltenArmor>();
@@ -272,36 +278,42 @@ void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vecto
 }
 
 std::stringstream& MoltenArmor::GetTooltip() {
-	//if (_tooltip.str().empty()) {
-	//	_tooltip << "Blast the enemy with extreme temperature which melts \n";
-	//	_tooltip << "the Targets armor, decreasing it by " << CV << _spell->GetOnApplyMin(_idx, _spell->GetLevel()) << CI << " to " << CV << _spell->GetOnApplyMax(_idx, _spell->GetLevel()) << CI << ".\n";
-	//	_tooltip << "Additionaly, decreases the armor by " CV << _spell->GetEffectMin(_idx, _spell->GetLevel()) << CI << " to " << CV << _spell->GetEffectMax(_idx, _spell->GetLevel()) << CI << " at the end of their turn. \n";
-	//	_tooltip << "Additionaly, hits 2 random enemies and applies the effect to them! \n";
-	//	_tooltip << "The effect lasts for " << CV << _spell->GetDuration(_idx, _spell->GetLevel()) << CI << " turns.\n";
-	//}
+	if (Tooltip.str().empty()) {
+		Tooltip << "Blast the enemy with extreme temperature which melts \n";
+		Tooltip << "the Targets armor, decreasing it by " << CV <<  SpellDb::Data[ID][Level].ApplyMin << CI << " to " << CV <<  SpellDb::Data[ID][Level].ApplyMax << CI << ".\n";
+		Tooltip << "Additionally, decreases the armor by " CV <<  SpellDb::Data[ID][Level].EffectMin << CI << " to " << CV <<  SpellDb::Data[ID][Level].EffectMax << CI << " at the end of their turn. \n";
+		Tooltip << "Additionally, hits 2 random enemies and applies the effect to them! \n";
+		Tooltip << "The effect lasts for " << CV << SpellDb::Data[ID][Level].Duration << CI << " turns.\n";
+	}
 	return Tooltip;
 }
 
 void Exposure::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
+	std::vector<CharacterStat> EnemyApplyStats;
+	const auto Stat = &Targets[0].lock()->GetResistances().GetFireRes();
+	auto Delta = [&](const std::shared_ptr<Character>& SPtrChar) { return -GetRandOnApplyMinMax(SPtrChar); };
+	EnemyApplyStats.emplace_back(CharacterStat{
+		.PtrCharacter = Targets[0].lock().get(),
+		.StatType = EStatType::RESISTANCE,
+		.StatMod = EStatMod::CONSTANT,
+		.Stat = Stat,
+		.GetDelta = Delta
+	});
+	
+	ApplyParams AppParams;
+	AppParams.Flags |= EStructFlags::EFFECT_STAT;
+	AppParams.EffectStat = EffectStat({}, std::move(EnemyApplyStats));
 
-	std::vector<CharacterStat> enemy_apply_res;
-	auto stat = &Targets[0].lock()->GetResistances().GetFireRes();
-	auto delta = [=](const std::shared_ptr<Character>& character) { return -GetRandOnApplyMinMax(character); };
-	enemy_apply_res.push_back(CharacterStat{ Targets[0].lock().get(), EStatType::RESISTANCE, EStatMod::CONSTANT, stat, delta });
-	ApplyParams apply_params;
-	apply_params.Flags |= EStructFlags::EFFECT_STAT;
-	apply_params.EffectStat = EffectStat({}, move(enemy_apply_res));
-
-	std::unique_ptr<Exposure> spell = std::make_unique<Exposure>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, move(spell), apply_params, {});
+	auto Spell = std::make_unique<Exposure>();
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), AppParams, {});
 }
 
 std::stringstream& Exposure::GetTooltip() {
-	//if (_tooltip.str().empty()) {
-	//	_tooltip << "Cast a potent blaze of fire at the target, exposing them, \n";
-	//	_tooltip << "decreasing their resistance to fire and burn spells by " << CV << _spell->GetEffectMin(_idx, _spell->GetLevel()) << CI << " to " << CV << _spell->GetEffectMax(_idx, _spell->GetLevel()) << CI ".\n";
-	//	_tooltip << "The effect lasts for " << CV << _spell->GetDuration(_idx, _spell->GetLevel()) << CI << " turns.\n";
-	//}
+	if (Tooltip.str().empty()) {
+		Tooltip << "Cast a potent blaze of fire at the target, exposing them, \n";
+		Tooltip << "decreasing their resistance to fire and burn spells by " << CV << SpellDb::Data[ID][Level].EffectMin << CI << " to " << CV << SpellDb::Data[ID][Level].EffectMax << CI ".\n";
+		Tooltip << "The effect lasts for " << CV << SpellDb::Data[ID][Level].Duration << CI << " turns.\n";
+	}
 	return Tooltip;
 }
 
@@ -445,16 +457,23 @@ void SummonFireImp::Apply(const std::shared_ptr<Character>& Instigator, std::vec
 
 void Melee::Apply(const std::shared_ptr<Character>& Instigator, std::vector<std::weak_ptr<Character>>& Targets) {
 
-	std::vector<CharacterStat> enemy_apply_stats;
-	auto stat = &Targets[0].lock()->GetHealth().GetActual();
-	auto delta = [&](const std::shared_ptr<Character>& character) { return static_cast<float>(-GameplayStatics::GetRandInt(character->MinDamage, character->MaxDamage)); };
-	enemy_apply_stats.push_back(CharacterStat{ Targets[0].lock().get(), EStatType::HEALTH, EStatMod::CONSTANT, stat, delta });
-	ApplyParams apply_params;
-	apply_params.Flags |= EStructFlags::EFFECT_STAT;
-	apply_params.EffectStat = EffectStat{ {}, std::move(enemy_apply_stats) };
+	// TODO: Check for weapon equip, make disarm mechanics
+	
+	std::vector<CharacterStat> EnemyApplyStats;
+	EnemyApplyStats.push_back(CharacterStat{
+		.PtrCharacter = Targets[0].lock().get(),
+		.StatType = EStatType::HEALTH,
+		.StatMod = EStatMod::CONSTANT,
+		.Stat = &Targets[0].lock()->GetHealth().GetActual(),
+		.GetDelta = [&](const auto& SPtrChar) { return static_cast<float>(-GameplayStatics::GetRandInt(SPtrChar->MinDamage, SPtrChar->MaxDamage)); }
+	});
 
-	std::unique_ptr<Melee> spell = std::make_unique<Melee>();
-	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(spell), apply_params, {});
+	ApplyParams AppParams;
+	AppParams.Flags |= EStructFlags::EFFECT_STAT;
+	AppParams.EffectStat = EffectStat{ {}, std::move(EnemyApplyStats) };
+
+	auto Spell = std::make_unique<Melee>();
+	GameplayStatics::ApplyEffect(Instigator, Targets, std::move(Spell), AppParams, {});
 }
 
 

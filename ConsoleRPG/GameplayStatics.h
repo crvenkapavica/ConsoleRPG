@@ -88,7 +88,7 @@ public:
 
 	static void RollLoot();
 	
-	static void DisplayLoot(PlayerCharacter& Character, std::vector<std::unique_ptr<Item>>& Loot);
+	static void DisplayLoot(PlayerCharacter& InCharacter, std::vector<std::unique_ptr<Item>>& Loot);
 
 	static std::string GetAliasColor(char Alias);
 

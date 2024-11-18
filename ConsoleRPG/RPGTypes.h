@@ -37,6 +37,7 @@ typedef int skill;
 #define MAX_X 100
 #define MAX_Y 100
 
+// TODO: Correlate the playing grid with the char grid
 #define GRID_X 21  // decrease by 4 to change grid height
 #define GRID_Y 81 // decrease by 8 to change grid width
 #define CHAR_GRID_X ((GRID_X - 1) / 4)
@@ -98,7 +99,7 @@ typedef int skill;
 #define COLOR_EFFECT			ANSI_COLOR_ORANGE
 #define COLOR_VALUE				ANSI_COLOR_PASTELLE_BROWN
 #define COLOR_ERROR				ANSI_COLOR_RED
-#define COLOR_LOOT				ANSI_COLOR_GREEN
+
 
 #define COLOR_COMMON			ANSI_COLOR_FG_RGB(105,106,106)
 #define COLOR_RARE				ANSI_COLOR_FG_RGB(0,112,221)
@@ -125,7 +126,8 @@ typedef int skill;
 #define CE	COLOR_ENEMY
 #define CEF COLOR_EFFECT
 #define CP	COLOR_PLAYER
-#define CC	COLOR_COMBAT_LOG
+#define CL	COLOR_COMBAT_LOG
+#define CLT	ANSI_COLOR_GREEN
 
 #define ANSI_CURSOR_UP(n)		"\x1b[" #n "A"
 #define ANSI_CURSOR_DOWN(n)		"\x1b[" #n "B"

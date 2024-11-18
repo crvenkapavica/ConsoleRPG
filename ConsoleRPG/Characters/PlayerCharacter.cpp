@@ -39,11 +39,9 @@ void PlayerCharacter::ReceiveExperience(const int InExperience) {
 }
 
 void PlayerCharacter::TakeTurn() {
-	if (bIsInCombat) {
-		GameplayStatics::RedrawGameScreen();
-		const int input = GameplayStatics::DisplayCombatMenu(this);
-		GameplayStatics::HandleCombatInput(this, input);
-	}
+	GameplayStatics::RedrawGameScreen();
+	const int input = GameplayStatics::DisplayCombatMenu(this);
+	GameplayStatics::HandleCombatInput(this, input);
 }
 
 // TODO : Add Auto-Equip for empty slots
@@ -112,41 +110,42 @@ void PlayerCharacter::DisplayActiveSpellSlots() {}
 void PlayerCharacter::DisplayPassiveSpellSlots() {}
 
 std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
-	std::vector<std::string> Menu = { "ALL ITEMS","RELICS","WEAPONS","JEWELLERY","ARMOR","SCROLLS","CONSUMABLES","<--BACK--<" };
+	std::vector<std::string> Menu = {"ALL ITEMS", "RELICS", "WEAPONS", "JEWELLERY", "ARMOR", "SCROLLS", "CONSUMABLES", "<--BACK--<"};
 	int Input;
 	if ((Input = GameplayStatics::InteractiveDisplay(Menu)) == -1) return nullptr;
-	const auto type = static_cast<EItemType>(ITEM_TYPES - Input);
+	const auto Type = static_cast<EItemType>(ITEM_TYPES - Input);
 
-	Menu = { "ALL RARITIES","COMMON","RARE","EPIC","LEGENDARY","GODLIKE","UNIQUE","<--BACK--<" };
+	Menu = {"ALL RARITIES", "COMMON", "RARE", "EPIC", "LEGENDARY", "GODLIKE", "UNIQUE", "<--BACK--<"};
 	if ((Input = GameplayStatics::InteractiveDisplay(Menu)) == -1) return nullptr;
-	const auto rarity = static_cast<EItemRarity>(Input);
+	const auto Rarity = static_cast<EItemRarity>(Input);
 
 	std::map<int, int> ItemMap;
 	int ItemIndex = 0;
 	int nInv = 0;
-	std::vector<Item*> items;
+	std::vector<Item*> Items;
 	Menu.clear();
 	
 	// treba auto sortirati da su svi v inventoriju po redu a na kraju nullptr
 	for (int i = 0; i < static_cast<int>(Inventory.size()); i++)
 		if (!Inventory[i]) {
-			if (type == EItemType::MISC && rarity == EItemRarity::MISC) {
+			if (Type == EItemType::MISC && Rarity == EItemRarity::MISC) {
 				Menu.emplace_back("INVENTORY ---> (empty)");
-				items.push_back(nullptr);
+				Items.push_back(nullptr);
 				++nInv;
 				ItemMap[ItemIndex++] = i;
 			}
 		}
-		else if ((Inventory[i]->ItemInfo.ItemType == type || type == EItemType::MISC) && (Inventory[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) {
+		else if ((Inventory[i]->ItemInfo.ItemType == Type || Type == EItemType::MISC)
+			&& (Inventory[i]->ItemInfo.ItemRarity == Rarity || Rarity == EItemRarity::MISC)) {
 			Menu.push_back("INVENTORY ---> " + Inventory[i]->ItemInfo.Name);
-			items.push_back(Inventory[i].get());
-			ItemMap[ItemIndex++] = i;
+			Items.push_back(Inventory[i].get());
 			++nInv;
+			ItemMap[ItemIndex++] = i;
 		}
 
 	for (int i = 0; i < static_cast<int>(ItemSlots.size()); i++)
-		if (((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemType == type || type == EItemType::MISC)) || type == EItemType::MISC)
-			&& ((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemRarity == rarity || rarity == EItemRarity::MISC)) || rarity == EItemRarity::MISC)) {
+		if (((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemType == Type || Type == EItemType::MISC)) || Type == EItemType::MISC)
+			&& ((ItemSlots[i] && (ItemSlots[i]->ItemInfo.ItemRarity == Rarity || Rarity == EItemRarity::MISC)) || Rarity == EItemRarity::MISC)) {
 			std::string s = GameplayStatics::GetEnumString(static_cast<EItemSlot>(i));
 			if (i <= 8 || i == 11) s += "\t  *---> ";
 			if (i == 9) s += " *---> ";
@@ -154,23 +153,16 @@ std::unique_ptr<Item> PlayerCharacter::DisplayAllItems(OUT bool& bIsEquipped) {
 			if (ItemSlots[i]) s += ItemSlots[i]->ItemInfo.Name;
 			else s += "(empty)";
 			Menu.push_back(s);
-			items.push_back(ItemSlots[i].get());
+			Items.push_back(ItemSlots[i].get());
 			ItemMap[ItemIndex++] = i;
 		}
 	Menu.emplace_back("<--BACK--<");
 
-	if ((Input = GameplayStatics::InteractiveDisplay(Menu, 70, true, items)) == -1) return nullptr;
-
+	if ((Input = GameplayStatics::InteractiveDisplay(Menu, 70, true, Items)) == -1) return nullptr;
 	// item is from inventory
-	if (Input < nInv) {
-		return std::move(Inventory[ItemMap[Input]]);
-	}
+	if (Input < nInv) return std::move(Inventory[ItemMap[Input]]);
 	// item is equipped
-	else {
-		bIsEquipped = true;
-		return std::move(ItemSlots[ItemMap[Input]]);
-	}
-
+	else { bIsEquipped &= 1; return std::move(ItemSlots[ItemMap[Input]]); }
 	return nullptr;
 }
 

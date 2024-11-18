@@ -102,7 +102,6 @@ int main() {
     auto CharDeleter = [](const PlayerCharacter* Ptr) { PlayerCharacter::nPlayerCharacters--; delete Ptr; };
 
     std::shared_ptr<PlayerCharacter> PlayerMain(new PlayerCharacter(ECharacterClass::BARBARIAN), CharDeleter);
-	std::shared_ptr<PlayerCharacter> PlayerMain2(new PlayerCharacter(ECharacterClass::BARBARIAN), CharDeleter);
     std::shared_ptr<PlayerCharacter> PlayerWarlock1(new PlayerCharacter(ECharacterClass::WARLOCK), CharDeleter);
 	
 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
@@ -115,7 +114,7 @@ int main() {
     SpellManager::CreatePassiveSpell(PlayerMain.get(), ESpellID::VAMPIRIC_TOUCH);
 
 	
-	std::vector<std::shared_ptr<Character>> PlayerCharacters = { std::move(PlayerMain), std::move(PlayerMain2), std::move(PlayerWarlock1) };
+	std::vector<std::shared_ptr<Character>> PlayerCharacters = { std::move(PlayerMain), std::move(PlayerWarlock1) };
 	ConsoleMenu Menu;
 	
     // Later we don't send none of these initializers to GS. 

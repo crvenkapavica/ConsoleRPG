@@ -1,4 +1,7 @@
 #include "../Combat/CombatManager.h"
+
+#include <assert.h>
+
 #include "../MapGenerator/MapGenerator.h"
 #include "../Spells/EffectStructs.h"
 #include "../Spells/PassiveSpell.h"
@@ -259,12 +262,13 @@ void CombatManager::ApplyEffectsOnEvent(const ECombatEvent OnEvent) {
 
 void CombatManager::InstigatePassiveEffects(const std::weak_ptr<Character>& Instigator, const std::vector<std::weak_ptr<Character>>& Targets, const ECombatEvent OnEvent) {
 	RPG_ASSERT(!Instigator.expired(), "InstigatePassiveEffects - Instigator")
+	assert(!Instigator.expired());
 	
-	for (const auto& passive : Instigator.lock()->GetPassiveSpells())
-		if (passive->GetOnEvent() == OnEvent) {
-			passive->Instigator = Instigator;
-			passive->Targets = Targets;
-			passive->Apply();
+	for (const auto& Passive : Instigator.lock()->GetPassiveSpells())
+		if (Passive->GetOnEvent() == OnEvent) {
+			Passive->Instigator = Instigator;
+			Passive->Targets = Targets;
+			Passive->Apply();
 		}
 }
 
@@ -337,10 +341,8 @@ void CombatManager::ResetCombatVariables() {
 	TurnTable.clear();
 	SummonCharacters.clear();
 	SummonCharactersBase.clear();
-	nTurn = 0;
-	nCycle = 0;
-	bNext = false;
-	bCombatFinished = false;
+	nTurn = nCycle = 0;
+	bNext = bCombatFinished = false;
 }
 
 void CombatManager::OnApplyEffect() {

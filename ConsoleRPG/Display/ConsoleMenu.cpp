@@ -42,40 +42,39 @@ const int& ConsoleMenu::Prompt() {
 }
 
 void ConsoleMenu::Display() {
-    for (int i = 0; i < static_cast<int>(Options.size()); i++) {
+    for (int OptionIndex = 0; OptionIndex < static_cast<int>(Options.size()); OptionIndex++) {
         if (bIsItem) {
             std::string s1, s2;
-            std::string C = GetColor(i, s1, s2);
+            std::string C = GetColor(OptionIndex, s1, s2);
             
-            if ((i == 0 && Options[i] == "--> ALL ITEMS <--") || i == Options.size() - 1) C = COLOR_FG;
-            if (i == Index) {
+            if ((OptionIndex == 0 && Options[0] == "--> ALL ITEMS <--") || OptionIndex == static_cast<int>(Options.size()) - 1) C = COLOR_FG;
+            if (OptionIndex == Index) {
                 if (!s1.empty()) std::cout << COLOR_FG << COLOR_BG << s1 << C << s2 << ANSI_COLOR_RESET;
-                else std::cout << C << COLOR_BG << Options[i] << ANSI_COLOR_RESET;
+                else std::cout << C << COLOR_BG << Options[OptionIndex] << ANSI_COLOR_RESET;
             }
             else {
                 if (!s1.empty()) std::cout << COLOR_FG << s1 << C << s2 << ANSI_COLOR_RESET;
-                else std::cout << C << Options[i];
+                else std::cout << C << Options[OptionIndex];
             }
             std::cout << '\n';
         }
         else {
-            if (i == Index) {
+            if (OptionIndex == Index) {
                 AnsiCursorRightN(Right);
                 std::cout << COLOR_FG << COLOR_BG;
-                std::cout << Options[i];;
+                std::cout << Options[OptionIndex];;
                 std::cout << ANSI_COLOR_RESET;
             }
             else {
                 std::cout << COLOR_FG;
                 AnsiCursorRightN(Right);
-                std::cout << Options[i];
+                std::cout << Options[OptionIndex];
             }
             std::cout << '\n';
         }
     }
     
-    if (bIsItem)
-        DisplayItemInfo(Index);
+    if (bIsItem) DisplayItemInfo(Index);
 }
 
 const int& ConsoleMenu::Select() {
@@ -115,9 +114,9 @@ void ConsoleMenu::ClearItemInfo(const int Lines) {
 }
 
 std::string ConsoleMenu::GetColor(const int OptionIndex, INOUT std::string& String1, INOUT std::string& String2) {
-    if (int Offset; (Offset = static_cast<int>(Options[OptionIndex].find("---> "))) != static_cast<int>(std::string::npos)) {
-        String1 = Options[OptionIndex].substr(0, Offset + 5);
-        String2 = Options[OptionIndex].substr(Offset + 5);
+    if (const int Offset = static_cast<int>(Options[OptionIndex].find("---> ")) != static_cast<int>(std::string::npos)) {
+        String1 = Options[OptionIndex].substr(0, Offset + 8);
+        String2 = Options[OptionIndex].substr(Offset + 8);
     }
 
     std::string C;
@@ -165,7 +164,6 @@ void ConsoleMenu::DisplayItemInfo(const int InItem) {
     std::cout << ANSI_CURSOR_RIGHT(60);
     std::cout << "------------------------------------------------------------\n" << ANSI_COLOR_RESET;
  
-    if (Options.size() <= 3)
-        AnsiCursorUpN(3 - static_cast<int>(Options.size()), false);
+    if (Options.size() <= 3) AnsiCursorUpN(3 - static_cast<int>(Options.size()), false);
     else AnsiCursorDownN(static_cast<int>(Options.size()) - 3);
 }

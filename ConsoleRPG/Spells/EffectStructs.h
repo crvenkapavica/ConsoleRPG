@@ -9,7 +9,7 @@ struct CharacterStat {
 	EStatType StatType;
 	EStatMod StatMod;
 	float* Stat;
-	std::function<float(const std::shared_ptr<Character>& SPtrChar)> GetDelta;
+	std::function<float(const std::shared_ptr<Character>& SPtrChar)> GetDelta; //TODO: WeakPtr?
 	float Total = 0;
 };
 
@@ -25,7 +25,7 @@ struct EffectStat {
 
 struct EffectParams {
 	ECombatEvent OnEvent;
-	int StructFlags = 0;
+	uint8_t Flags = 0;
 	std::optional<EffectStat> EffectStat;
 };
 
@@ -49,7 +49,7 @@ struct CombatEffect {
 	std::unique_ptr<ActiveSpell> ActiveSpell;
 	std::optional<ApplyParams> ApplyParams;
 	std::optional<EffectParams> EffectParams;
-	int Duration;
+	int Duration = 0;
 	int Index = 0;
-	int TurnApplied = -1;
+	int TurnApplied = -1; //TODO: Default Ctor? ili remove?
 };

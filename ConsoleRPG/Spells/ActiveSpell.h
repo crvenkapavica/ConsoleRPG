@@ -32,7 +32,7 @@ protected:
     float AdjustDamage(float Damage, const std::shared_ptr<Character>& InCharacter);
 
     // Add random targets to the target vector (when multi-striking, or when spell targets more than one character)
-    int AddRandomTargets(int R, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& character, const std::string& name);
+    int AddRandomTargets(int nTargets, std::vector<std::weak_ptr<Character>>& Targets, const std::shared_ptr<Character>& Instigator, const std::string& Name);
 
     bool Summon(ECharacterClass CharacterClass, const std::shared_ptr<Character>& Instigator);
 
