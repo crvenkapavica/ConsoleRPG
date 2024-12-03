@@ -237,7 +237,7 @@ void Item::GetBaseItem(ItemProperties& ItemInfo) {
 			BaseItem.MaxLevel >= ItemInfo.Level && BaseItem.MinLevel <= ItemInfo.Level) {
 
 			ItemInfo.Id = BaseItem.Id;
-			ItemInfo.Name = (ItemInfo.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(ItemInfo.ItemRarity) + " ") + BaseItem.Name;
+			ItemInfo.Name = ItemInfo.ItemRarity == EItemRarity::GODLIKE ? "GODLIKE" : "" + BaseItem.Name;
 			ItemInfo.MinDmg = BaseItem.MinDmg;
 			ItemInfo.MaxDmg = BaseItem.MaxDmg;
 			ItemInfo.Armor = BaseItem.Armor;
@@ -326,9 +326,8 @@ void Item::GenerateRandomConsumable(ItemProperties& ItemInfo) {
 	const int RndInt = GameplayStatics::GetRandInt(1, 1000);
 	for (const auto& RndItem : ItemDb::Data) {
 		if (RndItem.ItemType == EItemType::CONSUMABLE && RndInt <= RndItem.DropChance) {
-			ItemInfo.Name = ItemInfo.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(ItemInfo.ItemRarity) + " ";
-			ItemInfo.Name += RndItem.Name;
 			ItemInfo.Id = RndItem.Id;
+			ItemInfo.Name = ItemInfo.ItemRarity == EItemRarity::GODLIKE ? "GODLIKE " : "" + RndItem.Name;
 			ItemInfo.Amount = RndItem.Amount * ItemInfo.nAffixes;
 
 			// For now only health and essence potions cant be used out of combat
@@ -348,7 +347,7 @@ void Item::GenerateRandomScroll(ItemProperties& ItemInfo) {
 		// Here we need a good formula for converting ItemLevel to PowerLevel of Spell
 		if (const auto Scroll = SpellDb::ActiveConstMap[static_cast<ESpellID>(Rnd)]; Scroll.PowerLevel <= 5 || ItemInfo.Level / 8 >= Scroll.PowerLevel) {
 			ItemInfo.Active = static_cast<ESpellID>(Rnd);
-			ItemInfo.Name = (ItemInfo.ItemRarity == EItemRarity::COMMON ? "" : GameplayStatics::GetEnumString(ItemInfo.ItemRarity) + " ") + "Scroll of " + GameplayStatics::GetEnumString(ItemInfo.Active);
+			ItemInfo.Name = std::string(ItemInfo.ItemRarity == EItemRarity::GODLIKE ? "GODLIKE " : "") + "Scroll of " + GameplayStatics::GetEnumString(ItemInfo.Active);
 			break;
 		}
 	}

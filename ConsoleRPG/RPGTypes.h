@@ -77,7 +77,7 @@ typedef int skill;
 #define ANSI_COLOR_BLINK		"\x1b[5m"
 
 #define ANSI_CLEAR_SCREEN		"\033[2J\033[H"
-#define CLS						ANSI_CLEAR_SCREEN
+#define CLS						std::cout << ANSI_CLEAR_SCREEN;
 
 #define ANSI_COLOR_FG_RGB(r, g, b) "\x1b[38;2;" #r ";" #g ";" #b "m"
 #define ANSI_COLOR_BG_RGB(r, g, b) "\x1b[48;2;" #r ";" #g ";" #b "m"
@@ -148,7 +148,7 @@ typedef int skill;
 
 #define RPG_ASSERT(expr, msg) \
     if (!(expr)) { \
-		system("cls"); \
+		CLS \
         std::cout << "Assertion failed: " << (msg) << "\n"; \
         std::cout << "In file: " << __FILE__ << ", line: " << __LINE__ << "\n"; \
         std::exit(EXIT_FAILURE); \

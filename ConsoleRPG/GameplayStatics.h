@@ -35,7 +35,7 @@ public:
 	static void DisplayMapMenu();
 	static void HandleMapInput(int Input);
 
-	static PlayerCharacter* GetTurnCharacter();
+	static PlayerCharacter* GetSelectedCharacter();
 
 	static void DisplayItemMenu();
 	//static void DisplaySomeSpellMenu();

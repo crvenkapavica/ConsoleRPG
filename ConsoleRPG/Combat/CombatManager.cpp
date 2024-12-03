@@ -157,7 +157,7 @@ void CombatManager::ApplyStat(const std::shared_ptr<CombatEffect>& Effect, const
 		OnMeleeReceivedEnd(Target, Effect->Instigator);
 	else if (SpellClass == ESpellClass::RANGED)
 		OnRangedReceivedEnd(Target, Effect->Instigator);
-	
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 	FlagDeadCharacters();
 }
 

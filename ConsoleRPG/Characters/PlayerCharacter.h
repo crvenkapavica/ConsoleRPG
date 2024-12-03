@@ -38,24 +38,29 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	
 	void EquipItem(std::unique_ptr<Item>&& InItem);
-	// Return immediately if inventory is full
 	void UnEquipItem(std::unique_ptr<Item>&& InItem);
-	// Return true if the item was added, false otherwise
-	bool AddItemToInventory(std::unique_ptr<Item>&& InItem);
-	[[nodiscard]] int GetInventorySpace() const;
+	void AddItemToInventory(std::unique_ptr<Item>&& InItem);
+	
+	[[nodiscard]] inline int GetInventoryCount() const { return INV_SLOTS - nInventory; } //TODO: Replace with Inventory.size() after adding "backpacks"
+	[[nodiscard]] inline int GetInventoryCapacity() const { return static_cast<int>(Inventory.size()); }
+	
 	// Displays all information about the item and its affixes
 	static void InspectItem(std::unique_ptr<Item> Item);
 	void DestroyItem(const std::unique_ptr<Item>&& InItem);
 	void DisplayEquippedItems() const;
+	
 	static void DisplayInventory();
 	static void DisplayConsumableSlots();
 	static void DisplayActiveSpellSlots();
 	static void DisplayPassiveSpellSlots();
+
+	// Displays all character's items and returns the selected Item.
 	std::unique_ptr<Item> DisplayAllItems(OUT bool& bIsEquipped);
+	
 	void DisplayStats() const;
 	
 public:
-	std::vector<std::unique_ptr<Item>> ItemSlots;
+	std::vector<std::unique_ptr<Item>> ItemSlots; 
 	std::vector<std::unique_ptr<Item>> Inventory;
 	std::vector<std::unique_ptr<Item>> ConsumableSlots;
 	std::vector<std::unique_ptr<ActiveSpell>> ActiveSlots;
@@ -71,6 +76,6 @@ protected:
 	void constexpr InitExperienceForLevel();
 	void LevelUp();
 	void SortInventory();
-	void CalculatePlayerItemSlots();
+	void CalculateItemSlots();
 	void CalculateInventorySlots();
 };

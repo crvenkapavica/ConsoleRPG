@@ -205,6 +205,8 @@ protected:
 	bool bIsAlive = true;
 	bool bIsOnTurn = false;
 
+	int nInventoryMax = 6; //TODO : Replace with class-specific
+
 	std::vector<std::unique_ptr<ActiveSpell>> ActiveSpells;
 	std::vector<std::unique_ptr<PassiveSpell>> PassiveSpells;
 

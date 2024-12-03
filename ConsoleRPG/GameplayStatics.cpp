@@ -42,7 +42,7 @@ void GameplayStatics::Initialize(std::vector<std::shared_ptr<Character>>&& InPla
 }		
 
 void GameplayStatics::DisplayAllies() {
-	system("cls");
+	CLS
 	int CharIndex = 0;
 	std::cout << MG.GetPowerLevel();
 	for (const auto& PlayerChar : CombatManager::GetPlayers())
@@ -205,8 +205,9 @@ void GameplayStatics::HandleMapInput(const int Input) {
 	}
 }
 
-PlayerCharacter* GameplayStatics::GetTurnCharacter() {
-	std::vector<std::string> Menu; // TODO: PlayerCharacters.size() reserve ? (back_inserter overwrites?)
+PlayerCharacter* GameplayStatics::GetSelectedCharacter() {
+	std::vector<std::string> Menu;
+	Menu.reserve(PlayerCharacters.size());
 	std::ranges::transform(
 		PlayerCharacters, std::back_inserter(Menu),
 		[](const auto& Char) { return GetEnumString(Char->GetClass()); }
@@ -214,40 +215,39 @@ PlayerCharacter* GameplayStatics::GetTurnCharacter() {
 	Menu.emplace_back("<--BACK--<");
 
 	int Input;
-	return (Input = InteractiveDisplay(Menu)) == -1 ? nullptr
-	: dynamic_cast<PlayerCharacter*>(PlayerCharacters[Input].get());  //TODO : Check Ref Count ??
+	return (Input = InteractiveDisplay(Menu)) == -1
+		? nullptr
+		: dynamic_cast<PlayerCharacter*>(PlayerCharacters[Input].get());
 }
 
 void GameplayStatics::DisplayItemMenu() {
-	PlayerCharacter* CurrentCharacter;
-	if (!((CurrentCharacter = GetTurnCharacter()))) return;
+	PlayerCharacter* SelectedChar = GetSelectedCharacter();
+	if (!SelectedChar) return;
 
 	bool bIsEquipped = false;
-	auto SelectedItem = CurrentCharacter->DisplayAllItems(bIsEquipped);
+	auto SelectedItem = SelectedChar->DisplayAllItems(bIsEquipped);
 	if (!SelectedItem) return;
 	
 	if (bIsEquipped) {
 		const std::vector<std::string> Menu = { "UN-EQUIP", "DESTROY", "<--BACK--<" };
-		if (const int Input = InteractiveDisplay(Menu); Input == -1)
-			return CurrentCharacter->EquipItem(std::move(SelectedItem));
-		else if (Input == 0) CurrentCharacter->UnEquipItem(std::move(SelectedItem));
-		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
+		if (const int Input = InteractiveDisplay(Menu); Input == -1) return;
+		else if (Input == 0) {
+			if (SelectedChar->GetInventoryCount() < SelectedChar->GetInventoryCapacity())
+				SelectedChar->UnEquipItem(std::move(SelectedItem));
+			else std::cout << COLOR_ERROR << "Inventory is full!\n";
+		}
+		else SelectedChar->DestroyItem(std::move(SelectedItem));
 	}
 	else {
 		const std::vector<std::string> Menu = { "EQUIP", "DESTROY", "<--BACK--<" };
-		if (const int Input = InteractiveDisplay(Menu); Input == -1) {
-			const bool bAdded = CurrentCharacter->AddItemToInventory(std::move(SelectedItem));
-			// TODO: if inventory is FULL, item is ["CONSUMED" - LOST];
-			// implement bAdded
-			return;
-		}
-		else if (Input == 0) CurrentCharacter->EquipItem(std::move(SelectedItem));
-		else CurrentCharacter->DestroyItem(std::move(SelectedItem));
+		if (const int Input = InteractiveDisplay(Menu); Input == -1) return;
+		else if (Input == 0) SelectedChar->EquipItem(std::move(SelectedItem));
+		else SelectedChar->DestroyItem(std::move(SelectedItem));
 	}
 }
 
 void GameplayStatics::DisplayPlayerStats() {
-	GetTurnCharacter()->DisplayStats();
+	GetSelectedCharacter()->DisplayStats();
 }
 
 void GameplayStatics::RedrawGameScreen() {
@@ -272,7 +272,7 @@ void GameplayStatics::InitiateCombatMode(std::vector<std::weak_ptr<Character>>&&
 	CombatManager::StartCombat(PlayerAvatar);
 	
 	ResetCombatVariables();
-	system("cls");
+	CLS
 }
 
 // TODO: Move to a different file, Logger.cpp ???
@@ -419,48 +419,48 @@ void GameplayStatics::DisplayMeleeMenu() {
 }
 
 void GameplayStatics::DisplayRangedMenu() {
-	std::vector<std::string> v;
-	std::vector<ActiveSpell*> spells;
-	for (const auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells())
-		if (spell->GetClass() == ESpellClass::RANGED) {
-			v.push_back(GetEnumString(spell->GetID()));
-			spells.push_back(spell.get());
+	std::vector<std::string> Menu;
+	std::vector<ActiveSpell*> Spells;
+	for (const auto& Spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells())
+		if (Spell->GetClass() == ESpellClass::RANGED) {
+			Menu.push_back(GetEnumString(Spell->GetID()));
+			Spells.push_back(Spell.get());
 		}
-	v.emplace_back("<--BACK--<");
+	Menu.emplace_back("<--BACK--<");
 
-	int input; 
-	if ((input = InteractiveDisplay(v)) == -1) return;
+	int Input; 
+	if ((Input = InteractiveDisplay(Menu)) == -1) return;
 
-	HandleTarget(spells[input]);
+	HandleTarget(Spells[Input]);
 }
 
 
 void GameplayStatics::DisplaySpellMenu() {
 	DisplaySpellMenuTitle();
 
-	std::vector<std::string> v;
-	std::vector<ActiveSpell*> spells;
-	for (auto& spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells()) {
-		if (spell->GetClass() == ESpellClass::MAGIC) {
-			v.push_back(GetEnumString(spell->GetID()));
-			spells.push_back(spell.get());
+	std::vector<std::string> Menu;
+	std::vector<ActiveSpell*> Spells;
+	for (auto& Spell : CombatManager::GetTurnCharacter().lock()->GetActiveSpells()) {
+		if (Spell->GetClass() == ESpellClass::MAGIC) {
+			Menu.push_back(GetEnumString(Spell->GetID()));
+			Spells.push_back(Spell.get());
 		}
 	}
-	v.emplace_back("<--BACK--<");
+	Menu.emplace_back("<--BACK--<");
 
-	int input;
-	if ((input = InteractiveDisplay(v)) == -1) return;
+	int Input;
+	if ((Input = InteractiveDisplay(Menu)) == -1) return;
 
-	HandleTarget(spells[input]);
+	HandleTarget(Spells[Input]);
 }
 
 void GameplayStatics::HandleTarget(const ActiveSpell* TargetSpell) {
 	std::string s_input;
-	int n_targets = 0;
+	int nTargets = 0;
 
 	if (TargetSpell->GetSpellType() != ESpellType::SUMMON) {
-		n_targets = 1;
-		for (int i = 0; i < n_targets; i++) {
+		nTargets = 1;
+		for (int i = 0; i < nTargets; i++) {
 			std::cout << "Input target alias:" << '\n';
 			std::cout << "-> ";
 			std::cin >> s_input;
@@ -469,7 +469,7 @@ void GameplayStatics::HandleTarget(const ActiveSpell* TargetSpell) {
 
 	std::vector<int> p_idx;
 	std::vector<int> e_idx;
-	for (int i = 0; i < n_targets; i++) {
+	for (int i = 0; i < nTargets; i++) {
 		char c = s_input[i];
 		if (c >= '0' && c <= '9') p_idx.push_back(GetPlayerIdx(c));
 		else if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') e_idx.push_back(GetEnemyIdx(c));
@@ -479,9 +479,8 @@ void GameplayStatics::HandleTarget(const ActiveSpell* TargetSpell) {
 	if (e_idx.empty())
 		for (const int i : p_idx)
 			targets.push_back(PlayerCharacters[i]);
-	else
-		for (const int i : e_idx)
-			targets.push_back(CombatManager::GetEnemies()[i]);
+	else for (const int i : e_idx)
+		targets.push_back(CombatManager::GetEnemies()[i]);
 
 	std::shared_ptr<Character> character;
 	int spell_idx = GetSpellIndex(TargetSpell, character);
@@ -554,7 +553,10 @@ void GameplayStatics::HandleInfoInput(int input) {
 
 void GameplayStatics::DisplayCombatLog() {
 	std::cout << ANSI_CURSOR_UP(50);
-	const int ESize = static_cast<int>(std::ranges::count_if(CombatManager::GetEnemies(), [](const std::weak_ptr<Character>& WPtr) { return !WPtr.expired(); }));
+	const int ESize = static_cast<int>(std::ranges::count_if(
+		CombatManager::GetEnemies(), [](const auto& WPtr) { return !WPtr.expired(); }
+	));
+	
 	const int SSize = static_cast<int>(CombatManager::GetSummons().size());
 	DisplayMenu->AnsiCursorDownN(static_cast<int>(PlayerCharacters.size() + ESize + SSize));
 	std::cout << CURSOR_LOG_RIGHT << COLOR_COMBAT_LOG;
@@ -675,8 +677,7 @@ void GameplayStatics::RollLoot() {
 }
 
 void GameplayStatics::DisplayLoot(PlayerCharacter& InCharacter, std::vector<std::unique_ptr<Item>>& Loot) {
-	system("cls");
-
+	CLS
 	if (Loot.empty()) {
 		std::cout << CLT << GetEnumString(InCharacter.GetClass()) << " received no loot this time.\n";
 		_getch();
@@ -696,22 +697,22 @@ void GameplayStatics::DisplayLoot(PlayerCharacter& InCharacter, std::vector<std:
 
 		if (const int Input = InteractiveDisplay(Menu, 0, true, Items); Input == -1) return; 
 		else if (Input == 0) { // add all items
-			if (InCharacter.GetInventorySpace() >= static_cast<int>(Loot.size())) {
+			if (InCharacter.GetInventoryCount() >= static_cast<int>(Loot.size())) {
 				for (auto& SelectedItem : Loot)
 					if (SelectedItem) InCharacter.AddItemToInventory(std::move(SelectedItem));
 				break;
 			}
-			else std::cout << CE << "Not enough inventory space! " << CLT << "(" << InCharacter.GetInventorySpace() << ")\n";
+			else std::cout << CE << "Not enough inventory space! " << CLT << "(" << InCharacter.GetInventoryCount() << ")\n";
 		}
 		else { // add selected item
-			if (InCharacter.GetInventorySpace() > 0) {
+			if (InCharacter.GetInventoryCount() > 0) {
 				InCharacter.AddItemToInventory(std::move(Loot[Input - 1]));
 				Loot.erase(std::ranges::find_if(
 					Loot, [](const auto& Ptr) { return !Ptr; }
 				));
 				continue;
 			}
-			else std::cout << CE << "Not enough inventory space! " << CLT << "(" << InCharacter.GetInventorySpace() << ")\n";
+			else std::cout << CE << "Not enough inventory space! " << CLT << "(" << InCharacter.GetInventoryCount() << ")\n";
 		}
 	}
 }

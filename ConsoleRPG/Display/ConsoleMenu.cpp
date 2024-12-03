@@ -62,7 +62,7 @@ void ConsoleMenu::Display() {
             if (OptionIndex == Index) {
                 AnsiCursorRightN(Right);
                 std::cout << COLOR_FG << COLOR_BG;
-                std::cout << Options[OptionIndex];;
+                std::cout << Options[OptionIndex];
                 std::cout << ANSI_COLOR_RESET;
             }
             else {
@@ -85,7 +85,7 @@ void ConsoleMenu::AnsiCursorUpN(const int N, const bool Clear) {
     for (int i = 0; i < N; i++) {
         if (!Clear) std::cout << ANSI_CURSOR_UP(1);
         else if (bIsItem) std::cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(120) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(120);
-        else if (Clear) std::cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(35) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(35); // Remove left?
+        else if (Clear) std::cout << ANSI_CURSOR_UP(1) << ANSI_CURSOR_RIGHT(35) << ANSI_CLEAR_TO_START << ANSI_CURSOR_LEFT(35);
     }
 }
 
@@ -127,6 +127,8 @@ std::string ConsoleMenu::GetColor(const int OptionIndex, INOUT std::string& Stri
     switch (Items[OptionIndex - Offset]->ItemInfo.ItemRarity) {
     case EItemRarity::COMMON:
         return COLOR_COMMON;
+    case EItemRarity::RARE:
+        return COLOR_RARE;
     case EItemRarity::EPIC:
         return COLOR_EPIC;
     case EItemRarity::LEGENDARY:

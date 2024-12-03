@@ -21,11 +21,7 @@ public:
     inline void SetClear(const bool InbClear) { bClear = InbClear; }
 
 private:
-    inline bool GetBack() {
-        const bool bTemp = bBack;
-        bBack = false;
-        return bTemp;
-    }
+    inline bool GetBack() { return std::exchange(bBack, false); }
 
 public:
     void AnsiCursorDownN(const int N);

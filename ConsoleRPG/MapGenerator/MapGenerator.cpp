@@ -24,6 +24,7 @@ MapGenerator& MapGenerator::GetInstance() {
 	return Instance;
 }
 
+
 void MapGenerator::Initialize(const std::vector<std::weak_ptr<Character>>& InPlayerCharacters) {
 	Map = new char* [MAX_X];
 	for (int i = 0; i < MAX_X; i++) Map[i] = new char[MAX_Y];
@@ -293,7 +294,7 @@ void MapGenerator::InitPlayer(const std::vector<std::weak_ptr<Character>>& InPla
 }
 
 void MapGenerator::ShowMap() const {
-	system("cls");;
+	CLS
 	if (BorderX == 0 && BorderXEnd == 0) ShowPosition();
 	else {
 		Map[PlayerX][PlayerY] = PATH;
@@ -332,7 +333,7 @@ const char* MapGenerator::GetMapAnsi(const char C) const {
 }
 
 void MapGenerator::ShowPosition() const {
-	system("cls");
+	CLS
 	const int Radius = static_cast<int>(PlayerCharacters[0].lock()->GetLightRadius());
 	
 	// TODO -= CHECK FOR OUT OF BOUNDS
@@ -578,15 +579,12 @@ void MapGenerator::GenerateCharacterGridPositions() {
 	}
 }
 
+// TODO: IfInit
 void MapGenerator::AddCharactersToGrid() {
 	for (int i = 0; i < CHAR_GRID_X; i++)
-		for (int j = 0; j < CHAR_GRID_Y; j++) {
-			const int x = i * 4 + 2;
-			const int y = j * 8 + 4;
-
-			if (CharGrid[i][j].Here.lock())
+		for (int j = 0; j < CHAR_GRID_Y; j++)
+			if (const int x = i * 4 + 2, y = j * 8 + 4; CharGrid[i][j].Here.lock())
 				Grid[x][y] = CharGrid[i][j].Here.lock()->GetAlias();
-		}
 }
 
 bool MapGenerator::AddCharacterToCharGrid(const std::shared_ptr<Character>& Instigator, const std::weak_ptr<Character>& Summon) {
@@ -636,7 +634,8 @@ void MapGenerator::ClearCharGrid() {
 	for (auto& GridNodes : CharGrid)
 		for (auto& [Here, Neighbors] : GridNodes) {
 			Here = {};
-			for (auto& Neighbor : Neighbors) Neighbor = {};
+			for (auto& Neighbor : Neighbors)
+				Neighbor = {};
 		}
 }
 
@@ -691,7 +690,7 @@ std::vector<Character*> MapGenerator::GetCharactersInRange(const Character* InCh
 	std::vector<Character*> Menu;
 	const int x = CharMap.at(InCharacter->GetAlias()).first;
 	const int y = CharMap.at(InCharacter->GetAlias()).second;
-
+	
 	for (const auto& c : CharGrid[x][y].Neighbors)
 		if (c.lock()) Menu.push_back(c.lock().get());
 
