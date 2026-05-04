@@ -1,7 +1,13 @@
 #pragma once
 
+#ifdef _WIN32
+#define NOMINMAX
+#include <conio.h>
+#include <windows.h>
+#endif
+
 #include <algorithm>
-#include <bits.h>
+#include <chrono>
 #include <cctype>
 #include <deque>
 #include <functional>
@@ -15,10 +21,15 @@
 #include <random>
 #include <ranges>
 #include <sstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <thread>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <string>
+#ifndef _WIN32
+#include <termios.h>
+#include <unistd.h>
+#endif
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -145,6 +156,24 @@ typedef int skill;
 #define INOUT
 
 #define UPPER(c) ((c) >= 'a' && (c) <= 'z' ? static_cast<char>((c) - 32) : (c))
+
+#ifndef _WIN32
+inline int _getch() {
+	termios OldTermios {};
+	termios NewTermios {};
+	tcgetattr(STDIN_FILENO, &OldTermios);
+	NewTermios = OldTermios;
+	NewTermios.c_lflag &= static_cast<unsigned int>(~(ICANON | ECHO));
+	tcsetattr(STDIN_FILENO, TCSANOW, &NewTermios);
+	const int Ch = getchar();
+	tcsetattr(STDIN_FILENO, TCSANOW, &OldTermios);
+	return Ch;
+}
+
+inline void Sleep(const unsigned int Milliseconds) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(Milliseconds));
+}
+#endif
 
 #define RPG_ASSERT(expr, msg) \
     if (!(expr)) { \

@@ -1,6 +1,4 @@
 #pragma once
-#include <conio.h> 
-#include <windows.h> 
 #include "../RPGTypes.h"
 
 class Item;

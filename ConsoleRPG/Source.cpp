@@ -16,6 +16,7 @@
 // }
 
 
+#ifdef _WIN32
 void SendAltEnter() {
     // Array of INPUT structures for the key events
     INPUT inputs[4] = {};
@@ -42,6 +43,7 @@ void SendAltEnter() {
     // Send input
     SendInput(4, inputs, sizeof(INPUT));
 }
+#endif
 
 //#include "RPGTypes.h"
 //
@@ -121,5 +123,4 @@ int main() {
     // Have to implement a starting routine and a game loop. at the starting routine we get the instances.
 	GameplayStatics::Initialize(std::move(PlayerCharacters), Menu);
 }
-
 

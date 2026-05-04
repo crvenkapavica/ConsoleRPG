@@ -4,6 +4,16 @@ set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
 
 project(ConsoleRPG CXX)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    include(CheckCXXCompilerFlag)
+    check_cxx_compiler_flag("-std=c++2c" COMPILER_SUPPORTS_CXX2C)
+    if(COMPILER_SUPPORTS_CXX2C)
+        add_compile_options("-std=c++2c")
+    else()
+        add_compile_options("-std=c++2b")
+    endif()
+endif()
+
 ################################################################################
 # Set target arch type if empty. Visual studio solution generator provides it.
 ################################################################################
@@ -83,4 +93,3 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Sub-projects
 ################################################################################
 add_subdirectory(ConsoleRPG)
-
