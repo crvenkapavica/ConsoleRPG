@@ -244,7 +244,8 @@ void CombatManager::RemoveExpiredCombatEffects() {
 }
 
 void CombatManager::ApplyEffectsOnEvent(const ECombatEvent OnEvent) {
-	for (auto& [Turn, Effect] : CombatEffects) {
+	for (const auto& CombatEffectEntry : CombatEffects) {
+		const auto& Effect = CombatEffectEntry.second;
 		if (!PlayerAvatar.lock()->IsInCombat()) return; //TODO: check
 
 		const int EffectIndex = Effect->Index % static_cast<int>(Effect->Targets.size());
