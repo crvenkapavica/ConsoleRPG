@@ -101,7 +101,7 @@ void CombatManager::DisplayTurnOrder() {
 	int Total = 0;
 	std::string COLOR;
 	for (int i = nTurn; i < static_cast<int>(TurnTable.size()); i++) {
-		char Alias = TurnTable[i].lock()->GetAlias();
+		char Alias;
 		if (TurnTable[i].lock()) Alias = TurnTable[i].lock()->GetAlias();
 		else continue;
 		if (Alias >= '0' && Alias <= '9') COLOR = COLOR_PLAYER;
