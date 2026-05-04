@@ -8,7 +8,7 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/windows-clang-cpp26",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "A:/LLVM/bin/clang++.exe",
+        "CMAKE_CXX_COMPILER": "$env{LLVM_ROOT}/bin/clang++.exe",
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },

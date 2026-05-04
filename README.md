@@ -10,6 +10,7 @@ Install LLVM/clang at `A:\LLVM` and make sure Ninja is available on `PATH`.
 From the repository root, run:
 
 ```powershell
+$env:LLVM_ROOT = 'A:\LLVM'
 cmake --preset windows-clang-cpp26
 cmake --build --preset windows-clang-cpp26
 .\x64\Debug\ConsoleRPG.exe
@@ -61,4 +62,3 @@ You can fork the project, but you <b>can not use it commercially and have to cre
 Project codename: <b>CARTAGRA ©<b/>
 
 There is a slight possibility that the project will be ported to Unreal Engine (with pristine graphics), if enough interest arises and my obligations allow for it.
-
