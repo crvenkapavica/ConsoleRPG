@@ -4,6 +4,20 @@ A grid turn-based RPG built in C++ as a console app.
 
 Can be built as is.
 
+## Windows clang++ C++26 build
+
+Install LLVM/clang at `A:\LLVM` and make sure Ninja is available on `PATH`.
+From the repository root, run:
+
+```powershell
+cmake --preset windows-clang-cpp26
+cmake --build --preset windows-clang-cpp26
+.\x64\Debug\ConsoleRPG.exe
+```
+
+The CMake configuration uses clang's `-std=c++2c` flag when the installed compiler supports it.
+If an older clang does not support `-std=c++2c`, it falls back to `-std=c++2b`.
+
 This is a work in progress, with core combat functionality, spells, movement, and random map generator being built.  
 Currently only the in-combat part of the game is designed (apart from the map being randomly generated - which needs design elements added. This will be achieved using randomly generated pre-built segments, random segments, and random 'tiles').  
 Item generator is inspired by Diablo I & Diablo II and is not yet completed.

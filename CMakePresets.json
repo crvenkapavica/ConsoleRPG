@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "windows-clang-cpp26",
+      "displayName": "Windows clang++ C++26",
+      "description": "Configures ConsoleRPG with clang++ from A:/LLVM and C++26-compatible flags.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/windows-clang-cpp26",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "A:/LLVM/bin/clang++.exe",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "clang-cpp26",
+      "displayName": "clang++ C++26",
+      "description": "Configures ConsoleRPG with the clang++ found on PATH and C++26-compatible flags.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/clang-cpp26",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-clang-cpp26",
+      "configurePreset": "windows-clang-cpp26"
+    },
+    {
+      "name": "clang-cpp26",
+      "configurePreset": "clang-cpp26"
+    }
+  ]
+}
