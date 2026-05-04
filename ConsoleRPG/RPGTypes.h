@@ -26,10 +26,6 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
-#ifndef _WIN32
-#include <termios.h>
-#include <unistd.h>
-#endif
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -159,15 +155,7 @@ typedef int skill;
 
 #ifndef _WIN32
 inline int _getch() {
-	termios OldTermios {};
-	termios NewTermios {};
-	tcgetattr(STDIN_FILENO, &OldTermios);
-	NewTermios = OldTermios;
-	NewTermios.c_lflag &= static_cast<unsigned int>(~(ICANON | ECHO));
-	tcsetattr(STDIN_FILENO, TCSANOW, &NewTermios);
-	const int Ch = getchar();
-	tcsetattr(STDIN_FILENO, TCSANOW, &OldTermios);
-	return Ch;
+	return std::cin.get();
 }
 
 inline void Sleep(const unsigned int Milliseconds) {
