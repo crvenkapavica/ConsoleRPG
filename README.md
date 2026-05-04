@@ -18,16 +18,16 @@ cmake --build --preset windows-clang-cpp26
 The CMake configuration uses clang's `-std=c++2c` flag when the installed compiler supports it.
 If an older clang does not support `-std=c++2c`, it falls back to `-std=c++2b`.
 
-This is a work in progress, with core combat functionality, spells, movement, and random map generator being built.  
-Currently only the in-combat part of the game is designed (apart from the map being randomly generated - which needs design elements added. This will be achieved using randomly generated pre-built segments, random segments, and random 'tiles').  
+This is a work in progress, with core combat functionality, spells, movement, and random map generator being built.
+Currently only the in-combat part of the game is designed (apart from the map being randomly generated - which needs design elements added. This will be achieved using randomly generated pre-built segments, random segments, and random 'tiles').
 Item generator is inspired by Diablo I & Diablo II and is not yet completed.
 
 The game is intended to be endless, very difficult, and hardcore mode is assumed.
 
 <hr/>
 
--> The current state of the game is for testing purposes only.  
--> Several features have been disabled or hard-coded for testing purposes.  
+-> The current state of the game is for testing purposes only.
+-> Several features have been disabled or hard-coded for testing purposes.
 
 <hr/>
 
@@ -43,7 +43,7 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Enemies grow in strength with time (like in Heroes of Might and Magic)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Bosses spawn on random high-tier segments which guard item chests or spells / spellbooks<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• NPC aggro range<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<b> CHALLENGING AI </b><br/>  
+&nbsp;&nbsp;&nbsp;&nbsp;<b> CHALLENGING AI </b><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Deep behaviour tree-like decision making (this would also be affected by certain affixes, attributes, time, etc...)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• State-context for predicting player decisions based on gameplay statistics<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<b> TALENTS, SPELLS, SPELLBOOKS, PASSIVES </b><br/>
@@ -53,12 +53,12 @@ The game is intended to be endless, very difficult, and hardcore mode is assumed
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Hundreds of new spells - core functionallity has been written, allowing for robust and creative combat<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• Class-specific passives & resources<br/>
 </html>
-...And much, much more.  
+...And much, much more.
 
 <hr/>
 
-You can fork the project, but you <b>can not use it commercially and have to credit the source.</b>  
+You can fork the project, but you <b>can not use it commercially and have to credit the source.</b>
 Project codename: <b>CARTAGRA ©<b/>
 
 There is a slight possibility that the project will be ported to Unreal Engine (with pristine graphics), if enough interest arises and my obligations allow for it.
-  
+
