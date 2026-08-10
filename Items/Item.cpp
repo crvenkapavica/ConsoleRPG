@@ -13,7 +13,7 @@ std::vector<std::pair<EItemType, std::pair<int, double>>> Item::DropTable_ItemTy
 	{ EItemType::JEWELLERY,{	22,		0.15 } },
 	{ EItemType::ARMOR,{		15,		0.25 } },
 	{ EItemType::SCROLL,{		6,		0.35 } },
-	{ EItemType::CONSUMABLE,{ 2,	0.45 } }
+	{ EItemType::CONSUMABLE,{ 2,		0.45 } }
 };
 
 std::vector<std::pair<EItemRarity, double>> Item::DropTable_ItemRarity {

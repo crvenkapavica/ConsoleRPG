@@ -1,0 +1,36 @@
+set(CONSOLERPG_MSVC_2026_ROOT
+    "A:/Visual Studio 2026"
+    CACHE PATH
+    "Visual Studio 2026 installation root"
+)
+
+set(CONSOLERPG_MSVC_2026_TOOLSET
+    "14.50.35717"
+    CACHE STRING
+    "MSVC 2026 toolset version"
+)
+
+set(CONSOLERPG_MSVC_2026_BIN
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/bin/Hostx64/x64"
+)
+
+set(CMAKE_CXX_COMPILER
+    "${CONSOLERPG_MSVC_2026_BIN}/cl.exe"
+    CACHE FILEPATH
+    "MSVC 2026 x64 C++ compiler"
+    FORCE
+)
+
+set(CMAKE_LINKER
+    "${CONSOLERPG_MSVC_2026_BIN}/link.exe"
+    CACHE FILEPATH
+    "MSVC 2026 x64 linker"
+    FORCE
+)
+
+set(CMAKE_AR
+    "${CONSOLERPG_MSVC_2026_BIN}/lib.exe"
+    CACHE FILEPATH
+    "MSVC 2026 x64 librarian"
+    FORCE
+)

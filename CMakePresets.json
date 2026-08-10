@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 3,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "msvc-2026-debug",
+      "displayName": "MSVC 2026 x64 Debug",
+      "description": "Configures ConsoleRPG with Visual Studio 2026 MSVC 14.50.35717 cl.exe.",
+      "generator": "NMake Makefiles",
+      "binaryDir": "${sourceDir}/cmake-build-msvc-2026-nmake",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/msvc-2026-x64.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_MAKE_PROGRAM": "A:/Visual Studio 2026/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/nmake.exe",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc-2026-debug",
+      "displayName": "Build MSVC 2026 x64 Debug",
+      "configurePreset": "msvc-2026-debug"
+    }
+  ]
+}

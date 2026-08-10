@@ -2,4 +2,6 @@ x64/
 
 Debug/
 
+cmake-build-msvc-2026*/
+
 .idea/
