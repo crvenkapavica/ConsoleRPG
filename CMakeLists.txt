@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 4.3)
 
-set(CONSOLERPG_MSVC_2026_CXX
-    "A:/Visual Studio 2026/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/cl.exe"
-    CACHE FILEPATH
-    "Preferred MSVC 2026 C++ compiler for local CLion/Ninja builds"
+set(CONSOLERPG_MSVC_2026_TOOLCHAIN
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/toolchains/msvc-2026-x64.cmake"
 )
 
-if (WIN32 AND NOT DEFINED CMAKE_CXX_COMPILER AND EXISTS "${CONSOLERPG_MSVC_2026_CXX}")
-    set(CMAKE_CXX_COMPILER "${CONSOLERPG_MSVC_2026_CXX}" CACHE FILEPATH "C++ compiler" FORCE)
+if (WIN32 AND EXISTS "${CONSOLERPG_MSVC_2026_TOOLCHAIN}")
+    include("${CONSOLERPG_MSVC_2026_TOOLCHAIN}")
 endif()
 
 project(ConsoleRPG LANGUAGES CXX)
@@ -66,6 +64,11 @@ set_target_properties(ConsoleRPG PROPERTIES
 target_include_directories(ConsoleRPG PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if (MSVC)
+    target_include_directories(ConsoleRPG SYSTEM PRIVATE
+        ${CONSOLERPG_MSVC_2026_INCLUDE_DIRS}
+    )
+    set_property(TARGET ConsoleRPG PROPERTY MSVC_DEBUG_INFORMATION_FORMAT Embedded)
+
     # CMake 4.3.1 does not advertise cxx_std_26 for MSVC 19.50 yet.
     # MSVC's forward-looking C++26 mode is selected with /std:c++latest.
     target_compile_options(ConsoleRPG PRIVATE

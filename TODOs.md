@@ -46,3 +46,12 @@ table {
 -> nvending cmpt pdox
 -> HOMM olden
 </div>
+
+
+-jenga kernela
+-drugoga
+
+-programiranje
+-djnz
+-prof / osobno misljenje
+-tlak i zakaj si promenil

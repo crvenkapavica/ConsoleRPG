@@ -1,3 +1,5 @@
+include_guard(GLOBAL)
+
 set(CONSOLERPG_MSVC_2026_ROOT
     "A:/Visual Studio 2026"
     CACHE PATH
@@ -13,6 +15,65 @@ set(CONSOLERPG_MSVC_2026_TOOLSET
 set(CONSOLERPG_MSVC_2026_BIN
     "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/bin/Hostx64/x64"
 )
+
+set(CONSOLERPG_WINDOWS_SDK_ROOT
+    "C:/Program Files (x86)/Windows Kits/10"
+    CACHE PATH
+    "Windows 10 SDK root"
+)
+
+set(CONSOLERPG_WINDOWS_SDK_VERSION
+    "10.0.26100.0"
+    CACHE STRING
+    "Windows 10 SDK version used with MSVC 2026"
+)
+
+set(CONSOLERPG_MSVC_2026_INCLUDE_DIRS
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/include"
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/ATLMFC/include"
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Auxiliary/VS/include"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Include/${CONSOLERPG_WINDOWS_SDK_VERSION}/ucrt"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Include/${CONSOLERPG_WINDOWS_SDK_VERSION}/um"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Include/${CONSOLERPG_WINDOWS_SDK_VERSION}/shared"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Include/${CONSOLERPG_WINDOWS_SDK_VERSION}/winrt"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Include/${CONSOLERPG_WINDOWS_SDK_VERSION}/cppwinrt"
+    CACHE STRING
+    "MSVC 2026 and Windows SDK include directories"
+)
+
+set(CONSOLERPG_MSVC_2026_LIBRARY_DIRS
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/lib/x64"
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/ATLMFC/lib/x64"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Lib/${CONSOLERPG_WINDOWS_SDK_VERSION}/ucrt/x64"
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/Lib/${CONSOLERPG_WINDOWS_SDK_VERSION}/um/x64"
+    CACHE STRING
+    "MSVC 2026 and Windows SDK library directories"
+)
+
+function(consolerpg_prepend_cache_flags variable flags needle)
+    set(CurrentValue "${${variable}}")
+    string(FIND "${CurrentValue}" "${needle}" ExistingIndex)
+    if (ExistingIndex EQUAL -1)
+        string(STRIP "${flags} ${CurrentValue}" UpdatedValue)
+        set("${variable}" "${UpdatedValue}" CACHE STRING "" FORCE)
+    endif()
+endfunction()
+
+set(CONSOLERPG_MSVC_2026_INCLUDE_FLAGS "")
+foreach (IncludeDir IN LISTS CONSOLERPG_MSVC_2026_INCLUDE_DIRS)
+    if (EXISTS "${IncludeDir}")
+        string(APPEND CONSOLERPG_MSVC_2026_INCLUDE_FLAGS " /I\"${IncludeDir}\"")
+    endif()
+endforeach()
+string(STRIP "${CONSOLERPG_MSVC_2026_INCLUDE_FLAGS}" CONSOLERPG_MSVC_2026_INCLUDE_FLAGS)
+
+set(CONSOLERPG_MSVC_2026_LIBPATH_FLAGS "")
+foreach (LibraryDir IN LISTS CONSOLERPG_MSVC_2026_LIBRARY_DIRS)
+    if (EXISTS "${LibraryDir}")
+        string(APPEND CONSOLERPG_MSVC_2026_LIBPATH_FLAGS " /LIBPATH:\"${LibraryDir}\"")
+    endif()
+endforeach()
+string(STRIP "${CONSOLERPG_MSVC_2026_LIBPATH_FLAGS}" CONSOLERPG_MSVC_2026_LIBPATH_FLAGS)
 
 set(CMAKE_CXX_COMPILER
     "${CONSOLERPG_MSVC_2026_BIN}/cl.exe"
@@ -34,3 +95,61 @@ set(CMAKE_AR
     "MSVC 2026 x64 librarian"
     FORCE
 )
+
+set(CMAKE_RC_COMPILER
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/bin/${CONSOLERPG_WINDOWS_SDK_VERSION}/x64/rc.exe"
+    CACHE FILEPATH
+    "Windows SDK x64 resource compiler"
+    FORCE
+)
+
+set(CMAKE_MT
+    "${CONSOLERPG_WINDOWS_SDK_ROOT}/bin/${CONSOLERPG_WINDOWS_SDK_VERSION}/x64/mt.exe"
+    CACHE FILEPATH
+    "Windows SDK x64 manifest tool"
+    FORCE
+)
+
+set(CMAKE_SYSTEM_VERSION
+    "${CONSOLERPG_WINDOWS_SDK_VERSION}"
+    CACHE STRING
+    "Windows SDK version"
+    FORCE
+)
+
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
+    "Embedded"
+    CACHE STRING
+    "Use /Z7 embedded debug info to avoid mspdbsrv.exe stalls under CLion/Ninja"
+    FORCE
+)
+
+set(CMAKE_CXX_FLAGS_DEBUG
+    "/Ob0 /Od -MDd -RTC1"
+    CACHE STRING
+    "MSVC Debug flags; debug info is controlled by CMAKE_MSVC_DEBUG_INFORMATION_FORMAT"
+    FORCE
+)
+
+consolerpg_prepend_cache_flags(
+    CMAKE_CXX_FLAGS
+    "${CONSOLERPG_MSVC_2026_INCLUDE_FLAGS}"
+    "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/include"
+)
+
+foreach (LinkerFlagsVariable IN ITEMS
+    CMAKE_EXE_LINKER_FLAGS
+    CMAKE_SHARED_LINKER_FLAGS
+    CMAKE_MODULE_LINKER_FLAGS
+)
+    consolerpg_prepend_cache_flags(
+        "${LinkerFlagsVariable}"
+        "${CONSOLERPG_MSVC_2026_LIBPATH_FLAGS}"
+        "${CONSOLERPG_MSVC_2026_ROOT}/VC/Tools/MSVC/${CONSOLERPG_MSVC_2026_TOOLSET}/lib/x64"
+    )
+endforeach()
+
+set(ENV{INCLUDE} "${CONSOLERPG_MSVC_2026_INCLUDE_DIRS};$ENV{INCLUDE}")
+set(ENV{LIB} "${CONSOLERPG_MSVC_2026_LIBRARY_DIRS};$ENV{LIB}")
+set(ENV{LIBPATH} "${CONSOLERPG_MSVC_2026_LIBRARY_DIRS};$ENV{LIBPATH}")
+set(ENV{PATH} "${CONSOLERPG_MSVC_2026_BIN};${CONSOLERPG_WINDOWS_SDK_ROOT}/bin/${CONSOLERPG_WINDOWS_SDK_VERSION}/x64;$ENV{PATH}")
