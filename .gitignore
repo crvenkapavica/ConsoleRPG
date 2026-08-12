@@ -13,4 +13,4 @@ cmake-build-msvc-2026*/
 *.exe
 *.out
 *.err
-*.ninja*
+*.ninja
