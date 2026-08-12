@@ -14,3 +14,6 @@ cmake-build-msvc-2026*/
 *.out
 *.err
 *.ninja
+
+cmake-build-debug/
+cmake-build-debug-visual-studio/
