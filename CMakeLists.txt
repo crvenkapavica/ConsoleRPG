@@ -67,7 +67,7 @@ if (MSVC)
     target_include_directories(ConsoleRPG SYSTEM PRIVATE
         ${CONSOLERPG_MSVC_2026_INCLUDE_DIRS}
     )
-    set_property(TARGET ConsoleRPG PROPERTY MSVC_DEBUG_INFORMATION_FORMAT Embedded)
+    set_property(TARGET ConsoleRPG PROPERTY MSVC_DEBUG_INFORMATION_FORMAT ProgramDatabase)
 
     # CMake 4.3.1 does not advertise cxx_std_26 for MSVC 19.50 yet.
     # MSVC's forward-looking C++26 mode is selected with /std:c++latest.

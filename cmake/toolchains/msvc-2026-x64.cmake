@@ -118,9 +118,9 @@ set(CMAKE_SYSTEM_VERSION
 )
 
 set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
-    "Embedded"
+    "ProgramDatabase"
     CACHE STRING
-    "Use /Z7 embedded debug info to avoid mspdbsrv.exe stalls under CLion/Ninja"
+    "Use /Zi program database debug info for debugger source-line binding"
     FORCE
 )
 

@@ -98,7 +98,7 @@ int main() {
 	
 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::FIREBALL);
 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BURNING);
-	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
+ 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::EXPOSURE);
 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::MOLTEN_ARMOR);
 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::SUM_FIRE_ELE);
 	SpellManager::CreateActiveSpell(PlayerMain.get(), ESpellID::BLIND);

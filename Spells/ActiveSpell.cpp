@@ -247,7 +247,7 @@ void MoltenArmor::Apply(const std::shared_ptr<Character>& Instigator, std::vecto
 			.StatType = EStatType::ANY,
 			.StatMod = EStatMod::CONSTANT,
 			.Stat = &Targets[i].lock()->GetArmor().GetActual(),
-			.GetDelta =[&](const auto& SPtrChar) { return -GetRandOnApplyMinMax(Instigator); }
+			.GetDelta =[this, &Instigator](const auto&) { return -GetRandOnApplyMinMax(Instigator); }
 		});
 	}
 	

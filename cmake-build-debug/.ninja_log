@@ -1,0 +1,22 @@
+# ninja log v7
+93	13067	8077033929708455	CMakeFiles/ConsoleRPG.dir/Spells/Spell.cpp.obj	8d66a33812ebc6d8
+15	13130	8077033928927322	CMakeFiles/ConsoleRPG.dir/Characters/CharacterData.cpp.obj	7cde05714bf6c53a
+37	5451	8077035921360926	CMakeFiles/ConsoleRPG.dir/Display/ConsoleMenu.cpp.obj	ad91ac7afe5d543f
+173	7780	8080469983851302	CMakeFiles/ConsoleRPG.dir/Characters/SummonCharacter.cpp.obj	33467579b140f1ab
+16	7782	8080469982276607	CMakeFiles/ConsoleRPG.dir/Source.cpp.obj	6980d42900987563
+59	13149	8077033929362778	CMakeFiles/ConsoleRPG.dir/Items/ItemData.cpp.obj	3825647089d8ef95
+160	7801	8080469983715263	CMakeFiles/ConsoleRPG.dir/Characters/Character.cpp.obj	480d782746d71b26
+43	5680	8077035921420894	CMakeFiles/ConsoleRPG.dir/Items/Item.cpp.obj	61bfee998694a6af
+167	7909	8080469983790449	CMakeFiles/ConsoleRPG.dir/Characters/EnemyCharacter.cpp.obj	115d164ec54e82ed
+21	6249	8077035921203445	CMakeFiles/ConsoleRPG.dir/Characters/PlayerCharacter.cpp.obj	cd67f3f55d00c155
+49	6952	8077035921486029	CMakeFiles/ConsoleRPG.dir/MapGenerator/MapGenerator.cpp.obj	5e8d5a681b187e43
+185	9286	8080469983973662	CMakeFiles/ConsoleRPG.dir/Spells/ActiveSpell.cpp.obj	6d3b69aec2c3d9b7
+191	7753	8080469984023656	CMakeFiles/ConsoleRPG.dir/Spells/SpellManager.cpp.obj	2c0f915c507962a1
+62	5452	8077035921621236	CMakeFiles/ConsoleRPG.dir/Spells/PassiveSpell.cpp.obj	aadeb128a300193d
+70	5523	8077035921696362	CMakeFiles/ConsoleRPG.dir/Spells/SpellData.cpp.obj	7edc6503655a068f
+179	8457	8080469983911303	CMakeFiles/ConsoleRPG.dir/Combat/CombatManager.cpp.obj	56b1e56b53bc3f0e
+200	8974	8080469984108856	CMakeFiles/ConsoleRPG.dir/GameplayStatics.cpp.obj	5f540376902cde56
+5336	8726	8077035974358572	CMakeFiles/ConsoleRPG.dir/Resistances.cpp.obj	7a9981da1fa1908
+9292	11501	8080470075026673	ConsoleRPG.exe	34ab1ca28d7ea4fb
+2	573	8081061788485159	build.ninja	f475328fbf8cc874
+2	573	8081061788454868	X:/ClionProjects/ConsoleRPG/ConsoleRPG/cmake-build-debug/cmake_install.cmake	f475328fbf8cc874
