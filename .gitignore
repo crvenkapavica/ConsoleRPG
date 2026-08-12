@@ -5,3 +5,12 @@ Debug/
 cmake-build-msvc-2026*/
 
 .idea/
+
+
+*.obj
+*.log
+*.pdb
+*.exe
+*.out
+*.err
+*.ninja*
