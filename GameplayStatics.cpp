@@ -456,11 +456,13 @@ void GameplayStatics::DisplaySpellMenu() {
 	HandleTarget(Spells[Input]);
 }
 
+using enum ESpellType;
+
 void GameplayStatics::HandleTarget(const ActiveSpell* TargetSpell) {
 	std::string s_input;
 	int nTargets = 0;
 
-	if (TargetSpell->GetSpellType() != ESpellType::SUMMON) {
+	if (TargetSpell->GetSpellType() != SUMMON) {
 		nTargets = 1;
 		for (int i = 0; i < nTargets; i++) {
 			std::cout << "Input target alias:" << '\n';
@@ -750,228 +752,190 @@ float GameplayStatics::GetRandFloat(const float A, const float B) {
 
 std::string GameplayStatics::GetEnumString(const ESpellID Enum) {
 	switch (Enum) {
-	case ESpellID::FIREBALL:
-		return "FIREBALL";
-	case ESpellID::BURNING:
-		return "BURNING";
-	case ESpellID::MOLTEN_ARMOR:
-		return "MOLTEN ARMOR";
-	case ESpellID::EXPOSURE:
-		return "EXPOSURE";
-	case ESpellID::STONESKIN:
-		return "STONESKIN";
-	case ESpellID::DISARM:
-		return "DISARM";
-	case ESpellID::BLOODBATH:
-		return "BLOODBATH";
-	case ESpellID::ARCANE_INFUSION:
-		return "ARCANE INFUSION";
-	case ESpellID::BLOOD_RAIN:
-		return "BLOOD RAIN";
-	case ESpellID::VISCOUS_ACID:
-		return "VISCOUS ACID";
-	case ESpellID::SUM_FIRE_ELE:
-		return "SUMMON FIRE ELEMENTAL";
-	case ESpellID::SUM_FIRE_IMP:
-		return "SUMMON FIRE IMP";
-	case ESpellID::BLIND:
-		return "BLIND";
-	case ESpellID::MELEE:
-		return "MELEE ATTACK";
-	case ESpellID::RANGED:
-		return "RANGED ATTACK";
-	default:
-		return "DEFAULT";
+		using enum ESpellID;
+		case NONE:					return "NONE";
+		case FIREBALL:				return "FIREBALL";
+		case BURNING:				return "BURNING";
+		case MOLTEN_ARMOR:			return "MOLTEN ARMOR";
+		case EXPOSURE:				return "EXPOSURE";
+		case STONESKIN:				return "STONESKIN";
+		case DISARM:				return "DISARM";
+		case BLOODBATH:				return "BLOODBATH";
+		case ARCANE_INFUSION:		return "ARCANE INFUSION";
+		case BLOOD_RAIN:			return "BLOOD RAIN";
+		case VISCOUS_ACID:			return "VISCOUS ACID";
+		case SUM_FIRE_ELE:			return "SUMMON FIRE ELEMENTAL";
+		case SUM_FIRE_IMP:			return "SUMMON FIRE IMP";
+		case BLIND:					return "BLIND";
+		case MELEE:					return "MELEE ATTACK";
+		case RANGED:				return "RANGED ATTACK";
+		default:
+			return "DEFAULT";
 	}
 }
 
 
-std::string GameplayStatics::GetTypeString(int Enum) {
+std::string GameplayStatics::GetEnumString(const ESpellType Enum) {
 	switch (Enum) {
-	case 0:
-		return "NONE";
-	case 1:
-		return "FIREBALL";
-	case 2:
-		return "STONESKIN";
-	default:
-		return "INVALID";
+		using enum ESpellType;
+		case NONE:			return "NONE";
+		case BUFF:			return "BUFF";
+		case DEBUFF:		return "DEBUFF";
+		case AURA:			return "AURA";
+		default:
+			return "No type";
 	}
 }
 
-std::string GameplayStatics::GetEnumString(ESpellType Enum) {
+std::string GameplayStatics::GetEnumString(const ESpellActivity Enum) {
 	switch (Enum) {
-	case ESpellType::NONE:
-		return "NONE";
-	case ESpellType::BUFF:
-		return "BUFF";
-	case ESpellType::DEBUFF:
-		return "DEBUFF";
-	case ESpellType::AURA:
-		return "AURA";
-	default:
-		return "No type";
+		using enum ESpellActivity;
+		case PASSIVE:		return "PASSIVE";
+		case ACTIVE:		return "ACTIVE";
+		default:
+			return "No type";
 	}
 }
 
-std::string GameplayStatics::GetEnumString(ESpellActivity Enum) {
+std::string GameplayStatics::GetEnumString(const EDamageType Enum) {
 	switch (Enum) {
-	case ESpellActivity::PASSIVE:
-		return "PASIVE";
-	case ESpellActivity::ACTIVE:
-		return "ACTIVE";
-	default:
-		return "No type";
+		using enum EDamageType;
+		case NONE:			return "NONE";
+		case ARCANE:		return "ARCANE";
+		case FIRE:			return "FIRE";
+		case LIGHTNING:		return "LIGHTNING";
+		case COLD:			return "COLD";
+		case POISON:		return "POISON";
+		default:
+			return "No type";
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EDamageType Enum) {
+std::string GameplayStatics::GetTypeString(const int Enum) {
 	switch (Enum) {
-	case EDamageType::NONE:
-		return "NONE";
-	case EDamageType::ARCANE:
-		return "ARCANE";
-	case EDamageType::FIRE:
-		return "FIRE";
-	case EDamageType::LIGHTNING:
-		return "LIGHTNING";
-	case EDamageType::COLD:
-		return "COLD";
-	case EDamageType::POISON:
-		return "POISON";
-	default:
-		return "No type";
+		case 0: return "NONE";
+		case 1: return "FIREBALL";
+		case 2: return "STONESKIN";
+		default:
+			return "INVALID";
 	}
 }
 
-std::string GameplayStatics::GetEnumString(ECharacterClass Enum) {
+std::string GameplayStatics::GetEnumString(const ECharacterClass Enum) {
 	switch (Enum) {
-	case ECharacterClass::BARBARIAN:
-		return "BARBARIAN";
-	case ECharacterClass::WARLOCK:
-		return "WARLOCK";
-		break;
-
-	case ECharacterClass::E_GHOUL:
-		return "GHOUL";
-		break;
-	case ECharacterClass::E_ARCHER:
-		return "ARCHER";
-		break;
-	case ECharacterClass::E_MAGE:
-		return "MAGE";
-		break;
-	case ECharacterClass::E_WARLOCK:
-		return "WARLOCK";
-		break;
-	case ECharacterClass::E_SWORDSMAN:
-		return "SWORDSMAN";
-		break;
-	case ECharacterClass::E_FIRE_IMP:
-		return "FIRE IMP";
-		break;
-
-	default:
-		return "DEFAULT CLASS";
-		break;
+		using enum ECharacterClass;
+		case BARBARIAN:				return "BARBARIAN";
+		case WARLOCK:				return "WARLOCK";
+		case E_GHOUL:				return "GHOUL";
+		case E_ARCHER:				return "ARCHER";
+		case E_MAGE:				return "MAGE";
+		case E_WARLOCK:				return "WARLOCK";
+		case E_SWORDSMAN:			return "SWORDSMAN";
+		case E_FIRE_IMP:			return "FIRE_IMP";
+		default:
+			return "DEFAULT CLASS";
 	}
 }
 
-std::string GameplayStatics::GetEnumString(EItemSlot Enum) {
+std::string GameplayStatics::GetEnumString(const EItemSlot Enum) {
 	switch (Enum) {
-	case EItemSlot::NONE:
-		return "None";
-	case EItemSlot::HEAD:
-		return "HEAD";
-	case EItemSlot::CHEST:
-		return "CHEST";
-	case EItemSlot::HANDS:
-		return "HANDS";
-	case EItemSlot::BELT:
-		return "BELT";
-	case EItemSlot::LEGS:
-		return "LEGS";
-	case EItemSlot::FEET:
-		return "FEET";
-	case EItemSlot::NECK:
-		return "NECK";
-	case EItemSlot::FINGER1:
-	case EItemSlot::FINGER2:
-		return "FINGER";
-	case EItemSlot::WPN_MAIN:
-		return "MAIN-HAND";
-	case EItemSlot::WPN_OFF:
-		return "OFF-HAND";
-	case EItemSlot::RELIC:
-		return "RELIC";
-	default:
-		return "";
+		using enum EItemSlot;
+		case NONE:
+			return "None";
+		case HEAD:
+			return "HEAD";
+		case CHEST:
+			return "CHEST";
+		case HANDS:
+			return "HANDS";
+		case BELT:
+			return "BELT";
+		case LEGS:
+			return "LEGS";
+		case FEET:
+			return "FEET";
+		case NECK:
+			return "NECK";
+		case FINGER1:
+		case FINGER2:
+			return "FINGER";
+		case WPN_MAIN:
+			return "MAIN-HAND";
+		case WPN_OFF:
+			return "OFF-HAND";
+		case RELIC:
+			return "RELIC";
+		default:
+			return "";
 	}
 }
 
 std::string GameplayStatics::GetEnumString(EWeaponType Enum) {
 	switch (Enum) {
-	case EWeaponType::NONE:
-		return "None";
-	case EWeaponType::STAFF:
-		return "Staff";
-	case EWeaponType::BOW:
-		return "Bow";
-	case EWeaponType::AXE_2H:
-		return "2H Axe";
-	case EWeaponType::MACE_2H:
-		return "2H Mace";
-	case EWeaponType::SWORD_2H:
-		return "2H Sword";
-	case EWeaponType::AXE_1H:
-		return "1H Axe";
-	case EWeaponType::MACE_1H:
-		return "1H Maxe";
-	case EWeaponType::SWORD_1H:
-		return "1H Sword";
-	case EWeaponType::DAGGER:
-		return "Dagger";
-	case EWeaponType::SHIELD:
-		return "Shield";
-	default:
-		return "";
+		using enum EWeaponType;
+		case NONE:
+			return "None";
+		case STAFF:
+			return "Staff";
+		case BOW:
+			return "Bow";
+		case AXE_2H:
+			return "2H Axe";
+		case MACE_2H:
+			return "2H Mace";
+		case SWORD_2H:
+			return "2H Sword";
+		case AXE_1H:
+			return "1H Axe";
+		case MACE_1H:
+			return "1H Maxe";
+		case SWORD_1H:
+			return "1H Sword";
+		case DAGGER:
+			return "Dagger";
+		case SHIELD:
+			return "Shield";
+		default:
+			return "";
 	}
 }
 
 std::string GameplayStatics::GetEnumString(EItemRarity Enum) {
 	switch (Enum) {
-	case EItemRarity::COMMON:
-		return "Common";
-	case EItemRarity::RARE:
-		return "Rare";
-	case EItemRarity::EPIC:
-		return "Epic";
-	case EItemRarity::LEGENDARY:
-		return "Legendary";
-	case EItemRarity::GODLIKE:
-		return "GODLIKE";
-	case EItemRarity::UNIQUE:
-		return "UNIQUE";
-	default:
-		return "";
+		using enum EItemRarity;
+		case COMMON:
+			return "Common";
+		case RARE:
+			return "Rare";
+		case EPIC:
+			return "Epic";
+		case LEGENDARY:
+			return "Legendary";
+		case GODLIKE:
+			return "GODLIKE";
+		case UNIQUE:
+			return "UNIQUE";
+		default:
+			return "";
 	}
 }
 
 std::string GameplayStatics::GetEnumString(EItemType Enum) {
 	switch (Enum) {
-	case EItemType::CONSUMABLE:
-		return "Consumable";
-	case EItemType::SCROLL:
-		return "Scroll";
-	case EItemType::ARMOR:
-		return "Armor";
-	case EItemType::JEWELLERY:
-		return "Jewlery";
-	case EItemType::WEAPON:
-		return "Weapon";
-	case EItemType::RELIC:
-		return "Relic";
-	default:
-		return "";
+		using enum EItemType;
+		case CONSUMABLE:
+			return "Consumable";
+		case SCROLL:
+			return "Scroll";
+		case ARMOR:
+			return "Armor";
+		case JEWELLERY:
+			return "Jewlery";
+		case WEAPON:
+			return "Weapon";
+		case RELIC:
+			return "Relic";
+		default:
+			return "";
 	}
 }
